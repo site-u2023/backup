@@ -7,10 +7,6 @@ BASE_DR="/etc/config-software2/"
 
 . "${BASE_DR}main_colors.sh"
 
-# Define Language Selections
-LANGUAGES='"en" "ja" "cn"'
-SELECTED_LANGUAGE="ja"  # Default language
-
 map_e() {
     # Set language-dependent text for menu
     if [ "${SELECTED_LANGUAGE}" = "en" ]; then
@@ -172,5 +168,7 @@ main_menu() {
         done
     }
 
-    check_openwrt_version
-    main_menu
+LANGUAGES='"en" "ja" "cn"'
+SELECTED_LANGUAGE="ja"
+check_openwrt_version
+main_menu

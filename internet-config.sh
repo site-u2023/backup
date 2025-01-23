@@ -169,6 +169,6 @@ main_menu() {
     }
 
 LANGUAGES='"en" "ja" "cn"'
-SELECTED_LANGUAGE="ja"
+# SELECTED_LANGUAGE="ja"
 check_openwrt_version
 main_menu

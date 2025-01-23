@@ -7,7 +7,7 @@ BASE_DR="/etc/config-software2/"
 . "${BASE_DR}main_colors.sh"
 
 # Define Language Selections
-LANGUAGES=("English" "日本語" "中文")
+LANGUAGES='"en" "ja" "cn"'
 SELECTED_LANGUAGE="ja"  # Default language
 
 main_menu() {

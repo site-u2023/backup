@@ -47,9 +47,6 @@ map_e() {
 }
 
 map_e_confirmation() {
-# 作成中
-exit
-}
 
     # Set language-dependent text for menu
     if [ "${SELECTED_LANGUAGE}" = "en" ]; then
@@ -108,8 +105,11 @@ map_e_installation() {
 }
 
 map_e_reconstruction() {
-    # Check OpenWrt version
-    check_openwrt_version() {
+# 作成中
+}
+
+# Check OpenWrt version
+check_openwrt_version() {
         local supported_versions="19 21 22 23 24 SN"
         local release=$(grep 'DISTRIB_RELEASE' /etc/openwrt_release | cut -d"'" -f2 | cut -c 1-2)
         if echo "${supported_versions}" | grep -q "${release}"; then
@@ -121,7 +121,7 @@ map_e_reconstruction() {
         fi
     }
 
-    main_menu() {
+main_menu() {
         # Set language-dependent text for menu
         if [ "${SELECTED_LANGUAGE}" = "en" ]; then
             exit

@@ -81,12 +81,12 @@ done
 {
 
 map_e_installation() {
-OPENWRT_RELEAS=$(grep 'DISTRIB_RELEASE' /etc/openwrt_release | cut -d"'" -f2 | cut -c 1-2)
-if [[ "${OPENWRT_RELEAS}" = "24" || "${OPENWRT_RELEAS}" = "23" || "${OPENWRT_RELEAS}" = "22" || "${OPENWRT_RELEAS}" = "21" || "${OPENWRT_RELEAS}" = "19" ]]; then
+
+if [ "${release}" = "24" || "${release}" = "23" || "${release}" = "22" || "${release}" = "21" || "${release}" = "19" ]; then
   opkg update
   opkg install bash
   opkg install map
-elif [[ "${OPENWRT_RELEAS}" = "SN" ]]; then
+elif [ "${release}" = "SN" ]; then
   apk update
   apk add bash
   apk add map
@@ -94,18 +94,21 @@ fi
 cp /lib/netifd/proto/map.sh /lib/netifd/proto/map.sh.old
 
 # Version-specific settings
-OPENWRT_RELEAS=$(grep 'DISTRIB_RELEASE' /etc/openwrt_release | cut -d"'" -f2 | cut -c 1-2)
-if [[ "${OPENWRT_RELEAS}" = "SN" || "${OPENWRT_RELEAS}" = "24" || "${OPENWRT_RELEAS}" = "23" || "${OPENWRT_RELEAS}" = "22" || "${OPENWRT_RELEAS}" = "21" ]]; then
+if [ "${release}" = "SN" || "${release}" = "24" || "${release}" = "23" || "${release}" = "22" || "${release}" = "21" ]; then
   wget -6 --no-check-certificate -O /lib/netifd/proto/map.sh https://raw.githubusercontent.com/site-u2023/map-e/main/map.sh.new
-elif [[ "${OPENWRT_RELEAS}" = "19" ]]; then
+elif [[ "${release}" = "19" ]]; then
   wget -6 --no-check-certificate -O /lib/netifd/proto/map.sh https://raw.githubusercontent.com/site-u2023/map-e/main/map19.sh.new
 fi
-wget -6 --no-check-certificate -O /etc/config-software/map-e.sh https://raw.githubusercontent.com/site-u2023/config-software/main/map-e.sh
-bash /etc/config-software/map-e.sh 2> /dev/null
+wget -6 --no-check-certificate -O /etc/config-software2/map-e.sh https://raw.githubusercontent.com/site-u2023/config-software2/main/map-e.sh
+bash /etc/config-software2/map-e.sh 2> /dev/null
 read -p " 何かキーを押してデバイスを再起動してください"
 reboot
 exit
 }
+
+map_e_reconstruction() {
+
+{
 
 # Check OpenWrt version
 check_openwrt_version() {

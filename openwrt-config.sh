@@ -74,7 +74,7 @@ display_system_info() {
 }
 
 # Define Language Selections
-LANGUAGES=("en" "ja" "cn")
+LANGUAGES=("English" "日本語" "中文")
 SELECTED_LANGUAGE="en"  # Default language
 
 # Function to select language

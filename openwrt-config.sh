@@ -105,8 +105,8 @@ main_menu() {
         MENU4="Install and Configure Ad Blocker"
         MENU5="Configure access point"
         MENU6="Execute other scripts"
-        MENU7="Exit the Script"
-        MENU8="Delete scripts and exit"
+        MENU00="Exit the Script"
+        MENU01="Delete scripts and exit"
     elif [ "${SELECTED_LANGUAGE}" = "ja" ]; then
         MENU0="オールインワンスクリプトメニュー"
         MENU1="インターネット設定"
@@ -115,8 +115,8 @@ main_menu() {
         MENU4="広告ブロッカーをインストール・設定" 
         MENU5="アクセスポイントを設定"
         MENU6="その他のスクリプトを実行"
-        MENU7="スクリプトを終了"
-        MENU8="スクリプトを削除して終了"
+        MENU00="スクリプトを終了"
+        MENU01="スクリプトを削除して終了"
     elif [ "${SELECTED_LANGUAGE}" = "cn" ]; then
         MENU0="一体化脚本菜单"
         MENU1="互联网设置（仅限日本）" 
@@ -125,8 +125,8 @@ main_menu() {
         MENU4="安装并配置广告拦截器"
         MENU5="配置访问点"
         MENU6="执行其他脚本"
-        MENU7="退出脚本"
-        MENU8="删除脚本并退出"
+        MENU00="退出脚本"
+        MENU01="删除脚本并退出"
     fi
 
     TARGET1="internet-config.sh"
@@ -135,8 +135,8 @@ main_menu() {
     TARGET4="ad-dns-blocking-config.sh"
     TARGET5="accesspoint-config.sh"
     TARGET6="etc-config.sh"
-    TARGET7="exit"
-    TARGET8="delete_and_exit"
+    TARGET00="exit"
+    TARGET01="delete_and_exit"
     
     while :; do
         echo "$(color "white" "-------------------------------------------------------")"
@@ -147,8 +147,8 @@ main_menu() {
         echo "$(color "magenta" "[b]: ${MENU4}")"
         echo "$(color "red" "[a]: ${MENU5}")"
         echo "$(color "cyan" "[o]: ${MENU6}")"
-        echo "$(color "white" "[e]: ${MENU7}")"
-        echo "$(color "white_black" "[d]: ${MENU8}")"
+        echo "$(color "white" "[e]: ${MENU00}")"
+        echo "$(color "white_black" "[d]: ${MENU01}")"
         echo "$(color "white" "-------------------------------------------------------")"
         read -p "$(color "white" "Select an option: ")" option
         case "${option}" in

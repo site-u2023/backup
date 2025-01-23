@@ -3,7 +3,7 @@
 # OpenWrt >= 19.07
 
 BASE_URL="https://raw.githubusercontent.com/site-u2023/config-software2/main/"
-BASE_DR="/etc/config-software/"
+BASE_DR="/etc/config-software2/"
 
 # Download and load main colors
 wget --no-check-certificate -O "${BASE_DR}main_colors.sh" "${BASE_URL}main_colors.sh"

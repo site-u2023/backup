@@ -82,28 +82,31 @@ done
 
 map_e_installation() {
 
-if [ "${release}" = "24" || "${release}" = "23" || "${release}" = "22" || "${release}" = "21" || "${release}" = "19" ]; then
-  opkg update
-  opkg install bash
-  opkg install map
-elif [ "${release}" = "SN" ]; then
+local supported_versions="SN"
+if echo "${supported_versions}" | grep -q "${release}"; then
   apk update
   apk add bash
   apk add map
+else
+  opkg update
+  opkg install bash
+  opkg install map
 fi
+
 cp /lib/netifd/proto/map.sh /lib/netifd/proto/map.sh.old
 
-# Version-specific settings
-if [ "${release}" = "SN" || "${release}" = "24" || "${release}" = "23" || "${release}" = "22" || "${release}" = "21" ]; then
-  wget -6 --no-check-certificate -O /lib/netifd/proto/map.sh https://raw.githubusercontent.com/site-u2023/map-e/main/map.sh.new
-elif [[ "${release}" = "19" ]]; then
-  wget -6 --no-check-certificate -O /lib/netifd/proto/map.sh https://raw.githubusercontent.com/site-u2023/map-e/main/map19.sh.new
+local supported_versions="19"
+if echo "${supported_versions}" | grep -q "${release}"; then
+    wget -6 --no-check-certificate -O /lib/netifd/proto/map.sh https://raw.githubusercontent.com/site-u2023/map-e/main/map19.sh.new
+else
+    wget -6 --no-check-certificate -O /lib/netifd/proto/map.sh https://raw.githubusercontent.com/site-u2023/map-e/main/map.sh.new
 fi
 wget -6 --no-check-certificate -O /etc/config-software2/map-e.sh https://raw.githubusercontent.com/site-u2023/config-software2/main/map-e.sh
 bash /etc/config-software2/map-e.sh 2> /dev/null
 read -p " 何かキーを押してデバイスを再起動してください"
 reboot
 exit
+
 }
 
 map_e_reconstruction() {

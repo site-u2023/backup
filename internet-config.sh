@@ -38,8 +38,8 @@ map_e() {
         echo -e "$(color "white" "-------------------------------------------------------")"
         read -p "$(color "white" "Select an option: ")" option
         case "${option}" in
-            "s") menu_option ${TARGET1} ;;
-            "r") menu_option ${TARGET2} ;;
+            "s") ${TARGET1} ;;
+            "r") ${TARGET2} ;;
             "b") exit ;;
             *) echo "$(color "red" "Invalid option. Please try again.")" ;;
         esac
@@ -71,7 +71,7 @@ map_e_confirmation() {
         echo -e "$(color "white" "-------------------------------------------------------")"
         read -p "$(color "white" "Select an option: ")" option
         case "${option}" in
-            "y") menu_option ${TARGET1} ;;
+            "y") ${TARGET1} ;;
             "n") exit ;;
             *) echo "$(color "red" "Invalid option. Please try again.")" ;;
         esac

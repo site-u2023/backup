@@ -106,6 +106,7 @@ map_e_installation() {
 
 map_e_reconstruction() {
 # 作成中
+exit
 }
 
 # Check OpenWrt version

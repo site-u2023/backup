@@ -73,28 +73,40 @@ display_system_info() {
     echo "$(color "red_white" "Disclaimer: Use this script at your own risk.")"
 }
 
+echo "$(color "white" "OpenWrt Configuration Menu")"
+echo "$(color "blue" "[i]: Internet Configuration (Japan Only)")"
+echo "$(color "yellow" "[s]: Initial System Setup")"
+echo "$(color "green" "[p]: Install Recommended Packages")"
+echo "$(color "magenta" "[b]: Install and Configure Ad Blocker")"
+echo "$(color "red" "[a]: Configure Access Point")"
+echo "$(color "cyan" "[e]: Execute Other Scripts")"
+echo "$(color "white" "[q]: Exit the Script")"
+echo "$(color "white_black" "[d]: Delete the Script and Exit")"
+
+
+
 main_menu() {
     while :; do
         echo "$(color "white" "-------------------------------------------------------")"
         echo "$(color "white" "OpenWrt Configuration Menu")"
-        echo "$(color "blue" "[i]: Set up internet connection in Japan")"
-        echo "$(color "yellow" "[s]: Perform initial system setup")"
+        echo "$(color "blue" "[i]: Internet Configuration (Japan Only)")"
+        echo "$(color "yellow" "[s]: Initial system setup")"
         echo "$(color "green" "[p]: Install recommended packages")"
-        echo "$(color "magenta" "[b]: Set up ad blocker and DNS encryption")"
-        echo "$(color "red" "[a]: Configure access point connection")"
-        echo "$(color "cyan" "[e]: Execute other scripts")"
-        echo "$(color "white" "[q]: Quit this script")"
+        echo "$(color "magenta" "[b]: Install and Configure Ad Blocker")"
+        echo "$(color "red" "[a]: Configure access point")"
+        echo "$(color "cyan" "[o]: Execute other scripts")"
+        echo "$(color "white" "[e]: Exit the Script")"
         echo "$(color "white_black" "[d]: Delete scripts and exit")"
         echo "$(color "white" "-------------------------------------------------------")"
         read -p "$(color "white" "Select an option: ")" option
         case "${option}" in
-            "i") menu_option "Set up internet connection" "internet-config.sh" "${BASE_URL}internet-config.sh" ;;
-            "s") menu_option "Perform initial system setup" "system-config.sh" "${BASE_URL}system-config.sh" ;;
+            "i") menu_option "Internet Configuration (Japan Only)" "internet-config.sh" "${BASE_URL}internet-config.sh" ;;
+            "s") menu_option "Initial system setup" "system-config.sh" "${BASE_URL}system-config.sh" ;;
             "p") menu_option "Install recommended packages" "package-config.sh" "${BASE_URL}package-config.sh" ;;
-            "b") menu_option "Set up ad blocker and DNS encryption" "ad-dns-blocking-config.sh" "${BASE_URL}ad-dns-blocking-config.sh" ;;
-            "a") menu_option "Configure access point connection" "accesspoint-config.sh" "${BASE_URL}accesspoint-config.sh" ;;
-            "e") menu_option "Execute other scripts" "etc-config.sh" "${BASE_URL}etc-config.sh" ;;
-            "q") exit ;;
+            "b") menu_option "Install and Configure Ad Blocker" "ad-dns-blocking-config.sh" "${BASE_URL}ad-dns-blocking-config.sh" ;;
+            "a") menu_option "Configure access point" "accesspoint-config.sh" "${BASE_URL}accesspoint-config.sh" ;;
+            "o") menu_option "Execute other scripts" "etc-config.sh" "${BASE_URL}etc-config.sh" ;;
+            "e") exit ;;
             "d") delete_and_exit ;;
         esac
     done

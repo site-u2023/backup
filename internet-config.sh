@@ -26,12 +26,13 @@ elif [ "${SELECTED_LANGUAGE}" = "cn" ]; then
     exit
 fi
 
-TARGET1="map_e"
-TARGET2="map_e_nuro"
-TARGET00="exit"
+TARGET1="map_e_confirmation"
+TARGET2="map_e_reconstruction"
 	
  while :; do
     echo -e "$(color "white" "-------------------------------------------------------")"
+    echo -e "$(color "yellow" " ${MENU000}")"
+    echo -e "$(color "white" " ${MENU0}")"
     echo -e "$(color "blue" "[s]: ${MENU1}")"
     echo -e "$(color "red" "[r]: ${MENU2}")"
     echo -e "$(color "white" "[b]: ${MENU00}")"
@@ -44,6 +45,66 @@ TARGET00="exit"
         *) echo "$(color "red" "Invalid option. Please try again.")" ;;
     esac
 done
+}
+
+map_e_confirmation() {
+
+# Set language-dependent text for menu
+if [ "${SELECTED_LANGUAGE}" = "en" ]; then
+    exit
+elif [ "${SELECTED_LANGUAGE}" = "ja" ]; then
+    MENU0="OCNバーチャルコネクト・V6プラス・IPv6オプションの設定（マルチセッション対応）とインストールとを実行します"
+    MENU1="インストール: map"
+    MENU2="インストール: bash"
+    MENU3="宜しいですか [y/n]"
+elif [ "${SELECTED_LANGUAGE}" = "cn" ]; then
+    exit
+fi
+
+TARGET1="map_e_installation"
+	
+ while :; do
+    echo -e "$(color "white" "-------------------------------------------------------")"
+    echo -e "$(color "blue" " ${MENU0}")"
+    echo -e "$(color "white" " ${MENU1}")"
+    echo -e "$(color "white" " ${MENU2}")"
+    echo -e "$(color "white" " ${MENU3}")"
+    echo -e "$(color "white" "-------------------------------------------------------")"
+    read -p "$(color "white" "Select an option: ")" option
+    case "${option}" in
+        "y") menu_option ${TARGET1} ;;
+        "n") exit ;;
+        *) echo "$(color "red" "Invalid option. Please try again.")" ;;
+    esac
+done
+
+{
+
+map_e_installation() {
+OPENWRT_RELEAS=$(grep 'DISTRIB_RELEASE' /etc/openwrt_release | cut -d"'" -f2 | cut -c 1-2)
+if [[ "${OPENWRT_RELEAS}" = "24" || "${OPENWRT_RELEAS}" = "23" || "${OPENWRT_RELEAS}" = "22" || "${OPENWRT_RELEAS}" = "21" || "${OPENWRT_RELEAS}" = "19" ]]; then
+  opkg update
+  opkg install bash
+  opkg install map
+elif [[ "${OPENWRT_RELEAS}" = "SN" ]]; then
+  apk update
+  apk add bash
+  apk add map
+fi
+cp /lib/netifd/proto/map.sh /lib/netifd/proto/map.sh.old
+
+# Version-specific settings
+OPENWRT_RELEAS=$(grep 'DISTRIB_RELEASE' /etc/openwrt_release | cut -d"'" -f2 | cut -c 1-2)
+if [[ "${OPENWRT_RELEAS}" = "SN" || "${OPENWRT_RELEAS}" = "24" || "${OPENWRT_RELEAS}" = "23" || "${OPENWRT_RELEAS}" = "22" || "${OPENWRT_RELEAS}" = "21" ]]; then
+  wget -6 --no-check-certificate -O /lib/netifd/proto/map.sh https://raw.githubusercontent.com/site-u2023/map-e/main/map.sh.new
+elif [[ "${OPENWRT_RELEAS}" = "19" ]]; then
+  wget -6 --no-check-certificate -O /lib/netifd/proto/map.sh https://raw.githubusercontent.com/site-u2023/map-e/main/map19.sh.new
+fi
+wget -6 --no-check-certificate -O /etc/config-software/map-e.sh https://raw.githubusercontent.com/site-u2023/config-software/main/map-e.sh
+bash /etc/config-software/map-e.sh 2> /dev/null
+read -p " 何かキーを押してデバイスを再起動してください"
+reboot
+exit
 }
 
 # Check OpenWrt version

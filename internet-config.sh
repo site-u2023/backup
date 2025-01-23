@@ -39,17 +39,17 @@ main_menu() {
     TARGET01="exit"
 	
     while :; do
-        echo "$(color "white" "-------------------------------------------------------")"
-        echo "$(color "white" "${MENU0}")"
-        echo "$(color "blue" "[m]: ${MENU1}")"
-        echo "$(color "yellow" "[n]: ${MENU2}")"
-        echo "$(color "green" "[t]: ${MENU3}")"
-        echo "$(color "magenta" "[x]: ${MENU4}")"
-        echo "$(color "red" "[v]: ${MENU5}")"
-        echo "$(color "cyan" "[p]: ${MENU6}")"
-        echo "$(color "white" "[r]: ${MENU00}")"
-        echo "$(color "white" "[e]: ${MENU01}")"
-        echo "$(color "white" "-------------------------------------------------------")"
+        echo -e "$(color "white" "-------------------------------------------------------")"
+        echo -e "$(color "white" "${MENU0}")"
+        echo -e "$(color "blue" "[m]: ${MENU1}")"
+        echo -e "$(color "yellow" "[n]: ${MENU2}")"
+        echo -e "$(color "green" "[t]: ${MENU3}")"
+        echo -e "$(color "magenta" "[x]: ${MENU4}")"
+        echo -e "$(color "red" "[v]: ${MENU5}")"
+        echo -e "$(color "cyan" "[p]: ${MENU6}")"
+        echo -e "$(color "white" "[r]: ${MENU00}")"
+        echo -e "$(color "white" "[e]: ${MENU01}")"
+        echo -e "$(color "white" "-------------------------------------------------------")"
         read -p "$(color "white" "Select an option: ")" option
         case "${option}" in
             "m") menu_option ${TARGET1} ;;

@@ -82,6 +82,7 @@ display_system_info() {
     echo "$(color "white" "Available Memory: ${available_memory} MB")"
     echo "$(color "white" "Available Flash Storage: ${available_flash} MB")"
     echo "$(color "white" "USB Devices: ${usb_devices}")"
+    echo "$(color "white" "Directory to install scripts: /etc/config-software/")"
     echo "$(color "red_white" "Disclaimer: Use this script at your own risk.")"
 }
 

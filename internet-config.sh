@@ -159,12 +159,12 @@ main_menu() {
             echo -e "$(color "white" "-------------------------------------------------------")"
             read -p "$(color "white" "Select an option: ")" option
             case "${option}" in
-                "m") menu_option ${TARGET1}; break ;;
-                "n") menu_option ${TARGET2}; break ;;
-                "t") menu_option ${TARGET3}; break ;;
-                "x") menu_option ${TARGET4}; break ;;
-                "v") menu_option ${TARGET5}; break ;;
-                "p") menu_option ${TARGET6}; break ;;
+                "m") menu_option ${TARGET1} ;;
+                "n") menu_option ${TARGET2} ;;
+                "t") menu_option ${TARGET3} ;;
+                "x") menu_option ${TARGET4} ;;
+                "v") menu_option ${TARGET5} ;;
+                "p") menu_option ${TARGET6} ;;
                 "b") exit ;;
                 *) echo "$(color "red" "Invalid option. Please try again.")" ;;
             esac

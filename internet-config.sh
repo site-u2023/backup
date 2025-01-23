@@ -47,6 +47,9 @@ map_e() {
 }
 
 map_e_confirmation() {
+# 作成中
+}
+
     # Set language-dependent text for menu
     if [ "${SELECTED_LANGUAGE}" = "en" ]; then
         exit

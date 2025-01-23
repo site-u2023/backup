@@ -85,9 +85,9 @@ select_language() {
     echo "$(color "red" "[c]: 中文")"
     read -p "$(color "white" "Choose an option [e/j/c]: ")" lang_choice
     case "${lang_choice}" in
-        "e") SELECTED_LANGUAGE="English" ;;
-        "j") SELECTED_LANGUAGE="日本語" ;;
-        "c") SELECTED_LANGUAGE="中文" ;;
+        "e") SELECTED_LANGUAGE="en" ;;
+        "j") SELECTED_LANGUAGE="ja" ;;
+        "c") SELECTED_LANGUAGE="cn" ;;
         *) echo "$(color "red" "Invalid choice, defaulting to English.")" ;;
     esac
 }
@@ -97,7 +97,7 @@ main_menu() {
     select_language
 
     # Set language-dependent text for menu
-    if [ "${SELECTED_LANGUAGE}" = "English" ]; then
+    if [ "${SELECTED_LANGUAGE}" = "en" ]; then
         MENU0="All-in-One Scripts Menu"
         MENU1="Internet Configuration (Japan Only)" 
         MENU2="Initial system setup"
@@ -107,7 +107,7 @@ main_menu() {
         MENU6="Execute other scripts"
         MENU7="Exit the Script"
         MENU8="Delete scripts and exit"
-    elif [ "${SELECTED_LANGUAGE}" = "日本語" ]; then
+    elif [ "${SELECTED_LANGUAGE}" = "ja" ]; then
         MENU0="オールインワンスクリプトメニュー"
         MENU1="インターネット設定"
         MENU2="初期システム設定"
@@ -117,7 +117,7 @@ main_menu() {
         MENU6="その他のスクリプトを実行"
         MENU7="スクリプトを終了"
         MENU8="スクリプトを削除して終了"
-    elif [ "${SELECTED_LANGUAGE}" = "中文" ]; then
+    elif [ "${SELECTED_LANGUAGE}" = "cn" ]; then
         MENU0="一体化脚本菜单"
         MENU1="互联网设置（仅限日本）" 
         MENU2="初步系统设置"

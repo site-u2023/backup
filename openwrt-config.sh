@@ -1,4 +1,4 @@
-#! /bin/sh
+#!/bin/sh
 # License: CC0
 # OpenWrt >= 19.07
 
@@ -48,7 +48,7 @@ delete_and_exit() {
 
 # Check OpenWrt version
 check_openwrt_version() {
-    local supported_versions="19 21 22 23 24"
+    local supported_versions="19 21 22 23 24 SN"
     local release=$(grep 'DISTRIB_RELEASE' /etc/openwrt_release | cut -d"'" -f2 | cut -c 1-2)
     if echo "${supported_versions}" | grep -q "${release}"; then
         echo "$(color "white" "OpenWrt version: ${release} - Supported")"
@@ -59,26 +59,13 @@ check_openwrt_version() {
     fi
 }
 
-# モニター確認用
-color_code() {
-for i in `seq 30 38` `seq 40 47` ; do
-    for j in 0 1 2 3 4 5 6 7 ; do
-        printf "\033[${j};${i}m"
-        printf " ${j};${i} "
-        printf "\033[0;39;49m"
-        printf " "
-    done
-    printf "\n"
-done
-}
-
 # Function to display system information
 display_system_info() {
     local available_memory=$(free | awk '/Mem:/ { print int($4 / 1024) }')
     local available_flash=$(df | awk '/overlayfs:\/overlay/ { print int($4 / 1024) }')
     local usb_devices=$(ls /sys/bus/usb/devices | grep -q usb && echo "Detected" || echo "Not detected")
 
-    echo "$(color "white" "OpenWrt-Config Information")"
+    echo "$(color "white" "Information")"
     echo "$(color "white" "Available Memory: ${available_memory} MB")"
     echo "$(color "white" "Available Flash Storage: ${available_flash} MB")"
     echo "$(color "white" "USB Devices: ${usb_devices}")"
@@ -86,19 +73,71 @@ display_system_info() {
     echo "$(color "red_white" "Disclaimer: Use this script at your own risk.")"
 }
 
-# Menu options
-MENU0="OpenWrt Configuration Menu"          
-MENU1="Internet Configuration (Japan Only)" ; TARGET1="internet-config.sh" 
-MENU2="Initial system setup"                ; TARGET2="system-config.sh"
-MENU3="Install recommended packages"        ; TARGET3="package-config.sh" 
-MENU4="Install and Configure Ad Blocker"    ; TARGET4="ad-dns-blocking-config.sh"
-MENU5="Configure access point"              ; TARGET5="accesspoint-config.sh"
-MENU6="Execute other scripts"               ; TARGET6="etc-config.sh"
-MENU7="Exit the Script"                     ; TARGET7="exit"
-MENU8="Delete scripts and exit"             ; TARGET8="delete_and_exit"
+# Define Language Selections
+LANGUAGES=("English" "日本語" "中文")
+SELECTED_LANGUAGE="English"  # Default language
 
-# Main menu with user interaction
+# Function to select language
+select_language() {
+    echo "$(color "white" "Select your language:")"
+    echo "$(color "blue" "[e]: English")"
+    echo "$(color "green" "[j]: 日本語")"
+    echo "$(color "red" "[c]: 中文")"
+    read -p "$(color "white" "Choose an option [e/j/c]: ")" lang_choice
+    case "${lang_choice}" in
+        "e") SELECTED_LANGUAGE="English" ;;
+        "j") SELECTED_LANGUAGE="日本語" ;;
+        "c") SELECTED_LANGUAGE="中文" ;;
+        *) echo "$(color "red" "Invalid choice, defaulting to English.")" ;;
+    esac
+}
+
+# Function to display the main menu with language selection
 main_menu() {
+    select_language
+
+    # Set language-dependent text for menu
+    if [ "${SELECTED_LANGUAGE}" = "English" ]; then
+        MENU0="All-in-One Scripts Menu"
+        MENU1="Internet Configuration (Japan Only)" 
+        MENU2="Initial system setup"
+        MENU3="Install recommended packages"
+        MENU4="Install and Configure Ad Blocker"
+        MENU5="Configure access point"
+        MENU6="Execute other scripts"
+        MENU7="Exit the Script"
+        MENU8="Delete scripts and exit"
+    elif [ "${SELECTED_LANGUAGE}" = "日本語" ]; then
+        MENU0="オールインワンスクリプトメニュー"
+        MENU1="インターネット設定"
+        MENU2="初期システム設定"
+        MENU3="推奨パッケージをインストール"  
+        MENU4="広告ブロッカーをインストール・設定" 
+        MENU5="アクセスポイントを設定"
+        MENU6="その他のスクリプトを実行"
+        MENU7="スクリプトを終了"
+        MENU8="スクリプトを削除して終了"
+    elif [ "${SELECTED_LANGUAGE}" = "中文" ]; then
+        MENU0="一体化脚本菜单"
+        MENU1="互联网设置（仅限日本）" 
+        MENU2="初步系统设置"
+        MENU3="安装推荐的软件包"
+        MENU4="安装并配置广告拦截器"
+        MENU5="配置访问点"
+        MENU6="执行其他脚本"
+        MENU7="退出脚本"
+        MENU8="删除脚本并退出"
+    fi
+
+    TARGET1="internet-config.sh"
+    TARGET2="system-config.sh"
+    TARGET3="package-config.sh"
+    TARGET4="ad-dns-blocking-config.sh"
+    TARGET5="accesspoint-config.sh"
+    TARGET6="etc-config.sh"
+    TARGET7="exit"
+    TARGET8="delete_and_exit"
+    
     while :; do
         echo "$(color "white" "-------------------------------------------------------")"
         echo "$(color "white" "${MENU0}")"
@@ -113,15 +152,15 @@ main_menu() {
         echo "$(color "white" "-------------------------------------------------------")"
         read -p "$(color "white" "Select an option: ")" option
         case "${option}" in
-            "i") menu_option "${MENU1}" "${TARGET1}" "${BASE_URL}${TARGET1}" ;;
-            "s") menu_option "${MENU2}" "${TARGET2}" "${BASE_URL}${TARGET2}" ;;
-            "p") menu_option "${MENU3}" "${TARGET3}" "${BASE_URL}${TARGET3}" ;;
-            "b") menu_option "${MENU4}" "${TARGET4}" "${BASE_URL}${TARGET4}" ;;
-            "a") menu_option "${MENU5}" "${TARGET5}" "${BASE_URL}${TARGET5}" ;;
-            "o") menu_option "${MENU6}" "${TARGET6}" "${BASE_URL}${TARGET6}" ;;
-            "e") menu_option "${MENU7}" "${TARGET7}" "${TARGET7}" ;;
-            "d") menu_option "${MENU8}" "${TARGET8}" "${TARGET8}" ;;
-            *) echo "$(color "red" "Invalid option. Please try again.")" ;;  # 無効な選択肢
+            "i") menu_option "${MENU1}" "${TARGET1}" "${BASE_URL}${TARGET1}?lang=${SELECTED_LANGUAGE}" ;;
+            "s") menu_option "${MENU2}" "${TARGET2}" "${BASE_URL}${TARGET2}?lang=${SELECTED_LANGUAGE}" ;;
+            "p") menu_option "${MENU3}" "${TARGET3}" "${BASE_URL}${TARGET3}?lang=${SELECTED_LANGUAGE}" ;;
+            "b") menu_option "${MENU4}" "${TARGET4}" "${BASE_URL}${TARGET4}?lang=${SELECTED_LANGUAGE}" ;;
+            "a") menu_option "${MENU5}" "${TARGET5}" "${BASE_URL}${TARGET5}?lang=${SELECTED_LANGUAGE}" ;;
+            "o") menu_option "${MENU6}" "${TARGET6}" "${BASE_URL}${TARGET6}?lang=${SELECTED_LANGUAGE}" ;;
+            "e") exit ;;
+            "d") delete_and_exit ;;
+            *) echo "$(color "red" "Invalid option. Please try again.")" ;;
         esac
     done
 }

@@ -169,4 +169,3 @@ map_e_reconstruction() {
 
     check_openwrt_version
     main_menu
-}

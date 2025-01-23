@@ -1,5 +1,6 @@
-#! /bin/sh
+#!/bin/sh
 # License: CC0
+# OpenWrt >= 19.07
 
 BASE_URL="https://raw.githubusercontent.com/site-u2023/config-software2/main/"
 BASE_DR="/etc/config-software2/"
@@ -9,6 +10,54 @@ BASE_DR="/etc/config-software2/"
 # Define Language Selections
 LANGUAGES='"en" "ja" "cn"'
 SELECTED_LANGUAGE="ja"  # Default language
+
+map_e() {
+
+# Set language-dependent text for menu
+if [ "${SELECTED_LANGUAGE}" = "en" ]; then
+    exit
+elif [ "${SELECTED_LANGUAGE}" = "ja" ]; then
+    NEMU000="要HGW直結"
+    MENU0="OCNバーチャルコネクト・V6プラス・IPv6オプション"
+    MENU1="OCNバーチャルコネクト・V6プラス・IPv6オプション自動設定（マルチセッション対応）"
+    MENU2="OCNバーチャルコネクト・V6プラス・IPv6オプション設定削除及び以前の設定復元"
+    MENU00="戻る"
+elif [ "${SELECTED_LANGUAGE}" = "cn" ]; then
+    exit
+fi
+
+TARGET1="map_e"
+TARGET2="map_e_nuro"
+TARGET00="exit"
+	
+ while :; do
+    echo -e "$(color "white" "-------------------------------------------------------")"
+    echo -e "$(color "blue" "[s]: ${MENU1}")"
+    echo -e "$(color "red" "[r]: ${MENU2}")"
+    echo -e "$(color "white" "[b]: ${MENU00}")"
+    echo -e "$(color "white" "-------------------------------------------------------")"
+    read -p "$(color "white" "Select an option: ")" option
+    case "${option}" in
+        "s") menu_option ${TARGET1} ;;
+        "r") menu_option ${TARGET2} ;;
+        "b") exit ;;
+        *) echo "$(color "red" "Invalid option. Please try again.")" ;;
+    esac
+done
+}
+
+# Check OpenWrt version
+check_openwrt_version() {
+    local supported_versions="19 21 22 23 24 SN"
+    local release=$(grep 'DISTRIB_RELEASE' /etc/openwrt_release | cut -d"'" -f2 | cut -c 1-2)
+    if echo "${supported_versions}" | grep -q "${release}"; then
+        echo -e "$(color "white" "OpenWrt version: ${release} - Supported")"
+    else
+        echo -e "$(color "red" "Unsupported OpenWrt version: ${release}")"
+        echo -e "$(color "white" "Supported versions: ${supported_versions}")"
+        exit 1
+    fi
+}
 
 main_menu() {
 
@@ -45,7 +94,7 @@ TARGET00="exit"
     echo -e "$(color "magenta" "[x]: ${MENU4}")"
     echo -e "$(color "red" "[v]: ${MENU5}")"
     echo -e "$(color "cyan" "[p]: ${MENU6}")"
-    echo -e "$(color "white" "[r]: ${MENU00}")"
+    echo -e "$(color "white" "[b]: ${MENU00}")"
     echo -e "$(color "white" "-------------------------------------------------------")"
     read -p "$(color "white" "Select an option: ")" option
     case "${option}" in
@@ -55,7 +104,7 @@ TARGET00="exit"
         "x") menu_option ${TARGET4} ;;
         "v") menu_option ${TARGET5} ;;
         "p") menu_option ${TARGET6} ;;
-        "r") exit ;;
+        "b") exit ;;
         *) echo "$(color "red" "Invalid option. Please try again.")" ;;
     esac
 done

@@ -48,6 +48,7 @@ map_e() {
 
 map_e_confirmation() {
 # 作成中
+exit
 }
 
     # Set language-dependent text for menu

@@ -84,13 +84,13 @@ map_e_installation() {
 
 local supported_versions="SN"
 if echo "${supported_versions}" | grep -q "${release}"; then
-  apk update
-  apk add bash
-  apk add map
+    apk update
+    apk add bash
+    apk add map
 else
-  opkg update
-  opkg install bash
-  opkg install map
+    opkg update
+    opkg install bash
+    opkg install map
 fi
 
 cp /lib/netifd/proto/map.sh /lib/netifd/proto/map.sh.old

@@ -73,18 +73,6 @@ display_system_info() {
     echo "$(color "red_white" "Disclaimer: Use this script at your own risk.")"
 }
 
-echo "$(color "white" "OpenWrt Configuration Menu")"
-echo "$(color "blue" "[i]: Internet Configuration (Japan Only)")"
-echo "$(color "yellow" "[s]: Initial System Setup")"
-echo "$(color "green" "[p]: Install Recommended Packages")"
-echo "$(color "magenta" "[b]: Install and Configure Ad Blocker")"
-echo "$(color "red" "[a]: Configure Access Point")"
-echo "$(color "cyan" "[e]: Execute Other Scripts")"
-echo "$(color "white" "[q]: Exit the Script")"
-echo "$(color "white_black" "[d]: Delete the Script and Exit")"
-
-
-
 main_menu() {
     while :; do
         echo "$(color "white" "-------------------------------------------------------")"

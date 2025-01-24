@@ -5,7 +5,7 @@
 BASE_URL="https://raw.githubusercontent.com/site-u2023/config-software2/main/"
 BASE_DR="/etc/config-software2/"
 
-. "${BASE_DR}main_colors.sh"
+. "${BASE_DR}main-colors.sh"
 
 LANGUAGES='"en" "ja"'
 if [ -z "$SELECTED_LANGUAGE" ]; then

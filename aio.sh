@@ -38,23 +38,20 @@ else
 fi
 
 LANGUAGE=$1
-echo "選択された言語: $LANGUAGE"  # 引数を表示
+#echo "選択された言語: $LANGUAGE"  # 引数を表示
 
 if [ "$LANGUAGE" = "en" ]; then
     SELECTED_LANGUAGE="en"
     export SELECTED_LANGUAGE
-    echo "English selected."
 elif [ "$LANGUAGE" = "ja" ]; then
     SELECTED_LANGUAGE="ja"
     export SELECTED_LANGUAGE
-    echo "Japanese selected."
 else
     select_language
-    echo "Default language selected."
 fi
 
-echo "選択された言語: $SELECTED_LANGUAGE"  # 引数を表示
-read -p "STOP"
+#echo "選択された言語: $SELECTED_LANGUAGE"  # 引数を表示
+#read -p "STOP"
 
 wget --no-check-certificate -O ${BASE_DR}main-colors.sh ${BASE_URL}main-colors.sh
 wget --no-check-certificate -O ${BASE_DR}openwrt-config.sh ${BASE_URL}openwrt-config.sh

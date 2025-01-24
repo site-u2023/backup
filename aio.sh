@@ -4,17 +4,18 @@ mkdir -p /tmp/config-software2
 
 cat <<"EOF" > /usr/bin/aio
 #!/bin/sh
-# Function to select language
+download_script() {
+wget --no-check-certificate -O /tmp/config-software2/main-colors.sh https://raw.githubusercontent.com/site-u2023/config-software2/main/main-colors.sh
+wget --no-check-certificate -O /tmp/config-software2/openwrt-config.sh https://raw.githubusercontent.com/site-u2023/config-software2/main/openwrt-config.sh
+}
 language() {
 LANGUAGE=$1
 if [ "$LANGUAGE" = "aioen" ]; then
     SELECTED_LANGUAGE="en"
     export SELECTED_LANGUAGE
-    download_script
 elif [ "$LANGUAGE" = "aioja" ]; then
     SELECTED_LANGUAGE="ja"
     export SELECTED_LANGUAGE
-    download_script
 else
     select_language
 fi
@@ -33,11 +34,11 @@ select_language() {
     esac
 export SELECTED_LANGUAGE
 }
-download_script() {
-wget --no-check-certificate -O /tmp/config-software2/main-colors.sh https://raw.githubusercontent.com/site-u2023/config-software2/main/main-colors.sh
-wget --no-check-certificate -O /tmp/config-software2/openwrt-config.sh https://raw.githubusercontent.com/site-u2023/config-software2/main/openwrt-config.sh
+run_script() {
 sh /tmp/config-software2/openwrt-config.sh
 }
+download_script
 language
+run_script
 EOF
 chmod +x /usr/bin/aio

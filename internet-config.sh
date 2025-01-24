@@ -33,13 +33,13 @@ map_e() {
     TARGET2="map_e_reconstruction"
 
     while :; do
-        echo -e "$(color "white" "-------------------------------------------------------")"
+        echo -e "$(color "white" "------------------------------------------------------")"
         echo -e "$(color "yellow" "${MENU000}")"
         echo -e "$(color "white" "${MENU0}")"
         echo -e "$(color "blue" "[s]: ${MENU1}")"
         echo -e "$(color "red" "[r]: ${MENU2}")"
         echo -e "$(color "white" "[b]: ${MENU00}")"
-        echo -e "$(color "white" "-------------------------------------------------------")"
+        echo -e "$(color "white" "------------------------------------------------------")"
         read -p "$(color "white" "Select an option: ")" option
         case "${option}" in
             "s") ${TARGET1} ;;
@@ -65,12 +65,12 @@ map_e_confirmation() {
     TARGET1="map_e_installation"
     
     while :; do
-        echo -e "$(color "white" "-------------------------------------------------------")"
+        echo -e "$(color "white" "------------------------------------------------------")"
         echo -e "$(color "blue" "${MENU0}")"
         echo -e "$(color "white" "${MENU1}")"
         echo -e "$(color "white" "${MENU2}")"
         echo -e "$(color "white" "${MENU3}")"
-        echo -e "$(color "white" "-------------------------------------------------------")"
+        echo -e "$(color "white" "------------------------------------------------------")"
         read -p "$(color "white" "Select an option: ")" option
         case "${option}" in
             "y") ${TARGET1} ;;
@@ -163,7 +163,7 @@ main_menu() {
         TARGET00="exit"
 
         while :; do
-            echo -e "$(color "white" "-------------------------------------------------------")"
+            echo -e "$(color "white" "------------------------------------------------------")"
             echo -e "$(color "white" "${MENU0}")"
             echo -e "$(color "blue" "[m]: ${MENU1}")"
             echo -e "$(color "yellow" "[n]: ${MENU2}")"
@@ -172,7 +172,7 @@ main_menu() {
             echo -e "$(color "red" "[v]: ${MENU5}")"
             echo -e "$(color "cyan" "[p]: ${MENU6}")"
             echo -e "$(color "white" "[b]: ${MENU00}")"
-            echo -e "$(color "white" "-------------------------------------------------------")"
+            echo -e "$(color "white" "------------------------------------------------------")"
             read -p "$(color "white" "Select an option: ")" option
             case "${option}" in
                 "m") ${TARGET1} ;;

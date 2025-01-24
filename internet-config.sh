@@ -6,6 +6,7 @@ LANGUAGES='"en" "ja" "cn"'
 SELECTED_LANGUAGE="ja"
 if echo "$1" | grep -q "lang="; then
     SELECTED_LANGUAGE=$(echo "$1" | sed -n 's/.*lang=\([^&]*\).*/\1/p')
+    echo "Selected Language: ${SELECTED_LANGUAGE}"
 fi
 
 BASE_URL="https://raw.githubusercontent.com/site-u2023/config-software2/main/"

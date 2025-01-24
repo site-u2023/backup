@@ -3,7 +3,7 @@
 # OpenWrt >= 19.07
 
 BASE_URL="https://raw.githubusercontent.com/site-u2023/config-software2/main/"
-BASE_DR="/etc/config-software2/"
+BASE_DR="/tmp/config-software2/"
 
 . "${BASE_DR}main-colors.sh"
 

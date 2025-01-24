@@ -8,24 +8,28 @@ cat <<"EOF" > /usr/bin/aio
 #!/bin/sh
 # License: CC0
 # OpenWrt >= 19.07
+
 BASE_URL="https://raw.githubusercontent.com/site-u2023/config-software2/main/"
 BASE_DR="/tmp/config-software2/"
+
 download_script() {
 wget --no-check-certificate -O ${BASE_DR}main-colors.sh ${BASE_URL}main-colors.sh
 wget --no-check-certificate -O ${BASE_DR}openwrt-config.sh ${BASE_URL}openwrt-config.sh
 }
+
 language() {
 LANGUAGE=$1
-if [ "$LANGUAGE" = "aioen" ]; then
+if [ "$LANGUAGE" = "en" ]; then
     SELECTED_LANGUAGE="en"
     export SELECTED_LANGUAGE
-elif [ "$LANGUAGE" = "aioja" ]; then
+elif [ "$LANGUAGE" = "ja" ]; then
     SELECTED_LANGUAGE="ja"
     export SELECTED_LANGUAGE
 else
     select_language
 fi
 }
+
 select_language() {
 . "${BASE_DR}main-colors.sh"
     echo -e "$(color "white" "-------------------------------------------------------")"
@@ -41,9 +45,11 @@ select_language() {
     esac
 export SELECTED_LANGUAGE
 }
+
 run_script() {
-sh /tmp/config-software2/openwrt-config.sh
+sh ${BASE_DR}openwrt-config.sh
 }
+
 download_script
 language
 run_script

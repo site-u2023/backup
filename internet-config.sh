@@ -3,7 +3,7 @@
 # OpenWrt >= 19.07
 
 LANGUAGES='"en" "ja" "cn"'
-# SELECTED_LANGUAGE="en"
+SELECTED_LANGUAGE="ja"
 if echo "$1" | grep -q "lang="; then
     SELECTED_LANGUAGE=$(echo "$1" | sed -n 's/.*lang=\([^&]*\).*/\1/p')
 fi

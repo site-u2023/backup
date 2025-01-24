@@ -9,52 +9,59 @@ cat <<"EOF" > /usr/bin/aio
 # License: CC0
 # OpenWrt >= 19.07
 
+# Constants
 BASE_URL="https://raw.githubusercontent.com/site-u2023/config-software2/main/"
-BASE_DR="/tmp/config-software2/"
+BASE_DIR="/tmp/config-software2/"
+SUPPORTED_VERSIONS="19 21 22 23 24 SN"
 
+# Function: Display language selection menu
 select_language() {
-    echo -e "------------------------------------------------------"
-    echo -e "Select your language:"
-    echo -e "[e]: English"
-    echo -e "[j]: 日本語"
-    echo -e "------------------------------------------------------"
+    echo "------------------------------------------------------"
+    echo "Select your language:"
+    echo "[e]: English"
+    echo "[j]: 日本語"
+    echo "------------------------------------------------------"
     read -p "Choose an option [e/j]: " lang_choice
     case "${lang_choice}" in
         "e") SELECTED_LANGUAGE="en" ;;
         "j") SELECTED_LANGUAGE="ja" ;;
-        *) echo -e "$(color "red" "Invalid choice, defaulting to English.")" ;;
+        *) 
+            echo "Invalid choice, defaulting to English."
+            SELECTED_LANGUAGE="en"
+            ;;
     esac
-export SELECTED_LANGUAGE
+    export SELECTED_LANGUAGE
 }
 
-supported_versions="19 21 22 23 24 SN"
-release=$(grep 'DISTRIB_RELEASE' /etc/openwrt_release | cut -d"'" -f2 | cut -c 1-2)
-if echo "${supported_versions}" | grep -q "${release}"; then
-    echo -e "OpenWrt version: ${release} - Supported"
-else
-    echo -e "Unsupported OpenWrt version: ${release}"
-    echo -e "Supported versions: ${supported_versions}"
-    exit 1
-fi
+# Function: Check OpenWrt version compatibility
+check_version() {
+    release=$(grep 'DISTRIB_RELEASE' /etc/openwrt_release | cut -d"'" -f2 | cut -c 1-2)
+    if echo "${SUPPORTED_VERSIONS}" | grep -q "${release}"; then
+        echo "OpenWrt version: ${release} - Supported"
+    else
+        echo "Unsupported OpenWrt version: ${release}"
+        echo "Supported versions: ${SUPPORTED_VERSIONS}"
+        exit 1
+    fi
+}
 
+# Main script logic
 LANGUAGE=$1
-#echo "選択された言語: $LANGUAGE"  # 引数を表示
+check_version
 
 if [ "$LANGUAGE" = "en" ]; then
     SELECTED_LANGUAGE="en"
-    export SELECTED_LANGUAGE
 elif [ "$LANGUAGE" = "ja" ]; then
     SELECTED_LANGUAGE="ja"
-    export SELECTED_LANGUAGE
 else
     select_language
 fi
+export SELECTED_LANGUAGE
 
-#echo "選択された言語: $SELECTED_LANGUAGE"  # 引数を表示
-#read -p "STOP"
-
-wget --no-check-certificate -O ${BASE_DR}main-colors.sh ${BASE_URL}main-colors.sh
-wget --no-check-certificate -O ${BASE_DR}openwrt-config.sh ${BASE_URL}openwrt-config.sh
-sh ${BASE_DR}openwrt-config.sh
+# Download and execute scripts
+wget --no-check-certificate -O "${BASE_DIR}main-colors.sh" "${BASE_URL}main-colors.sh"
+wget --no-check-certificate -O "${BASE_DIR}openwrt-config.sh" "${BASE_URL}openwrt-config.sh"
+sh "${BASE_DIR}openwrt-config.sh"
 EOF
+
 chmod +x /usr/bin/aio

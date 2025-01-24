@@ -3,11 +3,8 @@
 # OpenWrt >= 19.07
 
 LANGUAGES='"en" "ja"'
-#SELECTED_LANGUAGE="ja"
-
+SELECTED_LANGUAGE="en"
 script_name=$(basename "$0")
-echo "現在のスクリプト名: $script_name"
-
 if echo "$script_name" | grep -q "lang="; then
     SELECTED_LANGUAGE=$(echo "$script_name" | sed -n 's/.*lang=\([^&]*\).*/\1/p')
     echo "Selected Language: ${SELECTED_LANGUAGE}"

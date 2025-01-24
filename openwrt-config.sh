@@ -86,7 +86,7 @@ display_system_info() {
 }
 
 # Define Language Selections
-LANGUAGES='"en" "ja" "cn"'
+LANGUAGES='"en" "ja"'
 SELECTED_LANGUAGE="en"  # Default language
 
 # Function to select language
@@ -94,12 +94,10 @@ select_language() {
     echo -e "$(color "white" "Select your language:")"
     echo -e "$(color "blue" "[e]: English")"
     echo -e "$(color "green" "[j]: 日本語")"
-    echo -e "$(color "red" "[c]: 中文")"
-    read -p "$(color "white" "Choose an option [e/j/c]: ")" lang_choice
+    read -p "$(color "white" "Choose an option [e/j]: ")" lang_choice
     case "${lang_choice}" in
         "e") SELECTED_LANGUAGE="en" ;;
         "j") SELECTED_LANGUAGE="ja" ;;
-        "c") SELECTED_LANGUAGE="cn" ;;
         *) echo -e "$(color "red" "Invalid choice, defaulting to English.")" ;;
     esac
 
@@ -131,16 +129,6 @@ main_menu() {
         MENU6="その他のスクリプト設定"
         MENU00="スクリプト終了"
         MENU01="スクリプト削除終了"
-    elif [ "${SELECTED_LANGUAGE}" = "cn" ]; then
-        MENU0="一体化脚本菜单"
-        MENU1="互联网设置（仅限日本）" 
-        MENU2="初始系统设置"
-        MENU3="推荐软件包安装"
-        MENU4="广告拦截器安装设置"
-        MENU5="接入点设置"
-        MENU6="其他脚本设置"
-        MENU00="退出脚本"
-        MENU01="删除脚本并退出"
     fi
 
     TARGET1="internet-config.sh"

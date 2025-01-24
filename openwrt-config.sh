@@ -70,10 +70,10 @@ check_openwrt_version() {
     local supported_versions="19 21 22 23 24 SN"
     local release=$(grep 'DISTRIB_RELEASE' /etc/openwrt_release | cut -d"'" -f2 | cut -c 1-2)
     if echo "${supported_versions}" | grep -q "${release}"; then
-        echo -e "$(color "white" "OpenWrt version: ${release} - Supported")"
+        echo -e "$(color "white_black" "OpenWrt version: ${release} - Supported")"
     else
-        echo -e "$(color "red" "Unsupported OpenWrt version: ${release}")"
-        echo -e "$(color "white" "Supported versions: ${supported_versions}")"
+        echo -e "$(color "red_black" "Unsupported OpenWrt version: ${release}")"
+        echo -e "$(color "white_black" "Supported versions: ${supported_versions}")"
         exit 1
     fi
 }
@@ -109,7 +109,7 @@ main_menu() {
 
     # Set language-dependent text for menu
     if [ "${SELECTED_LANGUAGE}" = "en" ]; then
-        MENU0="All-in-One Scripts Menu"
+        MENU0="All-in-One Scripts"
         MENU1="Internet settings (Japan Only)" 
         MENU2="Initial System Settings"
         MENU3="Recommended Package Installation"
@@ -119,7 +119,7 @@ main_menu() {
         MENU00="Exit Script"
         MENU01="Remove script and exit"
     elif [ "${SELECTED_LANGUAGE}" = "ja" ]; then
-        MENU0="オールインワンスクリプトメニュー"
+        MENU0="オールインワンスクリプト"
         MENU1="インターネット設定"
         MENU2="システム初期設定"
         MENU3="推奨パッケージインストール"  

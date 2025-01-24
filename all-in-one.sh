@@ -42,7 +42,6 @@ select_language() {
             SELECTED_LANGUAGE="en"
             ;;
     esac
-    export SELECTED_LANGUAGE
 }
 
 # Main script logic
@@ -56,6 +55,7 @@ elif [ "$LANGUAGE" = "ja" ]; then
 else
     select_language
 fi
+
 export SELECTED_LANGUAGE
 
 # Download and execute scripts

@@ -16,10 +16,10 @@ download_and_execute() {
     echo -e "$(color "blue" "Downloading and executing: ${script_name}")"
     
     # Attempt to download the script
-    if wget --no-check-certificate -O "${BASE_DR}${script_name}" "${url}"; then
+    if wget --no-check-certificate -O "${BASE_DR}${script_name}" "${url}?lang=${SELECTED_LANGUAGE}"; then
         echo -e "$(color "green" "Download successful.")"
         # Execute the downloaded script
-        sh "${BASE_DR}${script_name} ?lang=${SELECTED_LANGUAGE}"
+        sh "${BASE_DR}${script_name}"
     else
         echo -e "$(color "red" "Download failed.")"
     fi

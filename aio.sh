@@ -1,12 +1,18 @@
 #!/bin/sh
+# License: CC0
+# OpenWrt >= 19.07
 
 mkdir -p /tmp/config-software2
 
 cat <<"EOF" > /usr/bin/aio
 #!/bin/sh
+# License: CC0
+# OpenWrt >= 19.07
+BASE_URL="https://raw.githubusercontent.com/site-u2023/config-software2/main/"
+BASE_DR="/tmp/config-software2/"
 download_script() {
-wget --no-check-certificate -O /tmp/config-software2/main-colors.sh https://raw.githubusercontent.com/site-u2023/config-software2/main/main-colors.sh
-wget --no-check-certificate -O /tmp/config-software2/openwrt-config.sh https://raw.githubusercontent.com/site-u2023/config-software2/main/openwrt-config.sh
+wget --no-check-certificate -O ${BASE_DR}main-colors.sh ${BASE_URL}main-colors.sh
+wget --no-check-certificate -O ${BASE_DR}openwrt-config.sh ${BASE_URL}openwrt-config.sh
 }
 language() {
 LANGUAGE=$1
@@ -21,6 +27,7 @@ else
 fi
 }
 select_language() {
+. "${BASE_DR}main-colors.sh"
     echo -e "$(color "white" "-------------------------------------------------------")"
     echo -e "$(color "white" "Select your language:")"
     echo -e "$(color "white" "[e]: English")"

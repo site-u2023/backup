@@ -26,11 +26,11 @@ if
 
 LANGUAGE="$1"
 case "$LANGUAGE" in
-    "en")
+    "e")
         SELECTED_LANGUAGE="en"
         export SELECTED_LANGUAGE
         ;;
-    "ja")
+    "j")
         SELECTED_LANGUAGE="ja"
         export SELECTED_LANGUAGE
         ;;

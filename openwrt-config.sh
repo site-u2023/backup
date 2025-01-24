@@ -100,8 +100,6 @@ select_language() {
         "j") SELECTED_LANGUAGE="ja" ;;
         *) echo -e "$(color "red" "Invalid choice, defaulting to English.")" ;;
     esac
-
-SELECTED_LANGUAGE=$(echo "?lang=${SELECTED_LANGUAGE}" | sed 's/ /%20/g')
 }
 
 # Function to display the main menu with language selection

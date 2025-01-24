@@ -4,6 +4,7 @@
 
 BASE_URL="https://raw.githubusercontent.com/site-u2023/config-software2/main/"
 BASE_DR="/tmp/config-software2/"
+SUPPORTED_VERSIONS="19 21 22 23 24 SN"
 
 . "${BASE_DR}main-colors.sh"
 
@@ -52,13 +53,12 @@ delete_and_exit() {
 
 # Check OpenWrt version
 check_openwrt_version() {
-    local supported_versions="19 21 22 23 24 SN"
     local release=$(grep 'DISTRIB_RELEASE' /etc/openwrt_release | cut -d"'" -f2 | cut -c 1-2)
-    if echo "${supported_versions}" | grep -q "${release}"; then
+    if echo "${SUPPORTED_VERSIONS}" | grep -q "${release}"; then
         echo -e "$(color "white_black" "OpenWrt version: ${release} - Supported")"
     else
         echo -e "$(color "red_black" "Unsupported OpenWrt version: ${release}")"
-        echo -e "$(color "white_black" "Supported versions: ${supported_versions}")"
+        echo -e "$(color "white_black" "Supported versions: ${SUPPORTED_VERSIONS}")"
         exit 1
     fi
 }

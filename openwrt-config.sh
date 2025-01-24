@@ -9,6 +9,25 @@ BASE_DR="/etc/config-software2/"
 wget --no-check-certificate -O "${BASE_DR}main_colors.sh" "${BASE_URL}main_colors.sh"
 . "${BASE_DR}main_colors.sh"
 
+# Define Language Selections
+LANGUAGES='"en" "ja"'
+SELECTED_LANGUAGE="en"  # Default language
+
+# Function to select language
+select_language() {
+    echo -e "$(color "white" "Select your language:")"
+    echo -e "$(color "blue" "[e]: English")"
+    echo -e "$(color "green" "[j]: 日本語")"
+    read -p "$(color "white" "Choose an option [e/j]: ")" lang_choice
+    case "${lang_choice}" in
+        "e") SELECTED_LANGUAGE="en" ;;
+        "j") SELECTED_LANGUAGE="ja" ;;
+        *) echo -e "$(color "red" "Invalid choice, defaulting to English.")" ;;
+    esac
+    
+export SELECTED_LANGUAGE
+}
+
 # Function to handle downloading and executing scripts
 download_and_execute() {
     local script_name="$1"
@@ -85,28 +104,8 @@ display_system_info() {
     echo -e "$(color "red_white" "Disclaimer: Use this script at your own risk.")"
 }
 
-# Define Language Selections
-LANGUAGES='"en" "ja"'
-SELECTED_LANGUAGE="en"  # Default language
-
-# Function to select language
-select_language() {
-    echo -e "$(color "white" "Select your language:")"
-    echo -e "$(color "blue" "[e]: English")"
-    echo -e "$(color "green" "[j]: 日本語")"
-    read -p "$(color "white" "Choose an option [e/j]: ")" lang_choice
-    case "${lang_choice}" in
-        "e") SELECTED_LANGUAGE="en" ;;
-        "j") SELECTED_LANGUAGE="ja" ;;
-        *) echo -e "$(color "red" "Invalid choice, defaulting to English.")" ;;
-    esac
-    
-export SELECTED_LANGUAGE
-}
-
 # Function to display the main menu with language selection
 main_menu() {
-    select_language
 
     # Set language-dependent text for menu
     if [ "${SELECTED_LANGUAGE}" = "en" ]; then
@@ -169,6 +168,7 @@ main_menu() {
 
 # Execute the necessary functions
 check_openwrt_version
+select_language
 color_code
 display_system_info
 main_menu

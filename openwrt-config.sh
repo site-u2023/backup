@@ -16,7 +16,7 @@ download_and_execute() {
     echo -e "$(color "blue" "Downloading and executing: ${script_name}")"
     
     # Attempt to download the script
-    if wget --no-check-certificate -O "${BASE_DR}${script_name}" "${url}"; then
+    if wget --no-check-certificate -O "${BASE_DR}${script_name}?lang=${SELECTED_LANGUAGE}" "${url}"; then
         echo -e "$(color "green" "Download successful.")"
         # Execute the downloaded script
         sh "${BASE_DR}${script_name}"
@@ -152,12 +152,12 @@ main_menu() {
         echo -e "$(color "white" "-------------------------------------------------------")"
         read -p "$(color "white" "Select an option: ")" option
         case "${option}" in
-            "i") menu_option "${MENU1}" "${TARGET1}" "${BASE_URL}${TARGET1}?lang=${SELECTED_LANGUAGE}" ;;
-            "s") menu_option "${MENU2}" "${TARGET2}" "${BASE_URL}${TARGET2}?lang=${SELECTED_LANGUAGE}" ;;
-            "p") menu_option "${MENU3}" "${TARGET3}" "${BASE_URL}${TARGET3}?lang=${SELECTED_LANGUAGE}" ;;
-            "b") menu_option "${MENU4}" "${TARGET4}" "${BASE_URL}${TARGET4}?lang=${SELECTED_LANGUAGE}" ;;
-            "a") menu_option "${MENU5}" "${TARGET5}" "${BASE_URL}${TARGET5}?lang=${SELECTED_LANGUAGE}" ;;
-            "o") menu_option "${MENU6}" "${TARGET6}" "${BASE_URL}${TARGET6}?lang=${SELECTED_LANGUAGE}" ;;
+            "i") menu_option "${MENU1}" "${TARGET1}" "${BASE_URL}${TARGET1}" ;;
+            "s") menu_option "${MENU2}" "${TARGET2}" "${BASE_URL}${TARGET2}" ;;
+            "p") menu_option "${MENU3}" "${TARGET3}" "${BASE_URL}${TARGET3}" ;;
+            "b") menu_option "${MENU4}" "${TARGET4}" "${BASE_URL}${TARGET4}" ;;
+            "a") menu_option "${MENU5}" "${TARGET5}" "${BASE_URL}${TARGET5}" ;;
+            "o") menu_option "${MENU6}" "${TARGET6}" "${BASE_URL}${TARGET6}" ;;
             "e") exit ;;
             "d") delete_and_exit ;;
             *) echo -e "$(color "red" "Invalid option. Please try again.")" ;;

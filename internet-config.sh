@@ -17,7 +17,11 @@ BASE_DR="/etc/config-software2/"
 map_e() {
     # Set language-dependent text for menu
     if [ "${SELECTED_LANGUAGE}" = "en" ]; then
-        echo EN
+        MENU000="Requires direct connection to HGW"
+        MENU0="OCN Virtual Connect, V6 Plus, IPv6 Option"
+        MENU1="OCN Virtual Connect, V6 Plus, IPv6 Option automatic setup (multi-session support)"
+        MENU2="Delete OCN Virtual Connect, V6 Plus, IPv6 Option settings and restore previous settings"
+        MENU00="Back"
     elif [ "${SELECTED_LANGUAGE}" = "ja" ]; then
         MENU000="要HGW直結"
         MENU0="OCNバーチャルコネクト・V6プラス・IPv6オプション"
@@ -132,7 +136,14 @@ check_openwrt_version() {
 main_menu() {
         # Set language-dependent text for menu
         if [ "${SELECTED_LANGUAGE}" = "en" ]; then
-            echo EN
+            MENU0="Internet Settings"
+            MENU1="OCN Virtual Connect, V6 Plus, IPv6 Option automatic setup (multi-session support)"
+            MENU2="NURO Hikari MAP-e automatic setup (partially supported: under verification)"
+            MENU3="Transix automatic setup"
+            MENU4="CrossPass automatic setup"
+            MENU5="v6 Connect automatic setup"
+            MENU6="PPPoE (IPv4・IPv6): Requires authentication ID (username) and password"
+            MENU00="Back"
         elif [ "${SELECTED_LANGUAGE}" = "ja" ]; then
             MENU0="インターネット設定"
             MENU1="OCNバーチャルコネクト・V6プラス・IPv6オプション自動設定（マルチセッション対応）"

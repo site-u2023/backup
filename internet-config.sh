@@ -2,7 +2,7 @@
 # License: CC0
 # OpenWrt >= 19.07
 
-LANGUAGES='"en" "ja" "cn"'
+LANGUAGES='"en" "ja"'
 SELECTED_LANGUAGE="ja"
 if echo "$1" | grep -q "lang="; then
     SELECTED_LANGUAGE=$(echo "$1" | sed -n 's/.*lang=\([^&]*\).*/\1/p')
@@ -24,8 +24,6 @@ map_e() {
         MENU1="OCNバーチャルコネクト・V6プラス・IPv6オプション自動設定（マルチセッション対応）"
         MENU2="OCNバーチャルコネクト・V6プラス・IPv6オプション設定削除及び以前の設定復元"
         MENU00="戻る"
-    elif [ "${SELECTED_LANGUAGE}" = "cn" ]; then
-        echo CN
     fi
 
     TARGET1="map_e_confirmation"
@@ -59,8 +57,6 @@ map_e_confirmation() {
         MENU1="インストール: map"
         MENU2="インストール: bash"
         MENU3="宜しいですか [y/n]"
-    elif [ "${SELECTED_LANGUAGE}" = "cn" ]; then
-        echo CN
     fi
 
     TARGET1="map_e_installation"
@@ -146,8 +142,6 @@ main_menu() {
             MENU5="v6 コネクト自動設定"
             MENU6="PPPoE (iPv4・IPv6): 要認証ID (ユーザー名)・パスワード"
             MENU00="戻る"
-        elif [ "${SELECTED_LANGUAGE}" = "cn" ]; then
-            echo CN
         fi
 
         TARGET1="map_e"

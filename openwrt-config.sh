@@ -16,7 +16,7 @@ download_and_execute() {
     echo -e "$(color "blue" "Downloading and executing: ${script_name}")"
     
     # Attempt to download the script
-    if wget --no-check-certificate -O "${BASE_DR}${script_name}" "${url}?lang=${SELECTED_LANGUAGE}"; then
+    if wget --no-check-certificate -O "${BASE_DR}${script_name}" "${url}"; then
         echo -e "$(color "green" "Download successful.")"
         # Execute the downloaded script
         sh "${BASE_DR}${script_name}"
@@ -100,6 +100,8 @@ select_language() {
         "j") SELECTED_LANGUAGE="ja" ;;
         *) echo -e "$(color "red" "Invalid choice, defaulting to English.")" ;;
     esac
+    
+export SELECTED_LANGUAGE
 }
 
 # Function to display the main menu with language selection

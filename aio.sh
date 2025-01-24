@@ -9,8 +9,6 @@ cat <<"EOF" > /usr/bin/aio
 # License: CC0
 # OpenWrt >= 19.07
 
-LANGUAGE="$1"
-
 BASE_URL="https://raw.githubusercontent.com/site-u2023/config-software2/main/"
 BASE_DR="/tmp/config-software2/"
 
@@ -20,27 +18,19 @@ wget --no-check-certificate -O ${BASE_DR}openwrt-config.sh ${BASE_URL}openwrt-co
 }
 
 language() {
-if [ -n "$1" ]; then
-echo OK
-elif [ -z "$1" ]; then
-echo NG
-fi
+LANGUAGE=$1
+echo "選択された言語: $LANGUAGE"
 
-LANGUAGE="$1"
-case "$LANGUAGE" in
-    "e")
-        SELECTED_LANGUAGE="en"
-        export SELECTED_LANGUAGE
-        ;;
-    "j")
-        SELECTED_LANGUAGE="ja"
-        export SELECTED_LANGUAGE
-        ;;
-    *)
-        read -p "stop"
-        select_language
-        ;;
-esac
+if [ "$LANGUAGE" = "en" ]; then
+    SELECTED_LANGUAGE="en"
+    export SELECTED_LANGUAGE
+elif [ "$LANGUAGE" = "ja" ]; then
+    SELECTED_LANGUAGE="ja"
+    export SELECTED_LANGUAGE
+else
+    select_language
+    read -p "STOP"
+fi
 }
 
 select_language() {

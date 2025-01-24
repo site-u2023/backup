@@ -18,7 +18,7 @@ wget --no-check-certificate -O ${BASE_DR}openwrt-config.sh ${BASE_URL}openwrt-co
 }
 
 language() {
-LANGUAGE=$2
+LANGUAGE="$1"
 case "$LANGUAGE" in
     "en")
         SELECTED_LANGUAGE="en"

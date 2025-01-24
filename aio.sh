@@ -29,6 +29,7 @@ case "$LANGUAGE" in
         export SELECTED_LANGUAGE
         ;;
     *)
+        read -p "stop"
         select_language
         ;;
 esac

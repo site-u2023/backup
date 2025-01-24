@@ -20,6 +20,8 @@ wget --no-check-certificate -O ${BASE_DR}openwrt-config.sh ${BASE_URL}openwrt-co
 language() {
 LANGUAGE=$1
 echo "選択された言語: $LANGUAGE"
+LANGUAGE=$2
+echo "選択された言語$2: $LANGUAGE"
 
 if [ "$LANGUAGE" = "en" ]; then
     SELECTED_LANGUAGE="en"

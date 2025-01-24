@@ -99,8 +99,8 @@ map_e_installation() {
     else
         wget -6 --no-check-certificate -O /lib/netifd/proto/map.sh https://raw.githubusercontent.com/site-u2023/map-e/main/map.sh.new
     fi
-    wget -6 --no-check-certificate -O /etc/config-software2/map-e.sh https://raw.githubusercontent.com/site-u2023/config-software2/main/map-e.sh
-    bash /etc/config-software2/map-e.sh 2> /dev/null
+    wget -6 --no-check-certificate -O ${BASE_DR}map-e.sh ${BASE_URL}map-e.sh
+    bash ${BASE_DR}map-e.sh 2> /dev/null
 
     if [ "${SELECTED_LANGUAGE}" = "en" ]; then
         echo EN

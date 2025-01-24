@@ -33,8 +33,8 @@ map_e() {
 
     while :; do
         echo -e "$(color "white" "-------------------------------------------------------")"
-        echo -e "$(color "yellow" " ${MENU000}")"
-        echo -e "$(color "white" " ${MENU0}")"
+        echo -e "$(color "yellow" "${MENU000}")"
+        echo -e "$(color "white" "${MENU0}")"
         echo -e "$(color "blue" "[s]: ${MENU1}")"
         echo -e "$(color "red" "[r]: ${MENU2}")"
         echo -e "$(color "white" "[b]: ${MENU00}")"
@@ -67,10 +67,10 @@ map_e_confirmation() {
     
     while :; do
         echo -e "$(color "white" "-------------------------------------------------------")"
-        echo -e "$(color "blue" " ${MENU0}")"
-        echo -e "$(color "white" " ${MENU1}")"
-        echo -e "$(color "white" " ${MENU2}")"
-        echo -e "$(color "white" " ${MENU3}")"
+        echo -e "$(color "blue" "${MENU0}")"
+        echo -e "$(color "white" "${MENU1}")"
+        echo -e "$(color "white" "${MENU2}")"
+        echo -e "$(color "white" "${MENU3}")"
         echo -e "$(color "white" "-------------------------------------------------------")"
         read -p "$(color "white" "Select an option: ")" option
         case "${option}" in

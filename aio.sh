@@ -14,6 +14,18 @@ BASE_URL="https://raw.githubusercontent.com/site-u2023/config-software2/main/"
 BASE_DIR="/tmp/config-software2/"
 SUPPORTED_VERSIONS="19 21 22 23 24 SN"
 
+# Function: Check OpenWrt version compatibility
+check_version() {
+    release=$(grep 'DISTRIB_RELEASE' /etc/openwrt_release | cut -d"'" -f2 | cut -c 1-2)
+    if echo "${SUPPORTED_VERSIONS}" | grep -q "${release}"; then
+        echo "OpenWrt version: ${release} - Supported"
+    else
+        echo "Unsupported OpenWrt version: ${release}"
+        echo "Supported versions: ${SUPPORTED_VERSIONS}"
+        exit 1
+    fi
+}
+
 # Function: Display language selection menu
 select_language() {
     echo "------------------------------------------------------"
@@ -31,18 +43,6 @@ select_language() {
             ;;
     esac
     export SELECTED_LANGUAGE
-}
-
-# Function: Check OpenWrt version compatibility
-check_version() {
-    release=$(grep 'DISTRIB_RELEASE' /etc/openwrt_release | cut -d"'" -f2 | cut -c 1-2)
-    if echo "${SUPPORTED_VERSIONS}" | grep -q "${release}"; then
-        echo "OpenWrt version: ${release} - Supported"
-    else
-        echo "Unsupported OpenWrt version: ${release}"
-        echo "Supported versions: ${SUPPORTED_VERSIONS}"
-        exit 1
-    fi
 }
 
 # Main script logic

@@ -15,9 +15,11 @@ SELECTED_LANGUAGE="en"  # Default language
 
 # Function to select language
 select_language() {
+    echo -e "$(color "white" "-------------------------------------------------------")"
     echo -e "$(color "white" "Select your language:")"
     echo -e "$(color "white" "[e]: English")"
     echo -e "$(color "white" "[j]: 日本語")"
+    echo -e "$(color "white" "-------------------------------------------------------")"
     read -p "$(color "white" "Choose an option [e/j]: ")" lang_choice
     case "${lang_choice}" in
         "e") SELECTED_LANGUAGE="en" ;;

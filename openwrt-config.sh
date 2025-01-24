@@ -15,11 +15,11 @@ fi
 
 # Function to select language
 #select_language() {
-#    echo -e "$(color "white" "-------------------------------------------------------")"
+#    echo -e "$(color "white" "------------------------------------------------------")"
 #    echo -e "$(color "white" "Select your language:")"
 #    echo -e "$(color "white" "[e]: English")"
 #    echo -e "$(color "white" "[j]: 日本語")"
-#    echo -e "$(color "white" "-------------------------------------------------------")"
+#    echo -e "$(color "white" "------------------------------------------------------")"
 #    read -p "$(color "white" "Choose an option [e/j]: ")" lang_choice
 #    case "${lang_choice}" in
 #        "e") SELECTED_LANGUAGE="en" ;;
@@ -142,7 +142,7 @@ main_menu() {
     TARGET01="delete_and_exit"
     
     while :; do
-        echo -e "$(color "white" "-------------------------------------------------------")"
+        echo -e "$(color "white" "------------------------------------------------------")"
         echo -e "$(color "white" "${MENU0}")"
         echo -e "$(color "blue" "[i]: ${MENU1}")"
         echo -e "$(color "yellow" "[s]: ${MENU2}")"
@@ -152,7 +152,7 @@ main_menu() {
         echo -e "$(color "cyan" "[o]: ${MENU6}")"
         echo -e "$(color "white" "[e]: ${MENU00}")"
         echo -e "$(color "white_black" "[d]: ${MENU01}")"
-        echo -e "$(color "white" "-------------------------------------------------------")"
+        echo -e "$(color "white" "------------------------------------------------------")"
         read -p "$(color "white" "Select an option: ")" option
         case "${option}" in
             "i") menu_option "${MENU1}" "${TARGET1}" "${BASE_URL}${TARGET1}" ;;

@@ -2,6 +2,12 @@
 # License: CC0
 # OpenWrt >= 19.07
 
+LANGUAGES='"en" "ja" "cn"'
+SELECTED_LANGUAGE="en"
+if echo "$1" | grep -q "lang="; then
+    SELECTED_LANGUAGE=$(echo "$1" | sed -n 's/.*lang=\([^&]*\).*/\1/p')
+fi
+
 BASE_URL="https://raw.githubusercontent.com/site-u2023/config-software2/main/"
 BASE_DR="/etc/config-software2/"
 
@@ -168,7 +174,5 @@ main_menu() {
         done
     }
 
-LANGUAGES='"en" "ja" "cn"'
-# SELECTED_LANGUAGE="ja"
 check_openwrt_version
 main_menu

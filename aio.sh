@@ -19,15 +19,19 @@ wget --no-check-certificate -O ${BASE_DR}openwrt-config.sh ${BASE_URL}openwrt-co
 
 language() {
 LANGUAGE=$1
-if [ "$LANGUAGE" = "en" ]; then
-    SELECTED_LANGUAGE="en"
-    export SELECTED_LANGUAGE
-elif [ "$LANGUAGE" = "ja" ]; then
-    SELECTED_LANGUAGE="ja"
-    export SELECTED_LANGUAGE
-else
-    select_language
-fi
+case "$LANGUAGE" in
+    "aioen")
+        SELECTED_LANGUAGE="en"
+        export SELECTED_LANGUAGE
+        ;;
+    "aioja")
+        SELECTED_LANGUAGE="ja"
+        export SELECTED_LANGUAGE
+        ;;
+    *)
+        select_language
+        ;;
+esac
 }
 
 select_language() {

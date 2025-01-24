@@ -3,6 +3,7 @@
 # OpenWrt >= 19.07
 
 BASE_URL="https://raw.githubusercontent.com/site-u2023/config-software2/main/"
+MAPE_URL="https://raw.githubusercontent.com/site-u2023/map-e/main/"
 BASE_DR="/tmp/config-software2/"
 
 . "${BASE_DR}main-colors.sh"
@@ -95,9 +96,9 @@ map_e_installation() {
 
     local supported_versions="19"
     if echo "${supported_versions}" | grep -q "${release}"; then
-        wget -6 --no-check-certificate -O /lib/netifd/proto/map.sh https://raw.githubusercontent.com/site-u2023/map-e/main/map19.sh.new
+        wget -6 --no-check-certificate -O /lib/netifd/proto/map.sh ${MAPE_URL}map19.sh.new
     else
-        wget -6 --no-check-certificate -O /lib/netifd/proto/map.sh https://raw.githubusercontent.com/site-u2023/map-e/main/map.sh.new
+        wget -6 --no-check-certificate -O /lib/netifd/proto/map.sh ${MAPE_URL}map.sh.new
     fi
     wget -6 --no-check-certificate -O ${BASE_DR}map-e.sh ${BASE_URL}map-e.sh
     bash ${BASE_DR}map-e.sh 2> /dev/null

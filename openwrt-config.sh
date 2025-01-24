@@ -9,24 +9,26 @@ BASE_DR="/tmp/config-software2/"
 
 # Define Language Selections
 LANGUAGES='"en" "ja"'
-SELECTED_LANGUAGE="en"  # Default language
+if [ -z "$SELECTED_LANGUAGE" ]; then
+    SELECTED_LANGUAGE="en"
+fi
 
 # Function to select language
-select_language() {
-    echo -e "$(color "white" "-------------------------------------------------------")"
-    echo -e "$(color "white" "Select your language:")"
-    echo -e "$(color "white" "[e]: English")"
-    echo -e "$(color "white" "[j]: 日本語")"
-    echo -e "$(color "white" "-------------------------------------------------------")"
-    read -p "$(color "white" "Choose an option [e/j]: ")" lang_choice
-    case "${lang_choice}" in
-        "e") SELECTED_LANGUAGE="en" ;;
-        "j") SELECTED_LANGUAGE="ja" ;;
-        *) echo -e "$(color "red" "Invalid choice, defaulting to English.")" ;;
-    esac
-    
-export SELECTED_LANGUAGE
-}
+#select_language() {
+#    echo -e "$(color "white" "-------------------------------------------------------")"
+#    echo -e "$(color "white" "Select your language:")"
+#    echo -e "$(color "white" "[e]: English")"
+#    echo -e "$(color "white" "[j]: 日本語")"
+#    echo -e "$(color "white" "-------------------------------------------------------")"
+#    read -p "$(color "white" "Choose an option [e/j]: ")" lang_choice
+#    case "${lang_choice}" in
+#        "e") SELECTED_LANGUAGE="en" ;;
+#        "j") SELECTED_LANGUAGE="ja" ;;
+#        *) echo -e "$(color "red" "Invalid choice, defaulting to English.")" ;;
+#    esac
+#    
+#export SELECTED_LANGUAGE
+#}
 
 # Function to handle downloading and executing scripts
 download_and_execute() {

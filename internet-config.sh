@@ -3,12 +3,12 @@
 # OpenWrt >= 19.07
 
 LANGUAGES='"en" "ja"'
-SELECTED_LANGUAGE="en"
+#SELECTED_LANGUAGE="en"
 #script_name=$(basename "$0")
-if echo "$1" | grep -q "lang="; then
-    SELECTED_LANGUAGE=$(echo "$1" | sed -n 's/.*lang=\([^&]*\).*/\1/p')
-    echo "Selected Language: ${SELECTED_LANGUAGE}"
-fi
+#if echo "$1" | grep -q "lang="; then
+#    SELECTED_LANGUAGE=$(echo "$1" | sed -n 's/.*lang=\([^&]*\).*/\1/p')
+#    echo "Selected Language: ${SELECTED_LANGUAGE}"
+#fi
 
 BASE_URL="https://raw.githubusercontent.com/site-u2023/config-software2/main/"
 BASE_DR="/etc/config-software2/"

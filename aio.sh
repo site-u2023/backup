@@ -22,7 +22,7 @@ if [ -n "$1" ]; then
 echo OK
 elif [ -z "$1" ]; then
 echo NG
-if
+fi
 
 LANGUAGE="$1"
 case "$LANGUAGE" in

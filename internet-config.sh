@@ -4,9 +4,9 @@
 
 LANGUAGES='"en" "ja"'
 SELECTED_LANGUAGE="en"
-script_name=$(basename "$0")
-if echo "$script_name" | grep -q "lang="; then
-    SELECTED_LANGUAGE=$(echo "$script_name" | sed -n 's/.*lang=\([^&]*\).*/\1/p')
+#script_name=$(basename "$0")
+if echo "$1" | grep -q "lang="; then
+    SELECTED_LANGUAGE=$(echo "$1" | sed -n 's/.*lang=\([^&]*\).*/\1/p')
     echo "Selected Language: ${SELECTED_LANGUAGE}"
 fi
 

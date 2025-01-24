@@ -18,7 +18,7 @@ wget --no-check-certificate -O ${BASE_DR}openwrt-config.sh ${BASE_URL}openwrt-co
 }
 
 language() {
-if [ -n "$1" ]; then
+if [ -n "$2" ]; then
 echo OK
 elif [ -z "$1" ]; then
 echo NG

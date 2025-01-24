@@ -16,7 +16,7 @@ BASE_DR="/etc/config-software2/"
 map_e() {
     # Set language-dependent text for menu
     if [ "${SELECTED_LANGUAGE}" = "en" ]; then
-        exit
+        echo EN
     elif [ "${SELECTED_LANGUAGE}" = "ja" ]; then
         MENU000="要HGW直結"
         MENU0="OCNバーチャルコネクト・V6プラス・IPv6オプション"
@@ -24,7 +24,7 @@ map_e() {
         MENU2="OCNバーチャルコネクト・V6プラス・IPv6オプション設定削除及び以前の設定復元"
         MENU00="戻る"
     elif [ "${SELECTED_LANGUAGE}" = "cn" ]; then
-        exit
+        echo CN
     fi
 
     TARGET1="map_e_confirmation"
@@ -52,14 +52,14 @@ map_e_confirmation() {
 
     # Set language-dependent text for menu
     if [ "${SELECTED_LANGUAGE}" = "en" ]; then
-        exit
+        echo EN
     elif [ "${SELECTED_LANGUAGE}" = "ja" ]; then
         MENU0="OCNバーチャルコネクト・V6プラス・IPv6オプションの設定（マルチセッション対応）とインストールとを実行します"
         MENU1="インストール: map"
         MENU2="インストール: bash"
         MENU3="宜しいですか [y/n]"
     elif [ "${SELECTED_LANGUAGE}" = "cn" ]; then
-        exit
+        echo CN
     fi
 
     TARGET1="map_e_installation"
@@ -127,7 +127,7 @@ check_openwrt_version() {
 main_menu() {
         # Set language-dependent text for menu
         if [ "${SELECTED_LANGUAGE}" = "en" ]; then
-            exit
+            echo EN
         elif [ "${SELECTED_LANGUAGE}" = "ja" ]; then
             MENU0="インターネット設定"
             MENU1="OCNバーチャルコネクト・V6プラス・IPv6オプション自動設定（マルチセッション対応）"
@@ -138,7 +138,7 @@ main_menu() {
             MENU6="PPPoE (iPv4・IPv6): 要認証ID (ユーザー名)・パスワード"
             MENU00="戻る"
         elif [ "${SELECTED_LANGUAGE}" = "cn" ]; then
-            exit
+            echo CN
         fi
 
         TARGET1="map_e"

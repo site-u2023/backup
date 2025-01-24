@@ -42,7 +42,7 @@ map_e() {
         case "${option}" in
             "s") ${TARGET1} ;;
             "r") ${TARGET2} ;;
-            "b") exit ;;
+            "b") main_menu ;;
             *) echo "$(color "red" "Invalid option. Please try again.")" ;;
         esac
     done
@@ -63,7 +63,7 @@ map_e_confirmation() {
     fi
 
     TARGET1="map_e_installation"
-
+    
     while :; do
         echo -e "$(color "white" "-------------------------------------------------------")"
         echo -e "$(color "blue" " ${MENU0}")"
@@ -74,7 +74,7 @@ map_e_confirmation() {
         read -p "$(color "white" "Select an option: ")" option
         case "${option}" in
             "y") ${TARGET1} ;;
-            "n") exit ;;
+            "n") map_e ;;
             *) echo "$(color "red" "Invalid option. Please try again.")" ;;
         esac
     done
@@ -102,7 +102,15 @@ map_e_installation() {
     fi
     wget -6 --no-check-certificate -O /etc/config-software2/map-e.sh https://raw.githubusercontent.com/site-u2023/config-software2/main/map-e.sh
     bash /etc/config-software2/map-e.sh 2> /dev/null
-    read -p "何かキーを押してデバイスを再起動してください"
+
+    if [ "${SELECTED_LANGUAGE}" = "en" ]; then
+        echo EN
+    elif [ "${SELECTED_LANGUAGE}" = "ja" ]; then
+         read -p "何かキーを押してデバイスを再起動してください"
+    elif [ "${SELECTED_LANGUAGE}" = "cn" ]; then
+        echo CN
+    fi
+    
     reboot
 }
 

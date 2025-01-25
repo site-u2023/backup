@@ -60,3 +60,13 @@ else
     esac
 fi
 }
+
+check_common() {
+LANGUAGES='"en" "ja"'
+if [ -z "$SELECTED_LANGUAGE" ]; then
+    check_language
+fi
+if [ -z "$RELEASE_VERSION" ]; then
+    check_version
+fi
+}

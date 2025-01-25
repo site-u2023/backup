@@ -14,6 +14,19 @@ if ! echo "${SUPPORTED_VERSIONS}" | grep -qw "${RELEASE_VERSION}"; then
     exit 1
 fi
 
+RELEASE_VERSION=$(grep 'DISTRIB_RELEASE' /etc/openwrt_release | cut -d"'" -f2 | cut -c 1-2)
+    if echo "${SUPPORTED_VERSIONS}" | grep -q "${RELEASE_VERSION}"; then
+        echo
+        echo "OpenWrt version: "${RELEASE_VERSION}" - Supported"
+        echo
+    else
+        echo
+        echo "Unsupported OpenWrt version: ${RELEASE_VERSION}"
+        echo "Supported versions: ${SUPPORTED_VERSIONS}"
+        echo
+        exit 1
+    fi
+    
 BASE_URL="https://raw.githubusercontent.com/site-u2023/config-software2/main/"
 BASE_DIR="/tmp/config-software2/"
 mkdir -p "$BASE_DIR"

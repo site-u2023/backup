@@ -53,7 +53,7 @@ display_system_info() {
     echo -e "$(color "white" "Available Memory: ${available_memory} MB")"
     echo -e "$(color "white" "Available Flash Storage: ${available_flash} MB")"
     echo -e "$(color "white" "USB Devices: ${usb_devices}")"
-    echo -e "$(color "white" "Scripts directory: /tmp/config-software2/")"
+    echo -e "$(color "white" "Scripts directory: ${BASE_DIR}")"
 }
 
 main_menu() {

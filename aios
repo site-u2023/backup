@@ -22,7 +22,6 @@ if [ -z "$RELEASE_VERSION" ]; then
         exit 1
     fi
 fi
-export RELEASE_VERSION
 }
 
 # Language selection logic
@@ -61,10 +60,13 @@ wget --no-check-certificate -O "${BASE_DIR}openwrt-config.sh" "${BASE_URL}openwr
 }
 
 run_script() {
-sh "${BASE_DIR}openwrt-config.sh"
+    RELEASE_VERSION="$RELEASE_VERSION" SELECTED_LANGUAGE="$SELECTED_LANGUAGE" sh "${BASE_DIR}openwrt-config.sh"
 }
 
 check_version
 Language_selection
 downloads
 run_script
+
+echo "RELEASE_VERSION is: $RELEASE_VERSION"
+echo "SELECTED_LANGUAGE is: $SELECTED_LANGUAGE"

@@ -2,7 +2,6 @@
 # License: CC0
 # OpenWrt >= 19.07
 
-
 BASE_URL="https://raw.githubusercontent.com/site-u2023/config-software2/main/"
 BASE_DIR="/tmp/config-software2/"
 SUPPORTED_VERSIONS="19 21 22 23 24 SN"

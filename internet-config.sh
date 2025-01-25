@@ -3,16 +3,13 @@
 # OpenWrt >= 19.07
 
 BASE_URL="https://raw.githubusercontent.com/site-u2023/config-software2/main/"
-MAPE_URL="https://raw.githubusercontent.com/site-u2023/map-e/main/"
-BASE_DR="/tmp/config-software2/"
+BASE_DIR="/tmp/config-software2/"
 SUPPORTED_VERSIONS="19 21 22 23 24 SN"
 
-. "${BASE_DR}main-colors.sh"
-
-LANGUAGES='"en" "ja"'
-if [ -z "$SELECTED_LANGUAGE" ]; then
-    SELECTED_LANGUAGE="en"
+if [ ! -f "${BASE_DIR}common-functions.sh" ]; then
+  wget --no-check-certificate -O "${BASE_DIR}common-functions.sh" "${BASE_URL}common-functions.sh"
 fi
+source "${BASE_DIR}common-functions.sh"
 
 map_e() {
     # Set language-dependent text for menu
@@ -187,5 +184,5 @@ main_menu() {
         done
     }
 
-check_openwrt_version
+check_common
 main_menu

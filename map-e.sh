@@ -1,7 +1,6 @@
 #!/bin/bash
 # this script based http://ipv4.web.fc2.com/map-e.html & https://benedicam-te.blogspot.com/
 
-
 . /lib/functions.sh
 . /lib/functions/network.sh
 . /lib/netifd/netifd-proto.sh

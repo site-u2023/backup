@@ -12,8 +12,7 @@ source "${BASE_DR}main-colors.sh"
 # Define Language Selections
 LANGUAGES='"en" "ja"'
 if [ -z "$SELECTED_LANGUAGE" ]; then
-    echo $(SELECTED_LANGUAGE)
-#    SELECTED_LANGUAGE="en"
+    SELECTED_LANGUAGE="en"
 fi
 
 # Function to handle downloading and executing scripts
@@ -54,16 +53,17 @@ delete_and_exit() {
     exit
 }
 
-# Check OpenWrt version
-check_openwrt_version() {
-    local release=$(grep 'DISTRIB_RELEASE' /etc/openwrt_release | cut -d"'" -f2 | cut -c 1-2)
-    if echo "${SUPPORTED_VERSIONS}" | grep -q "${release}"; then
-        echo -e "$(color "white_black" "OpenWrt version: ${release} - Supported")"
+check_version() {
+if [ -z "$RELEASE_VERSION" ]; then
+    RELEASE_VERSION=$(grep 'DISTRIB_RELEASE' /etc/openwrt_release | cut -d"'" -f2 | cut -c 1-2)
+    if echo "${SUPPORTED_VERSIONS}" | grep -q "${RELEASE_VERSION}"; then
+        echo "OpenWrt version: ${RELEASE_VERSION} - Supported"
     else
-        echo -e "$(color "red_black" "Unsupported OpenWrt version: ${release}")"
-        echo -e "$(color "white_black" "Supported versions: ${SUPPORTED_VERSIONS}")"
+        echo "Unsupported OpenWrt version: ${RELEASE_VERSION}"
+        echo "Supported versions: ${SUPPORTED_VERSIONS}"
         exit 1
     fi
+fi
 }
 
 color_code() {

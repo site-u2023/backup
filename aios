@@ -57,10 +57,10 @@ run_script() {
 sh "${BASE_DIR}openwrt-config.sh"
 }
 
-export RELEASE_VERSION
-export SELECTED_LANGUAGE
-
 check_version
 Language_selection
 downloads
 run_script
+
+export RELEASE_VERSION
+export SELECTED_LANGUAGE

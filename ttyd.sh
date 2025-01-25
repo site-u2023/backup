@@ -2,13 +2,11 @@
 # License: CC0
 # OpenWrt >= 19.07
 
-
-# Function to check if ttyd is installed
 is_ttyd_installed() {
   if opkg list-installed | grep -qw 'luci-app-ttyd'; then
-    return 0  # Installed
+    return 0
   else
-    return 1  # Not installed
+    return 1
   fi
 }
 

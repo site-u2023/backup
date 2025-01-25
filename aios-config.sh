@@ -4,8 +4,6 @@
 # This script is specifically designed for the initial setup of an all-in-one script.
 
 
-mkdir -p /tmp/config-software2
-
 BASE_URL="https://raw.githubusercontent.com/site-u2023/config-software2/main/"
 BASE_DIR="/tmp/config-software2/"
 SUPPORTED_VERSIONS="19 21 22 23 24 SN"
@@ -23,6 +21,7 @@ export BASE_URL
 export BASE_DIR
 export RELEASE_VERSION
 
+mkdir -p $(BASE_DIR)
 wget --no-check-certificate -O "${BASE_DIR}ttyd.sh" "${BASE_URL}ttyd.sh"
 wget --no-check-certificate -O "/usr/bin/aios" "${BASE_URL}aios"
 chmod +x /usr/bin/aios

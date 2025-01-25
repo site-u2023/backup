@@ -3,6 +3,7 @@
 # OpenWrt >= 19.07
 # This script is specifically designed for the initial setup of an all-in-one script.
 
+LANGUAGE="$1"
 
 SUPPORTED_VERSIONS="19 21 22 23 24 SN"
 RELEASE_VERSION=$(grep 'DISTRIB_RELEASE' /etc/openwrt_release | cut -d"'" -f2 | cut -c 1-2)
@@ -21,4 +22,4 @@ wget --no-check-certificate -O "/usr/bin/aios" "${BASE_URL}aios"
 chmod +x /usr/bin/aios
 sh "${BASE_DIR}ttyd.sh"
 
-RELEASE_VERSION="$RELEASE_VERSION" aios
+RELEASE_VERSION="$RELEASE_VERSION" SELECTED_LANGUAGE="$SELECTED_LANGUAGE" aios

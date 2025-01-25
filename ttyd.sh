@@ -3,10 +3,18 @@
 # OpenWrt >= 19.07
 
 is_ttyd_installed() {
-  if opkg list-installed | grep -qw 'luci-app-ttyd'; then
-    return 0
+  if [ "$OPENWRT_RELEAS" != "SN" ]; then
+    if opkg list-installed | grep -qw 'luci-app-ttyd'; then
+      return 0
+    else
+      return 1
+    fi
   else
-    return 1
+    if apk info | grep -qw 'luci-app-ttyd'; then
+      return 0
+    else
+      return 1
+    fi
   fi
 }
 
@@ -48,7 +56,7 @@ if echo "$SUPPORTED_VERSIONS" | grep -qw "$OPENWRT_RELEAS"; then
     ttyd_setting
   fi
 elif [ "$OPENWRT_RELEAS" = "SN" ]; then
-  if apk info | grep -qw 'luci-app-ttyd'; then
+  if is_ttyd_installed; then
     echo "luci-app-ttyd is already installed."
   else
     echo "Installing luci-app-ttyd..."

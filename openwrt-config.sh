@@ -47,7 +47,7 @@ menu_option() {
 # Function to delete the script and exit
 delete_and_exit() {
     echo -e "$(color "red" "Deleting script and exiting.")"
-    rm -rf "${BASE_DR}" /usr/bin/confsoft
+    rm -rf "${BASE_DR}" /usr/bin/aios
     exit
 }
 

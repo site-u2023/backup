@@ -21,3 +21,5 @@ wget --no-check-certificate -O "${BASE_DIR}ttyd.sh" "${BASE_URL}ttyd.sh"
 wget --no-check-certificate -O "/usr/bin/aios" "${BASE_URL}aios"
 chmod +x /usr/bin/aios
 sh "${BASE_DIR}ttyd.sh"
+
+aios

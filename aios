@@ -27,6 +27,7 @@ echo "        aa  aa      ii      oo  oo         ss         "
 echo "         aaaaa     iiii      oooo     ssssss          "
 echo "                                                      "
 echo "                  all in one scripts                  "
+echo "                                                      "
 
 check_language
 run_script

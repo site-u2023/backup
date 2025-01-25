@@ -9,50 +9,12 @@ BASE_DIR="/tmp/config-software2/"
 SUPPORTED_VERSIONS="19 21 22 23 24 SN"
 LANGUAGE="$1"
 
-# Function: Check OpenWrt version compatibility
-check_version() {
-echo version: $RELEASE_VERSION
-read -p "TEST"
-if [ -z "$RELEASE_VERSION" ]; then
-    RELEASE_VERSION=$(grep 'DISTRIB_RELEASE' /etc/openwrt_release | cut -d"'" -f2 | cut -c 1-2)
-    if echo "${SUPPORTED_VERSIONS}" | grep -q "${RELEASE_VERSION}"; then
-        echo "OpenWrt version: ${RELEASE_VERSION} - Supported"
-    else
-        echo "Unsupported OpenWrt version: ${RELEASE_VERSION}"
-        echo "Supported versions: ${SUPPORTED_VERSIONS}"
-        exit 1
-    fi
-fi
-}
-
-# Language selection logic
-Language_selection() {
-if [ "$LANGUAGE" = "en" ]; then
-    SELECTED_LANGUAGE="en"
-elif [ "$LANGUAGE" = "ja" ]; then
-    SELECTED_LANGUAGE="ja"
-else
-    echo "------------------------------------------------------"
-    echo "Select your language:"
-    echo "[e]: English"
-    echo "[j]: 日本語"
-    echo "------------------------------------------------------"
-    read -p "Choose an option [e/j]: " lang_choice
-    case "${lang_choice}" in
-        "e") SELECTED_LANGUAGE="en" ;;
-        "j") SELECTED_LANGUAGE="ja" ;;
-        *) 
-            echo "Invalid choice, defaulting to English."
-            SELECTED_LANGUAGE="en"
-            ;;
-    esac
-fi
-}
-
 # Download and execute scripts
 downloads() {
 mkdir -p "$BASE_DIR"
 wget --no-check-certificate -O "${BASE_DIR}main-colors.sh" "${BASE_URL}color-code.sh"
+wget --no-check-certificate -O "${BASE_DIR}check-version.sh" "${BASE_URL}check-version.sh"
+wget --no-check-certificate -O "${BASE_DIR}check-language.sh" "${BASE_URL}check-language.sh"
 wget --no-check-certificate -O "${BASE_DIR}openwrt-config.sh" "${BASE_URL}openwrt-config.sh"
 }
 
@@ -60,7 +22,7 @@ run_script() {
     RELEASE_VERSION="$RELEASE_VERSION" SELECTED_LANGUAGE="$SELECTED_LANGUAGE" sh "${BASE_DIR}openwrt-config.sh"
 }
 
-check_version
-Language_selection
 downloads
+check_version
+check-language
 run_script

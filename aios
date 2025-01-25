@@ -24,6 +24,7 @@ fi
 }
 
 # Language selection logic
+Language_selection() {
 if [ "$LANGUAGE" = "en" ]; then
     SELECTED_LANGUAGE="en"
 elif [ "$LANGUAGE" = "ja" ]; then

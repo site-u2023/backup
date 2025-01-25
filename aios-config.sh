@@ -16,10 +16,9 @@ fi
 
 RELEASE_VERSION=$(grep 'DISTRIB_RELEASE' /etc/openwrt_release | cut -d"'" -f2 | cut -c 1-2)
     if echo "${SUPPORTED_VERSIONS}" | grep -q "${RELEASE_VERSION}"; then
-        echo
         echo "OpenWrt version: "${RELEASE_VERSION}" - Supported"
-    else
         echo
+    else
         echo "Unsupported OpenWrt version: ${RELEASE_VERSION}"
         echo "Supported versions: ${SUPPORTED_VERSIONS}"
         exit 1

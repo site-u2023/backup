@@ -2,18 +2,24 @@
 # License: CC0
 # OpenWrt >= 19.07
 
+
 BASE_URL="https://raw.githubusercontent.com/site-u2023/config-software2/main/"
-BASE_DR="/tmp/config-software2/"
+BASE_DIR="/tmp/config-software2/"
 SUPPORTED_VERSIONS="19 21 22 23 24 SN"
 
-source "${BASE_DR}main-colors.sh"
-source "${BASE_DR}version.sh"
+source "${BASE_DIR}color-code.sh"
+source "${BASE_DIR}check-version.sh"
+source "${BASE_DIR}check-language.sh"
 # source /usr/bin/aios
 
 # Define Language Selections
 LANGUAGES='"en" "ja"'
 if [ -z "$SELECTED_LANGUAGE" ]; then
-    SELECTED_LANGUAGE="en"
+    check_language
+fi
+
+if [ -z "$RELEASE_VERSION" ]; then
+    check_version
 fi
 
 # Function to handle downloading and executing scripts
@@ -52,19 +58,6 @@ delete_and_exit() {
     echo -e "$(color "red" "Deleting script and exiting.")"
     rm -rf "${BASE_DR}" /usr/bin/aios
     exit
-}
-
-check_version() {
-if [ -z "$RELEASE_VERSION" ]; then
-    RELEASE_VERSION=$(grep 'DISTRIB_RELEASE' /etc/openwrt_release | cut -d"'" -f2 | cut -c 1-2)
-    if echo "${SUPPORTED_VERSIONS}" | grep -q "${RELEASE_VERSION}"; then
-        echo "OpenWrt version: ${RELEASE_VERSION} - Supported"
-    else
-        echo "Unsupported OpenWrt version: ${RELEASE_VERSION}"
-        echo "Supported versions: ${SUPPORTED_VERSIONS}"
-        exit 1
-    fi
-fi
 }
 
 color_code() {
@@ -156,7 +149,6 @@ main_menu() {
 }
 
 # Execute the necessary functions
-check_version
 color_code
 display_system_info
 main_menu

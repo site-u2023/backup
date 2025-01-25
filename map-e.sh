@@ -2,9 +2,6 @@
 # this script based http://ipv4.web.fc2.com/map-e.html & https://benedicam-te.blogspot.com/
 
 
-SUPPORTED_VERSIONS="19 21 22 23 24 SN"
-check_version
-
 . /lib/functions.sh
 . /lib/functions/network.sh
 . /lib/netifd/netifd-proto.sh

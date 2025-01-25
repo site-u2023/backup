@@ -21,4 +21,4 @@ wget --no-check-certificate -O "/usr/bin/aios" "${BASE_URL}aios"
 chmod +x /usr/bin/aios
 sh "${BASE_DIR}ttyd.sh"
 
-aios
+RELEASE_VERSION="$RELEASE_VERSION" aios

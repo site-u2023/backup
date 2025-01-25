@@ -24,6 +24,6 @@ export BASE_DIR
 export RELEASE_VERSION
 
 wget --no-check-certificate -O "${BASE_DIR}ttyd.sh" "${BASE_URL}ttyd.sh"
-wget --no-check-certificate -O "/usr/bin/aio/aio" "${BASE_URL}aios"
-chmod +x /usr/bin/aio
+wget --no-check-certificate -O "/usr/bin/aios" "${BASE_URL}aios"
+chmod +x /usr/bin/aios
 aios

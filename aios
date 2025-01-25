@@ -42,7 +42,6 @@ else
             ;;
     esac
 fi
-export SELECTED_LANGUAGE
 }
 
 # Download and execute scripts

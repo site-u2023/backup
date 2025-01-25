@@ -45,7 +45,7 @@ elif [ "$LANGUAGE" = "ja" ]; then
     SELECTED_LANGUAGE="ja"
 else
     echo -e "$(color "white" "------------------------------------------------------")"
-    echo -e "$(color "white" "Select your language:")"
+    echo -e "$(color "white" "Select your language")"
     echo -e "$(color "blue" "[e]: English")"
     echo -e "$(color "red" "[j]: 日本語")"
     echo -e "$(color "white" "------------------------------------------------------")"

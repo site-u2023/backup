@@ -3,7 +3,6 @@
 # OpenWrt >= 19.07
 # This script is specifically designed for the initial setup of an all-in-one script.
 
-
 LANGUAGE=$1
 
 SUPPORTED_VERSIONS="19 21 22 23 24 SN"

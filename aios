@@ -20,9 +20,9 @@ wget --no-check-certificate -O "${BASE_DIR}check-version.sh" "${BASE_URL}check-v
 wget --no-check-certificate -O "${BASE_DIR}check-language.sh" "${BASE_URL}check-language.sh"
 wget --no-check-certificate -O "${BASE_DIR}openwrt-config.sh" "${BASE_URL}openwrt-config.sh"
 
-# source "${BASE_DR}color-code.sh"
-source "${BASE_DR}check-version.sh"
-source "${BASE_DR}check-language.sh"
+. "${BASE_DR}color-code.sh"
+. "${BASE_DR}check-version.sh"
+. "${BASE_DR}check-language.sh"
 
 check_version
 check_language

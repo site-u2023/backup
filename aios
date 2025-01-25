@@ -47,7 +47,7 @@ fi
 
 # Download and execute scripts
 downloads() {
-wget --no-check-certificate -O "${BASE_DIR}main-colors.sh" "${BASE_URL}colors.sh"
+wget --no-check-certificate -O "${BASE_DIR}main-colors.sh" "${BASE_URL}color-code.sh"
 wget --no-check-certificate -O "${BASE_DIR}openwrt-config.sh" "${BASE_URL}openwrt-config.sh"
 }
 

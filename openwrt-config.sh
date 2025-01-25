@@ -7,6 +7,7 @@ BASE_DR="/tmp/config-software2/"
 SUPPORTED_VERSIONS="19 21 22 23 24 SN"
 
 source "${BASE_DR}main-colors.sh"
+source "${BASE_DR}version.sh"
 # source /usr/bin/aios
 
 # Define Language Selections

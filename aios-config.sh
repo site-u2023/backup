@@ -3,7 +3,13 @@
 # OpenWrt >= 19.07
 # This script is specifically designed for the initial setup of an all-in-one script.
 
-LANGUAGE="$1"
+
+LANGUAGE=$1
+if [ "$LANGUAGE" = "en" ]; then
+    SELECTED_LANGUAGE="en"
+elif [ "$LANGUAGE" = "ja" ]; then
+    SELECTED_LANGUAGE="ja"
+fi
 
 SUPPORTED_VERSIONS="19 21 22 23 24 SN"
 RELEASE_VERSION=$(grep 'DISTRIB_RELEASE' /etc/openwrt_release | cut -d"'" -f2 | cut -c 1-2)

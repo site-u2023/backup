@@ -11,7 +11,8 @@ SUPPORTED_VERSIONS="19 21 22 23 24 SN"
 # Define Language Selections
 LANGUAGES='"en" "ja"'
 if [ -z "$SELECTED_LANGUAGE" ]; then
-    SELECTED_LANGUAGE="en"
+    echo $(SELECTED_LANGUAGE)
+#    SELECTED_LANGUAGE="en"
 fi
 
 # Function to handle downloading and executing scripts

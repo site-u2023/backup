@@ -16,7 +16,7 @@ wget --no-check-certificate -O "${BASE_DIR}openwrt-config.sh" "${BASE_URL}openwr
 
 source "${BASE_DIR}common-functions.sh"
 
-echo -e "$(color "red_white" "    Disclaimer: Use this script at your own risk.     ")"
+echo -e "$(color "red_white"   "    Disclaimer: Use this script at your own risk.     ")"
 
 echo -e "$(color "white"       "                                                      ")"
 echo -e "$(color "magenta"     "                    ii i                              ")"

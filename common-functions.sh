@@ -50,7 +50,7 @@ check_language() {
             echo -e "$(color "blue" "[en]: English")"
             echo -e "$(color "red" "[ja]: 日本語")"
             echo -e "$(color "white" "------------------------------------------------------")"
-            read -p "Choose an option [e/j]: " lang_choice
+            read -p "Choose an option [en/ja]: " lang_choice
             case "${lang_choice}" in
                 "en") SELECTED_LANGUAGE="en"; break ;;
                 "ja") SELECTED_LANGUAGE="ja"; break ;;

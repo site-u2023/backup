@@ -1,4 +1,6 @@
-#! /bin/sh
+#!/bin/sh
+# License: CC0
+# OpenWrt >= 19.07
 
 # Color settings
 color_code_map() {

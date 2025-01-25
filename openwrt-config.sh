@@ -6,7 +6,8 @@ BASE_URL="https://raw.githubusercontent.com/site-u2023/config-software2/main/"
 BASE_DR="/tmp/config-software2/"
 SUPPORTED_VERSIONS="19 21 22 23 24 SN"
 
-. "${BASE_DR}main-colors.sh"
+source "${BASE_DR}main-colors.sh"
+source /usr/bin/aios
 
 # Define Language Selections
 LANGUAGES='"en" "ja"'

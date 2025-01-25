@@ -7,39 +7,25 @@ BASE_URL="https://raw.githubusercontent.com/site-u2023/config-software2/main/"
 BASE_DIR="/tmp/config-software2/"
 SUPPORTED_VERSIONS="19 21 22 23 24 SN"
 
-source "${BASE_DIR}color-code.sh"
-source "${BASE_DIR}check-version.sh"
-source "${BASE_DIR}check-language.sh"
-# source /usr/bin/aios
-
-# Define Language Selections
-LANGUAGES='"en" "ja"'
-if [ -z "$SELECTED_LANGUAGE" ]; then
-    check_language
+if [ ! -f "${BASE_DIR}common-functions.sh" ]; then
+  wget --no-check-certificate -O "${BASE_DIR}common-functions.sh" "${BASE_URL}common-functions.sh"
 fi
+source "${BASE_DIR}common-functions.sh"
 
-if [ -z "$RELEASE_VERSION" ]; then
-    check_version
-fi
-
-# Function to handle downloading and executing scripts
 download_and_execute() {
     mkdir -p "$BASE_DIR"
     local script_name="$1"
     local url="$2"
     echo -e "$(color "blue" "Downloading and executing: ${script_name}")"
     
-    # Attempt to download the script
     if wget --no-check-certificate -O "${BASE_DR}${script_name}" "${url}"; then
         echo -e "$(color "green" "Download successful.")"
-        # Execute the downloaded script
         sh "${BASE_DR}${script_name}"
     else
         echo -e "$(color "red" "Download failed.")"
     fi
 }
 
-# Reusable function for menu options with description and script download
 menu_option() {
     local description="$1"
     local script_name="$2"
@@ -53,7 +39,6 @@ menu_option() {
     esac
 }
 
-# Function to delete the script and exit
 delete_and_exit() {
     echo -e "$(color "red" "Deleting script and exiting.")"
     rm -rf "${BASE_DR}" /usr/bin/aios
@@ -72,7 +57,6 @@ color_code() {
     done
 }
 
-# Function to display system information
 display_system_info() {
     local available_memory=$(free | awk '/Mem:/ { print int($4 / 1024) }')
     local available_flash=$(df | awk '/overlayfs:\/overlay/ { print int($4 / 1024) }')
@@ -86,10 +70,8 @@ display_system_info() {
     echo -e "$(color "red_white" "Disclaimer: Use this script at your own risk.")"
 }
 
-# Function to display the main menu with language selection
 main_menu() {
 
-    # Set language-dependent text for menu
     if [ "${SELECTED_LANGUAGE}" = "en" ]; then
         MENU0="All-in-One Scripts"
         MENU1="Internet settings (Japan Only)" 
@@ -148,7 +130,7 @@ main_menu() {
     done
 }
 
-# Execute the necessary functions
+check_common
 color_code
 display_system_info
 main_menu

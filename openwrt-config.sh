@@ -50,7 +50,6 @@ display_system_info() {
     local available_flash=$(df | awk '/overlayfs:\/overlay/ { print int($4 / 1024) }')
     local usb_devices=$(ls /sys/bus/usb/devices | grep -q usb && echo "Detected" || echo "Not detected")
 
-    echo -e "$(color "white" "Information")"
     echo -e "$(color "white" "Available Memory: ${available_memory} MB")"
     echo -e "$(color "white" "Available Flash Storage: ${available_flash} MB")"
     echo -e "$(color "white" "USB Devices: ${usb_devices}")"
@@ -60,7 +59,6 @@ display_system_info() {
 main_menu() {
 
     if [ "${SELECTED_LANGUAGE}" = "en" ]; then
-        MENU0="All-in-One Scripts"
         MENU1="Internet settings (Japan Only)" 
         MENU2="Initial System Settings"
         MENU3="Recommended Package Installation"
@@ -70,7 +68,6 @@ main_menu() {
         MENU00="Exit Script"
         MENU01="Remove script and exit"
     elif [ "${SELECTED_LANGUAGE}" = "ja" ]; then
-        MENU0="オールインワンスクリプト"
         MENU1="インターネット設定"
         MENU2="システム初期設定"
         MENU3="推奨パッケージインストール"  
@@ -92,7 +89,6 @@ main_menu() {
     
     while :; do
         echo -e "$(color "white" "------------------------------------------------------")"
-        echo -e "$(color "white" "${MENU0}")"
         echo -e "$(color "blue" "[i]: ${MENU1}")"
         echo -e "$(color "yellow" "[s]: ${MENU2}")"
         echo -e "$(color "green" "[p]: ${MENU3}")"

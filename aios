@@ -22,11 +22,12 @@ run_script() {
     RELEASE_VERSION="$RELEASE_VERSION" SELECTED_LANGUAGE="$SELECTED_LANGUAGE" sh "${BASE_DIR}openwrt-config.sh"
 }
 
+download
+
 source "${BASE_DR}color-code.sh"
 source "${BASE_DR}check-version.sh"
 source "${BASE_DR}check-language.sh"
 
-download
 check_version
 check_language
 run_script

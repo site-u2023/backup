@@ -18,16 +18,16 @@ source "${BASE_DIR}common-functions.sh"
 
 echo -e "$(color "red_white" "    Disclaimer: Use this script at your own risk.     ")"
 
-echo "                                                      "
-echo "                    ii i                              "
-echo "         aaaa      iii       oooo      sssss          "
-echo "            aa      ii      oo  oo    ss              "
-echo "         aaaaa      ii      oo  oo     sssss          "
-echo "        aa  aa      ii      oo  oo         ss         "
-echo "         aaaaa     iiii      oooo     ssssss          "
-echo "                                                      "
-echo "                  all in one scripts                  "
-echo "                                                      "
+echo -e "$(color "white"       "                                                      ")"
+echo -e "$(color "magenta"     "                    ii i                              ")"
+echo -e "$(color "blue"        "         aaaa      iii       oooo      sssss          ")"
+echo -e "$(color "cyan"        "            aa      ii      oo  oo    ss              ")"
+echo -e "$(color "green"       "         aaaaa      ii      oo  oo     sssss          ")"
+echo -e "$(color "yellow"      "        aa  aa      ii      oo  oo         ss         ")"
+echo -e "$(color "red"         "         aaaaa     iiii      oooo     ssssss          ")"
+echo -e "$(color "white"       "                                                      ")"
+echo -e "$(color "white_black" "                  all in one scripts                  ")"
+echo -e "$(color "white"       "                                                      ")"
 
 check_language
 run_script

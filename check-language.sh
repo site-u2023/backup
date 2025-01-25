@@ -9,11 +9,11 @@ if [ "$LANGUAGE" = "en" ]; then
 elif [ "$LANGUAGE" = "ja" ]; then
     SELECTED_LANGUAGE="ja"
 else
-    echo "------------------------------------------------------"
-    echo "Select your language:"
-    echo "[e]: English"
-    echo "[j]: 日本語"
-    echo "------------------------------------------------------"
+    echo -e "$(color "white" "------------------------------------------------------")"
+    echo -e "$(color "white" "Select your language:")"
+    echo -e "$(color "blue" "[e]: English")"
+    echo -e "$(color "red" "[j]: 日本語")"
+    echo -e "$(color "white" "------------------------------------------------------")"
     read -p "Choose an option [e/j]: " lang_choice
     case "${lang_choice}" in
         "e") SELECTED_LANGUAGE="en" ;;

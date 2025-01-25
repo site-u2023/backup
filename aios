@@ -11,7 +11,7 @@ LANGUAGE="$1"
 
 # Function: Check OpenWrt version compatibility
 check_version() {
-echo $RELEASE_VERSION
+echo version: $RELEASE_VERSION
 read -p "TEST"
 if [ -z "$RELEASE_VERSION" ]; then
     RELEASE_VERSION=$(grep 'DISTRIB_RELEASE' /etc/openwrt_release | cut -d"'" -f2 | cut -c 1-2)

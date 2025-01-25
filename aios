@@ -16,26 +16,16 @@ wget --no-check-certificate -O "${BASE_DIR}common-functions.sh" "${BASE_URL}comm
 wget --no-check-certificate -O "${BASE_DIR}openwrt-config.sh" "${BASE_URL}openwrt-config.sh"
 
 source "${BASE_DIR}common-functions.sh"
-echo "                                                      "
-echo "                    ## #                              "
-echo "         ####      ###       ####      #####          "
-echo "            ##      ##      ##  ##    ##              "
-echo "         #####      ##      ##  ##     #####          "
-echo "        ##  ##      ##      ##  ##         ##         "
-echo "         #####     ####      ####     ######          "
-echo "                                                      "
-echo "                  all in one scripts                  "
 
 echo "                                                      "
 echo "                    ii i                              "
-echo "         aaaa      iii       ooo      sssss          "
+echo "         aaaa      iii       oooo      sssss          "
 echo "            aa      ii      oo  oo    ss              "
 echo "         aaaaa      ii      oo  oo     sssss          "
 echo "        aa  aa      ii      oo  oo         aa         "
 echo "         aaaaa     iiii      oooo     ssssss          "
 echo "                                                      "
 echo "                  all in one scripts                  "
-
 
 check_language
 run_script

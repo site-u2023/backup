@@ -12,7 +12,7 @@ LANGUAGE="$1"
 # Download and execute scripts
 download() {
 mkdir -p "$BASE_DIR"
-wget --no-check-certificate -O "${BASE_DIR}main-colors.sh" "${BASE_URL}color-code.sh"
+wget --no-check-certificate -O "${BASE_DIR}color-code.sh" "${BASE_URL}color-code.sh"
 wget --no-check-certificate -O "${BASE_DIR}check-version.sh" "${BASE_URL}check-version.sh"
 wget --no-check-certificate -O "${BASE_DIR}check-language.sh" "${BASE_URL}check-language.sh"
 wget --no-check-certificate -O "${BASE_DIR}openwrt-config.sh" "${BASE_URL}openwrt-config.sh"

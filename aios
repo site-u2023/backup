@@ -2,25 +2,32 @@
 # License: CC0
 # OpenWrt >= 19.07
 
+
 # Constants
 BASE_URL="https://raw.githubusercontent.com/site-u2023/config-software2/main/"
 BASE_DIR="/tmp/config-software2/"
 SUPPORTED_VERSIONS="19 21 22 23 24 SN"
 
+
 # Function: Check OpenWrt version compatibility
 check_version() {
-    release=$(grep 'DISTRIB_RELEASE' /etc/openwrt_release | cut -d"'" -f2 | cut -c 1-2)
-    if echo "${SUPPORTED_VERSIONS}" | grep -q "${release}"; then
-        echo "OpenWrt version: ${release} - Supported"
+if [ -z "$RELEASE_VERSION" ]; then
+    RELEASE_VERSION=$(grep 'DISTRIB_RELEASE' /etc/openwrt_release | cut -d"'" -f2 | cut -c 1-2)
+    if echo "${SUPPORTED_VERSIONS}" | grep -q "${RELEASE_VERSION}"; then
+        echo "OpenWrt version: ${RELEASE_VERSION} - Supported"
     else
-        echo "Unsupported OpenWrt version: ${release}"
+        echo "Unsupported OpenWrt version: ${RELEASE_VERSION}"
         echo "Supported versions: ${SUPPORTED_VERSIONS}"
         exit 1
     fi
+fi
 }
 
-# Function: Display language selection menu
-select_language() {
+# Language selection logic
+Language_selection() {
+if [ "$1" = "en" ] || [ "$1" = "ja" ]; then
+    SELECTED_LANGUAGE="$1"
+else
     echo "------------------------------------------------------"
     echo "Select your language:"
     echo "[e]: English"
@@ -35,23 +42,23 @@ select_language() {
             SELECTED_LANGUAGE="en"
             ;;
     esac
+fi
 }
 
-# Main script logic
-LANGUAGE=$1
-check_version
-
-if [ "$LANGUAGE" = "en" ]; then
-    SELECTED_LANGUAGE="en"
-elif [ "$LANGUAGE" = "ja" ]; then
-    SELECTED_LANGUAGE="ja"
-else
-    select_language
-fi
-
-export SELECTED_LANGUAGE
-
 # Download and execute scripts
+downloads() {
 wget --no-check-certificate -O "${BASE_DIR}main-colors.sh" "${BASE_URL}main-colors.sh"
 wget --no-check-certificate -O "${BASE_DIR}openwrt-config.sh" "${BASE_URL}openwrt-config.sh"
+}
+
+run_script() {
 sh "${BASE_DIR}openwrt-config.sh"
+}
+
+export RELEASE_VERSION
+export SELECTED_LANGUAGE
+
+check_version
+Language_selection
+downloads
+run_script

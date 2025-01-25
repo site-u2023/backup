@@ -53,7 +53,7 @@ echo $SELECTED_LANGUAGE
 
 # Download and execute scripts
 downloads() {
-mkdir -p $(BASE_DIR)
+mkdir -p "$BASE_DIR"
 wget --no-check-certificate -O "${BASE_DIR}main-colors.sh" "${BASE_URL}color-code.sh"
 wget --no-check-certificate -O "${BASE_DIR}openwrt-config.sh" "${BASE_URL}openwrt-config.sh"
 }

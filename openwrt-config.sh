@@ -45,18 +45,6 @@ delete_and_exit() {
     exit
 }
 
-color_code() {
-    for i in `seq 30 38` `seq 40 47` ; do
-        for j in 0 1 2 3 4 5 6 7 ; do
-            printf "\033[${j};${i}m"
-            printf " ${j};${i} "
-            printf "\033[0;39;49m"
-            printf " "
-        done
-        printf "\n"
-    done
-}
-
 display_system_info() {
     local available_memory=$(free | awk '/Mem:/ { print int($4 / 1024) }')
     local available_flash=$(df | awk '/overlayfs:\/overlay/ { print int($4 / 1024) }')
@@ -67,7 +55,6 @@ display_system_info() {
     echo -e "$(color "white" "Available Flash Storage: ${available_flash} MB")"
     echo -e "$(color "white" "USB Devices: ${usb_devices}")"
     echo -e "$(color "white" "Scripts directory: /tmp/config-software2/")"
-    echo -e "$(color "red_white" "Disclaimer: Use this script at your own risk.")"
 }
 
 main_menu() {

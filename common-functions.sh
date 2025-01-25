@@ -62,6 +62,7 @@ check_language() {
 
 check_common() {
 if [ -z "$RELEASE_VERSION" ]; then
+    echo -e "$(color "white" "OpenWrt version: "${RELEASE_VERSION}" - Supported")"
     check_version
 fi
 LANGUAGES='"en" "ja"'

@@ -7,7 +7,7 @@
 BASE_URL="https://raw.githubusercontent.com/site-u2023/config-software2/main/"
 BASE_DIR="/tmp/config-software2/"
 SUPPORTED_VERSIONS="19 21 22 23 24 SN"
-SELECTED_LANGUAGE="$1"
+LANGUAGE=$1
 
 # Function: Check OpenWrt version compatibility
 check_version() {
@@ -25,8 +25,10 @@ fi
 
 # Language selection logic
 Language_selection() {
-if [ "SELECTED_LANGUAGE" = "en" ] || [ "SELECTED_LANGUAGE" = "ja" ]; then
-    echo "言語設定済み"
+if [ "$LANGUAGE" = "en" ]; then
+    SELECTED_LANGUAGE="en"
+elif [ "$LANGUAGE" = "ja" ]; then
+    SELECTED_LANGUAGE="ja"
 else
     echo "------------------------------------------------------"
     echo "Select your language:"

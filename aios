@@ -6,7 +6,6 @@
 # Constants
 BASE_URL="https://raw.githubusercontent.com/site-u2023/config-software2/main/"
 BASE_DIR="/tmp/config-software2/"
-SUPPORTED_VERSIONS="19 21 22 23 24 SN"
 LANGUAGE="$1"
 
 run_script() {
@@ -15,17 +14,10 @@ run_script() {
 
 # Download and execute scripts
 mkdir -p "$BASE_DIR"
-wget --no-check-certificate -O "${BASE_DIR}color-code.sh" "${BASE_URL}color-code.sh"
-wget --no-check-certificate -O "${BASE_DIR}check-version.sh" "${BASE_URL}check-version.sh"
-wget --no-check-certificate -O "${BASE_DIR}check-language.sh" "${BASE_URL}check-language.sh"
+wget --no-check-certificate -O "${BASE_DIR}common-functions.sh" "${BASE_URL}common-functions.sh"
 wget --no-check-certificate -O "${BASE_DIR}openwrt-config.sh" "${BASE_URL}openwrt-config.sh"
 
-source "${BASE_DIR}color-code.sh"
-source "${BASE_DIR}check-version.sh"
-source "${BASE_DIR}check-language.sh"
+source "${BASE_DIR}common-functions.sh"
 
-if [ -z "$RELEASE_VERSION" ]; then
-    check_version
-fi
 check_language
 run_script

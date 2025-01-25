@@ -3,6 +3,7 @@
 # OpenWrt >= 19.07
 
 
+check_language() {
 if [ "$LANGUAGE" = "en" ]; then
     SELECTED_LANGUAGE="en"
 elif [ "$LANGUAGE" = "ja" ]; then
@@ -23,3 +24,4 @@ else
             ;;
     esac
 fi
+}

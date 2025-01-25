@@ -24,7 +24,18 @@ echo "         #####      ##      ##  ##     #####          "
 echo "        ##  ##      ##      ##  ##         ##         "
 echo "         #####     ####      ####     ######          "
 echo "                                                      "
-echo "                  ALL-IN-ONE-SCRIPTS                  "
+echo "                  all in one scripts                  "
+
+echo "                                                      "
+echo "                    ii i                              "
+echo "         aaaa      iii       ooo      sssss          "
+echo "            aa      ii      oo  oo    ss              "
+echo "         aaaaa      ii      oo  oo     sssss          "
+echo "        aa  aa      ii      oo  oo         aa         "
+echo "         aaaaa     iiii      oooo     ssssss          "
+echo "                                                      "
+echo "                  all in one scripts                  "
+
 
 check_language
 run_script

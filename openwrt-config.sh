@@ -18,9 +18,9 @@ download_and_execute() {
     local url="$2"
     echo -e "$(color "blue" "Downloading and executing: ${script_name}")"
     
-    if wget --no-check-certificate -O "${BASE_DR}${script_name}" "${url}"; then
+    if wget --no-check-certificate -O "${BASE_DIR}${script_name}" "${url}"; then
         echo -e "$(color "green" "Download successful.")"
-        sh "${BASE_DR}${script_name}"
+        sh "${BASE_DIR}${script_name}"
     else
         echo -e "$(color "red" "Download failed.")"
     fi
@@ -41,7 +41,7 @@ menu_option() {
 
 delete_and_exit() {
     echo -e "$(color "red" "Deleting script and exiting.")"
-    rm -rf "${BASE_DR}" /usr/bin/aios
+    rm -rf "${BASE_DIR}" /usr/bin/aios /tmp/aios-config.sh
     exit
 }
 

@@ -17,7 +17,7 @@ fi
 
 # Function to handle downloading and executing scripts
 download_and_execute() {
-    mkdir -p $(BASE_DIR)
+    mkdir -p "$BASE_DIR"
     local script_name="$1"
     local url="$2"
     echo -e "$(color "blue" "Downloading and executing: ${script_name}")"

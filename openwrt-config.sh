@@ -131,6 +131,5 @@ main_menu() {
 }
 
 check_common
-color_code
 display_system_info
 main_menu

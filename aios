@@ -3,7 +3,6 @@
 # OpenWrt >= 19.07
 
 
-# Constants
 BASE_URL="https://raw.githubusercontent.com/site-u2023/config-software2/main/"
 BASE_DIR="/tmp/config-software2/"
 LANGUAGE="$1"
@@ -12,7 +11,6 @@ run_script() {
     RELEASE_VERSION="$RELEASE_VERSION" SELECTED_LANGUAGE="$SELECTED_LANGUAGE" sh "${BASE_DIR}openwrt-config.sh"
 }
 
-# Download and execute scripts
 mkdir -p "$BASE_DIR"
 wget --no-check-certificate -O "${BASE_DIR}common-functions.sh" "${BASE_URL}common-functions.sh"
 wget --no-check-certificate -O "${BASE_DIR}openwrt-config.sh" "${BASE_URL}openwrt-config.sh"

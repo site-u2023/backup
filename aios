@@ -22,6 +22,7 @@ if [ -z "$RELEASE_VERSION" ]; then
         exit 1
     fi
 fi
+export RELEASE_VERSION
 }
 
 # Language selection logic
@@ -49,6 +50,7 @@ else
     esac
 fi
 echo $SELECTED_LANGUAGE
+export SELECTED_LANGUAGE
 }
 
 # Download and execute scripts
@@ -66,6 +68,3 @@ check_version
 Language_selection
 downloads
 run_script
-
-export RELEASE_VERSION
-export SELECTED_LANGUAGE

@@ -17,7 +17,6 @@ wget --no-check-certificate -O "${BASE_DIR}openwrt-config.sh" "${BASE_URL}openwr
 
 source "${BASE_DIR}common-functions.sh"
 
-echo "------------------------------------------------------"
 echo "                                                      "
 echo "         ####      ###       ####      #####          "
 echo "            ##      ##      ##  ##    ##              "

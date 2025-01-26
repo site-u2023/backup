@@ -37,5 +37,5 @@ chmod +x /usr/bin/aios
 #echo "${SELECTED_LANGUAGE}" > "${BASE_DIR}check_language"
 echo "${RELEASE_VERSION}" > "${BASE_DIR}check_version"
 
-check_ttyd_installed
+check_ttyd_installed "$1"
 aios "$1"

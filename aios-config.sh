@@ -46,9 +46,14 @@ select_language() {
         echo "[en]: English"
         echo "[ja]: 日本語"
         read -p "Please enter your choice: " LANGUAGE_CHOICE
-        # 入力のトリム（前後の空白を削除）
-        LANGUAGE_CHOICE=$(echo "$LANGUAGE_CHOICE" | tr -d '[:space:]')
-        echo "You selected: $LANGUAGE_CHOICE"  # デバッグ用に選択された内容を表示
+        # 入力内容をデバッグ表示
+        echo "You entered: '$LANGUAGE_CHOICE'"  # デバッグ表示（入力内容をシングルクォーテーションで囲んで表示）
+        
+        # 入力をトリム
+        LANGUAGE_CHOICE=$(echo "$LANGUAGE_CHOICE" | sed 's/[[:space:]]//g')
+
+        # 入力内容確認
+        echo "Trimmed input: '$LANGUAGE_CHOICE'"  # トリム後の内容を表示
 
         if [ "$LANGUAGE_CHOICE" = "en" ]; then
             SELECTED_LANGUAGE="en"

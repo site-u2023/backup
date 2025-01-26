@@ -3,7 +3,7 @@
 # OpenWrt >= 19.07
 # This script is specifically designed for the initial setup of an all-in-one script.
 
-LANGUAGE=$1
+SELECTED_LANGUAGE=$1
 BASE_URL="https://raw.githubusercontent.com/site-u2023/aios/main/"
 BASE_DIR="/tmp/aios/"
 SUPPORTED_VERSIONS="19 21 22 23 24 SN"
@@ -21,4 +21,4 @@ wget --no-check-certificate -O "/usr/bin/aios" "${BASE_URL}aios"
 chmod +x /usr/bin/aios
 sh "${BASE_DIR}ttyd.sh"
 
-RELEASE_VERSION="$RELEASE_VERSION" aios "$LANGUAGE"
+RELEASE_VERSION="$RELEASE_VERSION" aios "$SELECTED_LANGUAGE"

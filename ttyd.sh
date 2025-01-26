@@ -71,5 +71,5 @@ uci commit ttyd
 /etc/init.d/rpcd start
 }
 
-check_common
+check_common "$1"
 check_ttyd_installed

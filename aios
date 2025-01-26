@@ -19,6 +19,7 @@ source "${BASE_DIR}common-functions.sh"
 
 echo -e "$(color "red_white" "    Disclaimer: Use this script at your own risk.     ")"
 
+echo -e "$(color "white"     "          OpenWrt dedicated config software           ")"　
 echo -e "$(color "white"     "                                                      ")"
 echo -e "$(color "magenta"   "                    ii i                              ")"
 echo -e "$(color "blue"      "         aaaa      iii       oooo      sssss          ")"

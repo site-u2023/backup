@@ -22,17 +22,22 @@ check_ttyd_installed() {
 }
 
 install_ttyd() {
+if [ "$SELECTED_LANGUAGE" = "en" ]; then
+    INSTALL_LANGUAGE=""
+else
+    INSTALL_LANGUAGE="-$SELECTED_LANGUAGE"
+fi
     case "$PACKAGE_MANAGER" in
         "apk")
             echo "Installing ttyd using APK..."
             apk update
-            apk add luci-app-ttyd
+            apk add luci-app-ttyd"$INSTALL_LANGUAGE"
             ttyd_setting
             ;;
         "opkg")
             echo "Installing ttyd using OPKG..."
             opkg update
-            opkg install luci-app-ttyd
+            opkg install luci-app-ttyd"$INSTALL_LANGUAGE"
             ttyd_setting
             ;;
         *)

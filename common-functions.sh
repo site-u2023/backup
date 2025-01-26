@@ -68,18 +68,52 @@ check_package_manager() {
     fi
 }
 
-check_common() {
-if [ -z "$RELEASE_VERSION" ]; then
-    check_version    
-fi
-
-if [ -z "$SELECTED_LANGUAGE" ]; then
-    if [[ "$SELECTED_LANGUAGE" != "ja" && "$SELECTED_LANGUAGE" != "en" ]]; then
-        check_language    
+check_common2() {
+    # ファイルが存在していれば読み込み
+    if [ -f "${BASE_DIR}check_version" ]; then
+        RELEASE_VERSION=$(cat ${BASE_DIR}check_version | cut -d'=' -f2)
     fi
-fi
+    
+    if [ -f "${BASE_DIR}check_language" ]; then
+        SELECTED_LANGUAGE=$(cat ${BASE_DIR}check_language | cut -d'=' -f2)
+    fi
+    
+    if [ -f "${BASE_DIR}check_package_manager" ]; then
+        PACKAGE_MANAGER=$(cat ${BASE_DIR}check_package_manager | cut -d'=' -f2)
+    fi
 
-if [ -z "$PACKAGE_MANAGER" ]; then
-    check_package_manager
-fi
+    # RELEASE_VERSIONが設定されていなければcheck_versionを実行
+    if [ -z "$RELEASE_VERSION" ]; then
+        check_version
+    fi
+
+    # SELECTED_LANGUAGEが設定されていなければcheck_languageを実行
+    if [ -z "$SELECTED_LANGUAGE" ]; then
+        if [[ "$1" != "ja" && "$1" != "en" ]]; then
+            check_language
+        fi
+    fi
+
+    # PACKAGE_MANAGERが設定されていなければcheck_package_managerを実行
+    if [ -z "$PACKAGE_MANAGER" ]; then
+        check_package_manager
+    fi
 }
+
+check_common() {
+    # ファイルが存在すれば、それぞれの変数に値を設定
+    for file in "${BASE_DIR}check_version" "${BASE_DIR}check_language" "${BASE_DIR}check_package_manager"; do
+        if [ -f "$file" ]; then
+            var_name=$(basename "$file")
+            var_name="${var_name%.*}"  # 拡張子を除去して変数名にする
+            eval "$var_name=$(cut -d'=' -f2 < "$file")"
+        fi
+    done
+
+    # それぞれの変数が設定されていない場合は、対応する関数を実行
+    [ -z "$RELEASE_VERSION" ] && check_version
+    [ -z "$SELECTED_LANGUAGE" ] && { [[ "$1" != "ja" && "$1" != "en" ]] && check_language; }
+    [ -z "$PACKAGE_MANAGER" ] && check_package_manager
+}
+
+

@@ -67,29 +67,41 @@ check_package_manager() {
     fi
 }
 
+check_common() {
+if [ -f "${BASE_DIR}check_version" ]; then
+    RELEASE_VERSION=$(cat ${BASE_DIR}check_version)
+fi
+[ -z "$RELEASE_VERSION" ] && check_version
+
+if [ -f "${BASE_DIR}check_language" ]; then
+    SELECTED_LANGUAGE=$(cat ${BASE_DIR}check_language)
+fi
+[ -z "$SELECTED_LANGUAGE" ] && [[ "$1" != "ja" && "$1" != "en" ]] && check_language
+
+[ -f "${BASE_DIR}check_package_manager" ] && PACKAGE_MANAGER=$(cat ${BASE_DIR}check_package_manager)
+[ -z "$PACKAGE_MANAGER" ] && check_package_manager
+}
+
 check_common2() {
     if [ -f "${BASE_DIR}check_version" ]; then
         RELEASE_VERSION=$(cat ${BASE_DIR}check_version)
+    fi 
+        if [ -z "$RELEASE_VERSION" ]; then
+        check_version
     fi
     
     if [ -f "${BASE_DIR}check_language" ]; then
         SELECTED_LANGUAGE=$(cat ${BASE_DIR}check_language)
     fi
-    
-    if [ -f "${BASE_DIR}check_package_manager" ]; then
-        PACKAGE_MANAGER=$(cat ${BASE_DIR}check_package_manager)
-    fi
-
-    if [ -z "$RELEASE_VERSION" ]; then
-        check_version
-    fi
-
     if [ -z "$SELECTED_LANGUAGE" ]; then
         if [[ "$1" != "ja" && "$1" != "en" ]]; then
             check_language
         fi
     fi
 
+        if [ -f "${BASE_DIR}check_package_manager" ]; then
+        PACKAGE_MANAGER=$(cat ${BASE_DIR}check_package_manager)
+    fi
     if [ -z "$PACKAGE_MANAGER" ]; then
         check_package_manager
     fi
@@ -122,7 +134,7 @@ load_check_value() {
     fi
 }
 
-check_common() {
+check_common222() {
     # 変数に対応するファイルパスを指定
     local version_file="${BASE_DIR}check_version"
     local language_file="${BASE_DIR}check_language"

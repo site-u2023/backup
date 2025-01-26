@@ -62,23 +62,26 @@ check_language() {
 
 check_common() {
 if [ -z "$RELEASE_VERSION" ]; then
-    echo -e "$(color "white" "OpenWrt version: "${RELEASE_VERSION}" - Supported")"
     check_version
+else 
+    echo -e "$(color "white" "OpenWrt version: "${RELEASE_VERSION}" - Supported")"
 fi
 LANGUAGES='"en" "ja"'
 if [ -z "$SELECTED_LANGUAGE" ]; then
     check_language
+else
+    echo -e "$(color "white" "Select language: "${SELECTED_LANGUAGE}"")"
 fi
 }
 
-color_code() {
-    for i in `seq 30 38` `seq 40 47` ; do
-        for j in 0 1 2 3 4 5 6 7 ; do
-            printf "\033[${j};${i}m"
-            printf " ${j};${i} "
-            printf "\033[0;39;49m"
-            printf " "
-        done
-        printf "\n"
-    done
-}
+#color_code() {
+#    for i in `seq 30 38` `seq 40 47` ; do
+#        for j in 0 1 2 3 4 5 6 7 ; do
+#            printf "\033[${j};${i}m"
+#            printf " ${j};${i} "
+#            printf "\033[0;39;49m"
+#            printf " "
+#        done
+#        printf "\n"
+#    done
+#}

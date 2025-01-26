@@ -2,7 +2,6 @@
 # License: CC0
 # OpenWrt >= 19.07
 
-# Color settings
 color_code_map() {
   local color=$1
   case $color in
@@ -16,11 +15,10 @@ color_code_map() {
     "white_black") echo "\033[7;40m" ;;
     "red_white") echo "\033[6;41m" ;;
     "reset") echo "\033[0;39m" ;;
-    *) echo "\033[0;39m" ;;  # Fallback to reset
+    *) echo "\033[0;39m" ;;
   esac
 }
 
-# Generic color function
 color() {
   local color=$(color_code_map "$1")
   shift
@@ -29,11 +27,9 @@ color() {
 
 check_version() {
 RELEASE_VERSION=$(grep 'DISTRIB_RELEASE' /etc/openwrt_release | cut -d"'" -f2 | cut -c 1-2)
-    if echo "${SUPPORTED_VERSIONS}" | grep -q "${RELEASE_VERSION}"; then
-        echo -e "$(color "white" "OpenWrt version: "${RELEASE_VERSION}" - Supported")"
-    else
-        echo -e "$(color "red" "Unsupported OpenWrt version: ${RELEASE_VERSION}")"
-        echo -e "$(color "white" "Supported versions: ${SUPPORTED_VERSIONS}")"
+    if ! echo "${SUPPORTED_VERSIONS}" | grep -q "${RELEASE_VERSION}"; then
+        echo "Unsupported OpenWrt version: ${RELEASE_VERSION}"
+        echo "Supported versions: ${SUPPORTED_VERSIONS}"
         exit 1
     fi
 }
@@ -56,10 +52,8 @@ done
 
 check_package_manager() {
     if command -v apk >/dev/null 2>&1; then
-        echo -e "$(color "white" "Downloader: APK")"
         PACKAGE_MANAGER="apk"
     elif command -v opkg >/dev/null 2>&1; then
-        echo -e "$(color "white" "Downloader: OPKG")"
         PACKAGE_MANAGER="opkg"
     else
         echo "No package manager found"
@@ -71,17 +65,14 @@ check_common() {
 if [ -z "$RELEASE_VERSION" ]; then
     check_version    
 fi
-#echo -e "$(color "white" "OpenWrt version: "${RELEASE_VERSION}" - Supported")"
 
 if [ -z "$SELECTED_LANGUAGE" ]; then
     if [[ "$1" != "ja" && "$1" != "en" ]]; then
         check_language    
     fi
 fi
-#echo -e "$(color "white" "Selected language: ${SELECTED_LANGUAGE}")"
 
 if [ -z "$PACKAGE_MANAGER" ]; then
     check_package_manager
 fi
-#echo -e "$(color "white" "Downloader: "${PACKAGE_MANAGER}"")"
 }

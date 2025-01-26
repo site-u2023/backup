@@ -137,6 +137,6 @@ main_menu() {
     done
 }
 
-check_common
+check_common "$1"
 display_system_info
 main_menu

@@ -41,6 +41,15 @@ download_and_execute() {
     fi
 }
 
+exit_end() {
+    if ask_confirmation "Are you sure you want to exit the script?"; then
+        echo -e "$(color "white" "Exiting script.")"
+        exit
+    else
+        echo -e "$(color "green" "Aborted exit.")"
+    fi
+}
+
 delete_and_exit() {
     if ask_confirmation "Are you sure you want to delete the script and exit?"; then
         echo -e "$(color "red" "Deleting script and exiting.")"
@@ -48,15 +57,6 @@ delete_and_exit() {
         exit
     else
         echo -e "$(color "green" "Aborted deletion.")"
-    fi
-}
-
-exit_script() {
-    if ask_confirmation "Are you sure you want to exit the script?"; then
-        echo -e "$(color "white" "Exiting script.")"
-        exit
-    else
-        echo -e "$(color "green" "Aborted exit.")"
     fi
 }
 
@@ -131,7 +131,7 @@ main_menu() {
             "b") menu_option "${MENU4}" "${TARGET4}" "${BASE_URL}${TARGET4}" ;;
             "a") menu_option "${MENU5}" "${TARGET5}" "${BASE_URL}${TARGET5}" ;;
             "o") menu_option "${MENU6}" "${TARGET6}" "${BASE_URL}${TARGET6}" ;;
-            "e") exit_script ;;
+            "e") exit_end ;;
             "d") delete_and_exit ;;
             *) echo -e "$(color "red" "Invalid option. Please try again.")" ;;
         esac

@@ -80,15 +80,17 @@ check_common() {
   fi
   [ -z "$RELEASE_VERSION" ] && check_version
 
-  SELECTED_LANGUAGE=${1:-$( [ -f "${BASE_DIR}check_language" ] && cat "${BASE_DIR}check_language" )}
-  if [ -z "${SELECTED_LANGUAGE}" ] || { [ "$1" != "ja" ] && [ "$1" != "en" ]; }; then
-    check_language
-  else
+  if [ -n "$1" ] && { [ "$1" = "ja" ] || [ "$1" = "en" ]; }; then
+    SELECTED_LANGUAGE="$1"
     echo "${SELECTED_LANGUAGE}" > "${BASE_DIR}check_language"
+  elif [ -f "${BASE_DIR}check_language" ]; then
+    SELECTED_LANGUAGE=$(cat "${BASE_DIR}check_language")
   fi
+  [ -z "${SELECTED_LANGUAGE}" ] && check_language
 
   if [ -f "${BASE_DIR}check_package_manager" ]; then
     PACKAGE_MANAGER=$(cat "${BASE_DIR}check_package_manager")
   fi
   [ -z "$PACKAGE_MANAGER" ] && check_package_manager
 }
+

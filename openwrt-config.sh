@@ -116,6 +116,6 @@ main_menu() {
     done
 }
 
-display_system_info
 check_common
+display_system_info
 main_menu

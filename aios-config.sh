@@ -26,8 +26,20 @@ check_ttyd_installed() {
         echo "ttyd is already installed."
     else
         echo "ttyd is not installed."
-        wget --no-check-certificate -O "${BASE_DIR}ttyd.sh" "${BASE_URL}ttyd.sh"
-        sh "${BASE_DIR}ttyd.sh" "$1"
+        read -p "Do you want to install ttyd? (y/n): " choice
+        case "$choice" in
+            [Yy]*)
+                echo "Installing ttyd..."
+                wget --no-check-certificate -O "${BASE_DIR}ttyd.sh" "${BASE_URL}ttyd.sh"
+                sh "${BASE_DIR}ttyd.sh" "$1"
+                ;;
+            [Nn]*)
+                echo "Skipping ttyd installation."
+                ;;
+            *)
+                echo "Invalid choice. Skipping ttyd installation."
+                ;;
+        esac
     fi
 }
 

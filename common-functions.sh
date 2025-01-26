@@ -75,18 +75,20 @@ fi
 }
 
 check_common() {
-if [ -f "${BASE_DIR}check_version" ]; then
-    RELEASE_VERSION=$(cat ${BASE_DIR}check_version)
-fi
-[ -z "$RELEASE_VERSION" ] && check_version
+  if [ -f "${BASE_DIR}check_version" ]; then
+    RELEASE_VERSION=$(cat "${BASE_DIR}check_version")
+  fi
+  [ -z "$RELEASE_VERSION" ] && check_version
 
-SELECTED_LANGUAGE=${1:-$( [ -f "${BASE_DIR}check_language" ] && cat "${BASE_DIR}check_language" )}
-if [ -z "${SELECTED_LANGUAGE}" ] || { [ "$1" != "ja" ] && [ "$1" != "en" ]; }; then
-  check_language
-else
-  echo "${SELECTED_LANGUAGE}" > "${BASE_DIR}check_language"
-fi
+  SELECTED_LANGUAGE=${1:-$( [ -f "${BASE_DIR}check_language" ] && cat "${BASE_DIR}check_language" )}
+  if [ -z "${SELECTED_LANGUAGE}" ] || { [ "$1" != "ja" ] && [ "$1" != "en" ]; }; then
+    check_language
+  else
+    echo "${SELECTED_LANGUAGE}" > "${BASE_DIR}check_language"
+  fi
 
-[ -f "${BASE_DIR}check_package_manager" ] && PACKAGE_MANAGER=$(cat ${BASE_DIR}check_package_manager)
-[ -z "$PACKAGE_MANAGER" ] && check_package_manager
+  if [ -f "${BASE_DIR}check_package_manager" ]; then
+    PACKAGE_MANAGER=$(cat "${BASE_DIR}check_package_manager")
+  fi
+  [ -z "$PACKAGE_MANAGER" ] && check_package_manager
 }

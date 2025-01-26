@@ -68,8 +68,7 @@ check_package_manager() {
     fi
 }
 
-check_common2() {
-    # ファイルが存在していれば読み込み
+check_common() {
     if [ -f "${BASE_DIR}check_version" ]; then
         RELEASE_VERSION=$(cat ${BASE_DIR}check_version | cut -d'=' -f2)
     fi
@@ -82,25 +81,22 @@ check_common2() {
         PACKAGE_MANAGER=$(cat ${BASE_DIR}check_package_manager | cut -d'=' -f2)
     fi
 
-    # RELEASE_VERSIONが設定されていなければcheck_versionを実行
     if [ -z "$RELEASE_VERSION" ]; then
         check_version
     fi
 
-    # SELECTED_LANGUAGEが設定されていなければcheck_languageを実行
     if [ -z "$SELECTED_LANGUAGE" ]; then
         if [[ "$1" != "ja" && "$1" != "en" ]]; then
             check_language
         fi
     fi
 
-    # PACKAGE_MANAGERが設定されていなければcheck_package_managerを実行
     if [ -z "$PACKAGE_MANAGER" ]; then
         check_package_manager
     fi
 }
 
-check_common() {
+check_common22() {
     # ファイルが存在すれば、それぞれの変数に値を設定
     for file in "${BASE_DIR}check_version" "${BASE_DIR}check_language" "${BASE_DIR}check_package_manager"; do
         if [ -f "$file" ]; then

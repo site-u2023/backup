@@ -63,10 +63,13 @@ check_language() {
 check_package_manager() {
     if command -v apk >/dev/null 2>&1; then
         echo "Downloader: APK"
-        PACKAGE_MANAGER="apk_package"
+        PACKAGE_MANAGER="apk"
     elif command -v opkg >/dev/null 2>&1; then
         echo "Downloader: OPKG"
-        PACKAGE_MANAGER="opkg_package"
+        PACKAGE_MANAGER="opkg"
+    else
+        echo "No package manager found"
+        exit 1
     fi
 }
 

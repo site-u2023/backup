@@ -139,10 +139,12 @@ check_common() {
         check_version
     fi
 
-    # SELECTED_LANGUAGEが設定されていない場合、check_languageを実行
-    if [ -z "$SELECTED_LANGUAGE" ]; then
+    # SELECTED_LANGUAGEが設定されていない場合、または引数で指定されている場合のみcheck_languageを実行
+    if [ -z "$SELECTED_LANGUAGE" ] || [[ "$SELECTED_LANGUAGE" != "ja" && "$SELECTED_LANGUAGE" != "en" ]]; then
         echo "Checking language selection..."
-        if [[ "$1" != "ja" && "$1" != "en" ]]; then
+        if [[ "$1" == "ja" || "$1" == "en" ]]; then
+            SELECTED_LANGUAGE="$1"
+        else
             check_language
         fi
     fi

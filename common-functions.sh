@@ -79,7 +79,7 @@ if [ -z "$RELEASE_VERSION" ]; then
 else 
     echo -e "$(color "white" "OpenWrt version: "${RELEASE_VERSION}" - Supported")"
 fi
-LANGUAGES='"en" "ja"'
+#LANGUAGES='"en" "ja"'
 if [ -z "$SELECTED_LANGUAGE" ]; then
     check_language
 else

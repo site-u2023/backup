@@ -2,7 +2,6 @@
 # License: CC0
 # OpenWrt >= 19.07
 
-#check_common "$1"
 BASE_DIR="/tmp/aios/"
 
 color_code_map() {

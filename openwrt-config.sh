@@ -2,6 +2,7 @@
 # License: CC0
 # OpenWrt >= 19.07
 
+SELECTED_LANGUAGE=$1
 BASE_URL="https://raw.githubusercontent.com/site-u2023/aios/main/"
 BASE_DIR="/tmp/aios/"
 SUPPORTED_VERSIONS="19 21 22 23 24 SN"
@@ -53,6 +54,9 @@ display_system_info() {
     echo -e "$(color "white" "Available Flash Storage: ${available_flash} MB")"
     echo -e "$(color "white" "USB Devices: ${usb_devices}")"
     echo -e "$(color "white" "Scripts directory: ${BASE_DIR}")"
+    echo -e "$(color "white" "OpenWrt version: "${RELEASE_VERSION}" - Supported")"
+    echo -e "$(color "white" "Selected language: ${SELECTED_LANGUAGE}")"
+    echo -e "$(color "white" "Downloader: "${PACKAGE_MANAGER}"")"
 }
 
 main_menu() {

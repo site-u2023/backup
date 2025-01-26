@@ -73,3 +73,13 @@ else
     echo -e "$(color "white" "Select language: "${SELECTED_LANGUAGE}"")"
 fi
 }
+
+get_package_manager() {
+    if command -v apk >/dev/null 2>&1; then
+        echo "apk"
+    elif command -v opkg >/dev/null 2>&1; then
+        echo "opkg"
+    else
+        echo "none"
+    fi
+}

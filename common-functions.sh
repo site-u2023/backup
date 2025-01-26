@@ -80,13 +80,12 @@ if [ -f "${BASE_DIR}check_version" ]; then
 fi
 [ -z "$RELEASE_VERSION" ] && check_version
 
-SELECTED_LANGUAGE=$1
-if [ -n "${SELECTED_LANGUAGE}" ]; then
+SELECTED_LANGUAGE=${1:-$( [ -f "${BASE_DIR}check_language" ] && cat "${BASE_DIR}check_language" )}
+if [ -z "${SELECTED_LANGUAGE}" ] || { [ "$1" != "ja" ] && [ "$1" != "en" ]; }; then
+  check_language
+else
   echo "${SELECTED_LANGUAGE}" > "${BASE_DIR}check_language"
-elif [ -f "${BASE_DIR}check_language" ]; then
-    SELECTED_LANGUAGE=$(cat ${BASE_DIR}check_language)
 fi
-[ -z "$SELECTED_LANGUAGE" ] && [[ "$1" != "ja" && "$1" != "en" ]] && check_language
 
 [ -f "${BASE_DIR}check_package_manager" ] && PACKAGE_MANAGER=$(cat ${BASE_DIR}check_package_manager)
 [ -z "$PACKAGE_MANAGER" ] && check_package_manager

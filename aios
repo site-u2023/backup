@@ -30,5 +30,5 @@ echo -e "$(color "white"     "                                                  
 echo -e "$(color "white"     "                  all in one scripts                  ")"
 echo -e "$(color "white"     "                                                      ")"
 
-check_common
+check_common "$1"
 run_script

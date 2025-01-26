@@ -7,6 +7,7 @@ SELECTED_LANGUAGE=$1
 BASE_URL="https://raw.githubusercontent.com/site-u2023/aios/main/"
 BASE_DIR="/tmp/aios/"
 SUPPORTED_VERSIONS="19 21 22 23 24 SN"
+mkdir -p "$BASE_DIR"
 
 RELEASE_VERSION=$(grep 'DISTRIB_RELEASE' /etc/openwrt_release | cut -d"'" -f2 | cut -c 1-2)
     if ! echo "${SUPPORTED_VERSIONS}" | grep -q "${RELEASE_VERSION}"; then
@@ -15,7 +16,6 @@ RELEASE_VERSION=$(grep 'DISTRIB_RELEASE' /etc/openwrt_release | cut -d"'" -f2 | 
         exit 1
     fi
 
-mkdir -p "$BASE_DIR"
 check_ttyd_installed() {
     if command -v ttyd >/dev/null 2>&1; then
         echo "ttyd is already installed."

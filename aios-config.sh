@@ -3,11 +3,13 @@
 # OpenWrt >= 19.07
 # This script is specifically designed for the initial setup of an all-in-one script.
 
+# 環境変数で再実行を防止
 if [ "$AIOS_RUNNING" = "true" ]; then
     echo "The script is already running. Exiting to avoid a loop."
     exit 1
 fi
 
+# 実行中のフラグを設定
 export AIOS_RUNNING=true
 
 SELECTED_LANGUAGE=$1
@@ -37,12 +39,37 @@ check_ttyd_installed() {
     fi
 }
 
+# 言語選択処理
+select_language() {
+    echo "Select your language:"
+    echo "[en]: English"
+    echo "[ja]: 日本語"
+    read -p "Please enter your choice: " LANGUAGE_CHOICE
+    if [ "$LANGUAGE_CHOICE" = "en" ]; then
+        SELECTED_LANGUAGE="en"
+    elif [ "$LANGUAGE_CHOICE" = "ja" ]; then
+        SELECTED_LANGUAGE="ja"
+    else
+        echo "Invalid choice. Please select a valid option."
+        select_language  # 再帰的に呼び出して再試行
+    fi
+}
+
+# 言語選択が指定されていない場合に呼び出し
+if [ -z "$SELECTED_LANGUAGE" ]; then
+    select_language
+fi
+
+# スクリプトのダウンロードと実行
 wget --no-check-certificate -O "/usr/bin/aios" "${BASE_URL}aios"
 chmod +x /usr/bin/aios
 
+# 言語とバージョンを保存
 echo "${SELECTED_LANGUAGE}" > "${BASE_DIR}check_language"
 echo "${RELEASE_VERSION}" > "${BASE_DIR}check_version"
 
+# ttydインストール確認
 check_ttyd_installed
 
+# aiosスクリプト実行
 aios

@@ -109,8 +109,8 @@ main_menu() {
             "b") menu_option "${MENU4}" "${TARGET4}" "${BASE_URL}${TARGET4}" ;;
             "a") menu_option "${MENU5}" "${TARGET5}" "${BASE_URL}${TARGET5}" ;;
             "o") menu_option "${MENU6}" "${TARGET6}" "${BASE_URL}${TARGET6}" ;;
-            "e") exit ;;
-            "d") delete_and_exit ;;
+            "e") menu_option "${MENU00}" "${TARGET00}" exit ;;
+            "d") menu_option "${MENU01}" "${TARGET01}" delete_and_exit ;;
             *) echo -e "$(color "red" "Invalid option. Please try again.")" ;;
         esac
     done

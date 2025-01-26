@@ -31,5 +31,7 @@ echo -e "$(color "white"     "                                                  
 echo -e "$(color "white"     "                  all in one scripts                  ")"
 echo -e "$(color "white"     "                                                      ")"
 
+echo "${SELECTED_LANGUAGE}" > ${BASE_DIR}check_language
+
 check_common
 run_script

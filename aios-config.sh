@@ -29,7 +29,9 @@ check_ttyd_installed() {
 wget --no-check-certificate -O "/usr/bin/aios" "${BASE_URL}aios"
 chmod +x /usr/bin/aios
 
-echo "${SELECTED_LANGUAGE}" > ${BASE_DIR}check_language
+if [ -n "${SELECTED_LANGUAGE}" ]; then
+  echo "${SELECTED_LANGUAGE}" > "${BASE_DIR}check_language"
+fi
 echo "${RELEASE_VERSION}" > ${BASE_DIR}check_version
 
 check_ttyd_installed

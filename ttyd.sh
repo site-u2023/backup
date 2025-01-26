@@ -66,5 +66,6 @@ uci commit ttyd
 /etc/init.d/rpcd start
 }
 
-check_common
+check_version
+check_package_manager
 check_ttyd_installed

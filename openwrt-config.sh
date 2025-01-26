@@ -14,26 +14,11 @@ source "${BASE_DIR}common-functions.sh"
 
 ask_confirmation() {
     local message="$1"
-    local confirm_message
-    local abort_message
-
-    # 言語によってメッセージを変更
-    if [ "${SELECTED_LANGUAGE}" = "en" ]; then
-        confirm_message="Do you want to proceed? [y/n]: "
-        abort_message="Invalid choice, please enter 'y' or 'n'."
-    elif [ "${SELECTED_LANGUAGE}" = "ja" ]; then
-        confirm_message="続けますか？ [y/n]: "
-        abort_message="無効な選択肢です。'y' または 'n' を入力してください。"
-    else
-        confirm_message="Do you want to proceed? [y/n]: "
-        abort_message="Invalid choice, please enter 'y' or 'n'."
-    fi
-
-    read -p "$(color "white" "${message} ${confirm_message}")" choice
+    read -p "$(color "white" "${message} [y/n]: ")" choice
     case "${choice}" in
         "y") return 0 ;;  # yes, continue
         "n") return 1 ;;  # no, abort
-        *) echo -e "$(color "red" "${abort_message}")" ; ask_confirmation "$message" ;; # re-prompt
+        *) echo -e "$(color "red" "Invalid choice, please enter 'y' or 'n'.")" ; ask_confirmation "$message" ;; # re-prompt
     esac
 }
 

@@ -67,13 +67,23 @@ check_package_manager() {
     fi
 }
 
+language_parameter() {
+SELECTED_LANGUAGE=$1
+if [ -n "${SELECTED_LANGUAGE}" ]; then
+  echo "${SELECTED_LANGUAGE}" > "${BASE_DIR}check_language"
+fi
+}
+
 check_common() {
 if [ -f "${BASE_DIR}check_version" ]; then
     RELEASE_VERSION=$(cat ${BASE_DIR}check_version)
 fi
 [ -z "$RELEASE_VERSION" ] && check_version
 
-if [ -f "${BASE_DIR}check_language" ]; then
+SELECTED_LANGUAGE=$1
+if [ -n "${SELECTED_LANGUAGE}" ]; then
+  echo "${SELECTED_LANGUAGE}" > "${BASE_DIR}check_language"
+elif [ -f "${BASE_DIR}check_language" ]; then
     SELECTED_LANGUAGE=$(cat ${BASE_DIR}check_language)
 fi
 [ -z "$SELECTED_LANGUAGE" ] && [[ "$1" != "ja" && "$1" != "en" ]] && check_language

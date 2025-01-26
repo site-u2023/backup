@@ -2,7 +2,6 @@
 # License: CC0
 # OpenWrt >= 19.07
 
-SELECTED_LANGUAGE=$1
 BASE_URL="https://raw.githubusercontent.com/site-u2023/aios/main/"
 BASE_DIR="/tmp/aios/"
 SUPPORTED_VERSIONS="19 21 22 23 24 SN"
@@ -47,7 +46,6 @@ install_ttyd() {
     esac
 }
 
-
 ttyd_setting() {
 uci del_list ttyd.@ttyd[0].client_option='theme={"background": "black"}'
 uci del_list ttyd.@ttyd[0].client_option='titleFixed=ttyd'
@@ -72,10 +70,6 @@ uci commit ttyd
 /etc/init.d/ttyd enable
 /etc/init.d/rpcd start
 }
-
-if [ -n "${SELECTED_LANGUAGE}" ]; then
-  echo "${SELECTED_LANGUAGE}" > "${BASE_DIR}check_language"
-fi
 
 check_common
 check_ttyd_installed

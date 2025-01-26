@@ -56,10 +56,10 @@ done
 
 check_package_manager() {
     if command -v apk >/dev/null 2>&1; then
-        echo "Downloader: APK"
+        echo -e "$(color "white" "Downloader: APK")"
         PACKAGE_MANAGER="apk"
     elif command -v opkg >/dev/null 2>&1; then
-        echo "Downloader: OPKG"
+        echo -e "$(color "white" "Downloader: OPKG")"
         PACKAGE_MANAGER="opkg"
     else
         echo "No package manager found"
@@ -69,21 +69,19 @@ check_package_manager() {
 
 check_common() {
 if [ -z "$RELEASE_VERSION" ]; then
-    check_version
-else 
-    echo -e "$(color "white" "OpenWrt version: "${RELEASE_VERSION}" - Supported")"
+    check_version    
 fi
+#echo -e "$(color "white" "OpenWrt version: "${RELEASE_VERSION}" - Supported")"
 
 if [ -z "$SELECTED_LANGUAGE" ]; then
     if [[ "$1" != "ja" && "$1" != "en" ]]; then
         check_language    
     fi
 fi
-echo -e "$(color "white" "Selected language: ${SELECTED_LANGUAGE}")"
+#echo -e "$(color "white" "Selected language: ${SELECTED_LANGUAGE}")"
 
 if [ -z "$PACKAGE_MANAGER" ]; then
     check_package_manager
-else
-    echo -e "$(color "white" "Downloader: "${PACKAGE_MANAGER}"")"
 fi
+#echo -e "$(color "white" "Downloader: "${PACKAGE_MANAGER}"")"
 }

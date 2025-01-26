@@ -73,5 +73,9 @@ uci commit ttyd
 /etc/init.d/rpcd start
 }
 
+if [ -n "${SELECTED_LANGUAGE}" ]; then
+  echo "${SELECTED_LANGUAGE}" > "${BASE_DIR}check_language"
+fi
+
 check_common
 check_ttyd_installed

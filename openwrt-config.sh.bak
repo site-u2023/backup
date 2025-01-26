@@ -116,6 +116,10 @@ main_menu() {
     done
 }
 
+if [ -n "${SELECTED_LANGUAGE}" ]; then
+  echo "${SELECTED_LANGUAGE}" > "${BASE_DIR}check_language"
+fi
+
 check_common
 display_system_info
 main_menu

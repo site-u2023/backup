@@ -60,6 +60,16 @@ check_language() {
     fi
 }
 
+check_package_manager() {
+    if command -v apk >/dev/null 2>&1; then
+        echo "Downloader: APK"
+        PACKAGE_MANAGER="apk_package"
+    elif command -v opkg >/dev/null 2>&1; then
+        echo "Downloader: OPKG"
+        PACKAGE_MANAGER="opkg_package"
+    fi
+}
+
 check_common() {
 if [ -z "$RELEASE_VERSION" ]; then
     check_version
@@ -72,14 +82,9 @@ if [ -z "$SELECTED_LANGUAGE" ]; then
 else
     echo -e "$(color "white" "Select language: "${SELECTED_LANGUAGE}"")"
 fi
-}
-
-get_package_manager() {
-    if command -v apk >/dev/null 2>&1; then
-        echo "Downloader: APK"
-        PACKAGE_MANAGER="apk_package"
-    elif command -v opkg >/dev/null 2>&1; then
-        echo "Downloader: OPKG"
-        PACKAGE_MANAGER="opkg_package"
-    fi
+if [ -z "$PACKAGE_MANAGER" ]; then
+    check_package_manager
+else
+    echo -e "$(color "white" "Downloader: "${PACKAGE_MANAGER}"")"
+fi
 }

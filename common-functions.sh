@@ -2,6 +2,9 @@
 # License: CC0
 # OpenWrt >= 19.07
 
+check_common "$1"
+BASE_DIR="/tmp/aios/"
+
 color_code_map() {
   local color=$1
   case $color in
@@ -27,6 +30,7 @@ color() {
 
 check_version() {
 RELEASE_VERSION=$(grep 'DISTRIB_RELEASE' /etc/openwrt_release | cut -d"'" -f2 | cut -c 1-2)
+echo "RELEASE_VERSION=${RELEASE_VERSION}" > ${BASE_DIR}check_common.txt
     if ! echo "${SUPPORTED_VERSIONS}" | grep -q "${RELEASE_VERSION}"; then
         echo "Unsupported OpenWrt version: ${RELEASE_VERSION}"
         echo "Supported versions: ${SUPPORTED_VERSIONS}"
@@ -48,13 +52,16 @@ while true; do
          *) echo "Invalid choice." ;;
    esac
 done
+echo "SELECTED_LANGUAGE=${SELECTED_LANGUAGE}" > ${BASE_DIR}check_common.txt
 }
 
 check_package_manager() {
     if command -v apk >/dev/null 2>&1; then
         PACKAGE_MANAGER="apk"
+        echo "PACKAGE_MANAGER=${PACKAGE_MANAGER}" > ${BASE_DIR}check_common.txt
     elif command -v opkg >/dev/null 2>&1; then
         PACKAGE_MANAGER="opkg"
+        echo "PACKAGE_MANAGER=${PACKAGE_MANAGER}" > ${BASE_DIR}check_common.txt
     else
         echo "No package manager found"
         exit 1

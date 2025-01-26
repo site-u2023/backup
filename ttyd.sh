@@ -22,22 +22,22 @@ check_ttyd_installed() {
 }
 
 install_ttyd() {
-if [ "$SELECTED_LANGUAGE" = "en" ]; then
-    INSTALL_LANGUAGE=""
-else
-    INSTALL_LANGUAGE="-$SELECTED_LANGUAGE"
-fi
+    if [ "$SELECTED_LANGUAGE" = "en" ]; then
+        INSTALL_LANGUAGE=""
+    else
+        INSTALL_LANGUAGE="-$SELECTED_LANGUAGE"
+    fi
     case "$PACKAGE_MANAGER" in
         "apk")
             echo "Installing ttyd using APK..."
             apk update
-            apk add luci-app-ttyd"$INSTALL_LANGUAGE"
+            apk add luci-app-ttyd"$INSTALL_LANGUAGE" || { echo "Failed to install luci-app-ttyd"; exit 1; }
             ttyd_setting
             ;;
         "opkg")
             echo "Installing ttyd using OPKG..."
             opkg update
-            opkg install luci-app-ttyd"$INSTALL_LANGUAGE"
+            opkg install luci-app-ttyd"$INSTALL_LANGUAGE" || { echo "Failed to install luci-app-ttyd"; exit 1; }
             ttyd_setting
             ;;
         *)
@@ -46,6 +46,7 @@ fi
             ;;
     esac
 }
+
 
 ttyd_setting() {
 uci del_list ttyd.@ttyd[0].client_option='theme={"background": "black"}'

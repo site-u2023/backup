@@ -1,10 +1,10 @@
 # all in one scripts
 
-Dedicated configuration software for OpenWrt
+New config software is being tested.
 
 ![main](https://github.com/user-attachments/assets/ebfc8ca2-a42e-470c-9a89-9b5e3eb4ccb8)
 
-New config software is being tested.
+Dedicated configuration software for OpenWrt
 
 January 25, 2025: version α
 

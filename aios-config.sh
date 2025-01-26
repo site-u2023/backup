@@ -14,7 +14,7 @@ mkdir -p "$BASE_DIR" || {
     exit 1
 }
 
-RELEASE_VERSION=$(grep 'DISTRIB_RELEASE' /etc/openwrt_release | cut -d"'" -f2 | cut -c 1-2) > "${BASE_DIR}check_version"
+RELEASE_VERSION=$(grep 'DISTRIB_RELEASE' /etc/openwrt_release | cut -d"'" -f2 | cut -c 1-2)
     if ! echo "${SUPPORTED_VERSIONS}" | grep -q "${RELEASE_VERSION}"; then
         echo "Unsupported OpenWrt version: ${RELEASE_VERSION}"
         echo "Supported versions: ${SUPPORTED_VERSIONS}"
@@ -35,7 +35,7 @@ wget --no-check-certificate -O "/usr/bin/aios" "${BASE_URL}aios"
 chmod +x /usr/bin/aios
 
 #echo "${SELECTED_LANGUAGE}" > "${BASE_DIR}check_language"
-#echo "${RELEASE_VERSION}" > "${BASE_DIR}check_version"
+echo "${RELEASE_VERSION}" > "${BASE_DIR}check_version"
 
 check_ttyd_installed
 aios "$1"

@@ -67,7 +67,7 @@ check_package_manager() {
     fi
 }
 
-check_common() {
+check_common2() {
     if [ -f "${BASE_DIR}check_version" ]; then
         RELEASE_VERSION=$(cat ${BASE_DIR}check_version)
     fi
@@ -111,4 +111,45 @@ check_common22() {
     [ -z "$PACKAGE_MANAGER" ] && check_package_manager
 }
 
+# チェックと設定をまとめた汎用関数
+load_check_value() {
+    local file="$1"
+    local var_name="$2"
 
+    # ファイルが存在し、内容が空でない場合に変数を設定
+    if [ -f "$file" ] && [ -s "$file" ]; then
+        eval "$var_name=$(cat "$file")"
+    fi
+}
+
+check_common() {
+    # 変数に対応するファイルパスを指定
+    local version_file="${BASE_DIR}check_version"
+    local language_file="${BASE_DIR}check_language"
+    local package_manager_file="${BASE_DIR}check_package_manager"
+
+    # 各変数を読み込み、設定がなければチェック
+    load_check_value "$version_file" "RELEASE_VERSION"
+    load_check_value "$language_file" "SELECTED_LANGUAGE"
+    load_check_value "$package_manager_file" "PACKAGE_MANAGER"
+
+    # RELEASE_VERSIONが設定されていない場合、check_versionを実行
+    if [ -z "$RELEASE_VERSION" ]; then
+        echo "Checking OpenWrt version..."
+        check_version
+    fi
+
+    # SELECTED_LANGUAGEが設定されていない場合、check_languageを実行
+    if [ -z "$SELECTED_LANGUAGE" ]; then
+        echo "Checking language selection..."
+        if [[ "$1" != "ja" && "$1" != "en" ]]; then
+            check_language
+        fi
+    fi
+
+    # PACKAGE_MANAGERが設定されていない場合、check_package_managerを実行
+    if [ -z "$PACKAGE_MANAGER" ]; then
+        echo "Checking package manager..."
+        check_package_manager
+    fi
+}

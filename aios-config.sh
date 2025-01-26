@@ -41,18 +41,21 @@ check_ttyd_installed() {
 
 # 言語選択処理
 select_language() {
-    echo "Select your language:"
-    echo "[en]: English"
-    echo "[ja]: 日本語"
-    read -p "Please enter your choice: " LANGUAGE_CHOICE
-    if [ "$LANGUAGE_CHOICE" = "en" ]; then
-        SELECTED_LANGUAGE="en"
-    elif [ "$LANGUAGE_CHOICE" = "ja" ]; then
-        SELECTED_LANGUAGE="ja"
-    else
-        echo "Invalid choice. Please select a valid option."
-        select_language  # 再帰的に呼び出して再試行
-    fi
+    while true; do
+        echo "Select your language:"
+        echo "[en]: English"
+        echo "[ja]: 日本語"
+        read -p "Please enter your choice: " LANGUAGE_CHOICE
+        if [ "$LANGUAGE_CHOICE" = "en" ]; then
+            SELECTED_LANGUAGE="en"
+            break
+        elif [ "$LANGUAGE_CHOICE" = "ja" ]; then
+            SELECTED_LANGUAGE="ja"
+            break
+        else
+            echo "Invalid choice. Please select a valid option."
+        fi
+    done
 }
 
 # 言語選択が指定されていない場合に呼び出し

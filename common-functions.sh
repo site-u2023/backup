@@ -77,7 +77,9 @@ fi
 get_package_manager() {
     if command -v apk >/dev/null 2>&1; then
         echo "Downloader: APK"
+        PACKAGE_MANAGER="apk_package"
     elif command -v opkg >/dev/null 2>&1; then
         echo "Downloader: OPKG"
+        PACKAGE_MANAGER="opkg_package"
     fi
 }

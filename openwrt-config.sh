@@ -75,6 +75,20 @@ exit_script() {
     fi
 }
 
+display_system_info() {
+    local available_memory=$(free | awk '/Mem:/ { print int($4 / 1024) }')
+    local available_flash=$(df | awk '/overlayfs:\/overlay/ { print int($4 / 1024) }')
+    local usb_devices=$(ls /sys/bus/usb/devices | grep -q usb && echo "Detected" || echo "Not detected")
+
+    echo -e "$(color "white" "Available Memory: ${available_memory} MB")"
+    echo -e "$(color "white" "Available Flash Storage: ${available_flash} MB")"
+    echo -e "$(color "white" "USB Devices: ${usb_devices}")"
+    echo -e "$(color "white" "Scripts directory: ${BASE_DIR}")"
+    echo -e "$(color "white" "OpenWrt version: "${RELEASE_VERSION}" - Supported")"
+    echo -e "$(color "white" "Selected language: ${SELECTED_LANGUAGE}")"
+    echo -e "$(color "white" "Downloader: "${PACKAGE_MANAGER}"")"
+}
+
 menu_option() {
     local description="$1"
     local script_name="$2"

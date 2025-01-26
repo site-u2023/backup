@@ -30,7 +30,7 @@ color() {
 
 check_version() {
 RELEASE_VERSION=$(grep 'DISTRIB_RELEASE' /etc/openwrt_release | cut -d"'" -f2 | cut -c 1-2)
-echo "RELEASE_VERSION=${RELEASE_VERSION}" > ${BASE_DIR}check_common.txt
+echo "RELEASE_VERSION=${RELEASE_VERSION}" > ${BASE_DIR}check_version.txt
     if ! echo "${SUPPORTED_VERSIONS}" | grep -q "${RELEASE_VERSION}"; then
         echo "Unsupported OpenWrt version: ${RELEASE_VERSION}"
         echo "Supported versions: ${SUPPORTED_VERSIONS}"
@@ -52,16 +52,16 @@ while true; do
          *) echo "Invalid choice." ;;
    esac
 done
-echo "SELECTED_LANGUAGE=${SELECTED_LANGUAGE}" > ${BASE_DIR}check_common.txt
+echo "SELECTED_LANGUAGE=${SELECTED_LANGUAGE}" > ${BASE_DIR}check_language.txt
 }
 
 check_package_manager() {
     if command -v apk >/dev/null 2>&1; then
         PACKAGE_MANAGER="apk"
-        echo "PACKAGE_MANAGER=${PACKAGE_MANAGER}" > ${BASE_DIR}check_common.txt
+        echo "PACKAGE_MANAGER=${PACKAGE_MANAGER}" > ${BASE_DIR}check_package_manager.txt
     elif command -v opkg >/dev/null 2>&1; then
         PACKAGE_MANAGER="opkg"
-        echo "PACKAGE_MANAGER=${PACKAGE_MANAGER}" > ${BASE_DIR}check_common.txt
+        echo "PACKAGE_MANAGER=${PACKAGE_MANAGER}" > ${BASE_DIR}check_package_manager.txt
     else
         echo "No package manager found"
         exit 1
@@ -74,7 +74,7 @@ if [ -z "$RELEASE_VERSION" ]; then
 fi
 
 if [ -z "$SELECTED_LANGUAGE" ]; then
-    if [[ "$1" != "ja" && "$1" != "en" ]]; then
+    if [[ "$SELECTED_LANGUAGE" != "ja" && "$SELECTED_LANGUAGE" != "en" ]]; then
         check_language    
     fi
 fi

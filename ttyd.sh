@@ -2,20 +2,43 @@
 # License: CC0
 # OpenWrt >= 19.07
 
-is_ttyd_installed() {
-  if [ "$OPENWRT_RELEAS" != "SN" ]; then
-    if opkg list-installed | grep -qw 'luci-app-ttyd'; then
-      return 0
+BASE_URL="https://raw.githubusercontent.com/site-u2023/aios/main/"
+BASE_DIR="/tmp/aios/"
+SUPPORTED_VERSIONS="19 21 22 23 24 SN"
+
+if [ ! -f "${BASE_DIR}common-functions.sh" ]; then
+  wget --no-check-certificate -O "${BASE_DIR}common-functions.sh" "${BASE_URL}common-functions.sh"
+fi
+source "${BASE_DIR}common-functions.sh"
+
+check_ttyd_installed() {
+    if command -v ttyd >/dev/null 2>&1; then
+        echo "ttyd is already installed."
     else
-      return 1
+        echo "ttyd is not installed."
+        install_ttyd
     fi
-  else
-    if apk info | grep -qw 'luci-app-ttyd'; then
-      return 0
-    else
-      return 1
-    fi
-  fi
+}
+
+install_ttyd() {
+    case "$PACKAGE_MANAGER" in
+        "apk")
+            echo "Installing ttyd using APK..."
+            apk update
+            apk add luci-app-ttyd
+            ttyd_setting
+            ;;
+        "opkg")
+            echo "Installing ttyd using OPKG..."
+            opkg update
+            opkg install luci-app-ttyd
+            ttyd_setting
+            ;;
+        *)
+            echo "Unsupported package manager. Cannot install ttyd."
+            exit 1
+            ;;
+    esac
 }
 
 ttyd_setting() {
@@ -43,27 +66,5 @@ uci commit ttyd
 /etc/init.d/rpcd start
 }
 
-OPENWRT_RELEAS=$(grep 'DISTRIB_RELEASE' /etc/openwrt_release | cut -d"'" -f2 | cut -c 1-2)
-
-SUPPORTED_VERSIONS="19 21 22 23 24"
-if echo "$SUPPORTED_VERSIONS" | grep -qw "$OPENWRT_RELEAS"; then
-  if is_ttyd_installed; then
-    echo "luci-app-ttyd is already installed."
-  else
-    echo "Installing luci-app-ttyd..."
-    opkg update
-    opkg install luci-app-ttyd
-    ttyd_setting
-  fi
-elif [ "$OPENWRT_RELEAS" = "SN" ]; then
-  if is_ttyd_installed; then
-    echo "luci-app-ttyd is already installed."
-  else
-    echo "Installing luci-app-ttyd..."
-    apk update
-    apk add luci-app-ttyd
-    ttyd_setting
-  fi
-else
-  echo "Unsupported OpenWrt version: $OPENWRT_RELEAS"
-fi
+check_common
+check_ttyd_installed

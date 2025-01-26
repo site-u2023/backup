@@ -73,11 +73,14 @@ if [ -z "$RELEASE_VERSION" ]; then
 else 
     echo -e "$(color "white" "OpenWrt version: "${RELEASE_VERSION}" - Supported")"
 fi
+
 if [ -z "$SELECTED_LANGUAGE" ]; then
-    check_language
-else
-    echo -e "$(color "white" "Select language: "${SELECTED_LANGUAGE}"")"
+    if [[ "$1" != "ja" && "$1" != "en" ]]; then
+        check_language    
+    fi
 fi
+echo -e "$(color "white" "Selected language: ${SELECTED_LANGUAGE}")"
+
 if [ -z "$PACKAGE_MANAGER" ]; then
     check_package_manager
 else

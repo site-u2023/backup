@@ -39,25 +39,19 @@ RELEASE_VERSION=$(grep 'DISTRIB_RELEASE' /etc/openwrt_release | cut -d"'" -f2 | 
 }
 
 check_language() {
-    if [ "$LANGUAGE" = "en" ]; then
-        SELECTED_LANGUAGE="en"
-    elif [ "$LANGUAGE" = "ja" ]; then
-        SELECTED_LANGUAGE="ja"
-    else
-        while true; do
-            echo -e "$(color "white" "------------------------------------------------------")"
-            echo -e "$(color "white" "Select your language")"
-            echo -e "$(color "blue" "[en]: English")"
-            echo -e "$(color "red" "[ja]: 日本語")"
-            echo -e "$(color "white" "------------------------------------------------------")"
-            read -p "Choose an option [en/ja]: " lang_choice
-            case "${lang_choice}" in
-                "en") SELECTED_LANGUAGE="en"; break ;;
-                "ja") SELECTED_LANGUAGE="ja"; break ;;
-                *) echo "Invalid choice." ;;
-            esac
-        done
-    fi
+while true; do
+    echo -e "$(color "white" "------------------------------------------------------")"
+    echo -e "$(color "white" "Select your language")"
+    echo -e "$(color "blue" "[en]: English")"
+    echo -e "$(color "red" "[ja]: 日本語")"
+    echo -e "$(color "white" "------------------------------------------------------")"
+    read -p "Choose an option [en/ja]: " lang_choice
+    case "${lang_choice}" in
+        "en") SELECTED_LANGUAGE="en"; break ;;
+        "ja") SELECTED_LANGUAGE="ja"; break ;;
+         *) echo "Invalid choice." ;;
+   esac
+done
 }
 
 check_package_manager() {
@@ -79,7 +73,6 @@ if [ -z "$RELEASE_VERSION" ]; then
 else 
     echo -e "$(color "white" "OpenWrt version: "${RELEASE_VERSION}" - Supported")"
 fi
-#LANGUAGES='"en" "ja"'
 if [ -z "$SELECTED_LANGUAGE" ]; then
     check_language
 else

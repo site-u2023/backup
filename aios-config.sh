@@ -7,7 +7,11 @@ SELECTED_LANGUAGE=$1
 BASE_URL="https://raw.githubusercontent.com/site-u2023/aios/main/"
 BASE_DIR="/tmp/aios/"
 SUPPORTED_VERSIONS="19 21 22 23 24 SN"
-mkdir -p "$BASE_DIR"
+
+mkdir -p "$BASE_DIR" || {
+    echo "Failed to create BASE_DIR: $BASE_DIR"
+    exit 1
+}
 
 RELEASE_VERSION=$(grep 'DISTRIB_RELEASE' /etc/openwrt_release | cut -d"'" -f2 | cut -c 1-2)
     if ! echo "${SUPPORTED_VERSIONS}" | grep -q "${RELEASE_VERSION}"; then

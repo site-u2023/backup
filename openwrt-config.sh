@@ -122,7 +122,6 @@ download_and_execute() {
     fi
 }
 
-
 menu_option() {
     local description="$1"
     local script_name="$2"

@@ -2,7 +2,9 @@
 # License: CC0
 # OpenWrt >= 19.07
 
+BASE_URL="${BASE_URL:-https://raw.githubusercontent.com/site-u2023/aios/main/}"
 BASE_DIR="${BASE_DIR:-/tmp/aios/}"
+SUPPORTED_VERSIONS="${SUPPORTED_VERSIONS:-19 21 22 23 24 SN}"
 
 color_code_map() {
   local color=$1

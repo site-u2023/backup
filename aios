@@ -53,6 +53,7 @@ download_and_execute_openwrt_config() {
         echo "Failed to download openwrt-config.sh"
         exit 1
     }
+    banner
     sh "${BASE_DIR%/}/openwrt-config.sh" || {
         echo "Failed to execute openwrt-config.sh"
         exit 1
@@ -63,5 +64,4 @@ delete_language
 make_directory
 download_and_execute_common
 check_common "$1"
-banner
 download_and_execute_openwrt_config

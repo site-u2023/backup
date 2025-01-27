@@ -31,7 +31,7 @@ check_ttyd_installed() {
             [Yy]*)
                 echo "Installing ttyd..."
                 wget --no-check-certificate -O "${BASE_DIR}ttyd.sh" "${BASE_URL}ttyd.sh"
-                sh "${BASE_DIR}ttyd.sh" "$1"
+                RELEASE_VERSION="${RELEASE_VERSION}" sh "${BASE_DIR}ttyd.sh" "$1"
                 ;;
             [Nn]*)
                 echo "Skipping ttyd installation."
@@ -47,7 +47,7 @@ wget --no-check-certificate -O "/usr/bin/aios" "${BASE_URL}aios"
 chmod +x /usr/bin/aios
 
 #echo "${SELECTED_LANGUAGE}" > "${BASE_DIR}check_language"
-echo "${RELEASE_VERSION}" > "${BASE_DIR}check_version"
+#echo "${RELEASE_VERSION}" > "${BASE_DIR}check_version"
 
 check_ttyd_installed
-aios "$1"
+RELEASE_VERSION="${RELEASE_VERSION}" aios "$1"

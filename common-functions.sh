@@ -96,6 +96,14 @@ check_common() {
   [ -z "$PACKAGE_MANAGER" ] && check_package_manager
 }
 
+menu_option() {
+    local description="$1"
+    local script_name="$2"
+    local url="$3"
+    echo -e "$(color "white" "${description}")"
+    download_and_execute "${script_name}" "${url}"
+}
+
 ask_confirmation() {
     local message_key="$1"
     local message

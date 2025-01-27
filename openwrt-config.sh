@@ -28,19 +28,6 @@ MENU_ITEMS=(
     "$MENU_DELETE_EXIT:delete_and_exit"
 )
 
-# 色付き出力を使う関数（ash用に修正）
-color() {
-    case "$1" in
-        white) echo -e "\033[0;37m$2\033[0m" ;;
-        red) echo -e "\033[0;31m$2\033[0m" ;;
-        green) echo -e "\033[0;32m$2\033[0m" ;;
-        yellow) echo -e "\033[0;33m$2\033[0m" ;;
-        blue) echo -e "\033[0;34m$2\033[0m" ;;
-        *) echo "$2" ;;
-    esac
-}
-
-# common-functions.shをダウンロードする関数
 download_common() {
     if [ ! -f "${BASE_DIR}common-functions.sh" ]; then
         wget --no-check-certificate -O "${BASE_DIR}common-functions.sh" "${BASE_URL}common-functions.sh"
@@ -48,13 +35,12 @@ download_common() {
     . "${BASE_DIR}common-functions.sh"
 }
 
-# 確認を求める関数
 ask_confirmation() {
     local message="$1"
     local yn_message="${2:-[y/n]}"
     while true; do
         read -p "$(color white "${message} ${yn_message}: ")" choice
-        case "$choice" in
+        case "${choice}" in
             [Yy]*) return 0 ;;
             [Nn]*) return 1 ;;
             *) echo -e "$(color red "無効な入力です。'y' または 'n' を入力してください。")" ;;
@@ -62,7 +48,6 @@ ask_confirmation() {
     done
 }
 
-# ダウンロードして実行する関数
 download_and_execute() {
     local script_name="$1"
     local description="$2"
@@ -80,7 +65,6 @@ download_and_execute() {
     fi
 }
 
-# スクリプトを終了する関数
 exit_end() {
     if ask_confirmation "スクリプトを終了しますか？"; then
         echo -e "$(color white "スクリプトを終了します。")"
@@ -90,7 +74,6 @@ exit_end() {
     fi
 }
 
-# スクリプトを削除して終了する関数
 delete_and_exit() {
     if ask_confirmation "スクリプトを削除して終了しますか？"; then
         echo -e "$(color red "スクリプトを削除して終了します。")"
@@ -101,24 +84,27 @@ delete_and_exit() {
     fi
 }
 
-# メインメニューを表示する関数
 main_menu() {
     while :; do
         echo -e "$(color white "------------------------------------------------------")"
-        for i in "${!MENU_ITEMS[@]}"; do
-            local entry="${MENU_ITEMS[$i]}"
-            local description="${entry%%:*}"
-            local key=$(printf "%c" $((97 + i))) # メニューキー (a, b, c...)
+        i=0
+        for entry in "${MENU_ITEMS[@]}"; do
+            description="${entry%%:*}"
+            key=$(printf "%c" $((97 + i)))  # メニューキー (a, b, c...)
             echo -e "$(color blue "[${key}] ${description}")"
+            i=$((i + 1))
         done
         echo -e "$(color white "------------------------------------------------------")"
         read -p "$(color white "選択してください: ")" option
 
-        local index=$(( $(printf "%d" "'$option") - 97 )) # 入力をインデックスに変換
+        # 入力をインデックスに変換
+        index=$(printf "%d" "'$option")
+        index=$((index - 97))
+
         if [ "$index" -ge 0 ] && [ "$index" -lt "${#MENU_ITEMS[@]}" ]; then
-            local selected_entry="${MENU_ITEMS[$index]}"
-            local description="${selected_entry%%:*}"
-            local script_name="${selected_entry##*:}"
+            selected_entry="${MENU_ITEMS[$index]}"
+            description="${selected_entry%%:*}"
+            script_name="${selected_entry##*:}"
             if [ "$script_name" = "exit_script" ]; then
                 exit_end
             elif [ "$script_name" = "delete_and_exit" ]; then
@@ -132,6 +118,5 @@ main_menu() {
     done
 }
 
-# common-functions.shをダウンロードしてメニューを開始
 download_common
 main_menu

@@ -168,6 +168,7 @@ show_notification() {
 }
 
 
+
 menu_option() {
     local action="$1"
     local description="$2"

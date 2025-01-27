@@ -57,8 +57,8 @@ main_menu() {
             "b") menu_option "${MENU4}" "${TARGET4}" "${BASE_URL}${TARGET4}" ;;
             "a") menu_option "${MENU5}" "${TARGET5}" "${BASE_URL}${TARGET5}" ;;
             "o") menu_option "${MENU6}" "${TARGET6}" "${BASE_URL}${TARGET6}" ;;
-            "e") menu_exit "${MENU00}" "${TARGET00}" ;;
-            "d") menu_exit "${MENU01}" "${TARGET01}" ;;
+            "e") menu_option "${MENU00}" "${TARGET00}" ;;
+            "d") menu_option "${MENU01}" "${TARGET01}" ;;
             *) echo -e "$(color "red" "Invalid option. Please try again.")" ;;
         esac
     done
@@ -94,28 +94,52 @@ download_common() {
 #    fi
 #}
 
-menu_exit() {
+menu_option() {
     local description="$1"
     local action="$2"
+    local script_name="$3"
+    local url="$4"
 
     echo -e "$(color "white" "${description}")"
 
-    if ask_confirmation "${action}"; then
-        if [[ "${action}" == "delete" ]]; then
-            rm -rf "${BASE_DIR}" /usr/bin/aios /tmp/aios-config.sh
-            echo -e "$(color "green" "Script and configuration deleted.")"
-        elif [[ "${action}" == "exit" ]]; then
-            echo -e "$(color "green" "Exiting...")"
-        fi
-        exit 0
-    else
-        if [[ "${action}" == "delete" ]]; then
-            echo -e "$(color "yellow" "Delete cancelled.")"
-        elif [[ "${action}" == "exit" ]]; then
-            echo -e "$(color "yellow" "Exit cancelled.")"
-        fi
-    fi
+    case "${action}" in
+        "exit")
+            if ask_confirmation "exit"; then
+                echo -e "$(color "green" "Exiting...")"
+                exit 0
+            else
+                echo -e "$(color "yellow" "Exit cancelled.")"
+            fi
+            ;;
+        "delete")
+            if ask_confirmation "delete"; then
+                rm -rf "${BASE_DIR}" /usr/bin/aios /tmp/aios-config.sh
+                echo -e "$(color "green" "Script and configuration deleted.")"
+                exit 0
+            else
+                echo -e "$(color "yellow" "Delete cancelled.")"
+            fi
+            ;;
+        "download")
+            if ask_confirmation "download"; then
+                mkdir -p "${BASE_DIR}"
+                if wget --no-check-certificate --quiet -O "${BASE_DIR}${script_name}" "${url}"; then
+                    echo -e "$(color "green" "Download successful.")"
+                    . "${BASE_DIR}${script_name}"
+                else
+                    echo -e "$(color "red" "Download failed.")"
+                fi
+            else
+                echo -e "$(color "yellow" "Download aborted.")"
+            fi
+            ;;
+        *)
+            echo -e "$(color "red" "Unknown action.")"
+            ;;
+    esac
 }
+
+
 
 display_system_info() {
     local available_memory=$(free | awk '/Mem:/ { print int($4 / 1024) }')

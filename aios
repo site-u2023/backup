@@ -30,18 +30,26 @@ mkdir -p "$BASE_DIR" || {
 }
 
 download_and_execute_common() {
-wget --no-check-certificate -O "${BASE_DIR}/common-functions.sh" "${BASE_URL}common-functions.sh" || {
-    echo "Failed to download common-functions.sh"
-    source "${BASE_DIR}common-functions.sh"
-    exit 1
+    wget --no-check-certificate -O "${BASE_DIR%/}/common-functions.sh" "${BASE_URL}common-functions.sh" || {
+        echo "Failed to download common-functions.sh"
+        exit 1
+    }
+    # ダウンロード成功後にのみ source を実行
+    . "${BASE_DIR%/}/common-functions.sh" || {
+        echo "Failed to source common-functions.sh"
+        exit 1
     }
 }
 
 download_and_execute_openwrt_config() {
-wget --no-check-certificate -O "${BASE_DIR}/openwrt-config.sh" "${BASE_URL}openwrt-config.sh" || {
-    echo "Failed to download openwrt-config.sh"
-    sh "${BASE_DIR}openwrt-config.sh"
-    exit 1
+    wget --no-check-certificate -O "${BASE_DIR%/}/openwrt-config.sh" "${BASE_URL}openwrt-config.sh" || {
+        echo "Failed to download openwrt-config.sh"
+        exit 1
+    }
+    # ダウンロード成功後にのみ sh を実行
+    sh "${BASE_DIR%/}/openwrt-config.sh" || {
+        echo "Failed to execute openwrt-config.sh"
+        exit 1
     }
 }
 

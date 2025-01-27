@@ -135,9 +135,7 @@ exit_end() {
 delete_and_exit() {
     local description="Delete and Exit"
     echo -e "$(color "white" "${description}")"
-    
     rm -rf "${BASE_DIR}" /usr/bin/aios /tmp/aios-config.sh
-    
     echo -e "$(color "green" "Script and configuration deleted.")"
     exit 0
 }

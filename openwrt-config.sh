@@ -45,7 +45,6 @@ download_and_execute() {
 exit_end() {
     if ask_confirmation "Are you sure you want to exit the script?"; then
         echo -e "$(color "white" "Exiting script.")"
-        rm -rf "${BASE_DIR}check_language"
         exit
     else
         echo -e "$(color "green" "Aborted exit.")"

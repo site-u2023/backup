@@ -29,28 +29,24 @@ mkdir -p "$BASE_DIR" || {
     }
 }
 
-download() {
+download_and_execute_common() {
 wget --no-check-certificate -O "${BASE_DIR}/common-functions.sh" "${BASE_URL}common-functions.sh" || {
     echo "Failed to download common-functions.sh"
+    source "${BASE_DIR}common-functions.sh"
     exit 1
     }
+}
+
+download_and_execute_openwrt_config() {
 wget --no-check-certificate -O "${BASE_DIR}/openwrt-config.sh" "${BASE_URL}openwrt-config.sh" || {
     echo "Failed to download openwrt-config.sh"
+    sh "${BASE_DIR}openwrt-config.sh"
     exit 1
     }
-}
-
-execute() {
-source "${BASE_DIR}common-functions.sh"
-}
-
-run_script() {
-    sh "${BASE_DIR}openwrt-config.sh"
 }
 
 make_directory
-download
-execute
+download_and_execute_common
 check_common "$1"
 banner
-run_script
+download_and_execute_openwrt_config

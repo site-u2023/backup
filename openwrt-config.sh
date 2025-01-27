@@ -66,7 +66,8 @@ main_menu() {
 
 download_common() {
     if [ ! -f "${BASE_DIR}common-functions.sh" ]; then
-        wget --no-check-certificate -O "${BASE_DIR}common-functions.sh" "${BASE_URL}common-functions.sh"
+        wget --no-check-certificate --quiet -O "${BASE_DIR}common-functions.sh" "${BASE_URL}common-functions.sh"
+
     fi
     # shellcheck source=/dev/null
     . "${BASE_DIR}common-functions.sh"

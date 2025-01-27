@@ -86,10 +86,10 @@ ask_confirmation() {
         esac
     elif [ "${SELECTED_LANGUAGE}" = "ja" ]; then
         case "$message_key" in
-            "download") message="実行しますか" ;;
-            "exit") message="終了しますか?" ;;
-            "delete") message="スクリプトを削除して終了しますか?" ;;
-            *) message="実行しますか?" ;;
+            "download") message="実行します" ;;
+            "exit") message="終了します" ;;
+            "delete") message="スクリプトを削除して終了します" ;;
+            *) message="実行します" ;;
         esac
     fi
 

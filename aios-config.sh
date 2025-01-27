@@ -11,7 +11,6 @@ SUPPORTED_VERSIONS="19 21 22 23 24 SN"
 
 check_version() {
 RELEASE_VERSION=$(grep 'DISTRIB_RELEASE' /etc/openwrt_release | cut -d"'" -f2 | cut -c 1-2)
-echo "${RELEASE_VERSION}" > "${BASE_DIR}check_version"
     if ! echo "${SUPPORTED_VERSIONS}" | grep -q "${RELEASE_VERSION}"; then
         echo "Unsupported OpenWrt version: ${RELEASE_VERSION}"
         echo "Supported versions: ${SUPPORTED_VERSIONS}"

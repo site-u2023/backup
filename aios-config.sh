@@ -51,8 +51,8 @@ download_and_execute() {
     }
     chmod +x /usr/bin/aios
     echo -e "\n--- Installation Complete ---"
-    echo "The installation of aios has been completed successfully."
-    echo "You can now run the 'aios' script from anywhere."
+    echo "aios has been installed successfully."
+    echo "You can now run the 'aios' script anywhere."
     RELEASE_VERSION="${RELEASE_VERSION}" /usr/bin/aios "$SELECTED_LANGUAGE"
 }
 

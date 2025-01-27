@@ -73,13 +73,31 @@ display_system_info() {
     local available_flash=$(df | awk '/overlayfs:\/overlay/ { print int($4 / 1024) }')
     local usb_devices=$(ls /sys/bus/usb/devices | grep -q usb && echo "Detected" || echo "Not detected")
 
+    if [ "${SELECTED_LANGUAGE}" = "ja" ]; then
+        INFO1="利用可能メモリー"
+        INFO2="利用可能フラッシュストレージ"
+        INFO3="USBデバイス"
+        INFO4="スクリプトディレクトリ"
+        INFO5="OpenWrtバージョン"
+        INFO6="選択言語"
+        INFO7="ダウンローダー"
+    else
+        INFO1="Available Memory"
+        INFO2="Available Flash Storage"
+        INFO3="USB Devices"
+        INFO4="Scripts directory"
+        INFO5="OpenWrt version"
+        INFO6="Selected language"
+        INFO7="Downloader"
+    fi
+
     echo -e "$(color "white" "${INFO1}: ${available_memory} MB")"
     echo -e "$(color "white" "${INFO2}: ${available_flash} MB")"
     echo -e "$(color "white" "${INFO3}: ${usb_devices}")"
     echo -e "$(color "white" "${INFO4}: ${BASE_DIR}")"
     echo -e "$(color "white" "${INFO5}: ${RELEASE_VERSION} - Supported")"
     echo -e "$(color "white" "${INFO6}: ${SELECTED_LANGUAGE}")"
-    echo -e "$(color "white" "${INFO7}: ${PACKAGE_MANAGER}")"
+    echo -e "$(color "white" "${INFO7}: ${PACKAGE_MANAGER})"
 }
 
 menu_option() {
@@ -92,13 +110,6 @@ menu_option() {
 
 main_menu() {
     if [ "${SELECTED_LANGUAGE}" = "en" ]; then
-        INFO1="Available Memory"
-        INFO2="Available Flash Storage"
-        INFO3="USB Devices"
-        INFO4="Scripts directory"
-        INFO5="OpenWrt version"
-        INFO6="Selected language"
-        INFO7="Downloader"
         MENU1="Internet settings (Japan Only)"
         MENU2="Initial System Settings"
         MENU3="Recommended Package Installation"
@@ -109,13 +120,6 @@ main_menu() {
         MENU01="Remove script and exit"
         SELECT_PROMPT="Select an option"
     elif [ "${SELECTED_LANGUAGE}" = "ja" ]; then
-        INFO1="利用可能メモリー"
-        INFO2="利用可能フラッシュストレージ"
-        INFO3="USBデバイス"
-        INFO4="スクリプトディレクトリ"
-        INFO5="OpenWrtバージョン"
-        INFO6="選択言語"
-        INFO7="ダウンローダー"
         MENU1="インターネット設定"
         MENU2="システム初期設定"
         MENU3="推奨パッケージインストール"

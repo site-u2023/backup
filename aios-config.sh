@@ -6,11 +6,12 @@
 
 #SELECTED_LANGUAGE=$1
 BASE_URL="https://raw.githubusercontent.com/site-u2023/aios/main/"
-BASE_DIR="/tmp/aios/"
+BASE_DIR="${BASE_DIR:-/tmp/aios/}"
 SUPPORTED_VERSIONS="19 21 22 23 24 SN"
 
 check_version() {
 RELEASE_VERSION=$(grep 'DISTRIB_RELEASE' /etc/openwrt_release | cut -d"'" -f2 | cut -c 1-2)
+echo "${RELEASE_VERSION}" > "${BASE_DIR}check_version"
     if ! echo "${SUPPORTED_VERSIONS}" | grep -q "${RELEASE_VERSION}"; then
         echo "Unsupported OpenWrt version: ${RELEASE_VERSION}"
         echo "Supported versions: ${SUPPORTED_VERSIONS}"
@@ -25,6 +26,11 @@ mkdir -p "$BASE_DIR" || {
     }
 }
 
+common_data() {
+echo "${SELECTED_LANGUAGE}" > "${BASE_DIR}check_language"
+echo "${RELEASE_VERSION}" > "${BASE_DIR}check_version"
+}
+
 check_ttyd_installed() {
     if command -v ttyd >/dev/null 2>&1; then
         echo "ttyd is already installed."
@@ -35,7 +41,7 @@ check_ttyd_installed() {
             [Yy]*)
                 echo "Installing ttyd..."
                 wget --no-check-certificate -O "${BASE_DIR}ttyd.sh" "${BASE_URL}ttyd.sh"
-                RELEASE_VERSION="${RELEASE_VERSION}" sh "${BASE_DIR}ttyd.sh" "$1"
+                sh "${BASE_DIR}ttyd.sh"
                 ;;
             [Nn]*)
                 echo "Skipping ttyd installation."
@@ -48,16 +54,17 @@ check_ttyd_installed() {
 }
 
 download_and_execute() {
-wget --no-check-certificate -O "/usr/bin/aios" "${BASE_URL}aios"
-chmod +x /usr/bin/aios
-RELEASE_VERSION="${RELEASE_VERSION}" aios "$1"
+    wget --no-check-certificate -O "/usr/bin/aios" "${BASE_URL}aios" || {
+        echo "Failed to download aios."
+        exit 1
+    }
+    chmod +x /usr/bin/aios
+    aios
 }
-
-#echo "${SELECTED_LANGUAGE}" > "${BASE_DIR}check_language"
-#echo "${RELEASE_VERSION}" > "${BASE_DIR}check_version"
 
 check_version
 make_directory
+common_data
 check_ttyd_installed
 download_and_execute
 

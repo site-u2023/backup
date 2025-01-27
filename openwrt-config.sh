@@ -16,6 +16,7 @@ main_menu() {
         MENU6="Other Script Settings"
         MENU00="Exit Script"
         MENU01="Remove script and exit"
+        SELECT="Select an option: "
     elif [ "${SELECTED_LANGUAGE}" = "ja" ]; then
         MENU1="インターネット設定"
         MENU2="システム初期設定"
@@ -25,6 +26,7 @@ main_menu() {
         MENU6="その他のスクリプト設定"
         MENU00="スクリプト終了"
         MENU01="スクリプト削除終了"
+        SELECT1="選択してください: "
     fi
 
     TARGET1="internet-config.sh"
@@ -47,7 +49,7 @@ main_menu() {
         echo -e "$(color "white" "[e]: ${MENU00}")"
         echo -e "$(color "white_black" "[d]: ${MENU01}")"
         echo -e "$(color "white" "------------------------------------------------------")"
-        read -p "$(color "white" "Select an option: ")" option
+        read -p "$(color "white" "${SELECT1}")" option
         case "${option}" in
             "i") menu_option "${MENU1}" "${TARGET1}" "${BASE_URL}${TARGET1}" ;;
             "s") menu_option "${MENU2}" "${TARGET2}" "${BASE_URL}${TARGET2}" ;;

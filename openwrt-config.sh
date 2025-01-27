@@ -29,14 +29,14 @@ main_menu() {
         SELECT1="選択してください: "
     fi
 
-    TARGET1="internet-config.sh"
-    TARGET2="system-config.sh"
-    TARGET3="package-config.sh"
-    TARGET4="ad-dns-blocking-config.sh"
-    TARGET5="accesspoint-config.sh"
-    TARGET6="etc-config.sh"
-    TARGET00="exit"
-    TARGET01="delete"
+    ACTION1="download" ; TARGET1="internet-config.sh"
+    ACTION2="download" ; TARGET2="system-config.sh"
+    ACTION3="download" ; TARGET3="package-config.sh"
+    ACTION4="download" ; TARGET4="ad-dns-blocking-config.sh"
+    ACTION5="download" ; TARGET5="accesspoint-config.sh"
+    ACTION6="download" ; TARGET6="etc-config.sh"
+    ACTION00="exit"
+    ACTION01="delete"
     
     while :; do
         echo -e "$(color "white" "------------------------------------------------------")"
@@ -51,14 +51,14 @@ main_menu() {
         echo -e "$(color "white" "------------------------------------------------------")"
         read -p "$(color "white" "${SELECT1}")" option
         case "${option}" in
-            "i") menu_option "${MENU1}" "${TARGET1}" "${BASE_URL}${TARGET1}" ;;
-            "s") menu_option "${MENU2}" "${TARGET2}" "${BASE_URL}${TARGET2}" ;;
-            "p") menu_option "${MENU3}" "${TARGET3}" "${BASE_URL}${TARGET3}" ;;
-            "b") menu_option "${MENU4}" "${TARGET4}" "${BASE_URL}${TARGET4}" ;;
-            "a") menu_option "${MENU5}" "${TARGET5}" "${BASE_URL}${TARGET5}" ;;
-            "o") menu_option "${MENU6}" "${TARGET6}" "${BASE_URL}${TARGET6}" ;;
-            "e") menu_option "${MENU00}" "${TARGET00}" ;;
-            "d") menu_option "${MENU01}" "${TARGET01}" ;;
+            "i") menu_option "${ACTION1}" "${MENU1}" "${TARGET1}" ;;
+            "s") menu_option "${ACTION2}" "${MENU2}" "${TARGET2}" ;;
+            "p") menu_option "${ACTION3}" "${MENU3}" "${TARGET3}" ;;
+            "b") menu_option "${ACTION4}" "${MENU4}" "${TARGET4}" ;;
+            "a") menu_option "${ACTION5}" "${MENU5}" "${TARGET5}" ;;
+            "o") menu_option "${ACTION6}" "${MENU6}" "${TARGET6}" ;;
+            "e") menu_option "${ACTION00}" "${MENU00}" ;;
+            "d") menu_option "${ACTION01}" "${MENU01}" ;;
             *) echo -e "$(color "red" "Invalid option. Please try again.")" ;;
         esac
     done
@@ -95,10 +95,9 @@ download_common() {
 #}
 
 menu_option() {
-    local description="$1"
-    local action="$2"
+    local action="$1"
+    local description="$2"
     local script_name="$3"
-    local url="$4"
 
     echo -e "$(color "white" "${description}")"
 
@@ -123,7 +122,7 @@ menu_option() {
         "download")
             if ask_confirmation "download"; then
                 mkdir -p "${BASE_DIR}"
-                if wget --no-check-certificate --quiet -O "${BASE_DIR}${script_name}" "${url}"; then
+                if wget --no-check-certificate --quiet -O "${BASE_DIR}${script_name}" "${BASE_URL}${script_name}"; then
                     echo -e "$(color "green" "Download successful.")"
                     . "${BASE_DIR}${script_name}"
                 else

@@ -5,7 +5,7 @@
 
 SELECTED_LANGUAGE=$1
 BASE_URL="https://raw.githubusercontent.com/site-u2023/aios/main/"
-BASE_DIR="${BASE_DIR:-/tmp/aios/}"
+BASE_DIR="/tmp/aios/"
 SUPPORTED_VERSIONS="19 21 22 23 24 SN"
 
 # Function: Check if the OpenWrt version is supported

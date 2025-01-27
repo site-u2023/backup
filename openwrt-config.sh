@@ -72,14 +72,6 @@ download_common() {
     source "${BASE_DIR}common-functions.sh"
 }
 
-menu_option() {
-    local description="$1"
-    local script_name="$2"
-    local url="$3"
-    echo -e "$(color "white" "${description}")"
-    download_and_execute "${script_name}" "${url}"
-}
-
 menu_exit() {
     local description="$1"
     echo -e "$(color "white" "${description}")"

@@ -133,7 +133,7 @@ ask_confirmation() {
         case "${choice}" in
             [Yy]*) return 0 ;;
             [Nn]*) return 1 ;;
-            *) echo -e "$(color "red" "Invalid choice, please enter 'y' or 'n'.")" ;;
+            *) echo -e "$(color "red_white" "Invalid choice, please enter 'y' or 'n'.")" ;;
         esac
     done
 }
@@ -162,7 +162,7 @@ show_notification() {
         esac
     fi
 
-    echo -e "$(color "green" "${message}")"
+    echo -e "$(color "green_white" "${message}")"
 }
 
 menu_option() {
@@ -208,5 +208,3 @@ menu_option() {
             ;;
     esac
 }
-
-

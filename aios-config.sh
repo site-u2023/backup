@@ -9,17 +9,21 @@ BASE_URL="https://raw.githubusercontent.com/site-u2023/aios/main/"
 BASE_DIR="/tmp/aios/"
 SUPPORTED_VERSIONS="19 21 22 23 24 SN"
 
-mkdir -p "$BASE_DIR" || {
-    echo "Failed to create BASE_DIR: $BASE_DIR"
-    exit 1
-}
-
+check_version() {
 RELEASE_VERSION=$(grep 'DISTRIB_RELEASE' /etc/openwrt_release | cut -d"'" -f2 | cut -c 1-2)
     if ! echo "${SUPPORTED_VERSIONS}" | grep -q "${RELEASE_VERSION}"; then
         echo "Unsupported OpenWrt version: ${RELEASE_VERSION}"
         echo "Supported versions: ${SUPPORTED_VERSIONS}"
         exit 1
     fi
+}
+
+make_directory() {
+mkdir -p "$BASE_DIR" || {
+    echo "Failed to create BASE_DIR: $BASE_DIR"
+    exit 1
+    }
+}
 
 check_ttyd_installed() {
     if command -v ttyd >/dev/null 2>&1; then
@@ -43,11 +47,17 @@ check_ttyd_installed() {
     fi
 }
 
+download_and_execute() {
 wget --no-check-certificate -O "/usr/bin/aios" "${BASE_URL}aios"
 chmod +x /usr/bin/aios
+RELEASE_VERSION="${RELEASE_VERSION}" aios "$1"
+}
 
 #echo "${SELECTED_LANGUAGE}" > "${BASE_DIR}check_language"
 #echo "${RELEASE_VERSION}" > "${BASE_DIR}check_version"
 
+check_version
+make_directory
 check_ttyd_installed
-RELEASE_VERSION="${RELEASE_VERSION}" aios "$1"
+download_and_execute
+

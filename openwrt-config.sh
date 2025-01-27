@@ -35,8 +35,8 @@ main_menu() {
     TARGET4="ad-dns-blocking-config.sh"
     TARGET5="accesspoint-config.sh"
     TARGET6="etc-config.sh"
-    TARGET00="exit_script.sh"
-    TARGET01="delete_and_exit.sh"
+    TARGET00="exit"
+    TARGET01="delete"
     
     while :; do
         echo -e "$(color "white" "------------------------------------------------------")"
@@ -58,7 +58,7 @@ main_menu() {
             "a") menu_option "${MENU5}" "${TARGET5}" "${BASE_URL}${TARGET5}" ;;
             "o") menu_option "${MENU6}" "${TARGET6}" "${BASE_URL}${TARGET6}" ;;
             "e") menu_exit "${MENU00}" "${TARGET00}" ;;
-            "d") menu_delete_and_exit "${MENU01}" "${TARGET01}" ;;
+            "d") menu_exit "${MENU01}" "${TARGET01}" ;;
             *) echo -e "$(color "red" "Invalid option. Please try again.")" ;;
         esac
     done
@@ -72,29 +72,29 @@ download_common() {
     source "${BASE_DIR}common-functions.sh"
 }
 
+#menu_exit() {
+#    local description="$1"
+#    echo -e "$(color "white" "${description}")"
+#    if ask_confirmation "exit"; then
+#        exit 0
+#    else
+#        echo -e "$(color "yellow" "Exit cancelled.")"
+#    fi
+#}
+
+#menu_delete_and_exit() {
+#    local description="$1"
+#    echo -e "$(color "white" "${description}")"
+#    if ask_confirmation "delete"; then
+#        rm -rf "${BASE_DIR}" /usr/bin/aios /tmp/aios-config.sh
+#        echo -e "$(color "green" "Script and configuration deleted.")"
+#        exit 0
+#    else
+#        echo -e "$(color "yellow" "Delete cancelled.")"
+#    fi
+#}
+
 menu_exit() {
-    local description="$1"
-    echo -e "$(color "white" "${description}")"
-    if ask_confirmation "exit"; then
-        exit 0
-    else
-        echo -e "$(color "yellow" "Exit cancelled.")"
-    fi
-}
-
-menu_delete_and_exit() {
-    local description="$1"
-    echo -e "$(color "white" "${description}")"
-    if ask_confirmation "delete"; then
-        rm -rf "${BASE_DIR}" /usr/bin/aios /tmp/aios-config.sh
-        echo -e "$(color "green" "Script and configuration deleted.")"
-        exit 0
-    else
-        echo -e "$(color "yellow" "Delete cancelled.")"
-    fi
-}
-
-menu_action() {
     local description="$1"
     local action="$2"
 

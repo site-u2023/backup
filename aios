@@ -6,26 +6,7 @@ BASE_URL="https://raw.githubusercontent.com/site-u2023/aios/main/"
 BASE_DIR="/tmp/aios/"
 SUPPORTED_VERSIONS="19 21 22 23 24 SN"
 
-run_script() {
-    sh "${BASE_DIR}openwrt-config.sh"
-}
-
-mkdir -p "$BASE_DIR" || {
-    echo "Failed to create BASE_DIR: $BASE_DIR"
-    exit 1
-}
-
-wget --no-check-certificate -O "${BASE_DIR}/common-functions.sh" "${BASE_URL}common-functions.sh" || {
-    echo "Failed to download common-functions.sh"
-    exit 1
-}
-wget --no-check-certificate -O "${BASE_DIR}/openwrt-config.sh" "${BASE_URL}openwrt-config.sh" || {
-    echo "Failed to download openwrt-config.sh"
-    exit 1
-}
-
-source "${BASE_DIR}common-functions.sh"
-
+banner() {
 echo -e "$(color "red_white" "    Disclaimer: Use this script at your own risk.     ")"
 
 echo -e "$(color "white"     "     Dedicated configuration software for OpenWrt     ")"　
@@ -39,6 +20,37 @@ echo -e "$(color "red"       "         aaaaa     iiii      oooo     ssssss      
 echo -e "$(color "white"     "                                                      ")"
 echo -e "$(color "white"     "                  all in one scripts                  ")"
 echo -e "$(color "white"     "                                                      ")"
+}
 
+make_directory() {
+mkdir -p "$BASE_DIR" || {
+    echo "Failed to create BASE_DIR: $BASE_DIR"
+    exit 1
+    }
+}
+
+download() {
+wget --no-check-certificate -O "${BASE_DIR}/common-functions.sh" "${BASE_URL}common-functions.sh" || {
+    echo "Failed to download common-functions.sh"
+    exit 1
+    }
+wget --no-check-certificate -O "${BASE_DIR}/openwrt-config.sh" "${BASE_URL}openwrt-config.sh" || {
+    echo "Failed to download openwrt-config.sh"
+    exit 1
+    }
+}
+
+execute() {
+source "${BASE_DIR}common-functions.sh"
+}
+
+run_script() {
+    sh "${BASE_DIR}openwrt-config.sh"
+}
+
+make_directory
+download
+execute
 check_common "$1"
+banner
 run_script

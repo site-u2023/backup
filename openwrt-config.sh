@@ -69,8 +69,7 @@ download_common() {
         wget --no-check-certificate --quiet -O "${BASE_DIR}common-functions.sh" "${BASE_URL}common-functions.sh"
 
     fi
-    # shellcheck source=/dev/null
-    . "${BASE_DIR}common-functions.sh"
+    source "${BASE_DIR}common-functions.sh"
 }
 
 menu_option() {

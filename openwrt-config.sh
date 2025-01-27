@@ -90,8 +90,6 @@ download_and_execute() {
     local script_name="$1"
     local url="$2"
     
-    echo -e "$(color "blue" "Downloading and executing: ${script_name}")"
-    
     if ask_confirmation "Do you want to download and execute ${script_name}?"; then
         if wget --no-check-certificate -O "${BASE_DIR}${script_name}" "${url}"; then
             echo -e "$(color "green" "Download successful.")"

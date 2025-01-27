@@ -15,9 +15,9 @@ ask_confirmation() {
     local message="$1"
     read -p "$(color "white" "${message} [y/n]: ")" choice
     case "${choice}" in
-        "y") return 0 ;;
-        "n") return 1 ;;
-        *) echo -e "$(color "red" "Invalid choice, please enter 'y' or 'n'.")" ; ask_confirmation "$message" ;;
+        [Yy]*) return 0 ;;
+        [Nn]*) return 1 ;;
+        *) echo -e "$(color "red" "Invalid choice, please enter 'Yy' or 'Nn'.")" ; ask_confirmation "$message" ;;
     esac
 }
 

@@ -8,7 +8,7 @@ SUPPORTED_VERSIONS="19 21 22 23 24 SN"
 
 download_common() {
 if [ ! -f "${BASE_DIR}common-functions.sh" ]; then
-  wget --no-check-certificate -O "${BASE_DIR}common-functions.sh" "${BASE_URL}common-functions.sh"
+  wget --no-check-certificate --quiet -O "${BASE_DIR}common-functions.sh" "${BASE_URL}common-functions.sh"
 fi
 source "${BASE_DIR}common-functions.sh"
 }

@@ -57,8 +57,8 @@ main_menu() {
             "b") menu_option "${MENU4}" "${TARGET4}" "${BASE_URL}${TARGET4}" ;;
             "a") menu_option "${MENU5}" "${TARGET5}" "${BASE_URL}${TARGET5}" ;;
             "o") menu_option "${MENU6}" "${TARGET6}" "${BASE_URL}${TARGET6}" ;;
-            "e") exit_end "${MENU00}" ;;
-            "d") delete_and_exit "${MENU01}" ;;
+            "e") menu_exit "${MENU00}" ;;
+            "d") menu_delete_and_exit "${MENU01}" ;;
             *) echo -e "$(color "red" "Invalid option. Please try again.")" ;;
         esac
     done
@@ -80,7 +80,7 @@ menu_option() {
     download_and_execute "${script_name}" "${url}"
 }
 
-exit_end() {
+menu_exit() {
     local description="$1"
     echo -e "$(color "white" "${description}")"
     if ask_confirmation "exit"; then
@@ -90,7 +90,7 @@ exit_end() {
     fi
 }
 
-delete_and_exit() {
+menu_delete_and_exit() {
     local description="$1"
     echo -e "$(color "white" "${description}")"
     if ask_confirmation "delete"; then

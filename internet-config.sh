@@ -178,7 +178,7 @@ main_menu() {
                 "x") ${TARGET4} ;;
                 "v") ${TARGET5} ;;
                 "p") ${TARGET6} ;;
-                "b") exit ;;
+                "b") return;;
                 *) echo "$(color "red" "Invalid option. Please try again.")" ;;
             esac
         done

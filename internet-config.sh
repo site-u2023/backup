@@ -157,7 +157,7 @@ main_menu() {
         TARGET4="ds_lite_xpass"
         TARGET5="ds_lite_v6connect"
         TARGET6="pppoe"
-        TARGET00="exit"
+        TARGET00="return"
 
         while :; do
             echo -e "$(color "white" "------------------------------------------------------")"

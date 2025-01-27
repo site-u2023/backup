@@ -57,8 +57,8 @@ main_menu() {
             "b") menu_option "${MENU4}" "${TARGET4}" "${BASE_URL}${TARGET4}" ;;
             "a") menu_option "${MENU5}" "${TARGET5}" "${BASE_URL}${TARGET5}" ;;
             "o") menu_option "${MENU6}" "${TARGET6}" "${BASE_URL}${TARGET6}" ;;
-            "e") menu_option "${MENU00}" "${TARGET00}" "${BASE_URL}${TARGET00}" ;;
-            "d") menu_option "${MENU01}" "${TARGET01}" "${BASE_URL}${TARGET01}" ;;
+            "e") exit_end ;;
+            "d") delete_and_exit ;;
             *) echo -e "$(color "red" "Invalid option. Please try again.")" ;;
         esac
     done
@@ -128,18 +128,18 @@ menu_option() {
 
 exit_end() {
     local description="Exit Script"
-    local script_name="exit_script.sh"
-    local url="${BASE_URL}${script_name}"
     echo -e "$(color "white" "${description}")"
-    download_and_execute "${script_name}" "${url}"
+    exit 0
 }
 
 delete_and_exit() {
     local description="Delete and Exit"
-    local script_name="delete_and_exit.sh"
-    local url="${BASE_URL}${script_name}"
     echo -e "$(color "white" "${description}")"
-    download_and_execute "${script_name}" "${url}"
+    
+    rm -rf "${BASE_DIR}" /usr/bin/aios /tmp/aios-config.sh
+    
+    echo -e "$(color "green" "Script and configuration deleted.")"
+    exit 0
 }
 
 display_system_info() {

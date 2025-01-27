@@ -11,6 +11,60 @@ if [ ! -f "${BASE_DIR}common-functions.sh" ]; then
 fi
 source "${BASE_DIR}common-functions.sh"
 
+main_menu() {
+        if [ "${SELECTED_LANGUAGE}" = "en" ]; then
+            MENU0="Internet Settings"
+            MENU1="OCN Virtual Connect, V6 Plus, IPv6 Option automatic setup (multi-session support)"
+            MENU2="NURO Hikari MAP-e automatic setup (partially supported: under verification)"
+            MENU3="Transix automatic setup"
+            MENU4="CrossPass automatic setup"
+            MENU5="v6 Connect automatic setup"
+            MENU6="PPPoE (IPv4・IPv6): Requires authentication ID (username) and password"
+            MENU00="Back"
+        elif [ "${SELECTED_LANGUAGE}" = "ja" ]; then
+            MENU0="インターネット設定"
+            MENU1="OCNバーチャルコネクト・V6プラス・IPv6オプション自動設定（マルチセッション対応）"
+            MENU2="NURO光 MAP-e自動設定 (一部のみ対応：検証中)"
+            MENU3="トランジックス自動設定"
+            MENU4="クロスパス自動設定"
+            MENU5="v6 コネクト自動設定"
+            MENU6="PPPoE (iPv4・IPv6): 要認証ID (ユーザー名)・パスワード"
+            MENU00="戻る"
+        fi
+
+        TARGET1="map_e"
+        TARGET2="map_e_nuro"
+        TARGET3="ds_lite_transix"
+        TARGET4="ds_lite_xpass"
+        TARGET5="ds_lite_v6connect"
+        TARGET6="pppoe"
+        TARGET00="return"
+
+        while :; do
+            echo -e "$(color "white" "------------------------------------------------------")"
+            echo -e "$(color "white" "${MENU0}")"
+            echo -e "$(color "blue" "[m]: ${MENU1}")"
+            echo -e "$(color "yellow" "[n]: ${MENU2}")"
+            echo -e "$(color "green" "[t]: ${MENU3}")"
+            echo -e "$(color "magenta" "[x]: ${MENU4}")"
+            echo -e "$(color "red" "[v]: ${MENU5}")"
+            echo -e "$(color "cyan" "[p]: ${MENU6}")"
+            echo -e "$(color "white" "[b]: ${MENU00}")"
+            echo -e "$(color "white" "------------------------------------------------------")"
+            read -p "$(color "white" "Select an option: ")" option
+            case "${option}" in
+                "m") ${TARGET1} ;;
+                "n") ${TARGET2} ;;
+                "t") ${TARGET3} ;;
+                "x") ${TARGET4} ;;
+                "v") ${TARGET5} ;;
+                "p") ${TARGET6} ;;
+                "b") return;;
+                *) echo "$(color "red" "Invalid option. Please try again.")" ;;
+            esac
+        done
+    }
+    
 map_e() {
     # Set language-dependent text for menu
     if [ "${SELECTED_LANGUAGE}" = "en" ]; then
@@ -128,61 +182,6 @@ check_openwrt_version() {
         exit 1
     fi
 }
-
-main_menu() {
-        # Set language-dependent text for menu
-        if [ "${SELECTED_LANGUAGE}" = "en" ]; then
-            MENU0="Internet Settings"
-            MENU1="OCN Virtual Connect, V6 Plus, IPv6 Option automatic setup (multi-session support)"
-            MENU2="NURO Hikari MAP-e automatic setup (partially supported: under verification)"
-            MENU3="Transix automatic setup"
-            MENU4="CrossPass automatic setup"
-            MENU5="v6 Connect automatic setup"
-            MENU6="PPPoE (IPv4・IPv6): Requires authentication ID (username) and password"
-            MENU00="Back"
-        elif [ "${SELECTED_LANGUAGE}" = "ja" ]; then
-            MENU0="インターネット設定"
-            MENU1="OCNバーチャルコネクト・V6プラス・IPv6オプション自動設定（マルチセッション対応）"
-            MENU2="NURO光 MAP-e自動設定 (一部のみ対応：検証中)"
-            MENU3="トランジックス自動設定"
-            MENU4="クロスパス自動設定"
-            MENU5="v6 コネクト自動設定"
-            MENU6="PPPoE (iPv4・IPv6): 要認証ID (ユーザー名)・パスワード"
-            MENU00="戻る"
-        fi
-
-        TARGET1="map_e"
-        TARGET2="map_e_nuro"
-        TARGET3="ds_lite_transix"
-        TARGET4="ds_lite_xpass"
-        TARGET5="ds_lite_v6connect"
-        TARGET6="pppoe"
-        TARGET00="return"
-
-        while :; do
-            echo -e "$(color "white" "------------------------------------------------------")"
-            echo -e "$(color "white" "${MENU0}")"
-            echo -e "$(color "blue" "[m]: ${MENU1}")"
-            echo -e "$(color "yellow" "[n]: ${MENU2}")"
-            echo -e "$(color "green" "[t]: ${MENU3}")"
-            echo -e "$(color "magenta" "[x]: ${MENU4}")"
-            echo -e "$(color "red" "[v]: ${MENU5}")"
-            echo -e "$(color "cyan" "[p]: ${MENU6}")"
-            echo -e "$(color "white" "[b]: ${MENU00}")"
-            echo -e "$(color "white" "------------------------------------------------------")"
-            read -p "$(color "white" "Select an option: ")" option
-            case "${option}" in
-                "m") ${TARGET1} ;;
-                "n") ${TARGET2} ;;
-                "t") ${TARGET3} ;;
-                "x") ${TARGET4} ;;
-                "v") ${TARGET5} ;;
-                "p") ${TARGET6} ;;
-                "b") return;;
-                *) echo "$(color "red" "Invalid option. Please try again.")" ;;
-            esac
-        done
-    }
 
 check_common
 main_menu

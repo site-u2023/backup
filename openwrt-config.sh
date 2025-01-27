@@ -57,8 +57,8 @@ main_menu() {
             "b") menu_option "${MENU4}" "${TARGET4}" "${BASE_URL}${TARGET4}" ;;
             "a") menu_option "${MENU5}" "${TARGET5}" "${BASE_URL}${TARGET5}" ;;
             "o") menu_option "${MENU6}" "${TARGET6}" "${BASE_URL}${TARGET6}" ;;
-            "e") menu_exit "${MENU00}" ;;
-            "d") menu_delete_and_exit "${MENU01}" ;;
+            "e") menu_exit "${MENU00}" "${TARGET00}" ;;
+            "d") menu_delete_and_exit "${MENU01}" "${TARGET01}" ;;
             *) echo -e "$(color "red" "Invalid option. Please try again.")" ;;
         esac
     done
@@ -91,6 +91,29 @@ menu_delete_and_exit() {
         exit 0
     else
         echo -e "$(color "yellow" "Delete cancelled.")"
+    fi
+}
+
+menu_action() {
+    local description="$1"
+    local action="$2"
+
+    echo -e "$(color "white" "${description}")"
+
+    if ask_confirmation "${action}"; then
+        if [[ "${action}" == "delete" ]]; then
+            rm -rf "${BASE_DIR}" /usr/bin/aios /tmp/aios-config.sh
+            echo -e "$(color "green" "Script and configuration deleted.")"
+        elif [[ "${action}" == "exit" ]]; then
+            echo -e "$(color "green" "Exiting...")"
+        fi
+        exit 0
+    else
+        if [[ "${action}" == "delete" ]]; then
+            echo -e "$(color "yellow" "Delete cancelled.")"
+        elif [[ "${action}" == "exit" ]]; then
+            echo -e "$(color "yellow" "Exit cancelled.")"
+        fi
     fi
 }
 

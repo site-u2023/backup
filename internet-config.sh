@@ -183,5 +183,6 @@ check_openwrt_version() {
     fi
 }
 
-check_common
+download_common
+check_common "$1"
 main_menu

@@ -25,7 +25,6 @@ fi
 
 check_ttyd_installed() {
     if command -v ttyd >/dev/null 2>&1; then
-        echo "ttyd is already installed."
     else
         echo "ttyd is not installed."
         read -p "Do you want to install ttyd? (y/n, default: n): " choice

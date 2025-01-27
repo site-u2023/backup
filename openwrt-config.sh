@@ -7,6 +7,11 @@ BASE_DIR="/tmp/aios/"
 SUPPORTED_VERSIONS="19 21 22 23 24 SN"
 
 main_menu() {
+    local MENU1 MENU2 MENU3 MENU4 MENU5 MENU6 MENU00 MENU01 SELECT1
+    local ACTION1 ACTION2 ACTION3 ACTION4 ACTION5 ACTION6 ACTION00 ACTION01
+    local TARGET1 TARGET2 TARGET3 TARGET4 TARGET5 TARGET6 TARGET00 TARGET01
+    local option
+    
     if [ "${SELECTED_LANGUAGE}" = "en" ]; then
         MENU1="Internet settings (Japan Only)" 
         MENU2="Initial System Settings"

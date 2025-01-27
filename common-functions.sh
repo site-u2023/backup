@@ -96,14 +96,6 @@ check_common() {
   [ -z "$PACKAGE_MANAGER" ] && check_package_manager
 }
 
-menu_option() {
-    local description="$1"
-    local script_name="$2"
-    local url="$3"
-    echo -e "$(color "white" "${description}")"
-    download_and_execute "${script_name}" "${url}"
-}
-
 ask_confirmation() {
     local message_key="$1"
     local message
@@ -134,19 +126,27 @@ ask_confirmation() {
     done
 }
 
-download_and_execute() {
-    mkdir -p "$BASE_DIR"
-    local script_name="$1"
-    local url="$2"
-    
-    if ask_confirmation "download"; then
-        if wget --no-check-certificate --quiet -O "${BASE_DIR}${script_name}" "${url}"; then
-            echo -e "$(color "green" "Download successful.")"
-            . "${BASE_DIR}${script_name}"
-        else
-            echo -e "$(color "red" "Download failed.")"
-        fi
-    else
-        echo -e "$(color "yellow" "Download aborted.")"
-    fi
-}
+#menu_option() {
+#    local description="$1"
+#    local script_name="$2"
+#    local url="$3"
+#    echo -e "$(color "white" "${description}")"
+#    download_and_execute "${script_name}" "${url}"
+#}
+
+#download_and_execute() {
+#    mkdir -p "$BASE_DIR"
+#    local script_name="$1"
+#    local url="$2"
+#    
+#    if ask_confirmation "download"; then
+#        if wget --no-check-certificate --quiet -O "${BASE_DIR}${script_name}" "${url}"; then
+#            echo -e "$(color "green" "Download successful.")"
+#            . "${BASE_DIR}${script_name}"
+#        else
+#            echo -e "$(color "red" "Download failed.")"
+#        fi
+#    else
+#        echo -e "$(color "yellow" "Download aborted.")"
+#    fi
+#}

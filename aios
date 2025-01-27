@@ -42,26 +42,31 @@ download_and_execute_common() {
         echo "Failed to download common-functions.sh"
         exit 1
     }
-    . "${BASE_DIR%/}/common-functions.sh" || {
+    source "${BASE_DIR%/}/common-functions.sh" || {
         echo "Failed to source common-functions.sh"
         exit 1
     }
 }
 
-download_and_execute_openwrt_config() {
+download_openwrt_config() {
     wget --no-check-certificate -O "${BASE_DIR%/}/openwrt-config.sh" "${BASE_URL}openwrt-config.sh" || {
         echo "Failed to download openwrt-config.sh"
         exit 1
     }
-    banner
+}
+
+execute_openwrt_config() {
     sh "${BASE_DIR%/}/openwrt-config.sh" || {
         echo "Failed to execute openwrt-config.sh"
         exit 1
     }
 }
 
+
 delete_language
 make_directory
 download_and_execute_common
 check_common "$1"
-download_and_execute_openwrt_config
+download_openwrt_config
+banner
+execute_openwrt_config

@@ -185,7 +185,7 @@ menu_option() {
                 exit 0
             else
                 show_notification "exit_cancelled"
-                show_main_menu
+                main_menu
             fi
             ;;
         "delete")
@@ -195,7 +195,7 @@ menu_option() {
                 exit 0
             else
                 show_notification "delete_cancelled"
-                show_main_menu
+                main_menu
             fi
             ;;
         "download")
@@ -208,12 +208,12 @@ menu_option() {
                 fi
             else
                 show_notification "download_cancelled"
-                show_main_menu
+                main_menu
             fi
             ;;
         *)
             echo -e "$(color "red" "Unknown action.")"
-            show_main_menu
+            main_menu
             ;;
     esac
 }

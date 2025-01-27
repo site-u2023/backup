@@ -73,55 +73,6 @@ download_common() {
     . "${BASE_DIR}common-functions.sh"
 }
 
-ask_confirmation() {
-    local message_key="$1"
-    local message
-
-    if [ "${SELECTED_LANGUAGE}" = "en" ]; then
-        case "$message_key" in
-            "download") message="Execute?" ;;
-            "exit") message="Exit?" ;;
-            "delete") message="Delete the script and exit?" ;;
-            *) message="Execute?" ;;
-        esac
-    elif [ "${SELECTED_LANGUAGE}" = "ja" ]; then
-        case "$message_key" in
-            "download") message="実行します" ;;
-            "exit") message="終了します" ;;
-            "delete") message="スクリプトを削除して終了します" ;;
-            *) message="実行します" ;;
-        esac
-    fi
-
-    while true; do
-        read -p "$(color "white" "${message} [y/n]: ")" choice
-        case "${choice}" in
-            [Yy]*) return 0 ;;
-            [Nn]*) return 1 ;;
-            *) echo -e "$(color "red" "Invalid choice, please enter 'y' or 'n'.")" ;;
-        esac
-    done
-}
-
-
-download_and_execute() {
-    mkdir -p "$BASE_DIR"
-    local script_name="$1"
-    local url="$2"
-    
-    if ask_confirmation "download"; then
-        if wget --no-check-certificate --quiet -O "${BASE_DIR}${script_name}" "${url}"; then
-            echo -e "$(color "green" "Download successful.")"
-            . "${BASE_DIR}${script_name}"
-        else
-            echo -e "$(color "red" "Download failed.")"
-        fi
-    else
-        echo -e "$(color "yellow" "Download aborted.")"
-    fi
-}
-
-
 menu_option() {
     local description="$1"
     local script_name="$2"

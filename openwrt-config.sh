@@ -79,10 +79,10 @@ ask_confirmation() {
 
     if [ "${SELECTED_LANGUAGE}" = "en" ]; then
         case "$message_key" in
-            "download") message="Do you want to execute" ;;
+            "download") message="Do you want to execute?" ;;
             "exit") message="Are you sure you want to exit?" ;;
             "delete") message="Do you want to delete the script and exit?" ;;
-            *) message="Are you sure?" ;;
+            *) message="Are you sure you want to execute?" ;;
         esac
     elif [ "${SELECTED_LANGUAGE}" = "ja" ]; then
         case "$message_key" in

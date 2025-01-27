@@ -146,8 +146,8 @@ show_notification() {
         case "$message_key" in
             "download_success") message="Download successful." ;;
             "download_failure") message="Download failed." ;;
-            "exit_cancelled") message="Exit cancelled." ;;
-            "delete_cancelled") message="Delete cancelled." ;;
+            "exit_cancelled") message="Exit operation cancelled." ;;  # 修正
+            "delete_cancelled") message="Delete operation cancelled." ;;  # 修正
             "delete_success") message="Script and configuration deleted." ;;
             *) message="Operation completed." ;;
         esac
@@ -155,8 +155,8 @@ show_notification() {
         case "$message_key" in
             "download_success") message="ダウンロードが成功しました。" ;;
             "download_failure") message="ダウンロードに失敗しました。" ;;
-            "exit_cancelled") message="終了がキャンセルされました。" ;;
-            "delete_cancelled") message="削除がキャンセルされました。" ;;
+            "exit_cancelled") message="終了操作がキャンセルされました。" ;;  # 修正
+            "delete_cancelled") message="削除操作がキャンセルされました。" ;;  # 修正
             "delete_success") message="スクリプトと設定が削除されました。" ;;
             *) message="操作が完了しました。" ;;
         esac
@@ -178,7 +178,7 @@ menu_option() {
                 show_notification "exit"
                 exit 0
             else
-                show_notification "exit_cancelled"
+                show_notification "exit_cancelled"  # 修正されたメッセージ
             fi
             ;;
         "delete")
@@ -187,7 +187,7 @@ menu_option() {
                 show_notification "delete_success"
                 exit 0
             else
-                show_notification "delete_cancelled"
+                show_notification "delete_cancelled"  # 修正されたメッセージ
             fi
             ;;
         "download")

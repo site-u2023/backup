@@ -105,11 +105,6 @@ ask_confirmation() {
             "download") message="Execute download?" ;;
             "exit") message="Are you sure you want to exit?" ;;
             "delete") message="Are you sure you want to delete the script and exit?" ;;
-            "download_success") message="Download successful." ;;
-            "download_failure") message="Download failed." ;;
-            "exit_cancelled") message="Exit cancelled." ;;
-            "delete_cancelled") message="Delete cancelled." ;;
-            "delete_success") message="Script and configuration deleted." ;;
             *) message="Are you sure?" ;;
         esac
     elif [ "${SELECTED_LANGUAGE}" = "ja" ]; then
@@ -117,11 +112,6 @@ ask_confirmation() {
             "download") message="ダウンロードを実行しますか？" ;;
             "exit") message="終了してもよろしいですか？" ;;
             "delete") message="スクリプトを削除して終了しますか？" ;;
-            "download_success") message="ダウンロードが成功しました。" ;;
-            "download_failure") message="ダウンロードに失敗しました。" ;;
-            "exit_cancelled") message="終了がキャンセルされました。" ;;
-            "delete_cancelled") message="削除がキャンセルされました。" ;;
-            "delete_success") message="スクリプトと設定が削除されました。" ;;
             *) message="実行しますか？" ;;
         esac
     fi
@@ -136,6 +126,33 @@ ask_confirmation() {
     done
 }
 
+show_notification() {
+    local message_key="$1"
+    local message
+
+    if [ "${SELECTED_LANGUAGE}" = "en" ]; then
+        case "$message_key" in
+            "download_success") message="Download successful." ;;
+            "download_failure") message="Download failed." ;;
+            "exit_cancelled") message="Exit cancelled." ;;
+            "delete_cancelled") message="Delete cancelled." ;;
+            "delete_success") message="Script and configuration deleted." ;;
+            *) message="Operation completed." ;;
+        esac
+    elif [ "${SELECTED_LANGUAGE}" = "ja" ]; then
+        case "$message_key" in
+            "download_success") message="ダウンロードが成功しました。" ;;
+            "download_failure") message="ダウンロードに失敗しました。" ;;
+            "exit_cancelled") message="終了がキャンセルされました。" ;;
+            "delete_cancelled") message="削除がキャンセルされました。" ;;
+            "delete_success") message="スクリプトと設定が削除されました。" ;;
+            *) message="操作が完了しました。" ;;
+        esac
+    fi
+
+    echo -e "$(color "green" "${message}")"
+}
+
 menu_option() {
     local action="$1"
     local description="$2"
@@ -146,32 +163,32 @@ menu_option() {
     case "${action}" in
         "exit")
             if ask_confirmation "exit"; then
-                echo -e "$(color "green" "$(ask_confirmation "exit")")"
+                show_notification "exit"
                 exit 0
             else
-                echo -e "$(color "yellow" "$(ask_confirmation "exit_cancelled")")"
+                show_notification "exit_cancelled"
             fi
             ;;
         "delete")
             if ask_confirmation "delete"; then
                 rm -rf "${BASE_DIR}" /usr/bin/aios /tmp/aios-config.sh
-                echo -e "$(color "green" "$(ask_confirmation "delete_success")")"
+                show_notification "delete_success"
                 exit 0
             else
-                echo -e "$(color "yellow" "$(ask_confirmation "delete_cancelled")")"
+                show_notification "delete_cancelled"
             fi
             ;;
         "download")
             if ask_confirmation "download"; then
                 mkdir -p "${BASE_DIR}"
                 if wget --no-check-certificate --quiet -O "${BASE_DIR}${script_name}" "${BASE_URL}${script_name}"; then
-                    echo -e "$(color "green" "$(ask_confirmation "download_success")")"
+                    show_notification "download_success"
                     . "${BASE_DIR}${script_name}"
                 else
-                    echo -e "$(color "red" "$(ask_confirmation "download_failure")")"
+                    show_notification "download_failure"
                 fi
             else
-                echo -e "$(color "yellow" "$(ask_confirmation "download_cancelled")")"
+                show_notification "download_cancelled"
             fi
             ;;
         *)
@@ -179,3 +196,5 @@ menu_option() {
             ;;
     esac
 }
+
+

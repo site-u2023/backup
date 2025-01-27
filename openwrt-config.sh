@@ -16,7 +16,7 @@ main_menu() {
         MENU6="Other Script Settings"
         MENU00="Exit Script"
         MENU01="Remove script and exit"
-        SELECT="Select an option: "
+        SELECT1="Select an option: "
     elif [ "${SELECTED_LANGUAGE}" = "ja" ]; then
         MENU1="インターネット設定"
         MENU2="システム初期設定"
@@ -93,10 +93,8 @@ ask_confirmation() {
         esac
     fi
 
-    echo -e "$(color "white" "${message} [y/n]:")"
-    
     while true; do
-        read -p "" choice
+        read -p "$(color "white" "${message} [y/n]: ")" choice
         case "${choice}" in
             [Yy]*) return 0 ;;
             [Nn]*) return 1 ;;
@@ -104,6 +102,7 @@ ask_confirmation() {
         esac
     done
 }
+
 
 download_and_execute() {
     mkdir -p "$BASE_DIR"
@@ -121,6 +120,7 @@ download_and_execute() {
         echo -e "$(color "yellow" "Download aborted.")"
     fi
 }
+
 
 menu_option() {
     local description="$1"

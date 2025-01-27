@@ -74,7 +74,21 @@ download_common() {
 }
 
 ask_confirmation() {
-    local message="$1"
+    local message_key="$1"
+    local message
+
+    if [ "${SELECTED_LANGUAGE}" = "en" ]; then
+        case "$message_key" in
+            "download") message="Do you want to download and execute" ;;
+            *) message="Are you sure?" ;;
+        esac
+    elif [ "${SELECTED_LANGUAGE}" = "ja" ]; then
+        case "$message_key" in
+            "download") message="ダウンロードして実行しますか" ;;
+            *) message="本当に実行しますか?" ;;
+        esac
+    fi
+
     while true; do
         read -p "$(color "white" "${message} [y/n]: ")" choice
         case "${choice}" in
@@ -85,13 +99,14 @@ ask_confirmation() {
     done
 }
 
+
 download_and_execute() {
     mkdir -p "$BASE_DIR"
     local script_name="$1"
     local url="$2"
     
-    if ask_confirmation "Do you want to download and execute ${script_name}?"; then
-        if wget --no-check-certificate -O "${BASE_DIR}${script_name}" "${url}"; then
+    if ask_confirmation "download"; then
+        if wget --no-check-certificate --quiet -O "${BASE_DIR}${script_name}" "${url}"; then
             echo -e "$(color "green" "Download successful.")"
             . "${BASE_DIR}${script_name}"
         else
@@ -101,6 +116,7 @@ download_and_execute() {
         echo -e "$(color "yellow" "Download aborted.")"
     fi
 }
+
 
 menu_option() {
     local description="$1"

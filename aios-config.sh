@@ -8,7 +8,6 @@ BASE_URL="https://raw.githubusercontent.com/site-u2023/aios/main/"
 BASE_DIR="/tmp/aios/"
 SUPPORTED_VERSIONS="19 21 22 23 24 SN"
 
-# Function: Check if the OpenWrt version is supported
 check_version() {
     RELEASE_VERSION=$(grep 'DISTRIB_RELEASE' /etc/openwrt_release | cut -d"'" -f2 | cut -c 1-2)
     if ! echo "${SUPPORTED_VERSIONS}" | grep -q "${RELEASE_VERSION}"; then
@@ -18,14 +17,12 @@ check_version() {
     fi
 }
 
-# Function: Create the base directory for temporary files
 make_directory() {
 if [ ! -d "$BASE_DIR" ]; then
     mkdir -p "$BASE_DIR" || { echo "Failed to create BASE_DIR"; exit 1; }
 fi
 }
 
-# Function: Check if ttyd is installed, and optionally install it
 check_ttyd_installed() {
     if command -v ttyd >/dev/null 2>&1; then
         echo "ttyd is already installed."
@@ -49,7 +46,6 @@ check_ttyd_installed() {
     fi
 }
 
-# Function: Download and execute the main aios script
 download_and_execute() {
     wget --no-check-certificate -O "/usr/bin/aios" "${BASE_URL}aios" || {
         echo "Failed to download aios."
@@ -59,7 +55,6 @@ download_and_execute() {
     RELEASE_VERSION="${RELEASE_VERSION}" /usr/bin/aios "$SELECTED_LANGUAGE"
 }
 
-# Main script execution
 check_version
 make_directory
 check_ttyd_installed

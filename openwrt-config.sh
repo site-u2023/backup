@@ -57,8 +57,8 @@ main_menu() {
             "b") menu_option "${MENU4}" "${TARGET4}" "${BASE_URL}${TARGET4}" ;;
             "a") menu_option "${MENU5}" "${TARGET5}" "${BASE_URL}${TARGET5}" ;;
             "o") menu_option "${MENU6}" "${TARGET6}" "${BASE_URL}${TARGET6}" ;;
-            "e") exit_end ;;
-            "d") delete_and_exit ;;
+            "e") exit_end "${MENU00}" ;;
+            "d") delete_and_exit "${MENU01}" ;;
             *) echo -e "$(color "red" "Invalid option. Please try again.")" ;;
         esac
     done
@@ -81,7 +81,7 @@ menu_option() {
 }
 
 exit_end() {
-    local description="Exit Script"
+    local description="$1"
     echo -e "$(color "white" "${description}")"
     if ask_confirmation "exit"; then
         exit 0
@@ -91,7 +91,7 @@ exit_end() {
 }
 
 delete_and_exit() {
-    local description="Delete and Exit"
+    local description="$1"
     echo -e "$(color "white" "${description}")"
     if ask_confirmation "delete"; then
         rm -rf "${BASE_DIR}" /usr/bin/aios /tmp/aios-config.sh

@@ -72,28 +72,6 @@ download_common() {
     source "${BASE_DIR}common-functions.sh"
 }
 
-#menu_exit() {
-#    local description="$1"
-#    echo -e "$(color "white" "${description}")"
-#    if ask_confirmation "exit"; then
-#        exit 0
-#    else
-#        echo -e "$(color "yellow" "Exit cancelled.")"
-#    fi
-#}
-
-#menu_delete_and_exit() {
-#    local description="$1"
-#    echo -e "$(color "white" "${description}")"
-#    if ask_confirmation "delete"; then
-#        rm -rf "${BASE_DIR}" /usr/bin/aios /tmp/aios-config.sh
-#        echo -e "$(color "green" "Script and configuration deleted.")"
-#        exit 0
-#    else
-#        echo -e "$(color "yellow" "Delete cancelled.")"
-#    fi
-#}
-
 menu_option() {
     local action="$1"
     local description="$2"

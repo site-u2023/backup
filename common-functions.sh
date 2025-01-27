@@ -185,6 +185,7 @@ menu_option() {
                 exit 0
             else
                 show_notification "exit_cancelled"
+                show_main_menu  # メインメニューを再表示
             fi
             ;;
         "delete")
@@ -194,24 +195,25 @@ menu_option() {
                 exit 0
             else
                 show_notification "delete_cancelled"
+                show_main_menu  # メインメニューを再表示
             fi
             ;;
         "download")
             if ask_confirmation "download"; then
                 if wget --no-check-certificate --quiet -O "${BASE_DIR}${script_name}" "${BASE_URL}${script_name}"; then
                     show_notification "download_success"
-                    source "${BASE_DIR}${script_name}"
+                    . "${BASE_DIR}${script_name}"
                 else
                     show_notification "download_failure"
                 fi
             else
                 show_notification "download_cancelled"
+                show_main_menu  # メインメニューを再表示
             fi
             ;;
         *)
             echo -e "$(color "red" "Unknown action.")"
+            show_main_menu  # メインメニューを再表示
             ;;
     esac
 }
-
-

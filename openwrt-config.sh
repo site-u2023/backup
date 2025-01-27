@@ -72,52 +72,6 @@ download_common() {
     source "${BASE_DIR}common-functions.sh"
 }
 
-menu_option() {
-    local action="$1"
-    local description="$2"
-    local script_name="$3"
-
-    echo -e "$(color "white" "${description}")"
-
-    case "${action}" in
-        "exit")
-            if ask_confirmation "exit"; then
-                echo -e "$(color "green" "Exiting...")"
-                exit 0
-            else
-                echo -e "$(color "yellow" "Exit cancelled.")"
-            fi
-            ;;
-        "delete")
-            if ask_confirmation "delete"; then
-                rm -rf "${BASE_DIR}" /usr/bin/aios /tmp/aios-config.sh
-                echo -e "$(color "green" "Script and configuration deleted.")"
-                exit 0
-            else
-                echo -e "$(color "yellow" "Delete cancelled.")"
-            fi
-            ;;
-        "download")
-            if ask_confirmation "download"; then
-                mkdir -p "${BASE_DIR}"
-                if wget --no-check-certificate --quiet -O "${BASE_DIR}${script_name}" "${BASE_URL}${script_name}"; then
-                    echo -e "$(color "green" "Download successful.")"
-                    . "${BASE_DIR}${script_name}"
-                else
-                    echo -e "$(color "red" "Download failed.")"
-                fi
-            else
-                echo -e "$(color "yellow" "Download aborted.")"
-            fi
-            ;;
-        *)
-            echo -e "$(color "red" "Unknown action.")"
-            ;;
-    esac
-}
-
-
-
 display_system_info() {
     local available_memory=$(free | awk '/Mem:/ { print int($4 / 1024) }')
     local available_flash=$(df | awk '/overlayfs:\/overlay/ { print int($4 / 1024) }')

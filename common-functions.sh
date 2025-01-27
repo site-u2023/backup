@@ -16,8 +16,20 @@ color_code_map() {
     "magenta") echo "\033[1;35m" ;;
     "cyan") echo "\033[1;36m" ;;
     "white") echo "\033[1;37m" ;;
+    "red_underline") echo "\033[4;31m" ;;
+    "green_underline") echo "\033[4;32m" ;;
+    "yellow_underline") echo "\033[4;33m" ;;
+    "blue_underline") echo "\033[4;34m" ;;
+    "magenta_underline") echo "\033[4;35m" ;;
+    "cyan_underline") echo "\033[4;36m" ;;
+    "white_underline") echo "\033[4;37m" ;;
+    "red_white") echo "\033[1;41m" ;;
+    "green_white") echo "\033[1;42m" ;;
+    "yellow_white") echo "\033[1;43m" ;;
+    "blue_white") echo "\033[1;44m" ;;
+    "magenta_white") echo "\033[1;45m" ;;
+    "cyan_white") echo "\033[1;46m" ;;
     "white_black") echo "\033[7;40m" ;;
-    "red_white") echo "\033[6;41m" ;;
     "reset") echo "\033[0;39m" ;;
     *) echo "\033[0;39m" ;;
   esac

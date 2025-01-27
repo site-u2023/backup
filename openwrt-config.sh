@@ -17,7 +17,11 @@ download_common() {
 ask_confirmation() {
     local message="$1"
     while true; do
-        read -p "$(color "white" "${message} [y/n]: ")" choice
+        if [ "${SELECTED_LANGUAGE}" = "ja" ]; then
+            read -p "$(color "white" "${message} [y/n]: ")" choice
+        else
+            read -p "$(color "white" "${message} [y/n]: ")" choice
+        fi
         case "${choice}" in
             [Yy]*) return 0 ;;
             [Nn]*) return 1 ;;
@@ -33,7 +37,7 @@ download_and_execute() {
     
     echo -e "$(color "blue" "Downloading and executing: ${script_name}")"
     
-    if ask_confirmation "Do you want to download and execute ${script_name}?"; then
+    if ask_confirmation "$(if [ "${SELECTED_LANGUAGE}" = "ja" ]; then echo "このスクリプトをダウンロードして実行しますか？"; else echo "Do you want to download and execute ${script_name}?"; fi)"; then
         if wget --no-check-certificate -O "${BASE_DIR}${script_name}" "${url}"; then
             echo -e "$(color "green" "Download successful.")"
             sh "${BASE_DIR}${script_name}"
@@ -46,7 +50,7 @@ download_and_execute() {
 }
 
 exit_end() {
-    if ask_confirmation "Are you sure you want to exit the script?"; then
+    if ask_confirmation "$(if [ "${SELECTED_LANGUAGE}" = "ja" ]; then echo "本当にスクリプトを終了しますか？"; else echo "Are you sure you want to exit the script?"; fi)"; then
         echo -e "$(color "white" "Exiting script.")"
         exit 0
     else
@@ -55,7 +59,7 @@ exit_end() {
 }
 
 delete_and_exit() {
-    if ask_confirmation "Are you sure you want to delete the script and exit?"; then
+    if ask_confirmation "$(if [ "${SELECTED_LANGUAGE}" = "ja" ]; then echo "スクリプトを削除して終了しますか？"; else echo "Are you sure you want to delete the script and exit?"; fi)"; then
         echo -e "$(color "red" "Deleting script and exiting.")"
         rm -rf "${BASE_DIR}" /usr/bin/aios /tmp/aios-config.sh
         exit 0
@@ -86,8 +90,7 @@ menu_option() {
     download_and_execute "${script_name}" "${url}"
 }
 
-# 言語に応じて変数を設定
-set_language_variables() {
+main_menu() {
     if [ "${SELECTED_LANGUAGE}" = "en" ]; then
         INFO1="Available Memory"
         INFO2="Available Flash Storage"
@@ -96,7 +99,7 @@ set_language_variables() {
         INFO5="OpenWrt version"
         INFO6="Selected language"
         INFO7="Downloader"
-        MENU1="Internet settings (Japan Only)" 
+        MENU1="Internet settings (Japan Only)"
         MENU2="Initial System Settings"
         MENU3="Recommended Package Installation"
         MENU4="Ad blocker installation settings"
@@ -115,19 +118,14 @@ set_language_variables() {
         INFO7="ダウンローダー"
         MENU1="インターネット設定"
         MENU2="システム初期設定"
-        MENU3="推奨パッケージインストール"  
-        MENU4="広告ブロッカーインストール設定" 
+        MENU3="推奨パッケージインストール"
+        MENU4="広告ブロッカーインストール設定"
         MENU5="アクセスポイント設定"
         MENU6="その他のスクリプト設定"
         MENU00="スクリプト終了"
         MENU01="スクリプト削除終了"
         SELECT_PROMPT="オプションを選択してください"
     fi
-}
-
-# メインメニューの表示
-main_menu() {
-    set_language_variables  # 言語設定を反映
 
     TARGET1="internet-config.sh"
     TARGET2="system-config.sh"

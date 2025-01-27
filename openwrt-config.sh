@@ -70,12 +70,12 @@ display_system_info() {
     local usb_devices=$(ls /sys/bus/usb/devices | grep -q usb && echo "Detected" || echo "Not detected")
 
     echo -e "$(color "white" "${INFO1}: ${available_memory} MB")"
-    echo -e "$(color "white" "${INFO1}: ${available_flash} MB")"
-    echo -e "$(color "white" "${INFO1}: ${usb_devices}")"
-    echo -e "$(color "white" "${INFO1}: ${BASE_DIR}")"
-    echo -e "$(color "white" "${INFO1}: "${RELEASE_VERSION}" - Supported")"
-    echo -e "$(color "white" "${INFO1}:  ${SELECTED_LANGUAGE}")"
-    echo -e "$(color "white" "${INFO1}: "${PACKAGE_MANAGER}"")"
+    echo -e "$(color "white" "${INFO2}: ${available_flash} MB")"
+    echo -e "$(color "white" "${INFO3}: ${usb_devices}")"
+    echo -e "$(color "white" "${INFO4}: ${BASE_DIR}")"
+    echo -e "$(color "white" "${INFO5}: ${RELEASE_VERSION} - Supported")"
+    echo -e "$(color "white" "${INFO6}: ${SELECTED_LANGUAGE}")"
+    echo -e "$(color "white" "${INFO7}: ${PACKAGE_MANAGER}")"
 }
 
 menu_option() {
@@ -86,7 +86,8 @@ menu_option() {
     download_and_execute "${script_name}" "${url}"
 }
 
-main_menu() {
+# 言語に応じて変数を設定
+set_language_variables() {
     if [ "${SELECTED_LANGUAGE}" = "en" ]; then
         INFO1="Available Memory"
         INFO2="Available Flash Storage"
@@ -122,6 +123,11 @@ main_menu() {
         MENU01="スクリプト削除終了"
         SELECT_PROMPT="オプションを選択してください"
     fi
+}
+
+# メインメニューの表示
+main_menu() {
+    set_language_variables  # 言語設定を反映
 
     TARGET1="internet-config.sh"
     TARGET2="system-config.sh"
@@ -151,8 +157,8 @@ main_menu() {
             "b") menu_option "${MENU4}" "${TARGET4}" "${BASE_URL}${TARGET4}" ;;
             "a") menu_option "${MENU5}" "${TARGET5}" "${BASE_URL}${TARGET5}" ;;
             "o") menu_option "${MENU6}" "${TARGET6}" "${BASE_URL}${TARGET6}" ;;
-            "e") exit_end ;;
-            "d") delete_and_exit ;;
+            "e") menu_option "${MENU00}" "${TARGET00}" "${BASE_URL}${TARGET00}" ;;
+            "d") menu_option "${MENU01}" "${TARGET01}" "${BASE_URL}${TARGET01}" ;;
             *) echo -e "$(color "red" "Invalid option. Please try again.")" ;;
         esac
     done

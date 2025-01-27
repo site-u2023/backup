@@ -33,7 +33,7 @@ check_ttyd_installed() {
         case "$choice" in
             [Yy]*)
                 echo "Installing ttyd..."
-                wget --no-check-certificate -O "${BASE_DIR}ttyd.sh" "${BASE_URL}ttyd.sh" || {
+                wget --no-check-certificate --quiet -O "${BASE_DIR}ttyd.sh" "${BASE_URL}ttyd.sh" || {
                     echo "Failed to download ttyd installation script."
                     exit 1
                 }

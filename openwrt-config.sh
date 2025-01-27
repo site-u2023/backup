@@ -17,7 +17,7 @@ ask_confirmation() {
     case "${choice}" in
         [Yy]*) return 0 ;;
         [Nn]*) return 1 ;;
-        *) echo -e "$(color "red" "Invalid choice, please enter 'Yy' or 'Nn'.")" ; ask_confirmation "$message" ;;
+        *) echo -e "$(color "red" "Invalid choice, please enter 'y' or 'n'.")" ; ask_confirmation "$message" ;;
     esac
 }
 

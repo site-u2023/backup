@@ -146,24 +146,27 @@ show_notification() {
         case "$message_key" in
             "download_success") message="Download successful." ;;
             "download_failure") message="Download failed." ;;
-            "exit_cancelled") message="Exit operation cancelled." ;;  # 修正
-            "delete_cancelled") message="Delete operation cancelled." ;;  # 修正
+            "exit_cancelled") message="Exit operation cancelled." ;;
+            "delete_cancelled") message="Delete operation cancelled." ;;
             "delete_success") message="Script and configuration deleted." ;;
+            "download_cancelled") message="Download operation cancelled." ;;
             *) message="Operation completed." ;;
         esac
     elif [ "${SELECTED_LANGUAGE}" = "ja" ]; then
         case "$message_key" in
             "download_success") message="ダウンロードが成功しました。" ;;
             "download_failure") message="ダウンロードに失敗しました。" ;;
-            "exit_cancelled") message="終了操作がキャンセルされました。" ;;  # 修正
-            "delete_cancelled") message="削除操作がキャンセルされました。" ;;  # 修正
+            "exit_cancelled") message="終了操作がキャンセルされました。" ;;
+            "delete_cancelled") message="削除操作がキャンセルされました。" ;;
             "delete_success") message="スクリプトと設定が削除されました。" ;;
+            "download_cancelled") message="ダウンロード操作がキャンセルされました。" ;;
             *) message="操作が完了しました。" ;;
         esac
     fi
 
     echo -e "$(color "green_white" "${message}")"
 }
+
 
 menu_option() {
     local action="$1"
@@ -178,7 +181,7 @@ menu_option() {
                 show_notification "exit"
                 exit 0
             else
-                show_notification "exit_cancelled"  # 修正されたメッセージ
+                show_notification "exit_cancelled"
             fi
             ;;
         "delete")
@@ -187,7 +190,7 @@ menu_option() {
                 show_notification "delete_success"
                 exit 0
             else
-                show_notification "delete_cancelled"  # 修正されたメッセージ
+                show_notification "delete_cancelled"
             fi
             ;;
         "download")
@@ -207,3 +210,4 @@ menu_option() {
             ;;
     esac
 }
+

@@ -6,13 +6,6 @@ BASE_URL="https://raw.githubusercontent.com/site-u2023/aios/main/"
 BASE_DIR="/tmp/aios/"
 SUPPORTED_VERSIONS="19 21 22 23 24 SN"
 
-delete_language() {
-if [ -e "${BASE_DIR}check_language" ]; then
-    rm -rf "${BASE_DIR}check_language"
-    echo "Initialized check_language."
-fi
-}
-
 banner() {
 echo -e "$(color "red_white" "    Disclaimer: Use this script at your own risk.     ")"
 
@@ -27,6 +20,13 @@ echo -e "$(color "red"       "         aaaaa     iiii      oooo     ssssss      
 echo -e "$(color "white"     "                                                      ")"
 echo -e "$(color "white"     "                  all in one scripts                  ")"
 echo -e "$(color "white"     "                                                      ")"
+}
+
+delete_language() {
+if [ -e "${BASE_DIR}check_language" ]; then
+    rm -rf "${BASE_DIR}check_language"
+    echo "Initialized check_language."
+fi
 }
 
 make_directory() {

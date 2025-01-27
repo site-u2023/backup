@@ -93,8 +93,10 @@ ask_confirmation() {
         esac
     fi
 
+    echo -e "$(color "white" "${message} [y/n]:")"
+    
     while true; do
-        read -p "$(color "white" "${message} [y/n]: ")" choice
+        read -p "" choice
         case "${choice}" in
             [Yy]*) return 0 ;;
             [Nn]*) return 1 ;;
@@ -102,7 +104,6 @@ ask_confirmation() {
         esac
     done
 }
-
 
 download_and_execute() {
     mkdir -p "$BASE_DIR"

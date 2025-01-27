@@ -79,12 +79,12 @@ ask_confirmation() {
 
     if [ "${SELECTED_LANGUAGE}" = "en" ]; then
         case "$message_key" in
-            "download") message="Do you want to download and execute" ;;
+            "download") message="Do you want to execute" ;;
             *) message="Are you sure?" ;;
         esac
     elif [ "${SELECTED_LANGUAGE}" = "ja" ]; then
         case "$message_key" in
-            "download") message="ダウンロードして実行しますか" ;;
+            "download") message="実行しますか" ;;
             *) message="本当に実行しますか?" ;;
         esac
     fi

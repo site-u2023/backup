@@ -2,7 +2,7 @@
 # License: CC0
 # OpenWrt >= 19.07
 
-BASE_DIR="/tmp/aios/"
+BASE_DIR="${BASE_DIR:-/tmp/aios/}"
 
 color_code_map() {
   local color=$1

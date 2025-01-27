@@ -47,7 +47,7 @@ check_ttyd_installed() {
 }
 
 download_and_execute() {
-    wget --no-check-certificate -O "/usr/bin/aios" "${BASE_URL}aios" || {
+    wget --no-check-certificate --quiet -O "/usr/bin/aios" "${BASE_URL}aios" || {
         echo "Failed to download aios."
         exit 1
     }

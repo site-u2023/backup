@@ -150,6 +150,8 @@ show_notification() {
             "delete_cancelled") message="Delete operation cancelled." ;;
             "delete_success") message="Script and configuration deleted." ;;
             "download_cancelled") message="Download operation cancelled." ;;
+            "exit") message="Exit operation completed." ;;
+            "delete") message="Delete operation completed." ;;
             *) message="Operation completed." ;;
         esac
     elif [ "${SELECTED_LANGUAGE}" = "ja" ]; then
@@ -160,14 +162,14 @@ show_notification() {
             "delete_cancelled") message="削除操作がキャンセルされました。" ;;
             "delete_success") message="スクリプトと設定が削除されました。" ;;
             "download_cancelled") message="ダウンロード操作がキャンセルされました。" ;;
+            "exit") message="終了操作が完了しました。" ;;
+            "delete") message="削除操作が完了しました。" ;;
             *) message="操作が完了しました。" ;;
         esac
     fi
 
-    echo -e "$(color "white" "${message}")"
+    echo -e "$(color "green_white" "${message}")"
 }
-
-
 
 menu_option() {
     local action="$1"
@@ -211,4 +213,5 @@ menu_option() {
             ;;
     esac
 }
+
 

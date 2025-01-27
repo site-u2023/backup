@@ -168,7 +168,7 @@ show_notification() {
         esac
     fi
 
-    echo -e "$(color "green_white" "${message}")"
+    echo -e "$(color "white" "${message}")"
 }
 
 menu_option() {

@@ -87,9 +87,9 @@ country_timezones=(
 
 # 引数でソートする機能
 sort_country_timezones() {
-  sort -k2,2 "$1"
+  printf "%s\n" "${country_timezones[@]}" | sort -k2,2
 }
 
 # 使用例:
 # ソートして表示する場合
-echo "${country_timezones[@]}" | sort_country_timezones
+# echo "${country_timezones[@]}" | sort_country_timezones

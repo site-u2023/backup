@@ -25,5 +25,8 @@ wget --quiet -O /tmp/aios-config.sh https://raw.githubusercontent.com/site-u2023
 
 - --timestamping
 ```sh
+opkg update && opkg install wget-ssl
+```
+```sh
 wget -N /tmp/aios-config.sh https://raw.githubusercontent.com/site-u2023/aios/main/aios-config.sh; sh /tmp/aios-config.sh ja
 ```

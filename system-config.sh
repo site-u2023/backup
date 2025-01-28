@@ -33,13 +33,16 @@ set_device_name_password() {
     msg_cancel="Operation has been canceled."
   fi
 
+  echo "Starting device name and password update process..."
   read -p "$msg_device" device_name
-  echo
+  echo "Device Name entered: $device_name"
+
   read -s -p "$msg_password" password
-  echo
+  echo "Password entered: (hidden)"  # パスワードは表示しない
+
   echo "$msg_confirm"
   echo "Device Name: $device_name"
-  echo "Password: $password" 
+  echo "Password: (hidden)"
 
   read -p "$msg_confirm" confirmation
   if [ "$confirmation" != "y" ]; then
@@ -47,13 +50,29 @@ set_device_name_password() {
     return 1
   fi
 
+  echo "Updating password and device name..."
+
   ubus call luci setPassword "{ \"username\": \"root\", \"password\": \"$password\" }"
+  if [ $? -ne 0 ]; then
+    echo "Failed to update password."
+    return 1
+  fi
 
   uci set system.@system[0].hostname="$device_name"
+  if [ $? -ne 0 ]; then
+    echo "Failed to update device name."
+    return 1
+  fi
+
   uci commit system
+  if [ $? -ne 0 ]; then
+    echo "Failed to commit changes."
+    return 1
+  fi
 
   echo "$msg_success"
 }
+
 
 
 set_device() {

@@ -15,8 +15,6 @@ download_common() {
 }
 
 set_device_name_password() {
-BASE_DIR="/tmp/aios/"
- source "${BASE_DIR}common-functions.sh"
   local password device_name confirmation
   local lang="${SELECTED_LANGUAGE:-en}"  # デフォルトは英語
   local msg_device msg_password msg_confirm msg_success msg_cancel

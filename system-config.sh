@@ -77,14 +77,15 @@ country_codes() {
   if [ ! -f "${BASE_DIR}common-functions.sh" ]; then
     wget --no-check-certificate --quiet -O "${BASE_DIR}country_codes" "${BASE_URL}country_codes"
   fi
-    
+
   mapfile -t country_list < ${BASE_DIR}country_codes
 
   # タイムゾーン情報を事前に用意
   source "${BASE_DIR}country_codes"
 
-  local lang="${SELECTED_LANGUAGE:-en}"
-  local msg_select_country msg_invalid_choice
+  lang="${SELECTED_LANGUAGE:-en}"
+  msg_select_country=""
+  msg_invalid_choice=""
 
   if [ "$lang" = "ja" ]; then
     msg_select_country="国を選択してください: "

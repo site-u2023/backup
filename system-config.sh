@@ -76,7 +76,6 @@ set_device_name_password() {
 country_codes() {
   wget --no-check-certificate --quiet -O ${BASE_DIR}country_codes ${BASE_URL}country_codes
 
-  # ファイルを読み込んで、行ごとに選択肢を表示
   mapfile -t country_list < ${BASE_DIR}country_codes
 
   local lang="${SELECTED_LANGUAGE:-en}"  # デフォルトは英語
@@ -94,6 +93,11 @@ country_codes() {
   select country in "${country_list[@]}"; do
     if [ -n "$country" ]; then
       echo "選択された国コード: $country"   # 日本語
+
+      uci set system.@system[0].zonename="$country"
+      uci set system.@system[0].timezone="$country"
+      uci commit system
+
       break
     else
       echo "$msg_invalid_choice"

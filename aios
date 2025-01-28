@@ -9,7 +9,7 @@ SUPPORTED_VERSIONS="19 21 22 23 24 SN"
 banner() {
 echo -e "$(color "red_white"   "    Disclaimer: Use this script at your own risk.     ")"
 
-echo -e "$(color "white_black" "    Dedicated configuration software for OpenWrt.     ")"　
+echo -e "$(color "white"       "    Dedicated configuration software for OpenWrt.     ")"　
 echo -e "$(color "white"       "                                                      ")"
 echo -e "$(color "magenta"     "                    ii i                              ")"
 echo -e "$(color "blue"        "         aaaa      iii       oooo      sssss          ")"

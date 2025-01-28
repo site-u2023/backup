@@ -78,7 +78,10 @@ country_codes() {
     wget --no-check-certificate --quiet -O "${BASE_DIR}country_codes" "${BASE_URL}country_codes"
   fi
 
-  mapfile -t country_list < ${BASE_DIR}country_codes
+  country_list=()
+  while IFS= read -r line; do
+    country_list+=("$line")
+  done < ${BASE_DIR}country_codes
 
   # タイムゾーン情報を事前に用意
   source "${BASE_DIR}country_codes"
@@ -100,7 +103,7 @@ country_codes() {
     if [ -n "$country" ]; then
       # 選択された国に対応するタイムゾーンを表示
       country_timezones_for_selection=$(echo "${country_timezones[@]}" | grep "$country")
-      mapfile -t timezone_list <<< "$(echo $country_timezones_for_selection | cut -d' ' -f2-)"
+      timezone_list=($(echo $country_timezones_for_selection | cut -d' ' -f2-))
 
       echo "タイムゾーンを選択してください:"
       select timezone in "${timezone_list[@]}"; do

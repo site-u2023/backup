@@ -232,6 +232,6 @@ set_wifi_ssid_password() {
 
 # 実行
 download_common
-check_common $1"
+check_common $1
 set_device_name_password
 set_wifi_ssid_password

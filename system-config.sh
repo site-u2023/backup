@@ -4,7 +4,7 @@
 
 BASE_URL="https://raw.githubusercontent.com/site-u2023/aios/main/"
 BASE_DIR="/tmp/aios/"
-SUPPORTED_VERSIONS="19 21 22 23 24 SN"
+SUPPORTED_VERSIONS="21 22 23 24 SN"
 
 download_common() {
     if [ ! -f "${BASE_DIR}common-functions.sh" ]; then

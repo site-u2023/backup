@@ -38,11 +38,11 @@ set_device_name_password() {
   echo "Device Name entered: $device_name"
 
   read -s -p "$msg_password" password
-  echo "Password entered: (hidden)"  # パスワードは表示しない
+  echo "Password entered: $device_name"
 
   echo "$msg_confirm"
   echo "Device Name: $device_name"
-  echo "Password: (hidden)"
+  echo "Password: $device_name"
 
   read -p "$msg_confirm" confirmation
   if [ "$confirmation" != "y" ]; then

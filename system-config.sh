@@ -74,7 +74,7 @@ set_device_name_password() {
 }
 
 country_codes() {
-  if [ ! -f "${BASE_DIR}common-functions.sh" ]; then
+  if [ ! -f "${BASE_DIR}country_codes" ]; then
     wget --no-check-certificate --quiet -O "${BASE_DIR}country_codes" "${BASE_URL}country_codes"
   fi
 
@@ -285,6 +285,6 @@ set_wifi_ssid_password() {
 # 実行
 download_common
 check_common $1
-country_codes
+#country_codes
 set_device_name_password
 set_wifi_ssid_password

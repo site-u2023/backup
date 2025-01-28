@@ -73,60 +73,6 @@ set_device_name_password() {
   echo "$msg_success"
 }
 
-country_codes() {
-  if [ ! -f "${BASE_DIR}country_codes" ]; then
-    wget --no-check-certificate --quiet -O "${BASE_DIR}country_codes" "${BASE_URL}country_codes"
-  fi
-
-  country_list=()
-  while IFS= read -r line; do
-    country_list+=("$line")
-  done < ${BASE_DIR}country_codes
-
-  # タイムゾーン情報を事前に用意
-  source "${BASE_DIR}country_codes"
-
-  lang="${SELECTED_LANGUAGE:-en}"
-  msg_select_country=""
-  msg_invalid_choice=""
-
-  if [ "$lang" = "ja" ]; then
-    msg_select_country="国を選択してください: "
-    msg_invalid_choice="無効な選択です。もう一度選んでください。"
-  else
-    msg_select_country="Please select a country: "
-    msg_invalid_choice="Invalid choice. Please try again."
-  fi
-
-  echo "$msg_select_country"
-  select country in "${country_list[@]}"; do
-    if [ -n "$country" ]; then
-      # 選択された国に対応するタイムゾーンを表示
-      country_timezones_for_selection=$(echo "${country_timezones[@]}" | grep "$country")
-      timezone_list=($(echo $country_timezones_for_selection | cut -d' ' -f2-))
-
-      echo "タイムゾーンを選択してください:"
-      select timezone in "${timezone_list[@]}"; do
-        if [ -n "$timezone" ]; then
-          echo "選択された国コード: $country"
-          echo "選択されたタイムゾーン: $timezone"
-
-          uci set system.@system[0].zonename="$country"
-          uci set system.@system[0].timezone="$timezone"
-          uci commit system
-
-          break
-        else
-          echo "$msg_invalid_choice"
-        fi
-      done
-      break
-    else
-      echo "$msg_invalid_choice"
-    fi
-  done
-}
-
 set_device() {
 # SSH access interface
 uci set dropbear.@dropbear[0].Interface='lan'

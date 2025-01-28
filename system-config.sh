@@ -39,7 +39,7 @@ set_device_name_password() {
   echo
   echo "$msg_confirm"
   echo "Device Name: $device_name"
-  echo "Password: $msg_password"
+  echo "Password: $password" 
 
   read -p "$msg_confirm" confirmation
   if [ "$confirmation" != "y" ]; then
@@ -54,6 +54,7 @@ set_device_name_password() {
 
   echo "$msg_success"
 }
+
 
 set_device() {
 # SSH access interface

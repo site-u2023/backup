@@ -25,5 +25,5 @@ wget --quiet -O /tmp/aios-config.sh https://raw.githubusercontent.com/site-u2023
 
 - --timestamping
 ```sh
-wget -N --quiet /tmp/aios-config.sh https://raw.githubusercontent.com/site-u2023/aios/main/aios-config.sh; sh /tmp/aios-config.sh ja
+wget -N /tmp/aios-config.sh https://raw.githubusercontent.com/site-u2023/aios/main/aios-config.sh; sh /tmp/aios-config.sh ja
 ```

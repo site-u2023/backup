@@ -1,95 +1,70 @@
 #!/bin/sh
+# License: CC0
+# OpenWrt >= 19.07
 
-# 共通関数: 入力プロンプトと確認
-prompt_input() {
-  local prompt="$1"
-  local var_name="$2"
-  local min_length="$3"
-  local max_length="$4"
+BASE_URL="https://raw.githubusercontent.com/site-u2023/aios/main/"
+BASE_DIR="/tmp/aios/"
+SUPPORTED_VERSIONS="19 21 22 23 24 SN"
 
-  while true; do
-    echo -e "$prompt"
-    read -p " > " input
-    if [ -n "$min_length" ] && [ ${#input} -lt "$min_length" ]; then
-      echo "入力は${min_length}文字以上である必要があります。"
-      continue
+download_common() {
+    if [ ! -f "${BASE_DIR}common-functions.sh" ]; then
+        wget --no-check-certificate --quiet -O "${BASE_DIR}common-functions.sh" "${BASE_URL}common-functions.sh"
+
     fi
-    if [ -n "$max_length" ] && [ ${#input} -gt "$max_length" ]; then
-      echo "入力は${max_length}文字以下である必要があります。"
-      continue
-    fi
-    eval "$var_name=\"$input\""
-    read -p "この内容でよろしいですか？ [y/n/r]: " confirm
-    case "$confirm" in
-      y) break ;;
-      n) continue ;;
-      r) return 1 ;;
-    esac
+    source "${BASE_DIR}common-functions.sh"
+}
+
+# 無限ループの開始
+main_menu() {
+while :
+do
+  echo -e " \033[1;37mSystem setup started\033[0;39m"
+  echo -e " \033[1;37mBasic Settings\033[0;39m"
+  echo -e " \033[1;34mDevice Hostname\033[0;39m"
+  echo -e " \033[1;33mDevice Password\033[0;39m"
+
+  # Wi-Fi設定ファイルの存在確認と作成
+  if [ ! -f /etc/config/wireless ]; then
+    touch /etc/config/wireless
+  fi
+
+  # Wi-Fi情報の取得と分類
+  declare -A WIFI_MAP
+  uci show wireless | grep "band=" | while read line; do
+    RADIO=$(echo "$line" | cut -d'.' -f2)
+    BAND=$(echo "$line" | grep -oP "band='\K[^']+")
+    WIFI_MAP["$RADIO"]="$BAND"
   done
-  return 0
-}
 
-# ホスト名設定
-set_hostname() {
-  echo -e "\033[1;34mデバイスのホスト名を設定してください。\033[0;39m"
-  if prompt_input "ホスト名を入力してください" "hostname"; then
-    echo "設定されたホスト名: $hostname"
-    set_password
-  else
-    set_hostname
-  fi
-}
+  # Wi-Fi情報の表示
+  for RADIO in "${!WIFI_MAP[@]}"; do
+    BAND="${WIFI_MAP[$RADIO]}"
+    case "$BAND" in
+      "2g") BAND_LABEL="2G";;
+      "5g") BAND_LABEL="5G";;
+      "6g") BAND_LABEL="6G";;
+      *) BAND_LABEL="UNKNOWN";;
+    esac
+    echo -e " \033[1;32mWi-Fi $RADIO $BAND_LABEL SSID\033[0;39m"
+    echo -e " \033[1;36mWi-Fi $RADIO $BAND_LABEL Password\033[0;39m"
+  done
 
-# パスワード設定
-set_password() {
-  echo -e "\033[1;33mデバイスのパスワードを設定してください。\033[0;39m"
-  if prompt_input "パスワードを入力してください (8〜63文字)" "password" 8 63; then
-    echo "パスワードが設定されました。"
-    set_country
-  else
-    set_password
-  fi
-}
-
-# 国コード設定
-set_country() {
-  wget --no-check-certificate -O /etc/config-software/country_codes \
-    https://raw.githubusercontent.com/site-u2023/config-software/main/country_codes
-  cat /etc/config-software/country_codes
-
-  echo -e "\033[1;35mWi-Fiの国コードを設定してください。\033[0;39m"
-  if prompt_input "国コードを入力してください (例: JP)" "country_code"; then
-    echo "設定された国コード: $country_code"
-    set_wifi_settings "A"
-  else
-    set_country
-  fi
-}
-
-# Wi-Fi設定の汎用処理
-set_wifi_settings() {
-  local wifi_no="$1"
-
-  if [ -z "$(eval echo \${WIFI_NO_${wifi_no}})" ]; then
-    return
+  # GUEST Wi-Fiの設定確認
+  if [[ " ${WIFI_MAP[@]} " =~ "5g" ]]; then
+    echo -e " \033[1;41mWi-Fi GUEST\033[0;39m"
+    echo -e " \033[1;41mTWT (Target Wake Time)\033[0;39m"
+    echo -e " \033[1;41mDFS Check NEW\033[0;39m"
   fi
 
-  echo -e "\033[1;32mWi-Fi $wifi_no のSSIDを設定してください。\033[0;39m"
-  if prompt_input "Wi-Fi ${wifi_no} SSIDを入力してください" "wifi_ssid_${wifi_no}"; then
-    echo "設定されたSSID: $(eval echo \$wifi_ssid_${wifi_no})"
-
-    echo -e "\033[1;36mWi-Fi $wifi_no のパスワードを設定してください。\033[0;39m"
-    if prompt_input "Wi-Fi ${wifi_no} パスワードを入力してください (8〜63文字)" "wifi_password_${wifi_no}" 8 63; then
-      echo "設定されたパスワード: $(eval echo \$wifi_password_${wifi_no})"
-      next_wifi=$(printf "%s\n" "$wifi_no" | tr 'A-Z' 'B-ZA')
-      set_wifi_settings "$next_wifi"
-    else
-      set_wifi_settings "$wifi_no"
-    fi
-  else
-    set_wifi_settings "$wifi_no"
-  fi
+  # ユーザーの選択肢
+  read -p " Please select key [y or q]: " num
+  case "$num" in
+    "y") _func_HOSTNAME ;;
+    "q") exit ;;
+  esac
+done
 }
 
-# 初期設定の開始
-set_hostname
+download_common
+check_common "$1"
+main_menu

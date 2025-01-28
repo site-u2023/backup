@@ -74,11 +74,17 @@ set_device_name_password() {
 }
 
 country_codes() {
-  wget --no-check-certificate --quiet -O ${BASE_DIR}country_codes ${BASE_URL}country_codes
 
+  if [ ! -f "${BASE_DIR}common-functions.sh" ]; then
+    wget --no-check-certificate --quiet -O "${BASE_DIR}country_codes" "${BASE_URL}country_codes"
+  fi
+    
   mapfile -t country_list < ${BASE_DIR}country_codes
 
-  local lang="${SELECTED_LANGUAGE:-en}"  # デフォルトは英語
+  # タイムゾーン情報を事前に用意
+  source "${BASE_DIR}country_codes"
+
+  local lang="${SELECTED_LANGUAGE:-en}"
   local msg_select_country msg_invalid_choice
 
   if [ "$lang" = "ja" ]; then
@@ -92,12 +98,25 @@ country_codes() {
   echo "$msg_select_country"
   select country in "${country_list[@]}"; do
     if [ -n "$country" ]; then
-      echo "選択された国コード: $country"   # 日本語
+      # 選択された国に対応するタイムゾーンを表示
+      country_timezones_for_selection=$(echo "${country_timezones[@]}" | grep "$country")
+      mapfile -t timezone_list <<< "$(echo $country_timezones_for_selection | cut -d' ' -f2-)"
+      
+      echo "タイムゾーンを選択してください:"
+      select timezone in "${timezone_list[@]}"; do
+        if [ -n "$timezone" ]; then
+          echo "選択された国コード: $country"
+          echo "選択されたタイムゾーン: $timezone"
 
-      uci set system.@system[0].zonename="$country"
-      uci set system.@system[0].timezone="$country"
-      uci commit system
+          uci set system.@system[0].zonename="$country"
+          uci set system.@system[0].timezone="$timezone"
+          uci commit system
 
+          break
+        else
+          echo "$msg_invalid_choice"
+        fi
+      done
       break
     else
       echo "$msg_invalid_choice"
@@ -263,5 +282,6 @@ set_wifi_ssid_password() {
 # 実行
 download_common
 check_common $1
+country_codes
 set_device_name_password
 set_wifi_ssid_password

@@ -73,7 +73,33 @@ set_device_name_password() {
   echo "$msg_success"
 }
 
+country_codes() {
+  wget --no-check-certificate --quiet -O ${BASE_DIR}country_codes ${BASE_URL}country_codes
 
+  # ファイルを読み込んで、行ごとに選択肢を表示
+  mapfile -t country_list < ${BASE_DIR}country_codes
+
+  local lang="${SELECTED_LANGUAGE:-en}"  # デフォルトは英語
+  local msg_select_country msg_invalid_choice
+
+  if [ "$lang" = "ja" ]; then
+    msg_select_country="国を選択してください: "
+    msg_invalid_choice="無効な選択です。もう一度選んでください。"
+  else
+    msg_select_country="Please select a country: "
+    msg_invalid_choice="Invalid choice. Please try again."
+  fi
+
+  echo "$msg_select_country"
+  select country in "${country_list[@]}"; do
+    if [ -n "$country" ]; then
+      echo "選択された国コード: $country"   # 日本語
+      break
+    else
+      echo "$msg_invalid_choice"
+    fi
+  done
+}
 
 set_device() {
 # SSH access interface

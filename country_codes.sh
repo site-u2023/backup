@@ -2,6 +2,15 @@
 # License: CC0
 # OpenWrt >= 19.07
 
+# 引数でソートする機能
+sort_country_timezones() {
+  printf "%s\n" "${country_timezones[@]}" | sort -k2,2
+}
+
+# 使用例:
+# ソートして表示する場合
+# echo "${country_timezones[@]}" | sort_country_timezones
+
 # ゾーン名と国名をタイムゾーンとともに表示するリスト
 country_timezones=(
   "US United States UTC-5 UTC-6 UTC-7 UTC-8 UTC-9 UTC-10 UTC-11"
@@ -89,11 +98,5 @@ country_timezones=(
   "DZ Algeria UTC+1"
 )
 
-# 引数でソートする機能
-sort_country_timezones() {
-  printf "%s\n" "${country_timezones[@]}" | sort -k2,2
-}
 
-# 使用例:
-# ソートして表示する場合
-# echo "${country_timezones[@]}" | sort_country_timezones
+country_timezones

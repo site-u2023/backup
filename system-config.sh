@@ -149,7 +149,7 @@ uci commit dhcp
 
 set_wifi_ssid_password() {
   local devices section device band ssid password confirm
-  local lang="${SELECTED_LANGUAGE:-en}"  # デフォルトは英語
+  local lang="${SELECTED_LANGUAGE:-en}"
 
   # メッセージ定義
   local msg_no_devices msg_section_disabled msg_band msg_enter_ssid

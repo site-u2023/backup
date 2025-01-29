@@ -2,7 +2,6 @@
 # License: CC0
 # OpenWrt >= 19.07
 
-code() {
 # タイムゾーンデータ
 country_timezones="
 en United States UTC-5 UTC-6 UTC-7 UTC-8 UTC-9 UTC-10 UTC-11
@@ -89,9 +88,7 @@ pk Pakistan UTC+5
 qa Qatar UTC+3
 dz Algeria UTC+1
 "
-}
 
-code_check() {
 # 引数チェック
 if [ -z "$1" ]; then
   echo "Usage: $0 <country_code>"
@@ -108,8 +105,4 @@ else
   echo "Country code not found."
   exit 1
 fi
-}
 
-code
-code_check
-sh /tmp/aios/country_timezone.sh ${country_code}

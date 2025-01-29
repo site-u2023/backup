@@ -130,6 +130,7 @@ check_country_code_data() {
 country_code="$1"
 
 #found_entry=$(echo "$country_timezones" | grep -E "\b$country_code\b")
+#found_entry=$(echo "$country_timezones" | grep -w "$country_code")
 found_entry=$(echo "$country_timezones" | grep -E "\b$country_code\b" | sed 's/-/\\-/g')
 
 if [ -n "$found_entry" ]; then

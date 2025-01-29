@@ -19,18 +19,18 @@ set_device_name_password() {
   local lang="${SELECTED_LANGUAGE:-en}"  # デフォルトは英語
   local msg_device msg_password msg_confirm msg_success msg_cancel
 
-  if [ "$lang" = "ja" ]; then
-    msg_device="新しいデバイス名を入力してください: "
-    msg_password="新しいパスワードを入力してください: "
-    msg_confirm="以下の内容でよろしいですか？ (y/n): "
-    msg_success="パスワードとデバイス名が正常に更新されました。"
-    msg_cancel="設定がキャンセルされました。"
-  else
+  if [ "$lang" = "en" ]; then
     msg_device="Enter the new device name: "
     msg_password="Enter the new password: "
     msg_confirm="Are you sure with the following settings? (y/n): "
     msg_success="Password and device name have been successfully updated."
     msg_cancel="Operation has been canceled."
+  elif [ "$lang" = "ja" ]; then
+    msg_device="新しいデバイス名を入力してください: "
+    msg_password="新しいパスワードを入力してください: "
+    msg_confirm="以下の内容でよろしいですか？ (y/n): "
+    msg_success="パスワードとデバイス名が正常に更新されました。"
+    msg_cancel="設定がキャンセルされました。"
   fi
 
   echo "Starting device name and password update process..."
@@ -156,18 +156,7 @@ set_wifi_ssid_password() {
   local msg_enter_password msg_password_invalid msg_settings msg_confirm
   local msg_updated msg_canceled
 
-  if [ "$lang" = "ja" ]; then
-    msg_no_devices="Wi-Fiデバイスが見つかりません。終了します。"
-    msg_section_disabled="セクション %s は無効です。無効を解除します。"
-    msg_band="デバイス %s (帯域: %s)"
-    msg_enter_ssid="SSIDを入力してください: "
-    msg_enter_password="パスワードを入力してください (8文字以上): "
-    msg_password_invalid="パスワードは8文字以上で入力してください。"
-    msg_settings="以下の設定を行います:\nデバイス: %s\n帯域: %s\nSSID: %s\nパスワード: %s"
-    msg_confirm="この設定で進行しますか？(y/n): "
-    msg_updated="デバイス %s の設定が更新されました。"
-    msg_canceled="デバイス %s の設定がキャンセルされました。"
-  else
+  if [ "$lang" = "en" ]; then
     msg_no_devices="No Wi-Fi devices found. Exiting."
     msg_section_disabled="Section %s is disabled. Enabling it."
     msg_band="Device %s (Band: %s)"
@@ -178,6 +167,17 @@ set_wifi_ssid_password() {
     msg_confirm="Proceed with these settings? (y/n): "
     msg_updated="Settings for device %s have been updated."
     msg_canceled="Settings for device %s have been canceled."
+ elif [ "$lang" = "ja" ]; then
+    msg_no_devices="Wi-Fiデバイスが見つかりません。終了します。"
+    msg_section_disabled="セクション %s は無効です。無効を解除します。"
+    msg_band="デバイス %s (帯域: %s)"
+    msg_enter_ssid="SSIDを入力してください: "
+    msg_enter_password="パスワードを入力してください (8文字以上): "
+    msg_password_invalid="パスワードは8文字以上で入力してください。"
+    msg_settings="以下の設定を行います:\nデバイス: %s\n帯域: %s\nSSID: %s\nパスワード: %s"
+    msg_confirm="この設定で進行しますか？(y/n): "
+    msg_updated="デバイス %s の設定が更新されました。"
+    msg_canceled="デバイス %s の設定がキャンセルされました。"
   fi
 
   # Wi-Fiデバイスリスト取得

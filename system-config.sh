@@ -16,7 +16,7 @@ download_common() {
 
 set_device_name_password() {
   local password device_name confirmation
-  local lang="${SELECTED_LANGUAGE:-en}"  # デフォルトは英語
+  local lang="${SELECTED_LANGUAGE:-en}"
   local msg_device msg_password msg_confirm msg_success msg_cancel
 
   if [ "$lang" = "en" ]; then

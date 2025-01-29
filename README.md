@@ -10,17 +10,17 @@ January 25, 2025: version α
 
 - Select your language
 ```sh
-wget wget --no-check-certificate --quiet -O /tmp/aios-config.sh https://raw.githubusercontent.com/site-u2023/aios/main/aios-config.sh; sh /tmp/aios-config.sh
+wget --quiet -O /tmp/aios-config.sh https://raw.githubusercontent.com/site-u2023/aios/main/aios-config.sh; sh /tmp/aios-config.sh
 ```
 
 - English
 ```sh
-wget wget --no-check-certificate --quiet -O /tmp/aios-config.sh https://raw.githubusercontent.com/site-u2023/aios/main/aios-config.sh; sh /tmp/aios-config.sh en
+wget --quiet -O /tmp/aios-config.sh https://raw.githubusercontent.com/site-u2023/aios/main/aios-config.sh; sh /tmp/aios-config.sh en
 ```
 
 - 日本語
 ```sh
-wget wget --no-check-certificate --quiet -O /tmp/aios-config.sh https://raw.githubusercontent.com/site-u2023/aios/main/aios-config.sh; sh /tmp/aios-config.sh ja
+wget --quiet -O /tmp/aios-config.sh https://raw.githubusercontent.com/site-u2023/aios/main/aios-config.sh; sh /tmp/aios-config.sh ja
 ```
 
 - --timestamping
@@ -28,5 +28,5 @@ wget wget --no-check-certificate --quiet -O /tmp/aios-config.sh https://raw.gith
 opkg update && opkg install wget-ssl
 ```
 ```sh
-wget wget --no-check-certificate -N /tmp/aios-config.sh https://raw.githubusercontent.com/site-u2023/aios/main/aios-config.sh; sh /tmp/aios-config.sh ja
+wget -N /tmp/aios-config.sh https://raw.githubusercontent.com/site-u2023/aios/main/aios-config.sh; sh /tmp/aios-config.sh ja
 ```

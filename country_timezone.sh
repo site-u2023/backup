@@ -125,11 +125,9 @@ fi
 #}
 
 check_country_code() {
-# 引数がない場合は全データ表示
 if [ -z "$country_code" ]; then
   echo "$country_data"
 else
-  # 引数があればフィルタリング
   found_entry=$(echo "$country_data" | grep -w "$country_code")
   if [ -n "$found_entry" ]; then
     echo "$found_entry"

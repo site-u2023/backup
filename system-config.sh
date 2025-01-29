@@ -14,6 +14,13 @@ download_common() {
     source "${BASE_DIR}/common-functions.sh"
 }
 
+download_country_timezone() {
+    if [ ! -f "${BASE_DIR}/country_timezone" ]; then
+        wget --no-check-certificate --quiet -O "${BASE_DIR}/country_timezone.sh" "${BASE_URL}/country_timezone.sh"
+
+    fi
+}
+
 set_device_name_password() {
   local device_name password confirmation
   local lang="${SELECTED_LANGUAGE:-en}"
@@ -256,5 +263,6 @@ reboot
 
 download_common
 check_common $1
+${BASE_DIR}/country_timezone.sh ${SELECTED_LANGUAGE}
 set_device_name_password
 set_wifi_ssid_password

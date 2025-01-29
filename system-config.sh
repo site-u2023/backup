@@ -14,44 +14,71 @@ download_common() {
     source "${BASE_DIR}/common-functions.sh"
 }
 
+color_code_map() {
+  local color=$1
+  case $color in
+    "red") echo "\033[1;31m" ;;
+    "green") echo "\033[1;32m" ;;
+    "yellow") echo "\033[1;33m" ;;
+    "blue") echo "\033[1;34m" ;;
+    "magenta") echo "\033[1;35m" ;;
+    "cyan") echo "\033[1;36m" ;;
+    "white") echo "\033[1;37m" ;;
+    "red_underline") echo "\033[4;31m" ;;
+    "green_underline") echo "\033[4;32m" ;;
+    "yellow_underline") echo "\033[4;33m" ;;
+    "blue_underline") echo "\033[4;34m" ;;
+    "magenta_underline") echo "\033[4;35m" ;;
+    "cyan_underline") echo "\033[4;36m" ;;
+    "white_underline") echo "\033[4;37m" ;;
+    "red_white") echo "\033[1;41m" ;;
+    "green_white") echo "\033[1;42m" ;;
+    "yellow_white") echo "\033[1;43m" ;;
+    "blue_white") echo "\033[1;44m" ;;
+    "magenta_white") echo "\033[1;45m" ;;
+    "cyan_white") echo "\033[1;46m" ;;
+    "white_black") echo "\033[7;40m" ;;
+    "reset") echo "\033[0;39m" ;;
+    *) echo "\033[0;39m" ;;
+  esac
+}
+
 set_device_name_password() {
   local password device_name confirmation
   local lang="${SELECTED_LANGUAGE:-en}"
-  
-  # 言語ごとのメッセージを定義
-  declare -A messages
-  messages["en_device"]="Enter the new device name: "
-  messages["en_password"]="Enter the new password: "
-  messages["en_confirm"]="Are you sure with the following settings? (y/n): "
-  messages["en_success"]="Password and device name have been successfully updated."
-  messages["en_cancel"]="Operation has been canceled."
 
-  messages["ja_device"]="新しいデバイス名を入力してください: "
-  messages["ja_password"]="新しいパスワードを入力してください: "
-  messages["ja_confirm"]="以下の内容でよろしいですか？ (y/n): "
-  messages["ja_success"]="パスワードとデバイス名が正常に更新されました。"
-  messages["ja_cancel"]="設定がキャンセルされました。"
-
-  # 他の言語を追加する際は、上記の形式で追加していける
-
-  # メッセージの取得
-  local msg_device="${messages[${lang}_device]}"
-  local msg_password="${messages[${lang}_password]}"
-  local msg_confirm="${messages[${lang}_confirm]}"
-  local msg_success="${messages[${lang}_success]}"
-  local msg_cancel="${messages[${lang}_cancel]}"
+  # 言語ごとのメッセージをcaseで定義
+  case "$lang" in
+    "en")
+      msg_device="Enter the new device name: "
+      msg_password="Enter the new password: "
+      msg_confirm="Are you sure with the following settings? (y/n): "
+      msg_success="Password and device name have been successfully updated."
+      msg_cancel="Operation has been canceled."
+      ;;
+    "ja")
+      msg_device="新しいデバイス名を入力してください: "
+      msg_password="新しいパスワードを入力してください: "
+      msg_confirm="以下の内容でよろしいですか？ (y/n): "
+      msg_success="パスワードとデバイス名が正常に更新されました。"
+      msg_cancel="設定がキャンセルされました。"
+      ;;
+    *)
+      msg_device="Enter the new device name: "
+      msg_password="Enter the new password: "
+      msg_confirm="Are you sure with the following settings? (y/n): "
+      msg_success="Password and device name have been successfully updated."
+      msg_cancel="Operation has been canceled."
+      ;;
+  esac
 
   echo "Starting device name and password update process..."
   read -p "$msg_device" device_name
-  echo "Device Name entered: $device_name"
-
   read -s -p "$msg_password" password
-  echo "Password entered: $device_name"
-
+  echo
   echo "$msg_confirm"
   echo "Device Name: $device_name"
   echo "Password: $device_name"
-
   read -p "$msg_confirm" confirmation
   if [ "$confirmation" != "y" ]; then
     echo "$msg_cancel"
@@ -59,7 +86,6 @@ set_device_name_password() {
   fi
 
   echo "Updating password and device name..."
-
   ubus call luci setPassword "{ \"username\": \"root\", \"password\": \"$password\" }"
   if [ $? -ne 0 ]; then
     echo "Failed to update password."
@@ -79,6 +105,98 @@ set_device_name_password() {
   fi
 
   echo "$msg_success"
+}
+
+set_wifi_ssid_password() {
+  local devices section device band ssid password confirm
+  local lang="${SELECTED_LANGUAGE:-en}"
+
+  # 言語ごとのメッセージをcaseで定義
+  case "$lang" in
+    "en")
+      msg_no_devices="No Wi-Fi devices found. Exiting."
+      msg_section_disabled="Section %s is disabled. Enabling it."
+      msg_band="Device %s (Band: %s)"
+      msg_enter_ssid="Enter SSID: "
+      msg_enter_password="Enter password (minimum 8 characters): "
+      msg_password_invalid="Password must be at least 8 characters long."
+      msg_settings="Applying the following settings:\nDevice: %s\nBand: %s\nSSID: %s\nPassword: %s"
+      msg_confirm="Proceed with these settings? (y/n): "
+      msg_updated="Settings for device %s have been updated."
+      msg_canceled="Settings for device %s have been canceled."
+      ;;
+    "ja")
+      msg_no_devices="Wi-Fiデバイスが見つかりません。終了します。"
+      msg_section_disabled="セクション %s は無効です。無効を解除します。"
+      msg_band="デバイス %s (帯域: %s)"
+      msg_enter_ssid="SSIDを入力してください: "
+      msg_enter_password="パスワードを入力してください (8文字以上): "
+      msg_password_invalid="パスワードは8文字以上で入力してください。"
+      msg_settings="以下の設定を行います:\nデバイス: %s\n帯域: %s\nSSID: %s\nパスワード: %s"
+      msg_confirm="この設定で進行しますか？(y/n): "
+      msg_updated="デバイス %s の設定が更新されました。"
+      msg_canceled="デバイス %s の設定がキャンセルされました。"
+      ;;
+    *)
+      msg_no_devices="No Wi-Fi devices found. Exiting."
+      msg_section_disabled="Section %s is disabled. Enabling it."
+      msg_band="Device %s (Band: %s)"
+      msg_enter_ssid="Enter SSID: "
+      msg_enter_password="Enter password (minimum 8 characters): "
+      msg_password_invalid="Password must be at least 8 characters long."
+      msg_settings="Applying the following settings:\nDevice: %s\nBand: %s\nSSID: %s\nPassword: %s"
+      msg_confirm="Proceed with these settings? (y/n): "
+      msg_updated="Settings for device %s have been updated."
+      msg_canceled="Settings for device %s have been canceled."
+      ;;
+  esac
+
+  # Wi-Fiデバイスリスト取得
+  devices=$(uci show wireless | grep 'wifi-device' | cut -d'=' -f1 | cut -d'.' -f2 | sort -u)
+  if [ -z "$devices" ]; then
+    echo "$msg_no_devices"
+    exit 1
+  fi
+
+  # 無効なWi-Fiセクションを有効化
+  for section in $(uci show wireless | grep "disabled='1'" | cut -d'.' -f2 | sort -u); do
+    printf "$msg_section_disabled\n" "$section"
+    uci delete wireless.${section}.disabled
+  done
+
+  uci commit wireless
+  /etc/init.d/network reload
+
+  # 各デバイスの設定
+  for device in $devices; do
+    band=$(uci get wireless.${device}.band 2>/dev/null || echo "unknown")
+
+    printf "$msg_band\n" "$device" "$band"
+    read -p "$msg_enter_ssid" ssid
+    while true; do
+      read -s -p "$msg_enter_password" password
+      echo
+      if [ ${#password} -ge 8 ]; then
+        break
+      else
+        echo "$msg_password_invalid"
+      fi
+    done
+
+    printf "$msg_settings\n" "$device" "$band" "$ssid" "$password"
+    read -p "$msg_confirm" confirm
+
+    if [ "$confirm" = "y" ]; then
+      # Wi-Fiデバイスの設定更新
+      uci set wireless.${device}.ssid="$ssid"
+      uci set wireless.${device}.key="$password"
+      uci commit wireless
+      /etc/init.d/network reload
+      printf "$msg_updated\n" "$device"
+    else
+      printf "$msg_canceled\n" "$device"
+    fi
+  done
 }
 
 set_device() {
@@ -153,94 +271,6 @@ uci set dhcp.lan.leasetime='24h'
 uci commit dhcp
 # /etc/init.d/dnsmasq restart
 # /etc/init.d/odhcpd restart
-}
-
-set_wifi_ssid_password() {
-  local devices section device band ssid password confirm
-  local lang="${SELECTED_LANGUAGE:-en}"
-
-  # 言語ごとのメッセージを定義
-  declare -A messages
-  messages["en_no_devices"]="No Wi-Fi devices found. Exiting."
-  messages["en_section_disabled"]="Section %s is disabled. Enabling it."
-  messages["en_band"]="Device %s (Band: %s)"
-  messages["en_enter_ssid"]="Enter SSID: "
-  messages["en_enter_password"]="Enter password (minimum 8 characters): "
-  messages["en_password_invalid"]="Password must be at least 8 characters long."
-  messages["en_settings"]="Applying the following settings:\nDevice: %s\nBand: %s\nSSID: %s\nPassword: %s"
-  messages["en_confirm"]="Proceed with these settings? (y/n): "
-  messages["en_updated"]="Settings for device %s have been updated."
-  messages["en_canceled"]="Settings for device %s have been canceled."
-
-  messages["ja_no_devices"]="Wi-Fiデバイスが見つかりません。終了します。"
-  messages["ja_section_disabled"]="セクション %s は無効です。無効を解除します。"
-  messages["ja_band"]="デバイス %s (帯域: %s)"
-  messages["ja_enter_ssid"]="SSIDを入力してください: "
-  messages["ja_enter_password"]="パスワードを入力してください (8文字以上): "
-  messages["ja_password_invalid"]="パスワードは8文字以上で入力してください。"
-  messages["ja_settings"]="以下の設定を行います:\nデバイス: %s\n帯域: %s\nSSID: %s\nパスワード: %s"
-  messages["ja_confirm"]="この設定で進行しますか？(y/n): "
-  messages["ja_updated"]="デバイス %s の設定が更新されました。"
-  messages["ja_canceled"]="デバイス %s の設定がキャンセルされました。"
-
-  # メッセージの取得
-  local msg_no_devices="${messages[${lang}_no_devices]}"
-  local msg_section_disabled="${messages[${lang}_section_disabled]}"
-  local msg_band="${messages[${lang}_band]}"
-  local msg_enter_ssid="${messages[${lang}_enter_ssid]}"
-  local msg_enter_password="${messages[${lang}_enter_password]}"
-  local msg_password_invalid="${messages[${lang}_password_invalid]}"
-  local msg_settings="${messages[${lang}_settings]}"
-  local msg_confirm="${messages[${lang}_confirm]}"
-  local msg_updated="${messages[${lang}_updated]}"
-  local msg_canceled="${messages[${lang}_canceled]}"
-
-  # Wi-Fiデバイスリスト取得
-  devices=$(uci show wireless | grep 'wifi-device' | cut -d'=' -f1 | cut -d'.' -f2 | sort -u)
-  if [ -z "$devices" ]; then
-    echo "$msg_no_devices"
-    exit 1
-  fi
-
-  # 無効なWi-Fiセクションを有効化
-  for section in $(uci show wireless | grep "disabled='1'" | cut -d'.' -f2 | sort -u); do
-    printf "$msg_section_disabled\n" "$section"
-    uci delete wireless.${section}.disabled
-  done
-
-  uci commit wireless
-  /etc/init.d/network reload
-
-  # 各デバイスの設定
-  for device in $devices; do
-    band=$(uci get wireless.${device}.band 2>/dev/null || echo "unknown")
-
-    printf "$msg_band\n" "$device" "$band"
-    read -p "$msg_enter_ssid" ssid
-    while true; do
-      read -s -p "$msg_enter_password" password
-      echo
-      if [ ${#password} -ge 8 ]; then
-        break
-      else
-        echo "$msg_password_invalid"
-      fi
-    done
-
-    printf "$msg_settings\n" "$device" "$band" "$ssid" "$password"
-    read -p "$msg_confirm" confirm
-
-    if [ "$confirm" = "y" ]; then
-      # Wi-Fiデバイスの設定更新
-      uci set wireless.${device}.ssid="$ssid"
-      uci set wireless.${device}.key="$password"
-      uci commit wireless
-      /etc/init.d/network reload
-      printf "$msg_updated\n" "$device"
-    else
-      printf "$msg_canceled\n" "$device"
-    fi
-  done
 }
 
 download_common

@@ -137,8 +137,8 @@ else
 fi
 }
 
-check_country_code
+check_country_code "$1"
 country_timezones_data
-check_country_code_data
+check_country_code_data "$1"
 # check_country_code2
 # check_country_code_data2

@@ -92,6 +92,8 @@ set_wifi_ssid_password() {
       msg_updated="デバイス %s の設定が更新されました。"
       msg_select_band="デバイス %s のバンド %s を有効にしますか？(y/n): "
       msg_confirm="設定内容: SSID = %s, パスワード = %s。これで良いですか？ (y/n): "
+      msg_reenter="もう一度入力してください。"
+      msg_invalid="無効な入力です。y または n を入力してください。"
       ;;
     "en")
       msg_no_devices="No Wi-Fi devices found. Exiting."
@@ -102,6 +104,8 @@ set_wifi_ssid_password() {
       msg_updated="Device %s settings have been updated."
       msg_select_band="Enable band %s on device %s? (y/n): "
       msg_confirm="Configuration: SSID = %s, Password = %s. Is this correct? (y/n): "
+      msg_reenter="Please re-enter the information."
+      msg_invalid="Invalid input. Please enter 'y' or 'n'."
       ;;
   esac
 
@@ -125,11 +129,9 @@ set_wifi_ssid_password() {
       continue
     fi
 
-    # インターフェース名の設定
     iface_num=$(echo "$device" | grep -o '[0-9]*')
     iface="aios${iface_num}"
 
-    # SSID とパスワードの設定
     echo -n "$msg_enter_ssid"
     read ssid
     while true; do
@@ -143,22 +145,19 @@ set_wifi_ssid_password() {
       fi
     done
 
-    # 入力内容の確認
     while true; do
       printf "$msg_confirm\n" "$ssid" "$password"
       read confirm
       if [ "$confirm" == "y" ]; then
         break
       elif [ "$confirm" == "n" ]; then
-        # 再入力を促す
-        echo "もう一度入力してください。"
+        echo "$msg_reenter"
         break
       else
-        echo "無効な入力です。y または n を入力してください。"
+        echo "$msg_invalid"
       fi
     done
 
-    # Wi-Fiインターフェース設定を行う
     uci set wireless.${iface}="wifi-iface"
     uci set wireless.${iface}.device="${device:-aios}"
     uci set wireless.${iface}.mode='ap'
@@ -168,14 +167,12 @@ set_wifi_ssid_password() {
     uci set wireless.${iface}.network='lan'
     uci -q delete wireless.${device}.disabled
 
-    # 設定が完了したデバイスを devices_to_enable に追加
     devices_to_enable="$devices_to_enable $device"
   done
 
   uci commit wireless
   /etc/init.d/network reload
 
-  # 設定が完了したデバイスの表示
   for device in $devices_to_enable; do
     printf "$msg_updated\n" "$device"
   done

@@ -9,8 +9,8 @@ BASE_DIR="/tmp/aios"
 SUPPORTED_VERSIONS="19 21 22 23 24 SN"
 
 check_version() {
-    RELEASE_VERSION=$(grep 'DISTRIB_RELEASE' /etc/openwrt_release | cut -d"'" -f2 | cut -c 1-2)
-    if ! echo "${SUPPORTED_VERSIONS}" | grep -q "${RELEASE_VERSION}"; then
+    RELEASE_VERSION=$(awk -F"'" '/DISTRIB_RELEASE/ {print $2}' /etc/openwrt_release | cut -c 1-2)
+    if ! echo "${SUPPORTED_VERSIONS}" | grep -qw "${RELEASE_VERSION}"; then
         echo "Unsupported OpenWrt version: ${RELEASE_VERSION}"
         echo "Supported versions: ${SUPPORTED_VERSIONS}"
         exit 1
@@ -18,9 +18,7 @@ check_version() {
 }
 
 make_directory() {
-if [ ! -d "$BASE_DIR" ]; then
-    mkdir -p "$BASE_DIR" || { echo "Failed to create BASE_DIR"; exit 1; }
-fi
+    mkdir -p "$BASE_DIR"
 }
 
 check_ttyd_installed() {
@@ -35,6 +33,10 @@ check_ttyd_installed() {
                     echo "Failed to download ttyd installation script."
                     exit 1
                 }
+                if [ ! -f "${BASE_DIR}/ttyd.sh" ]; then
+                    echo "Error: ttyd installation script not found."
+                    exit 1
+                fi
                 RELEASE_VERSION="${RELEASE_VERSION}" sh "${BASE_DIR}/ttyd.sh" "$SELECTED_LANGUAGE"
                 ;;
             *)
@@ -49,11 +51,17 @@ download_and_execute() {
         echo "Failed to download aios."
         exit 1
     }
-    chmod +x /usr/bin/aios
+    chmod +x /usr/bin/aios || {
+        echo "Failed to set execute permissions on /usr/bin/aios"
+        exit 1
+    }
     echo -e "\nInstallation Complete"
     echo "aios has been installed successfully."
     echo "You can now run the 'aios' script anywhere."
-    RELEASE_VERSION="${RELEASE_VERSION}" /usr/bin/aios "$SELECTED_LANGUAGE"
+    RELEASE_VERSION="${RELEASE_VERSION}" /usr/bin/aios "$SELECTED_LANGUAGE" || {
+        echo "Failed to execute aios script."
+        exit 1
+    }
 }
 
 check_version

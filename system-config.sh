@@ -8,7 +8,7 @@ SUPPORTED_VERSIONS="21 22 23 24 SN"
 
 download_common() {
     if [ ! -f "${BASE_DIR}/common-functions.sh" ]; then
-        wget --no-check-certificate --quiet -O "${BASE_DIR}/common-functions.sh" "${BASE_URL}/common-functions.sh"
+        wget --quiet -O "${BASE_DIR}/common-functions.sh" "${BASE_URL}/common-functions.sh"
 
     fi
     source "${BASE_DIR}/common-functions.sh"
@@ -16,7 +16,7 @@ download_common() {
 
 download_country_timezone() {
     if [ ! -f "${BASE_DIR}/country_timezone" ]; then
-        wget --no-check-certificate --quiet -O "${BASE_DIR}/country_timezone.sh" "${BASE_URL}/country_timezone.sh"
+        wget --quiet -O "${BASE_DIR}/country_timezone.sh" "${BASE_URL}/country_timezone.sh"
 
     fi
 }

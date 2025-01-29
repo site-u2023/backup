@@ -88,7 +88,7 @@ set_wifi_ssid_password() {
   local device iface iface_num ssid password enable_band band htmode devices network country
   local devices_to_enable=""
   local lang="${SELECTED_LANGUAGE:-en}"
-  local country=$(sh ${BASE_DIR}/country_timezone.sh ${SELECTED_LANGUAGE} | awk '{print $2}')
+  local country=$(sh ${BASE_DIR}/country_timezone.sh ${SELECTED_LANGUAGE} | awk '{print $3}')
 
   case "$lang" in
     "ja")
@@ -196,7 +196,7 @@ uci commit dropbear
 DESCRIPTION=`cat /etc/openwrt_version` # Description
 NOTES=`date` # Remarks
 ZONEDATA=$(sh ${BASE_DIR}/country_timezone.sh ${SELECTED_LANGUAGE})
-ZOONNAME=$(echo $ZONEDATA | awk '{print $2}' || echo "UTC")
+ZOONNAME=$(echo $ZONEDATA | awk '{print $3}' || echo "UTC")
 TIMEZOON=$(echo $ZONEDATA | awk '{print $4}' || echo "UTC+0")
 #local ZOONNAME=$(sh ${BASE_DIR}/country_timezone.sh ${SELECTED_LANGUAGE} | awk '{print $2}')
 #local TIMEZOON=$(sh ${BASE_DIR}/country_timezone.sh ${SELECTED_LANGUAGE} | awk '{print $4}')

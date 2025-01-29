@@ -2,6 +2,8 @@
 # License: CC0
 # OpenWrt >= 19.07
 
+country_code="$1"
+
 # タイムゾーンデータ
 # 国名 言語コード 国コード タイムゾーン(複数あり) xxはluci-i18n-base非対応
 country_timezones_data() {
@@ -97,13 +99,13 @@ Algeria xx DZ UTC+1
 }
 
 check_country_code_data() {
-country_code="$1"
+#country_code="$1"
 
 #found_entry=$(echo "$country_timezones" | grep -E "\b$country_code\b")
-#found_entry=$(echo "$country_timezones" | grep -w "$country_code")
+found_entry=$(echo "$country_timezones" | grep -w "$country_code")
 #found_entry=$(echo "$country_timezones" | grep -E "\b$country_code\b" | sed 's/-/\\-/g')
 #found_entry=$(echo "$country_timezones" | grep -w "$country_code\b" | sed 's/-/\\-/g')
-found_entry=$(echo "$country_timezones" | grep -E "(^|\s)$country_code(\s|$)")
+#found_entry=$(echo "$country_timezones" | grep -E "(^|\s)$country_code(\s|$)")
 
 if [ -n "$found_entry" ]; then
   echo "$found_entry"
@@ -122,5 +124,5 @@ fi
 #}
 
 country_timezones_data
-check_country_code_data "$1"
+check_country_code_data #"$1"
 

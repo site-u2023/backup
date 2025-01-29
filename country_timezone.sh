@@ -128,7 +128,7 @@ check_country_code() {
 if [ -z "$country_code" ]; then
   echo "$country_data"
 else
-  found_entry=$(echo "$country_data" | grep -w "$country_code")
+  found_entry=$(echo country_data | grep -w "$country_code")
   if [ -n "$found_entry" ]; then
     echo "$found_entry"
   else

@@ -87,33 +87,40 @@ download_common() {
 
 display_system_info() {
     local lang="${SELECTED_LANGUAGE:-en}" 
+    local available_memory=$(free | awk '/Mem:/ { print int($4 / 1024) }')
+    local available_flash=$(df | awk '/overlayfs:\/overlay/ { print int($4 / 1024) }')
+    local usb_devices=$(ls /sys/bus/usb/devices | grep -q usb && echo "Detected" || echo "Not detected")
 
+    # 言語ごとのメッセージを定義
+    declare -A messages
+    messages["en_memory"]="Available Memory: ${available_memory} MB"
+    messages["en_flash"]="Available Flash Storage: ${available_flash} MB"
+    messages["en_usb"]="USB Devices: ${usb_devices}"
+    messages["en_dir"]="Scripts directory: ${BASE_DIR}"
+    messages["en_version"]="OpenWrt version: ${RELEASE_VERSION} - Supported"
+    messages["en_language"]="Selected language: ${SELECTED_LANGUAGE}"
+    messages["en_downloader"]="Downloader: ${PACKAGE_MANAGER}"
+
+    messages["ja_memory"]="利用可能メモリ: ${available_memory} MB"
+    messages["ja_flash"]="利用可能フラッシュストレージ: ${available_flash} MB"
+    messages["ja_usb"]="USBデバイス: ${usb_devices}"
+    messages["ja_dir"]="スクリプトディレクトリ: ${BASE_DIR}"
+    messages["ja_version"]="OpenWrt バージョン: ${RELEASE_VERSION} - サポートされています"
+    messages["ja_language"]="選択された言語: ${SELECTED_LANGUAGE}"
+    messages["ja_downloader"]="ダウンローダー: ${PACKAGE_MANAGER}"
+
+    # 他の言語を追加する際は、上記の形式で追加していく
+
+    # 言語別の表示
     case "$lang" in
-        "en")
-            local available_memory=$(free | awk '/Mem:/ { print int($4 / 1024) }')
-            local available_flash=$(df | awk '/overlayfs:\/overlay/ { print int($4 / 1024) }')
-            local usb_devices=$(ls /sys/bus/usb/devices | grep -q usb && echo "Detected" || echo "Not detected")
-
-            echo -e "$(color "white" "Available Memory: ${available_memory} MB")"
-            echo -e "$(color "white" "Available Flash Storage: ${available_flash} MB")"
-            echo -e "$(color "white" "USB Devices: ${usb_devices}")"
-            echo -e "$(color "white" "Scripts directory: ${BASE_DIR}")"
-            echo -e "$(color "white" "OpenWrt version: ${RELEASE_VERSION} - Supported")"
-            echo -e "$(color "white" "Selected language: ${SELECTED_LANGUAGE}")"
-            echo -e "$(color "white" "Downloader: ${PACKAGE_MANAGER}")"
-            ;;
-        "ja")
-            local available_memory=$(free | awk '/Mem:/ { print int($4 / 1024) }')
-            local available_flash=$(df | awk '/overlayfs:\/overlay/ { print int($4 / 1024) }')
-            local usb_devices=$(ls /sys/bus/usb/devices | grep -q usb && echo "検出済み" || echo "未検出")
-
-            echo -e "$(color "white" "利用可能メモリ: ${available_memory} MB")"
-            echo -e "$(color "white" "利用可能フラッシュストレージ: ${available_flash} MB")"
-            echo -e "$(color "white" "USBデバイス: ${usb_devices}")"
-            echo -e "$(color "white" "スクリプトディレクトリ: ${BASE_DIR}")"
-            echo -e "$(color "white" "OpenWrt バージョン: ${RELEASE_VERSION} - サポートされています")"
-            echo -e "$(color "white" "選択された言語: ${SELECTED_LANGUAGE}")"
-            echo -e "$(color "white" "ダウンローダー: ${PACKAGE_MANAGER}")"
+        "en"|"ja")  # サポートする言語を追加していける
+            echo -e "$(color "white" "${messages[${lang}_memory]}")"
+            echo -e "$(color "white" "${messages[${lang}_flash]}")"
+            echo -e "$(color "white" "${messages[${lang}_usb]}")"
+            echo -e "$(color "white" "${messages[${lang}_dir]}")"
+            echo -e "$(color "white" "${messages[${lang}_version]}")"
+            echo -e "$(color "white" "${messages[${lang}_language]}")"
+            echo -e "$(color "white" "${messages[${lang}_downloader]}")"
             ;;
         *)
             echo "Invalid language selected: $lang"

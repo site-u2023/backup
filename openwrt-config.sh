@@ -22,7 +22,7 @@ main_menu() {
         MENU6="Other Script Settings"
         MENU00="Exit Script"
         MENU01="Remove script and exit"
-        MENU02="country set"
+        MENU02="country code"
         SELECT1="Select an option: "
     elif [ "$lang" = "ja" ]; then
         MENU1="インターネット設定"
@@ -33,7 +33,7 @@ main_menu() {
         MENU6="その他のスクリプト設定"
         MENU00="スクリプト終了"
         MENU01="スクリプト削除終了"
-        MENU02="カントリー設定"
+        MENU02="カントリーコード"
         SELECT1="選択してください: "
     fi
 

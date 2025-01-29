@@ -6,7 +6,7 @@ BASE_URL="https://raw.githubusercontent.com/site-u2023/aios/main/"
 BASE_DIR="/tmp/aios/"
 SUPPORTED_VERSIONS="19 21 22 23 24 SN"
 
-banner() {
+XXbanner() {
     local lang="${SELECTED_LANGUAGE:-en}"
     local msg disclaimer
 
@@ -32,6 +32,44 @@ banner() {
     echo -e "$(color "white"     "                                                      ")"
     echo -e "$(color "red_white" "$disclaimer")"
 }
+
+banner() {
+    local lang="${SELECTED_LANGUAGE:-en}"
+    local msg disclaimer all_in_one
+
+    case "$lang" in
+        en)
+            msg="    Dedicated configuration software for OpenWrt.     "
+            disclaimer="    Disclaimer: Use this script at your own risk.     "
+            all_in_one="                  all in one scripts                  "
+            ;;
+        ja)
+            msg="              OpenWrt 専用設定ソフトウェア              "
+            disclaimer="      免責事項: 本スクリプトは自己責任でご使用下さい      "
+            all_in_one="                オールインワンスクリプト                "
+            ;;
+        *)
+            msg="    Unknown language setting. Please set 'en' or 'ja'."
+            disclaimer="    Disclaimer: Language setting is not recognized."
+            all_in_one="                  Language Error                    "
+            ;;
+    esac
+
+    echo -e "$(color "white"     "$msg")"
+    echo -e "$(color "white"     "                                                      ")"
+    echo -e "$(color "magenta"   "                    ii i                              ")"
+    echo -e "$(color "blue"      "         aaaa      iii       oooo      sssss          ")"
+    echo -e "$(color "cyan"      "            aa      ii      oo  oo    ss              ")"
+    echo -e "$(color "green"     "         aaaaa      ii      oo  oo     sssss          ")"
+    echo -e "$(color "yellow"    "        aa  aa      ii      oo  oo         ss         ")"
+    echo -e "$(color "red"       "         aaaaa     iiii      oooo     ssssss          ")"
+    echo -e "$(color "white"     "                                                      ")"
+    echo -e "$(color "white"     "$all_in_one                                           ")"
+    echo -e "$(color "white"     "                                                      ")"
+    echo -e "$(color "red_white" "$disclaimer")"
+}
+
+
 
 delete_language() {
 if [ -e "${BASE_DIR}check_language" ]; then

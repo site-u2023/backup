@@ -69,13 +69,9 @@ banner() {
     echo -e "$(color "red_white" "$disclaimer")"
 }
 
-
-
 delete_language() {
-if [ -e "${BASE_DIR}check_language" ]; then
-    rm -rf "${BASE_DIR}check_language"
+    rm -rf "${BASE_DIR}/check_language"
     echo "Initialized check_language."
-fi
 }
 
 make_directory() {

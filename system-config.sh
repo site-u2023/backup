@@ -44,7 +44,7 @@ color_code_map() {
 }
 
 set_device_name_password() {
-  local device
+  local device_name password confirmation
   local lang="${SELECTED_LANGUAGE:-en}"
   
   # 言語ごとのメッセージをcaseで定義

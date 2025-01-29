@@ -33,10 +33,22 @@ xxxbanner() {
     echo -e "$(color "red_white" "$disclaimer")"
 }
 
+center_align() {
+    local width="$1"
+    local text="$2"
+    local text_length
+    local padding
+
+    text_length=${#text}
+    padding=$(( (width - text_length) / 2 ))
+
+    printf "%*s%s%*s\n" $((padding + text_length)) "$text" $((width - text_length - padding)) ""
+}
+
 banner() {
     local lang="${SELECTED_LANGUAGE:-en}"
     local msg disclaimer all_in_one
-    local width=54  # 中央揃えのための幅（ここで指定する幅）
+    local width=54  # 中央揃えのための幅
 
     # メッセージの設定
     if [ "$lang" = "en" ]; then
@@ -50,27 +62,20 @@ banner() {
     fi
 
     # バナー表示部分（中央揃え）
-    printf "%-*s\n" $width "$(color "white" "    $msg    ")"
-    printf "%-*s\n" $width "$(color "white" "                                                      ")"
-    printf "%-*s\n" $width "$(color "magenta" "                    ii i                              ")"
-    printf "%-*s\n" $width "$(color "blue" "         aaaa      iii       oooo      sssss          ")"
-    printf "%-*s\n" $width "$(color "cyan" "            aa      ii      oo  oo    ss              ")"
-    printf "%-*s\n" $width "$(color "green" "         aaaaa      ii      oo  oo     sssss          ")"
-    printf "%-*s\n" $width "$(color "yellow" "        aa  aa      ii      oo  oo         ss         ")"
-    printf "%-*s\n" $width "$(color "red" "         aaaaa     iiii      oooo     ssssss          ")"
-    printf "%-*s\n" $width "$(color "white" "                                                      ")"
-    printf "%-*s\n" $width "$(color "white" "    $all_in_one    ")"
-    printf "%-*s\n" $width "$(color "white" "                                                      ")"
-    printf "%-*s\n" $width "$(color "red_white" "    $disclaimer    ")"
+    center_align $width "$(color "white" "    $msg    ")"
+    center_align $width "$(color "white" "                                                      ")"
+    center_align $width "$(color "magenta" "                    ii i                              ")"
+    center_align $width "$(color "blue" "         aaaa      iii       oooo      sssss          ")"
+    center_align $width "$(color "cyan" "            aa      ii      oo  oo    ss              ")"
+    center_align $width "$(color "green" "         aaaaa      ii      oo  oo     sssss          ")"
+    center_align $width "$(color "yellow" "        aa  aa      ii      oo  oo         ss         ")"
+    center_align $width "$(color "red" "         aaaaa     iiii      oooo     ssssss          ")"
+    center_align $width "$(color "white" "                                                      ")"
+    center_align $width "$(color "white" "    $all_in_one    ")"
+    center_align $width "$(color "white" "                                                      ")"
+    center_align $width "$(color "red_white" "    $disclaimer    ")"
 }
 
-
-delete_language() {
-    if [ -e "${BASE_DIR}check_language" ]; then
-        rm -rf "${BASE_DIR}check_language"
-        echo "Initialized check_language."
-    fi
-}
 
 make_directory() {
     if [ ! -d "$BASE_DIR" ]; then

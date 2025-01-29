@@ -29,7 +29,7 @@ check_ttyd_installed() {
         case "$choice" in
             [Yy]*)
                 echo "Installing ttyd..."
-                wget --no-check-certificate --quiet -O "${BASE_DIR}/ttyd.sh" "${BASE_URL}/ttyd.sh" || {
+                wget --quiet -O "${BASE_DIR}/ttyd.sh" "${BASE_URL}/ttyd.sh" || {
                     echo "Failed to download ttyd installation script."
                     exit 1
                 }
@@ -47,7 +47,7 @@ check_ttyd_installed() {
 }
 
 download_and_execute() {
-    wget --no-check-certificate --quiet -O "/usr/bin/aios" "${BASE_URL}/aios" || {
+    wget --quiet -O "/usr/bin/aios" "${BASE_URL}/aios" || {
         echo "Failed to download aios."
         exit 1
     }

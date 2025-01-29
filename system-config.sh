@@ -85,9 +85,10 @@ set_device_name_password() {
 }
 
 set_wifi_ssid_password() {
-  local device iface iface_num ssid password enable_band band htmode devices network
+  local device iface iface_num ssid password enable_band band htmode devices network country
   local devices_to_enable=""
   local lang="${SELECTED_LANGUAGE:-en}"
+  local country=$(sh ${BASE_DIR}/country_timezone.sh ${SELECTED_LANGUAGE} | awk '{print $2}')
 
   case "$lang" in
     "ja")
@@ -172,6 +173,7 @@ set_wifi_ssid_password() {
     uci set wireless.${iface}.key="${password:-password}"
     uci set wireless.${iface}.encryption="${encryption:-sae-mixed}"
     uci set wireless.${iface}.network='lan'
+    uci set wireless.${device}.country=${country:-00}
     uci -q delete wireless.${device}.disabled
 
     devices_to_enable="$devices_to_enable $device"
@@ -196,6 +198,8 @@ NOTES=`date` # Remarks
 ZONEDATA=$(sh ${BASE_DIR}/country_timezone.sh ${SELECTED_LANGUAGE})
 ZOONNAME=$(echo $ZONEDATA | awk '{print $2}' || echo "UTC")
 TIMEZOON=$(echo $ZONEDATA | awk '{print $4}' || echo "UTC+0")
+#local ZOONNAME=$(sh ${BASE_DIR}/country_timezone.sh ${SELECTED_LANGUAGE} | awk '{print $2}')
+#local TIMEZOON=$(sh ${BASE_DIR}/country_timezone.sh ${SELECTED_LANGUAGE} | awk '{print $4}')
 
 uci set system.@system[0]=system
 #uci set system.@system[0].hostname=${HOSTNAME}
@@ -274,6 +278,6 @@ download_common
 download_country_timezone
 check_common $1
 sh ${BASE_DIR}/country_timezone.sh ${SELECTED_LANGUAGE}
-test
-#set_device_name_password
-#set_wifi_ssid_password
+set_device_name_password
+set_wifi_ssid_password
+#test

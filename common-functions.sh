@@ -141,8 +141,9 @@ ask_confirmation() {
 show_notification() {
     local message_key="$1"
     local message
-
-    if [ "${SELECTED_LANGUAGE}" = "en" ]; then
+    local lang="${SELECTED_LANGUAGE:-en}"
+    
+    if [ "$lang" = "en" ]; then
         case "$message_key" in
             "download_success") message="Download successful." ;;
             "download_failure") message="Download failed." ;;
@@ -154,7 +155,7 @@ show_notification() {
             "delete") message="Delete operation completed." ;;
             *) message="Operation completed." ;;
         esac
-    elif [ "${SELECTED_LANGUAGE}" = "ja" ]; then
+    elif [ "$lang" = "ja" ]; then
         case "$message_key" in
             "download_success") message="ダウンロードが成功しました。" ;;
             "download_failure") message="ダウンロードに失敗しました。" ;;

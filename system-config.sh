@@ -193,8 +193,9 @@ uci commit dropbear
 # system setup
 DESCRIPTION=`cat /etc/openwrt_version` # Description
 NOTES=`date` # Remarks
-ZOONNAME='UTC'
-TIMEZOON='JST-9'
+ZONEDATA=$(sh ${BASE_DIR}/country_timezone.sh ${SELECTED_LANGUAGE})
+ZOONNAME=$(echo $ZONEDATA | awk '{print $2}' || echo "UTC")
+TIMEZOON=$(echo $ZONEDATA | awk '{print $4}' || echo "UTC+0")
 
 uci set system.@system[0]=system
 #uci set system.@system[0].hostname=${HOSTNAME}
@@ -261,9 +262,18 @@ read -p " Press any key (Reboot the device)"
 reboot
 }
 
+test() {
+ZONEDATA=$(sh ${BASE_DIR}/country_timezone.sh ${SELECTED_LANGUAGE})
+ZOONNAME=$(echo $ZONEDATA | awk '{print $2}' || echo "UTC")
+TIMEZOON=$(echo $ZONEDATA | awk '{print $4}' || echo "UTC+0")
+echo "Zone Name: $ZOONNAME"
+echo "Time Zone: $TIMEZOON"
+}
+
 download_common
 download_country_timezone
 check_common $1
 sh ${BASE_DIR}/country_timezone.sh ${SELECTED_LANGUAGE}
-set_device_name_password
-set_wifi_ssid_password
+test
+#set_device_name_password
+#set_wifi_ssid_password

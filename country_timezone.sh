@@ -137,7 +137,6 @@ else
 fi
 }
 
-check_common "$1"
 check_country_code "$1"
 country_timezones_data
 check_country_code_data "$1"

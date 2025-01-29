@@ -66,6 +66,7 @@ main_menu() {
             "e") menu_option "${ACTION00}" "${MENU00}" ;;
             "d") menu_option "${ACTION01}" "${MENU01}" ;;
             "c") color_code ;;
+            "cc") ${BASE_DIR}/country_codes.sh $1 ;;
             *) echo -e "$(color "red" "Invalid option. Please try again.")" ;;
         esac
     done

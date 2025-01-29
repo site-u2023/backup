@@ -107,7 +107,7 @@ set_device_name_password() {
 }
 
 set_wifi_ssid_password() {
-  local device iface iface_num ssid password enable_device band htmode devices network
+  local device iface iface_num ssid password enable_band band htmode devices network
   local devices_to_enable=""
   local lang="${SELECTED_LANGUAGE:-en}"
 
@@ -119,8 +119,8 @@ set_wifi_ssid_password() {
       msg_enter_password="パスワードを入力してください (8文字以上): "
       msg_password_invalid="パスワードは8文字以上で入力してください。"
       msg_updated="デバイス %s の設定が更新されました。"
-      msg_enable_device="wifi-device %s を有効にしますか？(y/n): "
       msg_select_band="デバイス %s のバンド %s を有効にしますか？(y/n): "
+      msg_confirm="設定内容: SSID = %s, パスワード = %s。これで良いですか？ (y/n): "
       ;;
     "en")
       msg_no_devices="No Wi-Fi devices found. Exiting."
@@ -129,8 +129,8 @@ set_wifi_ssid_password() {
       msg_enter_password="Enter password (8 or more characters): "
       msg_password_invalid="Password must be at least 8 characters long."
       msg_updated="Device %s settings have been updated."
-      msg_enable_device="Enable wifi-device %s? (y/n): "
       msg_select_band="Enable band %s on device %s? (y/n): "
+      msg_confirm="Configuration: SSID = %s, Password = %s. Is this correct? (y/n): "
       ;;
   esac
 
@@ -145,18 +145,9 @@ set_wifi_ssid_password() {
   for device in $devices; do
     band=$(uci get wireless.${device}.band 2>/dev/null || echo "unknown")
     htmode=$(uci get wireless.${device}.htmode 2>/dev/null || echo "unknown")
-    network=$(uci get wireless.${device}.network2 2>/dev/null || echo "unknown")
-	
+    network=$(uci get wireless.${device}.network 2>/dev/null || echo "unknown")
+
     printf "$msg_band\n" "$device" "$band"
-
-    echo -n "$(printf "$msg_enable_device" "$device")"
-    read enable_device
-    if [ "$enable_device" != "y" ]; then
-      continue
-    fi
-
-    devices_to_enable="$devices_to_enable $device"
-    uci -q delete wireless.${device}.disabled
 
     echo -n "$(printf "$msg_select_band" "$device" "$band")"
     read enable_band
@@ -164,9 +155,11 @@ set_wifi_ssid_password() {
       continue
     fi
 
+    # インターフェース名の設定
     iface_num=$(echo "$device" | grep -o '[0-9]*')
     iface="aios${iface_num}"
 
+    # SSID とパスワードの設定
     echo -n "$msg_enter_ssid"
     read ssid
     while true; do
@@ -180,19 +173,39 @@ set_wifi_ssid_password() {
       fi
     done
 
-    uci set wireless.${iface}=wifi-iface
-    uci set wireless.${iface}.device="${device}"
-    uci set wireless.${iface}.mode="ap"
-    uci set wireless.${iface}.ssid="${ssid}"
-    uci set wireless.${iface}.key="${password}"
-	uci set wireless.${iface}.htmode="${htmode:-HT20}"
+    # 入力内容の確認
+    while true; do
+      printf "$msg_confirm\n" "$ssid" "$password"
+      read confirm
+      if [ "$confirm" == "y" ]; then
+        break
+      elif [ "$confirm" == "n" ]; then
+        # 再入力を促す
+        echo "もう一度入力してください。"
+        break
+      else
+        echo "無効な入力です。y または n を入力してください。"
+      fi
+    done
+
+    # Wi-Fiインターフェース設定を行う
+    uci set wireless.${iface}="wifi-iface"
+    uci set wireless.${iface}.device="${device:-aios}"
+    uci set wireless.${iface}.mode='ap'
+    uci set wireless.${iface}.ssid="${ssid:-openwrt}"
+    uci set wireless.${iface}.key="${password:-password}"
+    uci set wireless.${iface}.encryption="${encryption:-sae-mixed}"
     uci set wireless.${iface}.network="${network:-lan}"
-	uci set wireless.${iface}.disabled '0'
+    uci -q delete wireless.${device}.disabled
+
+    # 設定が完了したデバイスを devices_to_enable に追加
+    devices_to_enable="$devices_to_enable $device"
   done
 
   uci commit wireless
   /etc/init.d/network reload
 
+  # 設定が完了したデバイスの表示
   for device in $devices_to_enable; do
     printf "$msg_updated\n" "$device"
   done

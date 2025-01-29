@@ -33,6 +33,13 @@ banner() {
     echo -e "$(color "red_white" "$disclaimer")"
 }
 
+delete_language() {
+if [ -e "${BASE_DIR}check_language" ]; then
+    rm -rf "${BASE_DIR}check_language"
+    echo "Initialized check_language."
+fi
+}
+
 make_directory() {
     if [ ! -d "$BASE_DIR" ]; then
         mkdir -p "$BASE_DIR" || { echo "Failed to create BASE_DIR"; exit 1; }

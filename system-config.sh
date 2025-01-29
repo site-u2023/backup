@@ -281,7 +281,7 @@ sh ${BASE_DIR}/country_timezone.sh ${SELECTED_LANGUAGE}
 sh ${BASE_DIR}/country_timezone.sh Japan
 sh ${BASE_DIR}/country_timezone.sh ja
 sh ${BASE_DIR}/country_timezone.sh JP
-sh ${BASE_DIR}/country_timezone.sh UTC-9
+sh ${BASE_DIR}/country_timezone.sh UTC+9
 sh ${BASE_DIR}/country_timezone.sh
 #set_device_name_password
 #set_wifi_ssid_password

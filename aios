@@ -54,7 +54,7 @@ make_directory() {
 }
 
 download_and_execute_common() {
-    wget --no-check-certificate --quiet -O "${BASE_DIR%/}/common-functions.sh" "${BASE_URL}/common-functions.sh" || {
+    wget --quiet -O "${BASE_DIR%/}/common-functions.sh" "${BASE_URL}/common-functions.sh" || {
         echo "Failed to download common-functions.sh"
         exit 1
     }
@@ -65,7 +65,7 @@ download_and_execute_common() {
 }
 
 download_openwrt_config() {
-    wget --no-check-certificate --quiet -O "${BASE_DIR%/}/openwrt-config.sh" "${BASE_URL}/openwrt-config.sh" || {
+    wget --quiet -O "${BASE_DIR%/}/openwrt-config.sh" "${BASE_URL}/openwrt-config.sh" || {
         echo "Failed to download openwrt-config.sh"
         exit 1
     }

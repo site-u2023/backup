@@ -137,9 +137,6 @@ else
 fi
 }
 
-BASE_DIR="${BASE_DIR:-/tmp/aios}"
-ZONEDATA=$(sh ${BASE_DIR}/country_timezone.sh ja)
-read -p $ZONEDATA
 check_common "$1"
 check_country_code "$1"
 country_timezones_data

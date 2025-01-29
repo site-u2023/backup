@@ -263,6 +263,6 @@ reboot
 
 download_common
 check_common $1
-source "${BASE_DIR}/country_timezone.sh ${SELECTED_LANGUAGE}"
+"${BASE_DIR}/country_timezone.sh ${SELECTED_LANGUAGE}"
 set_device_name_password
 set_wifi_ssid_password

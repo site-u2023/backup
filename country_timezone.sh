@@ -122,22 +122,23 @@ if [ -z "$1" ]; then
   echo "Usage: $0 <country_code>"
   exit 1
 fi
+
+check_country_code_data "$1"
 }
 
 check_country_code_data() {
 country_code="$1"
 
-found_entry=$(echo "$country_timezones" | grep -E "^$country_code ")
+found_entry=$(echo "$country_timezones" | grep -E "\b$country_code\b")
 
 if [ -n "$found_entry" ]; then
   echo "$found_entry"
 else
-  echo "Country code not found."
+  echo "Country code or country name not found."
   exit 1
 fi
 }
 
-check_country_code "$1"
 country_timezones_data
 check_country_code_data "$1"
 # check_country_code2 "$1"  "$2"

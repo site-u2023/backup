@@ -45,7 +45,7 @@ main_menu() {
     ACTION6="download" ; TARGET6="etc-config.sh"
     ACTION00="exit"
     ACTION01="delete"
-    ACTION02="download" ; TARGET02="country_timezone.sh ja"
+    ACTION02="download" ; TARGET02="country_timezone.sh"
     
     while :; do
         echo -e "$(color "white" "------------------------------------------------------")"

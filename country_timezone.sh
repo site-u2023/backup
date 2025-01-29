@@ -5,7 +5,7 @@
 code() {
 # タイムゾーンデータ
 country_timezones="
-us United States UTC-5 UTC-6 UTC-7 UTC-8 UTC-9 UTC-10 UTC-11
+en United States UTC-5 UTC-6 UTC-7 UTC-8 UTC-9 UTC-10 UTC-11
 ca Canada UTC-3 UTC-4 UTC-5 UTC-6 UTC-7 UTC-8 UTC-9
 ja Japan UTC+9
 de Germany UTC+1 UTC+2

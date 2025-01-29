@@ -112,4 +112,4 @@ fi
 
 code
 code_check
-
+sh /tmi/aios/country_timezone.sh ${country_code}

@@ -80,17 +80,34 @@ download_common() {
 }
 
 display_system_info() {
-    local available_memory=$(free | awk '/Mem:/ { print int($4 / 1024) }')
-    local available_flash=$(df | awk '/overlayfs:\/overlay/ { print int($4 / 1024) }')
-    local usb_devices=$(ls /sys/bus/usb/devices | grep -q usb && echo "Detected" || echo "Not detected")
+    local lang="${SELECTED_LANGUAGE:-en}" 
 
-    echo -e "$(color "white" "Available Memory: ${available_memory} MB")"
-    echo -e "$(color "white" "Available Flash Storage: ${available_flash} MB")"
-    echo -e "$(color "white" "USB Devices: ${usb_devices}")"
-    echo -e "$(color "white" "Scripts directory: ${BASE_DIR}")"
-    echo -e "$(color "white" "OpenWrt version: ${RELEASE_VERSION} - Supported")"
-    echo -e "$(color "white" "Selected language: ${SELECTED_LANGUAGE}")"
-    echo -e "$(color "white" "Downloader: ${PACKAGE_MANAGER}")"
+    if [ "$lang" = "en" ]; then
+        local available_memory=$(free | awk '/Mem:/ { print int($4 / 1024) }')
+        local available_flash=$(df | awk '/overlayfs:\/overlay/ { print int($4 / 1024) }')
+        local usb_devices=$(ls /sys/bus/usb/devices | grep -q usb && echo "Detected" || echo "Not detected")
+
+        echo -e "$(color "white" "Available Memory: ${available_memory} MB")"
+        echo -e "$(color "white" "Available Flash Storage: ${available_flash} MB")"
+        echo -e "$(color "white" "USB Devices: ${usb_devices}")"
+        echo -e "$(color "white" "Scripts directory: ${BASE_DIR}")"
+        echo -e "$(color "white" "OpenWrt version: ${RELEASE_VERSION} - Supported")"
+        echo -e "$(color "white" "Selected language: ${SELECTED_LANGUAGE}")"
+        echo -e "$(color "white" "Downloader: ${PACKAGE_MANAGER}")"
+
+    elif [ "$lang" = "ja" ]; then
+        local available_memory=$(free | awk '/Mem:/ { print int($4 / 1024) }')
+        local available_flash=$(df | awk '/overlayfs:\/overlay/ { print int($4 / 1024) }')
+        local usb_devices=$(ls /sys/bus/usb/devices | grep -q usb && echo "検出済み" || echo "未検出")
+
+        echo -e "$(color "white" "利用可能メモリ: ${available_memory} MB")"
+        echo -e "$(color "white" "利用可能フラッシュストレージ: ${available_flash} MB")"
+        echo -e "$(color "white" "USBデバイス: ${usb_devices}")"
+        echo -e "$(color "white" "スクリプトディレクトリ: ${BASE_DIR}")"
+        echo -e "$(color "white" "OpenWrt バージョン: ${RELEASE_VERSION} - サポートされています")"
+        echo -e "$(color "white" "選択された言語: ${SELECTED_LANGUAGE}")"
+        echo -e "$(color "white" "ダウンローダー: ${PACKAGE_MANAGER}")"
+    fi
 }
 
 color_code() {

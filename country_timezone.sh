@@ -140,5 +140,8 @@ fi
 check_country_code "$1"
 country_timezones_data
 check_country_code_data "$1"
+BASE_DIR="${BASE_DIR:-/tmp/aios}"
+ZONEDATA=$(sh ${BASE_DIR}/country_timezone.sh ja)
+echo $ZONEDATA
 # check_country_code2 "$1"  "$2"
 # check_country_code_data2 "$1" "$2"

@@ -48,7 +48,7 @@ set_device_name_password() {
   echo
   echo "$msg_confirm"
   echo "Device Name: $device_name"
-  echo "Password: $device_name"
+  echo "Password: $msg_password"
   read -p "$msg_confirm" confirmation
   if [ "$confirmation" != "y" ]; then
     echo "$msg_cancel"

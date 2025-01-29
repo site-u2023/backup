@@ -278,7 +278,7 @@ download_common
 download_country_timezone
 check_common $1
 sh ${BASE_DIR}/country_timezone.sh ${SELECTED_LANGUAGE}
-sh ${BASE_DIR}/country_timezone.sh}
+sh ${BASE_DIR}/country_timezone.sh
 sh ${BASE_DIR}/country_timezone.sh Japan
 sh ${BASE_DIR}/country_timezone.sh ja
 sh ${BASE_DIR}/country_timezone.sh JP

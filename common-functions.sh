@@ -2,8 +2,8 @@
 # License: CC0
 # OpenWrt >= 19.07
 
-BASE_URL="${BASE_URL:-https://raw.githubusercontent.com/site-u2023/aios/main/}"
-BASE_DIR="${BASE_DIR:-/tmp/aios/}"
+BASE_URL="${BASE_URL:-https://raw.githubusercontent.com/site-u2023/aios/main}"
+BASE_DIR="${BASE_DIR:-/tmp/aios}"
 SUPPORTED_VERSIONS="${SUPPORTED_VERSIONS:-19 21 22 23 24 SN}"
 
 color_code_map() {
@@ -43,7 +43,7 @@ color() {
 
 check_version() {
 RELEASE_VERSION=$(grep 'DISTRIB_RELEASE' /etc/openwrt_release | cut -d"'" -f2 | cut -c 1-2)
-echo "${RELEASE_VERSION}" > ${BASE_DIR}check_version
+echo "${RELEASE_VERSION}" > ${BASE_DIR}/check_version
     if ! echo "${SUPPORTED_VERSIONS}" | grep -q "${RELEASE_VERSION}"; then
         echo "Unsupported OpenWrt version: ${RELEASE_VERSION}"
         echo "Supported versions: ${SUPPORTED_VERSIONS}"
@@ -65,16 +65,16 @@ while true; do
          *) echo "Invalid choice." ;;
    esac
 done
-echo "${SELECTED_LANGUAGE}" > ${BASE_DIR}check_language
+echo "${SELECTED_LANGUAGE}" > ${BASE_DIR}/check_language
 }
 
 check_package_manager() {
     if command -v apk >/dev/null 2>&1; then
         PACKAGE_MANAGER="apk"
-        echo "${PACKAGE_MANAGER}" > ${BASE_DIR}check_package_manager
+        echo "${PACKAGE_MANAGER}" > ${BASE_DIR}/check_package_manager
     elif command -v opkg >/dev/null 2>&1; then
         PACKAGE_MANAGER="opkg"
-        echo "${PACKAGE_MANAGER}" > ${BASE_DIR}check_package_manager
+        echo "${PACKAGE_MANAGER}" > ${BASE_DIR}/check_package_manager
     else
         echo "No package manager found"
         exit 1
@@ -84,26 +84,26 @@ check_package_manager() {
 language_parameter() {
 SELECTED_LANGUAGE=$1
 if [ -n "${SELECTED_LANGUAGE}" ]; then
-  echo "${SELECTED_LANGUAGE}" > "${BASE_DIR}check_language"
+  echo "${SELECTED_LANGUAGE}" > "${BASE_DIR}/check_language"
 fi
 }
 
 check_common() {
-  if [ -f "${BASE_DIR}check_version" ]; then
-    RELEASE_VERSION=$(cat "${BASE_DIR}check_version")
+  if [ -f "${BASE_DIR}/check_version" ]; then
+    RELEASE_VERSION=$(cat "${BASE_DIR}/check_version")
   fi
   [ -z "$RELEASE_VERSION" ] && check_version
 
   if [ -n "$1" ] && { [ "$1" = "ja" ] || [ "$1" = "en" ]; }; then
     SELECTED_LANGUAGE="$1"
-    echo "${SELECTED_LANGUAGE}" > "${BASE_DIR}check_language"
-  elif [ -f "${BASE_DIR}check_language" ]; then
-    SELECTED_LANGUAGE=$(cat "${BASE_DIR}check_language")
+    echo "${SELECTED_LANGUAGE}" > "${BASE_DIR}/check_language"
+  elif [ -f "${BASE_DIR}/check_language" ]; then
+    SELECTED_LANGUAGE=$(cat "${BASE_DIR}/check_language")
   fi
   [ -z "${SELECTED_LANGUAGE}" ] && check_language
 
-  if [ -f "${BASE_DIR}check_package_manager" ]; then
-    PACKAGE_MANAGER=$(cat "${BASE_DIR}check_package_manager")
+  if [ -f "${BASE_DIR}/check_package_manager" ]; then
+    PACKAGE_MANAGER=$(cat "${BASE_DIR}/check_package_manager")
   fi
   [ -z "$PACKAGE_MANAGER" ] && check_package_manager
 }
@@ -199,9 +199,9 @@ menu_option() {
             ;;
         "download")
             if ask_confirmation "download"; then
-                if wget --no-check-certificate --quiet -O "${BASE_DIR}${script_name}" "${BASE_URL}${script_name}"; then
+                if wget --no-check-certificate --quiet -O "${BASE_DIR}/${script_name}" "${BASE_URL}/${script_name}"; then
                     show_notification "download_success"
-                    . "${BASE_DIR}${script_name}"
+                    . "${BASE_DIR}$/{script_name}"
                 else
                     show_notification "download_failure"
                 fi

@@ -114,9 +114,8 @@ set_wifi_ssid_password() {
   devices_to_enable=""
 
   for device in $devices; do
-    band=$(uci get wireless.${device}.band 2>/dev/null || echo "unknown")
-    htmode=$(uci get wireless.${device}.htmode 2>/dev/null || echo "unknown")
-    network=$(uci get wireless.${device}.network 2>/dev/null || echo "unknown")
+    band=$(uci get wireless.${device}.band 2>/dev/null)
+    htmode=$(uci get wireless.${device}.htmode 2>/dev/null)
 
     printf "$msg_band\n" "$device" "$band"
 
@@ -166,7 +165,7 @@ set_wifi_ssid_password() {
     uci set wireless.${iface}.ssid="${ssid:-openwrt}"
     uci set wireless.${iface}.key="${password:-password}"
     uci set wireless.${iface}.encryption="${encryption:-sae-mixed}"
-    uci set wireless.${iface}.network="${network:-lan}"
+    uci set wireless.${iface}.network='lan'
     uci -q delete wireless.${device}.disabled
 
     # 設定が完了したデバイスを devices_to_enable に追加

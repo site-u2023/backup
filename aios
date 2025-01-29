@@ -11,11 +11,11 @@ banner() {
     local msg disclaimer
 
     if [ "$lang" = "en" ]; then
-        msg=       "    Dedicated configuration software for OpenWrt.     "
+        msg="    Dedicated configuration software for OpenWrt.     "
         disclaimer="    Disclaimer: Use this script at your own risk.     "
         all_in_one="                  all in one scripts                  "
     elif [ "$lang" = "ja" ]; then
-        msg=       "              OpenWrt 専用設定ソフトウェア              "
+        msg="              OpenWrt 専用設定ソフトウェア              "
         disclaimer="      免責事項: 本スクリプトは自己責任でご使用下さい      "
         all_in_one="                オールインワンスクリプト                "
     fi

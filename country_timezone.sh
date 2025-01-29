@@ -6,7 +6,7 @@ country_code="$1"
 
 # タイムゾーンデータ
 # 国名 言語コード 国コード タイムゾーン(複数あり) xxはluci-i18n-base非対応
-country_timezones_data() {
+country_data() {
 country_timezones="
 Saudi_Arabia ar SA UTC+3
 Bulgaria bg BG UTC+2 UTC+3
@@ -124,6 +124,22 @@ fi
 #check_country_code_data "$1"
 #}
 
-country_timezones_data
-check_country_code_data #"$1"
+check_country_code() {
+# 引数がない場合は全データ表示
+if [ -z "$country_code" ]; then
+  echo "$country_data"
+else
+  # 引数があればフィルタリング
+  found_entry=$(echo "$country_data" | grep -w "$country_code")
+  if [ -n "$found_entry" ]; then
+    echo "$found_entry"
+  else
+    echo "Country code or country name not found."
+    exit 1
+  fi
+fi
+}
+
+country_data
+check_country_code
 

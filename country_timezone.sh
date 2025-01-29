@@ -125,7 +125,7 @@ fi
 }
 
 check_country_code_data() {
-country_code="$1"
+country_code="$2"
 
 found_entry=$(echo "$country_timezones" | grep -E "^$country_code ")
 

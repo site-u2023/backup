@@ -7,12 +7,13 @@ BASE_DIR="/tmp/aios/"
 SUPPORTED_VERSIONS="19 21 22 23 24 SN"
 
 main_menu() {
+    local lang="${SELECTED_LANGUAGE:-en}" 
     local MENU1 MENU2 MENU3 MENU4 MENU5 MENU6 MENU00 MENU01 SELECT1
     local ACTION1 ACTION2 ACTION3 ACTION4 ACTION5 ACTION6 ACTION00 ACTION01
     local TARGET1 TARGET2 TARGET3 TARGET4 TARGET5 TARGET6 TARGET00 TARGET01
     local option
     
-    if [ "${SELECTED_LANGUAGE}" = "en" ]; then
+    if [ "$lang" = "en" ]; then
         MENU1="Internet settings (Japan Only)" 
         MENU2="Initial System Settings"
         MENU3="Recommended Package Installation"
@@ -22,7 +23,7 @@ main_menu() {
         MENU00="Exit Script"
         MENU01="Remove script and exit"
         SELECT1="Select an option: "
-    elif [ "${SELECTED_LANGUAGE}" = "ja" ]; then
+    elif [ "$lang" = "ja" ]; then
         MENU1="インターネット設定"
         MENU2="システム初期設定"
         MENU3="推奨パッケージインストール"  

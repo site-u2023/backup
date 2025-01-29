@@ -3,9 +3,9 @@
 # OpenWrt >= 19.07
 
 # タイムゾーンデータ
+# 国名 言語コード 国コード タイムゾーン(複数あり) xxはluci-i18n-base非対応
 country_timezones_data() {
 country_timezones="
-# 国名 言語コード 国コード タイムゾーン(複数あり) xxはluci-i18n-base非対応
 Saudi_Arabia ar SA UTC+3
 Bulgaria bg BG UTC+2 UTC+3
 Bangladesh bn BD UTC+6
@@ -140,5 +140,5 @@ fi
 check_country_code "$1"
 country_timezones_data
 check_country_code_data "$1"
-# check_country_code2
-# check_country_code_data2
+# check_country_code2 "$1"  "$2"
+# check_country_code_data2 "$1" "$2"

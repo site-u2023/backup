@@ -2,16 +2,22 @@
 # License: CC0
 # OpenWrt >= 19.07
 
-# 引数でソートする機能
-sort_country_timezones() {
-  printf "%s\n" "${country_timezones[@]}" | sort -k2,2
+# 国コードを指定すると、その国のタイムゾーンを取得できる
+
+get_timezone_by_country() {
+  local country_code="$1"
+  for entry in "${country_timezones[@]}"; do
+    set -- $entry
+    if [ "$1" = "$country_code" ]; then
+      shift
+      echo "$@"
+      return
+    fi
+  done
+  echo "Country code not found"
 }
 
-# 使用例:
-# ソートして表示する場合
-# echo "${country_timezones[@]}" | sort_country_timezones
-
-# ゾーン名と国名をタイムゾーンとともに表示するリスト
+# タイムゾーンリスト
 country_timezones=(
   "US United States UTC-5 UTC-6 UTC-7 UTC-8 UTC-9 UTC-10 UTC-11"
   "CA Canada UTC-3 UTC-4 UTC-5 UTC-6 UTC-7 UTC-8 UTC-9"
@@ -98,5 +104,9 @@ country_timezones=(
   "DZ Algeria UTC+1"
 )
 
-
-country_timezones
+# スクリプトの実行
+if [ "$#" -eq 1 ]; then
+  get_timezone_by_country "$1"
+else
+  echo "Usage: $0 <Country Code>"
+fi

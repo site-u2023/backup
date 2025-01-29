@@ -2,14 +2,14 @@
 # License: CC0
 # OpenWrt >= 19.07
 
-BASE_URL="https://raw.githubusercontent.com/site-u2023/aios/main/"
-BASE_DIR="/tmp/aios/"
+BASE_URL="https://raw.githubusercontent.com/site-u2023/aios/main"
+BASE_DIR="/tmp/aios"
 SUPPORTED_VERSIONS="19 21 22 23 24 SN"
 
-if [ ! -f "${BASE_DIR}common-functions.sh" ]; then
-  wget --no-check-certificate -O "${BASE_DIR}common-functions.sh" "${BASE_URL}common-functions.sh"
+if [ ! -f "${BASE_DIR}/common-functions.sh" ]; then
+  wget --no-check-certificate -O "${BASE_DIR}/common-functions.sh" "${BASE_URL}/common-functions.sh"
 fi
-source "${BASE_DIR}common-functions.sh"
+source "${BASE_DIR}/common-functions.sh"
 
 main_menu() {
         if [ "${SELECTED_LANGUAGE}" = "en" ]; then
@@ -152,8 +152,8 @@ map_e_installation() {
     else
         wget -6 --no-check-certificate -O /lib/netifd/proto/map.sh ${MAPE_URL}map.sh.new
     fi
-    wget -6 --no-check-certificate -O ${BASE_DIR}map-e.sh ${BASE_URL}map-e.sh
-    bash ${BASE_DIR}map-e.sh 2> /dev/null
+    wget -6 --no-check-certificate -O ${BASE_DIR}/map-e.sh ${BASE_URL}/map-e.sh
+    bash ${BASE_DIR}/map-e.sh 2> /dev/null
 
     if [ "${SELECTED_LANGUAGE}" = "en" ]; then
         echo EN

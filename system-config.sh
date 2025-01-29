@@ -44,8 +44,6 @@ color_code_map() {
 }
 
 set_device_name_password() {
-  local password device_name confirmation
-  local lang="${SELECTED_LANGUAGE:-en}"
 
   # 言語ごとのメッセージをcaseで定義
   case "$lang" in
@@ -108,73 +106,60 @@ set_device_name_password() {
 }
 
 set_wifi_ssid_password() {
-  local devices section device band ssid password confirm
+  local device iface iface_num ssid password enable_device band htmode devices
+  local devices_to_enable=""
   local lang="${SELECTED_LANGUAGE:-en}"
 
-  # 言語ごとのメッセージをcaseで定義
   case "$lang" in
-    "en")
-      msg_no_devices="No Wi-Fi devices found. Exiting."
-      msg_section_disabled="Section %s is disabled. Enabling it."
-      msg_band="Device %s (Band: %s)"
-      msg_enter_ssid="Enter SSID: "
-      msg_enter_password="Enter password (minimum 8 characters): "
-      msg_password_invalid="Password must be at least 8 characters long."
-      msg_settings="Applying the following settings:\nDevice: %s\nBand: %s\nSSID: %s\nPassword: %s"
-      msg_confirm="Proceed with these settings? (y/n): "
-      msg_updated="Settings for device %s have been updated."
-      msg_canceled="Settings for device %s have been canceled."
-      ;;
     "ja")
       msg_no_devices="Wi-Fiデバイスが見つかりません。終了します。"
-      msg_section_disabled="セクション %s は無効です。無効を解除します。"
       msg_band="デバイス %s (帯域: %s)"
       msg_enter_ssid="SSIDを入力してください: "
       msg_enter_password="パスワードを入力してください (8文字以上): "
       msg_password_invalid="パスワードは8文字以上で入力してください。"
-      msg_settings="以下の設定を行います:\nデバイス: %s\n帯域: %s\nSSID: %s\nパスワード: %s"
-      msg_confirm="この設定で進行しますか？(y/n): "
       msg_updated="デバイス %s の設定が更新されました。"
-      msg_canceled="デバイス %s の設定がキャンセルされました。"
+      msg_enable_device="wifi-device %s を有効にしますか？(y/n): "
       ;;
-    *)
+    "en")
       msg_no_devices="No Wi-Fi devices found. Exiting."
-      msg_section_disabled="Section %s is disabled. Enabling it."
       msg_band="Device %s (Band: %s)"
       msg_enter_ssid="Enter SSID: "
-      msg_enter_password="Enter password (minimum 8 characters): "
+      msg_enter_password="Enter password (8 or more characters): "
       msg_password_invalid="Password must be at least 8 characters long."
-      msg_settings="Applying the following settings:\nDevice: %s\nBand: %s\nSSID: %s\nPassword: %s"
-      msg_confirm="Proceed with these settings? (y/n): "
-      msg_updated="Settings for device %s have been updated."
-      msg_canceled="Settings for device %s have been canceled."
+      msg_updated="Device %s settings have been updated."
+      msg_enable_device="Enable wifi-device %s? (y/n): "
       ;;
   esac
 
-  # Wi-Fiデバイスリスト取得
   devices=$(uci show wireless | grep 'wifi-device' | cut -d'=' -f1 | cut -d'.' -f2 | sort -u)
   if [ -z "$devices" ]; then
     echo "$msg_no_devices"
     exit 1
   fi
 
-  # 無効なWi-Fiセクションを有効化
-  for section in $(uci show wireless | grep "disabled='1'" | cut -d'.' -f2 | sort -u); do
-    printf "$msg_section_disabled\n" "$section"
-    uci delete wireless.${section}.disabled
-  done
+  devices_to_enable=""
 
-  uci commit wireless
-  /etc/init.d/network reload
-
-  # 各デバイスの設定
   for device in $devices; do
     band=$(uci get wireless.${device}.band 2>/dev/null || echo "unknown")
+    htmode=$(uci get wireless.${device}.htmode 2>/dev/null || echo "unknown")  # HTMODEを取得
 
     printf "$msg_band\n" "$device" "$band"
-    read -p "$msg_enter_ssid" ssid
+
+    echo -n "$(printf "$msg_enable_device" "$device")"
+    read enable_device
+    if [ "$enable_device" = "y" ]; then
+      devices_to_enable="$devices_to_enable $device"
+      uci -q delete wireless.${device}.disabled  # エラーメッセージを抑制
+    fi
+
+    iface_num=$(echo "$device" | grep -o '[0-9]*')  # radioX のXを抽出
+    iface="aios${iface_num}"  # aiosX 形式のインターフェース名に修正
+
+    echo -n "$msg_enter_ssid"
+    read ssid
     while true; do
-      read -s -p "$msg_enter_password" password
+      echo -n "$msg_enter_password"
+      read -s password
       echo
       if [ ${#password} -ge 8 ]; then
         break
@@ -183,19 +168,20 @@ set_wifi_ssid_password() {
       fi
     done
 
-    printf "$msg_settings\n" "$device" "$band" "$ssid" "$password"
-    read -p "$msg_confirm" confirm
+    uci set wireless.${iface}=wifi-iface
+    uci set wireless.${iface}.device="${device}"
+    uci set wireless.${iface}.mode="ap"
+    uci set wireless.${iface}.ssid="${ssid}"
+    uci set wireless.${iface}.key="${password}"
+    uci set wireless.${iface}.htmode="${htmode}"  # 自動取得したHTMODEを適用
+    uci set wireless.${iface}.network="lan"
+  done
 
-    if [ "$confirm" = "y" ]; then
-      # Wi-Fiデバイスの設定更新
-      uci set wireless.${device}.ssid="$ssid"
-      uci set wireless.${device}.key="$password"
-      uci commit wireless
-      /etc/init.d/network reload
-      printf "$msg_updated\n" "$device"
-    else
-      printf "$msg_canceled\n" "$device"
-    fi
+  uci commit wireless
+  /etc/init.d/network reload
+
+  for device in $devices_to_enable; do
+    printf "$msg_updated\n" "$device"
   done
 }
 

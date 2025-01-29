@@ -3,6 +3,7 @@
 # OpenWrt >= 19.07
 
 # タイムゾーンデータ
+country_timezones_data() {
 country_timezones="
 # 国名 言語コード 国コード タイムゾーン(複数あり) xxはluci-i18n-base非対応
 Saudi_Arabia ar SA UTC+3
@@ -93,18 +94,17 @@ Pakistan xx PK UTC+5
 Qatar xx QA UTC+3
 Algeria xx DZ UTC+1
 "
+}
 
-# 引数チェック
+check_country_code2() {
 if [ -z "$1" ] || [ -z "$2" ]; then
   echo "Usage: $0 <country_code> <timezone>"
   exit 1
 fi
 
-# 引数を変数に格納
 country_code="$1"
 timezone="$2"
 
-# 国コードを検索し、指定されたタイムゾーンも一致するか確認
 found_entry=$(echo "$country_timezones" | grep -E "^$country_code " | grep -w "$timezone")
 
 if [ -n "$found_entry" ]; then
@@ -113,22 +113,26 @@ else
   echo "Country code or timezone not found."
   exit 1
 fi
+}
 
+check_country_code() {
+if [ -z "$1" ]; then
+  echo "Usage: $0 <country_code>"
+  exit 1
+fi
 
-# --------
-# # 引数チェック
-#if [ -z "$1" ]; then
-#  echo "Usage: $0 <country_code>"
-#  exit 1
-#fi
-#
-# 国コードを検索
-#country_code="$1"
-#found_entry=$(echo "$country_timezones" | grep -E "^$country_code " )
-#
-#if [ -n "$found_entry" ]; then
-#  echo "$found_entry"
-#else
-#  echo "Country code not found."
-#  exit 1
-#fi
+country_code="$1"
+
+found_entry=$(echo "$country_timezones" | grep -E "^$country_code ")
+
+if [ -n "$found_entry" ]; then
+  echo "$found_entry"
+else
+  echo "Country code not found."
+  exit 1
+fi
+}
+
+country_timezones_data
+check_country_code
+# check_country_code2

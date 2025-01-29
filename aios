@@ -11,13 +11,14 @@ banner() {
     local msg disclaimer
 
     if [ "$lang" = "en" ]; then
-        msg="    Dedicated configuration software for OpenWrt.     "
+        msg=       "    Dedicated configuration software for OpenWrt.     "
         disclaimer="    Disclaimer: Use this script at your own risk.     "
+        all_in_one="                  all in one scripts                  "
     elif [ "$lang" = "ja" ]; then
-        msg="              OpenWrt 専用設定ソフトウェア              "
+        msg=       "              OpenWrt 専用設定ソフトウェア              "
         disclaimer="      免責事項: 本スクリプトは自己責任でご使用下さい      "
+        all_in_one="                オールインワンスクリプト                "
     fi
-
     echo -e "$(color "white"     "$msg")"
     echo -e "$(color "white"     "                                                      ")"
     echo -e "$(color "magenta"   "                    ii i                              ")"
@@ -27,6 +28,7 @@ banner() {
     echo -e "$(color "yellow"    "        aa  aa      ii      oo  oo         ss         ")"
     echo -e "$(color "red"       "         aaaaa     iiii      oooo     ssssss          ")"
     echo -e "$(color "white"     "                                                      ")"
+    echo -e "$(color "white"     "$all_in_one                                           ")"
     echo -e "$(color "white"     "                  all in one scripts                  ")"
     echo -e "$(color "white"     "                                                      ")"
     echo -e "$(color "red_white" "$disclaimer")"

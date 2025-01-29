@@ -36,31 +36,34 @@ xxxbanner() {
 banner() {
     local lang="${SELECTED_LANGUAGE:-en}"
     local msg disclaimer all_in_one
+    local width=54  # 中央揃えのための幅（ここで指定する幅）
 
+    # メッセージの設定
     if [ "$lang" = "en" ]; then
-        msg=$(printf "%-54s" "Dedicated configuration software for OpenWrt.")
-        disclaimer=$(printf "%-54s" "Disclaimer: Use this script at your own risk.")
-        all_in_one=$(printf "%-54s" "all in one scripts")
+        msg="Dedicated configuration software for OpenWrt."
+        disclaimer="Disclaimer: Use this script at your own risk."
+        all_in_one="all in one scripts"
     elif [ "$lang" = "ja" ]; then
-        msg=$(printf "%-54s" "OpenWrt 専用設定ソフトウェア")
-        disclaimer=$(printf "%-54s" "免責事項: 本スクリプトは自己責任でご使用下さい")
-        all_in_one=$(printf "%-54s" "オールインワンスクリプト")
+        msg="OpenWrt 専用設定ソフトウェア"
+        disclaimer="免責事項: 本スクリプトは自己責任でご使用下さい"
+        all_in_one="オールインワンスクリプト"
     fi
 
-    # バナー表示部分
-    printf "%s\n" "$(color "white"     "    $msg    ")"
-    printf "%s\n" "$(color "white"     "                                                      ")"
-    printf "%s\n" "$(color "magenta"   "                    ii i                              ")"
-    printf "%s\n" "$(color "blue"      "         aaaa      iii       oooo      sssss          ")"
-    printf "%s\n" "$(color "cyan"      "            aa      ii      oo  oo    ss              ")"
-    printf "%s\n" "$(color "green"     "         aaaaa      ii      oo  oo     sssss          ")"
-    printf "%s\n" "$(color "yellow"    "        aa  aa      ii      oo  oo         ss         ")"
-    printf "%s\n" "$(color "red"       "         aaaaa     iiii      oooo     ssssss          ")"
-    printf "%s\n" "$(color "white"     "                                                      ")"
-    printf "%s\n" "$(color "white"     "    $all_in_one    ")"
-    printf "%s\n" "$(color "white"     "                                                      ")"
-    printf "%s\n" "$(color "red_white" "    $disclaimer    ")"
+    # バナー表示部分（中央揃え）
+    printf "%-*s\n" $width "$(color "white" "    $msg    ")"
+    printf "%-*s\n" $width "$(color "white" "                                                      ")"
+    printf "%-*s\n" $width "$(color "magenta" "                    ii i                              ")"
+    printf "%-*s\n" $width "$(color "blue" "         aaaa      iii       oooo      sssss          ")"
+    printf "%-*s\n" $width "$(color "cyan" "            aa      ii      oo  oo    ss              ")"
+    printf "%-*s\n" $width "$(color "green" "         aaaaa      ii      oo  oo     sssss          ")"
+    printf "%-*s\n" $width "$(color "yellow" "        aa  aa      ii      oo  oo         ss         ")"
+    printf "%-*s\n" $width "$(color "red" "         aaaaa     iiii      oooo     ssssss          ")"
+    printf "%-*s\n" $width "$(color "white" "                                                      ")"
+    printf "%-*s\n" $width "$(color "white" "    $all_in_one    ")"
+    printf "%-*s\n" $width "$(color "white" "                                                      ")"
+    printf "%-*s\n" $width "$(color "red_white" "    $disclaimer    ")"
 }
+
 
 delete_language() {
     if [ -e "${BASE_DIR}check_language" ]; then

@@ -62,18 +62,18 @@ banner() {
     fi
 
     # バナー表示部分（中央揃え）
-    center_align $width "$(color "white" "    $msg    ")"
-    center_align $width "$(color "white" "                                                      ")"
-    center_align $width "$(color "magenta" "                    ii i                              ")"
-    center_align $width "$(color "blue" "         aaaa      iii       oooo      sssss          ")"
-    center_align $width "$(color "cyan" "            aa      ii      oo  oo    ss              ")"
-    center_align $width "$(color "green" "         aaaaa      ii      oo  oo     sssss          ")"
-    center_align $width "$(color "yellow" "        aa  aa      ii      oo  oo         ss         ")"
-    center_align $width "$(color "red" "         aaaaa     iiii      oooo     ssssss          ")"
-    center_align $width "$(color "white" "                                                      ")"
-    center_align $width "$(color "white" "    $all_in_one    ")"
-    center_align $width "$(color "white" "                                                      ")"
-    center_align $width "$(color "red_white" "    $disclaimer    ")"
+    center_align $width "$(color "white" "$msg")"
+    center_align $width "$(color "white" "")"
+    center_align $width "$(color "magenta" "ii i")"
+    center_align $width "$(color "blue" "aaaa      iii       oooo      sssss")"
+    center_align $width "$(color "cyan" "aa      ii      oo  oo    ss")"
+    center_align $width "$(color "green" "aaaaa      ii      oo  oo     sssss")"
+    center_align $width "$(color "yellow" "aa  aa      ii      oo  oo         ss")"
+    center_align $width "$(color "red" "aaaaa     iiii      oooo     ssssss")"
+    center_align $width "$(color "white" "")"
+    center_align $width "$(color "white" "$all_in_one")"
+    center_align $width "$(color "white" "")"
+    center_align $width "$(color "red_white" "$disclaimer")"
 }
 
 

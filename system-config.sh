@@ -47,7 +47,6 @@ set_device_name_password() {
   local device_name password confirmation
   local lang="${SELECTED_LANGUAGE:-en}"
   
-  # 言語ごとのメッセージをcaseで定義
   case "$lang" in
     "en")
       msg_device="Enter the new device name: "
@@ -108,7 +107,7 @@ set_device_name_password() {
 }
 
 set_wifi_ssid_password() {
-  local device iface iface_num ssid password enable_device band htmode devices
+  local device iface iface_num ssid password enable_device band htmode devices network
   local devices_to_enable=""
   local lang="${SELECTED_LANGUAGE:-en}"
 
@@ -121,6 +120,7 @@ set_wifi_ssid_password() {
       msg_password_invalid="パスワードは8文字以上で入力してください。"
       msg_updated="デバイス %s の設定が更新されました。"
       msg_enable_device="wifi-device %s を有効にしますか？(y/n): "
+      msg_select_band="デバイス %s のバンド %s を有効にしますか？(y/n): "
       ;;
     "en")
       msg_no_devices="No Wi-Fi devices found. Exiting."
@@ -130,6 +130,7 @@ set_wifi_ssid_password() {
       msg_password_invalid="Password must be at least 8 characters long."
       msg_updated="Device %s settings have been updated."
       msg_enable_device="Enable wifi-device %s? (y/n): "
+      msg_select_band="Enable band %s on device %s? (y/n): "
       ;;
   esac
 
@@ -143,19 +144,28 @@ set_wifi_ssid_password() {
 
   for device in $devices; do
     band=$(uci get wireless.${device}.band 2>/dev/null || echo "unknown")
-    htmode=$(uci get wireless.${device}.htmode 2>/dev/null || echo "unknown")  # HTMODEを取得
-
+    htmode=$(uci get wireless.${device}.htmode 2>/dev/null || echo "unknown")
+    network=$(uci get wireless.${device}.network2 2>/dev/null || echo "unknown")
+	
     printf "$msg_band\n" "$device" "$band"
 
     echo -n "$(printf "$msg_enable_device" "$device")"
     read enable_device
-    if [ "$enable_device" = "y" ]; then
-      devices_to_enable="$devices_to_enable $device"
-      uci -q delete wireless.${device}.disabled  # エラーメッセージを抑制
+    if [ "$enable_device" != "y" ]; then
+      continue
     fi
 
-    iface_num=$(echo "$device" | grep -o '[0-9]*')  # radioX のXを抽出
-    iface="aios${iface_num}"  # aiosX 形式のインターフェース名に修正
+    devices_to_enable="$devices_to_enable $device"
+    uci -q delete wireless.${device}.disabled
+
+    echo -n "$(printf "$msg_select_band" "$device" "$band")"
+    read enable_band
+    if [ "$enable_band" != "y" ]; then
+      continue
+    fi
+
+    iface_num=$(echo "$device" | grep -o '[0-9]*')
+    iface="aios${iface_num}"
 
     echo -n "$msg_enter_ssid"
     read ssid
@@ -175,8 +185,9 @@ set_wifi_ssid_password() {
     uci set wireless.${iface}.mode="ap"
     uci set wireless.${iface}.ssid="${ssid}"
     uci set wireless.${iface}.key="${password}"
-    uci set wireless.${iface}.htmode="${htmode}"  # 自動取得したHTMODEを適用
-    uci set wireless.${iface}.network="lan"
+	uci set wireless.${iface}.htmode="${htmode:-HT20}"
+    uci set wireless.${iface}.network="${network:-lan}"
+	uci set wireless.${iface}.disabled '0'
   done
 
   uci commit wireless
@@ -199,7 +210,7 @@ ZOONNAME='UTC'
 TIMEZOON='JST-9'
 
 uci set system.@system[0]=system
-uci set system.@system[0].hostname=${HOSTNAME}
+#uci set system.@system[0].hostname=${HOSTNAME}
 uci set system.@system[0].description="${DESCRIPTION}"
 uci set system.@system[0].zonename=${ZOONNAME}
 uci set system.@system[0].timezone=${TIMEZOON}

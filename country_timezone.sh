@@ -111,37 +111,14 @@ else
 fi
 }
 
-check_country_code_data2() {
-country_code="$1"
-timezone="$2"
-
-found_entry=$(echo "$country_timezones" | grep -E "^$country_code " | grep -w "$timezone")
-
-if [ -n "$found_entry" ]; then
-  echo "$found_entry"
-else
-  echo "Country code or timezone not found."
-  exit 1
-fi
-}
-
-#check_country_code2() {
-#if [ -z "$1" ] || [ -z "$2" ]; then
-#  echo "Usage: $0 <country_code> <timezone>"
-#  exit 1
-#fi
-#}
-
 #check_country_code() {
 #if [ -z "$1" ]; then
 #  echo "Usage: $0 <country_code>"
 #  exit 1
 #fi
-
 #check_country_code_data "$1"
 #}
 
 country_timezones_data
 check_country_code_data "$1"
-# check_country_code2 "$1"  "$2"
-# check_country_code_data2 "$1" "$2"
+

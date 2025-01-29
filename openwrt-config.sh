@@ -22,6 +22,7 @@ main_menu() {
         MENU6="Other Script Settings"
         MENU00="Exit Script"
         MENU01="Remove script and exit"
+        MENU02="country set"
         SELECT1="Select an option: "
     elif [ "$lang" = "ja" ]; then
         MENU1="インターネット設定"
@@ -32,6 +33,7 @@ main_menu() {
         MENU6="その他のスクリプト設定"
         MENU00="スクリプト終了"
         MENU01="スクリプト削除終了"
+        MENU02="カントリー設定"
         SELECT1="選択してください: "
     fi
 
@@ -43,6 +45,7 @@ main_menu() {
     ACTION6="download" ; TARGET6="etc-config.sh"
     ACTION00="exit"
     ACTION01="delete"
+    ACTION02="download" ; TARGET02="country_timezone.sh"
     
     while :; do
         echo -e "$(color "white" "------------------------------------------------------")"
@@ -66,7 +69,7 @@ main_menu() {
             "e") menu_option "${ACTION00}" "${MENU00}" ;;
             "d") menu_option "${ACTION01}" "${MENU01}" ;;
             "c") color_code ;;
-            "cc") ${BASE_DIR}/country_codes.sh $1 ;;
+            "cc") menu_option "${ACTION02}" "${MENU02}" "${TARGET02}" ;;
             *) echo -e "$(color "red" "Invalid option. Please try again.")" ;;
         esac
     done

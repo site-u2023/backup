@@ -278,10 +278,6 @@ download_common
 download_country_timezone
 check_common $1
 sh ${BASE_DIR}/country_timezone.sh ${SELECTED_LANGUAGE}
-
-ZONEDATA=$(sh ${BASE_DIR}/country_timezone.sh ja)
-echo $ZONEDATA
-
 #set_device_name_password
 #set_wifi_ssid_password
 #set_device

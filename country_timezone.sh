@@ -4,6 +4,7 @@
 
 # タイムゾーンデータ
 country_timezones="
+# 国名 言語コード 国コード タイムゾーン(複数あり) xxはluci-i18n-base非対応
 Saudi_Arabia ar SA UTC+3
 Bulgaria bg BG UTC+2 UTC+3
 Bangladesh bn BD UTC+6
@@ -94,19 +95,40 @@ Algeria xx DZ UTC+1
 "
 
 # 引数チェック
-if [ -z "$1" ]; then
-  echo "Usage: $0 <country_code>"
+if [ -z "$1" ] || [ -z "$2" ]; then
+  echo "Usage: $0 <country_code> <timezone>"
   exit 1
 fi
 
-# 国コードを検索
+# 引数を変数に格納
 country_code="$1"
-found_entry=$(echo "$country_timezones" | grep -E "^$country_code " )
+timezone="$2"
+
+# 国コードを検索し、指定されたタイムゾーンも一致するか確認
+found_entry=$(echo "$country_timezones" | grep -E "^$country_code " | grep -w "$timezone")
 
 if [ -n "$found_entry" ]; then
   echo "$found_entry"
 else
-  echo "Country code not found."
+  echo "Country code or timezone not found."
   exit 1
 fi
 
+
+# --------
+# # 引数チェック
+#if [ -z "$1" ]; then
+#  echo "Usage: $0 <country_code>"
+#  exit 1
+#fi
+#
+# 国コードを検索
+#country_code="$1"
+#found_entry=$(echo "$country_timezones" | grep -E "^$country_code " )
+#
+#if [ -n "$found_entry" ]; then
+#  echo "$found_entry"
+#else
+#  echo "Country code not found."
+#  exit 1
+#fi

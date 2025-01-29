@@ -105,3 +105,5 @@ else
   echo "Country code not found."
   exit 1
 fi
+
+exit

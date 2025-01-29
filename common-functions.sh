@@ -42,14 +42,17 @@ color() {
 }
 
 check_version() {
-RELEASE_VERSION=$(grep 'DISTRIB_RELEASE' /etc/openwrt_release | cut -d"'" -f2 | cut -c 1-2)
-echo "${RELEASE_VERSION}" > ${BASE_DIR}/check_version
-    if ! echo "${SUPPORTED_VERSIONS}" | grep -q "${RELEASE_VERSION}"; then
+    RELEASE_VERSION=$(awk -F"'" '/DISTRIB_RELEASE/ {print $2}' /etc/openwrt_release | cut -c 1-2)
+    
+    echo "${RELEASE_VERSION}" > "${BASE_DIR}/check_version"
+    
+    if ! echo "${SUPPORTED_VERSIONS}" | grep -qw "${RELEASE_VERSION}"; then
         echo "Unsupported OpenWrt version: ${RELEASE_VERSION}"
         echo "Supported versions: ${SUPPORTED_VERSIONS}"
         exit 1
     fi
 }
+
 
 check_language() {
 while true; do

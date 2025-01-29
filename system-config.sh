@@ -172,7 +172,7 @@ set_wifi_ssid_password() {
 
   uci commit wireless
   /etc/init.d/network reload
-
+  
   for device in $devices_to_enable; do
     printf "$msg_updated\n" "$device"
   done
@@ -250,6 +250,8 @@ uci set dhcp.lan.leasetime='24h'
 uci commit dhcp
 # /etc/init.d/dnsmasq restart
 # /etc/init.d/odhcpd restart
+read -p "再起動します。"
+reboot
 }
 
 download_common

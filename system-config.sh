@@ -268,8 +268,17 @@ reboot
 }
 
 test() {
-sh ${BASE_DIR}/country-zonename.sh ${SELECTED_LANGUAGE}
-sh ${BASE_DIR}/country-timezone.sh ${SELECTED_LANGUAGE}
+input="$(sh ${BASE_DIR}/country-zonename.sh ${SELECTED_LANGUAGE})"
+language=$(echo "$input" | awk '{print $NF}')
+if echo "$language" | grep -q "/"; then
+  echo "Selected Language: $1"
+else
+  echo "Processed Output: $language"
+fi
+sh ${BASE_DIR}/country-zonename.sh ${SELECTED_LANGUAGE} | awk '{print $2}'
+sh ${BASE_DIR}/country-zonename.sh ${SELECTED_LANGUAGE} | awk '{print $3}'
+sh ${BASE_DIR}/country-zonename.sh ${SELECTED_LANGUAGE} | awk '{print $4}'
+sh ${BASE_DIR}/country-timezone.sh ${SELECTED_LANGUAGE} | awk '{print $4}'
 }
 
 download_common

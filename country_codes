@@ -97,3 +97,30 @@ sort_country_timezones() {
 # 使用例:
 # ソートして表示する場合
 # echo "${country_timezones[@]}" | sort_country_timezones
+
+#check_country_code_data() {
+#country_code="$1"
+
+#found_entry=$(echo "$country_timezones" | grep -w "$country_code")
+
+#found_entry=$(echo "$country_timezones" | grep -E "\b$country_code\b")
+#found_entry=$(echo "$country_timezones" | grep -E "\b$country_code\b" | sed 's/-/\\-/g')
+#found_entry=$(echo "$country_timezones" | grep -w "$country_code\b" | sed 's/-/\\-/g')
+#found_entry=$(echo "$country_timezones" | grep -E "(^|\s)$country_code(\s|$)")
+
+#if [ -n "$found_entry" ]; then
+#  echo "$found_entry"
+#else
+#  echo "Country code or country name not found."
+#  exit 1
+#fi
+#}
+
+#check_country_code() {
+#if [ -z "$1" ]; then
+#  echo "Usage: $0 <country_code>"
+#  exit 1
+#fi
+#check_country_code_data "$1"
+#}
+

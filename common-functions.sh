@@ -54,9 +54,10 @@ check_version() {
 }
 
 normalize_language() {
-    if [ "$SELECTED_LANGUAGE" != "ja" ]; then
-        SELECTED_LANGUAGE="en"
-    fi
+    case "$SELECTED_LANGUAGE" in
+        "ja") ;;  # 日本語はそのまま
+        *) SELECTED_LANGUAGE="en" ;;  # それ以外は英語扱い
+    esac
 
 # case "$SELECTED_LANGUAGE" in
 #      "ja" | "zh-cn" | "zh-tw") ;;  # そのまま維持
@@ -225,7 +226,7 @@ check_common() {
       SELECTED_LANGUAGE="$1"
     else
       SELECTED_LANGUAGE="xx"
-      echo "Invalid language selection. Defaulting to 'xx'."
+      echo "Invalid language selection. Defaulting to 'xx'." >&2
     fi
     echo "${SELECTED_LANGUAGE}" > "${BASE_DIR}/check_language"
   elif [ -f "${BASE_DIR}/check_language" ]; then
@@ -234,12 +235,16 @@ check_common() {
 
   [ -z "${SELECTED_LANGUAGE}" ] && check_language
 
+  # 言語の標準化（ja 以外は en 扱い）
+  normalize_language
+
   # パッケージマネージャーの確認
   if [ -f "${BASE_DIR}/check_package_manager" ]; then
     PACKAGE_MANAGER=$(cat "${BASE_DIR}/check_package_manager")
   fi
   [ -z "$PACKAGE_MANAGER" ] && check_package_manager
 }
+
 
 
 XXcheck_common() {

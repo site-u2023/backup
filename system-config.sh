@@ -273,7 +273,7 @@ sh ${BASE_DIR}/country_timezone.sh 日本
 sh ${BASE_DIR}/country_timezone.sh Japan
 sh ${BASE_DIR}/country_timezone.sh ja
 sh ${BASE_DIR}/country_timezone.sh JP
-sh ${BASE_DIR}/country_timezone.sh UTC+9
+sh ${BASE_DIR}/country_timezone.sh JST-9
 sh ${BASE_DIR}/country_timezone.sh
 }
 

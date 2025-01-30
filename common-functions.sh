@@ -57,6 +57,11 @@ normalize_language() {
     if [ "$SELECTED_LANGUAGE" != "ja" ]; then
         SELECTED_LANGUAGE="en"
     fi
+
+# case "$SELECTED_LANGUAGE" in
+#      "ja" | "zh-cn" | "zh-tw") ;;  # そのまま維持
+#      *) SELECTED_LANGUAGE="en" ;;  # それ以外は英語扱い
+# esac
 }
 
 check_language() {

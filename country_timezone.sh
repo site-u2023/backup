@@ -100,7 +100,7 @@ Algeria xx DZ CET-1
 "
 }
 
-check_country_timezone() {
+check_country_timezone_2() {
 if [ -z "$country_code" ]; then
   echo "$country_timezones"
 else
@@ -112,6 +112,20 @@ else
     exit 1
   fi
 fi
+}
+
+check_country_timezone() {
+  if [ -z "$country_code" ]; then
+    echo "$country_timezones"
+  else
+    found_entry=$(echo "$country_timezones" | grep -iw "$country_code")
+    if [ -n "$found_entry" ]; then
+      echo "$found_entry"
+    else
+      echo "Country code or country name not found."
+      exit 1
+    fi
+  fi
 }
 
 country_timezones_data

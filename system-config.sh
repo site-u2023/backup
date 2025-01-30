@@ -268,14 +268,18 @@ test() {
 country="$(sh ${BASE_DIR}/country-zonename.sh ${SELECTED_LANGUAGE})"
 language=$(echo "$country" | awk '{print $NF}')
 if echo "$language" | grep -q "/"; then
-  echo "$country" | awk '{print $1}'
+  echo "国名: $("$country" | awk '{print $1}')"
 else
-  echo "$language"
+  echo "国名: $(""$language")"
 fi
-sh ${BASE_DIR}/country-zonename.sh ${SELECTED_LANGUAGE} | awk '{print $2}'
-sh ${BASE_DIR}/country-zonename.sh ${SELECTED_LANGUAGE} | awk '{print $3}'
-sh ${BASE_DIR}/country-zonename.sh ${SELECTED_LANGUAGE} | awk '{print $4}'
-sh ${BASE_DIR}/country-timezone.sh ${SELECTED_LANGUAGE} | awk '{print $4}'
+echo "言語パッケージ: $(sh ${BASE_DIR}/country-zonename.sh ${SELECTED_LANGUAGE} | awk '{print $2}')"
+echo "国名コード: $(sh ${BASE_DIR}/country-zonename.sh ${SELECTED_LANGUAGE} | awk '{print $3}')"
+echo "ゾーンネーム: $(sh ${BASE_DIR}/country-zonename.sh ${SELECTED_LANGUAGE} | awk '{print $4}')"
+echo "タイムゾーン: $(sh ${BASE_DIR}/country-timezone.sh ${SELECTED_LANGUAGE} | awk '{print $4}')"
+#sh ${BASE_DIR}/country-zonename.sh ${SELECTED_LANGUAGE} | awk '{print $2}'
+#sh ${BASE_DIR}/country-zonename.sh ${SELECTED_LANGUAGE} | awk '{print $3}'
+#sh ${BASE_DIR}/country-zonename.sh ${SELECTED_LANGUAGE} | awk '{print $4}'
+#sh ${BASE_DIR}/country-timezone.sh ${SELECTED_LANGUAGE} | awk '{print $4}'
 }
 
 download_common

@@ -267,23 +267,20 @@ reboot
 }
 
 test() {
-ZONEDATA=$(sh ${BASE_DIR}/country_timezone.sh ${SELECTED_LANGUAGE})
-ZOONNAME=$(echo $ZONEDATA | awk '{print $2}' || echo "UTC")
-TIMEZOON=$(echo $ZONEDATA | awk '{print $4}' || echo "UTC+0")
-echo "Zone Name: $ZOONNAME"
-echo "Time Zone: $TIMEZOON"
-}
-
-download_common
-download_country_timezone
-check_common $1
 sh ${BASE_DIR}/country_timezone.sh ${SELECTED_LANGUAGE}
+sh ${BASE_DIR}/country_timezone.sh 日本語
+sh ${BASE_DIR}/country_timezone.sh 日本
 sh ${BASE_DIR}/country_timezone.sh Japan
 sh ${BASE_DIR}/country_timezone.sh ja
 sh ${BASE_DIR}/country_timezone.sh JP
 sh ${BASE_DIR}/country_timezone.sh UTC+9
 sh ${BASE_DIR}/country_timezone.sh
+}
+
+download_common
+download_country_timezone
+check_common $1
+test
 #set_device_name_password
 #set_wifi_ssid_password
 #set_device
-#test

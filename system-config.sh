@@ -9,16 +9,17 @@ SUPPORTED_VERSIONS="21 22 23 24 SN"
 download_common() {
     if [ ! -f "${BASE_DIR}/common-functions.sh" ]; then
         wget --quiet -O "${BASE_DIR}/common-functions.sh" "${BASE_URL}/common-functions.sh"
-
     fi
     source "${BASE_DIR}/common-functions.sh"
 }
 
-download_country_timezone() {
-    if [ ! -f "${BASE_DIR}/country_timezone" ]; then
-        wget --quiet -O "${BASE_DIR}/country_timezone.sh" "${BASE_URL}/country_timezone.sh"
-
+download_country_zone() {
+    if [ ! -f "${BASE_DIR}/country-timezone.sh" ]; then
+        wget --quiet -O "${BASE_DIR}/country-timezone.sh" "${BASE_URL}/country-timezone.sh"
     fi
+    if [ ! -f "${BASE_DIR}/country-zonename.sh" ]; then
+        wget --quiet -O "${BASE_DIR}/country-zonename.sh" "${BASE_URL}/country-zonename.sh"
+    fi    
 }
 
 set_device_name_password() {
@@ -272,7 +273,7 @@ sh ${BASE_DIR}/country-timezone.sh ${SELECTED_LANGUAGE}
 }
 
 download_common
-download_country_timezone
+download_country_zone
 check_common $1
 test
 #set_device_name_password

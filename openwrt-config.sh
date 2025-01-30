@@ -128,5 +128,6 @@ done
 
 download_common
 check_common "$1"
+normalize_language
 display_system_info
 main_menu

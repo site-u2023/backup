@@ -194,11 +194,11 @@ Algeria xx DZ Africa/Algiers
 "
 }
 
-check_country_timezone_2() {
+check_country_timezone() {
   if [ -z "$country_code" ]; then
-    echo "$country_timezones_2"
+    echo "$country_timezones"
   else
-    found_entry=$(echo "$country_timezones_2" | grep -iw "$country_code")
+    found_entry=$(echo "$country_timezones" | grep -iw "$country_code")
     if [ -n "$found_entry" ]; then
       echo "$found_entry"
     else
@@ -208,11 +208,11 @@ check_country_timezone_2() {
   fi
 }
 
-check_country_timezone() {
+check_country_timezone_2() {
   if [ -z "$country_code" ]; then
-    echo "$country_timezones"
+    echo "$country_timezones_2"
   else
-    found_entry=$(echo "$country_timezones" | grep -iw "$country_code")
+    found_entry=$(echo "$country_timezones_2" | grep -iw "$country_code")
     if [ -n "$found_entry" ]; then
       echo "$found_entry"
     else

@@ -264,7 +264,7 @@ read -p " Press any key (Reboot the device)"
 reboot
 }
 
-test() {
+test2() {
 country="$(sh ${BASE_DIR}/country-zonename.sh ${SELECTED_LANGUAGE})"
 language=$(echo "$country" | awk '{print $NF}')
 if echo "$language" | grep -q "/"; then
@@ -280,6 +280,20 @@ echo "タイムゾーン: $(sh ${BASE_DIR}/country-timezone.sh ${SELECTED_LANGUA
 #sh ${BASE_DIR}/country-zonename.sh ${SELECTED_LANGUAGE} | awk '{print $3}'
 #sh ${BASE_DIR}/country-zonename.sh ${SELECTED_LANGUAGE} | awk '{print $4}'
 #sh ${BASE_DIR}/country-timezone.sh ${SELECTED_LANGUAGE} | awk '{print $4}'
+}
+
+test() {
+country="$(sh ${BASE_DIR}/country-zonename.sh ${SELECTED_LANGUAGE})"
+language=$(echo "$country" | awk '{print $NF}')
+if echo "$language" | grep -q "/"; then
+  echo "国名: $(echo "$country" | awk '{print $1}')"
+else
+  echo "国名: $language"
+fi
+echo "言語パッケージ: $(echo "$country" | awk '{print $2}')"
+echo "国名コード: $(echo "$country" | awk '{print $3}')"
+echo "ゾーンネーム: $(echo "$country" | awk '{print $4}')"
+echo "タイムゾーン: $(sh ${BASE_DIR}/country-timezone.sh ${SELECTED_LANGUAGE} | awk '{print $4}')"
 }
 
 download_common

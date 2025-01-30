@@ -1,6 +1,7 @@
 #!/bin/sh
 # License: CC0
 # OpenWrt >= 19.07
+# As of February 1, 2025
 
 SELECTED_LANGUAG="$1"
 

@@ -108,7 +108,7 @@ display_system_info() {
         echo -e "$(color "white" "利用可能フラッシュストレージ: ${available_flash} MB")"
         echo -e "$(color "white" "USBデバイス: ${usb_devices}")"
         echo -e "$(color "white" "スクリプトディレクトリ: ${BASE_DIR}")"
-        echo -e "$(color "white" "OpenWrt バージョン: ${RELEASE_VERSION} - サポートされています")"
+        echo -e "$(color "white" "OpenWrtバージョン: ${RELEASE_VERSION} - サポートされています")"
         echo -e "$(color "white" "選択言語: ${SELECTED_LANGUAGE}")"
         echo -e "$(color "white" "ダウンローダー: ${PACKAGE_MANAGER}")"
     fi

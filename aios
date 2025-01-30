@@ -66,9 +66,11 @@ download_country_zone() {
     wget --quiet -O "${BASE_DIR}/country-timezone.sh" "${BASE_URL}/country-timezone.sh" || {
         echo "Failed to download country-timezone.sh"
         exit 1
+    }
     wget --quiet -O "${BASE_DIR}/country-zonename.sh" "${BASE_URL}/country-zonename.sh" || {
         echo "Failed to download country-zonename.sh"
         exit 1
+    }
 }
 
 download_openwrt_config() {

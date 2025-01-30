@@ -73,10 +73,10 @@ echo "${SELECTED_LANGUAGE}" > ${BASE_DIR}/check_language
 
 check_package_manager() {
     if command -v apk >/dev/null 2>&1; then
-        PACKAGE_MANAGER="apk"
+        PACKAGE_MANAGER="APK"
         echo "${PACKAGE_MANAGER}" > ${BASE_DIR}/check_package_manager
     elif command -v opkg >/dev/null 2>&1; then
-        PACKAGE_MANAGER="opkg"
+        PACKAGE_MANAGER="OPKG"
         echo "${PACKAGE_MANAGER}" > ${BASE_DIR}/check_package_manager
     else
         echo "No package manager found"

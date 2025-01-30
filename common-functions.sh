@@ -63,6 +63,9 @@ normalize_language() {
 #      "ja" | "zh-cn" | "zh-tw") ;;  # そのまま維持
 #      *) SELECTED_LANGUAGE="en" ;;  # それ以外は英語扱い
 # esac
+
+echo "normalize_language:$SELECTED_LANGUAGE"
+echo "normalize_language result: $(source ${BASE_DIR}/check_language; echo $?)"
 }
 
 check_language() {
@@ -133,6 +136,10 @@ check_language() {
         "ja") echo -e "$(color "white" "日本語を選択しました。")" ;;
         *) echo -e "$(color "white" "You selected $(echo "$SELECTED_LANGUAGE" | tr '[:lower:]' '[:upper:]') (Processed as English).")" ;;
     esac
+
+echo "check_language: $SELECTED_LANGUAGE"
+echo "check_language result: $(source ${BASE_DIR}/check_language; echo $?)"
+
 }
 
 
@@ -173,6 +180,9 @@ SELECTED_LANGUAGE=$1
 if [ -n "${SELECTED_LANGUAGE}" ]; then
   echo "${SELECTED_LANGUAGE}" > "${BASE_DIR}/check_language"
 fi
+
+echo "language_parameter: $SELECTED_LANGUAGE"
+echo "language_parameter result: $(source ${BASE_DIR}/check_language; echo $?)"
 }
 
 check_common() {
@@ -205,10 +215,12 @@ check_common() {
     fi
 
     # 言語設定の確認
-    echo "Selected language: ${SELECTED_LANGUAGE}"
+#    echo "Selected language: ${SELECTED_LANGUAGE}"
     
     # 次の処理に進む
     # 他の処理...
+echo "check_common: $SELECTED_LANGUAGE"
+echo "check_common: $(source ${BASE_DIR}/check_language; echo $?)"
 }
 
 

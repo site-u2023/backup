@@ -10,17 +10,17 @@ January 25, 2025: version α
 
 - Select your language
 ```sh
-wget -O /tmp/aios-config.sh https://raw.githubusercontent.com/site-u2023/aios/main/aios-config.sh; sh /tmp/aios-config.sh
+wget -O /tmp/aios.sh https://raw.githubusercontent.com/site-u2023/aios/main/aios.sh; sh /tmp/aios.sh
 ```
 
 - English
 ```sh
-wget -O /tmp/aios-config.sh https://raw.githubusercontent.com/site-u2023/aios/main/aios-config.sh; sh /tmp/aios-config.sh en
+wget -O /tmp/aios.sh https://raw.githubusercontent.com/site-u2023/aios/main/aios.sh; sh /tmp/aios.sh en
 ```
 
 - 日本語
 ```sh
-wget -O /tmp/aios-config.sh https://raw.githubusercontent.com/site-u2023/aios/main/aios-config.sh; sh /tmp/aios-config.sh ja
+wget -O /tmp/aios.sh https://raw.githubusercontent.com/site-u2023/aios/main/aios.sh; sh /tmp/aios.sh ja
 ```
 
 - --timestamping
@@ -28,5 +28,5 @@ wget -O /tmp/aios-config.sh https://raw.githubusercontent.com/site-u2023/aios/ma
 opkg update && opkg install wget-ssl
 ```
 ```sh
-wget -N /tmp/aios-config.sh https://raw.githubusercontent.com/site-u2023/aios/main/aios-config.sh; sh /tmp/aios-config.sh ja
+wget -N /tmp/aios.sh https://raw.githubusercontent.com/site-u2023/aios/main/aios.sh; sh /tmp/aios.sh ja
 ```

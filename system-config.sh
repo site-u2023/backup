@@ -264,24 +264,43 @@ read -p " Press any key (Reboot the device)"
 reboot
 }
 
-test() {
-country="$(sh ${BASE_DIR}/country-zonename.sh ${SELECTED_LANGUAGE})"
-language=$(echo "$country" | awk '{print $NF}')
-if echo "$language" | grep -q "/"; then
-  echo "国名: $(echo "$country" | awk '{print $1}')"
-else
-  echo "国名: $language"
-fi
-echo "言語パッケージ: $(echo "$country" | awk '{print $2}')"
-echo "国名コード: $(echo "$country" | awk '{print $3}')"
-echo "ゾーンネーム: $(echo "$country" | awk '{print $4}')"
-echo "タイムゾーン: $(sh ${BASE_DIR}/country-timezone.sh ${SELECTED_LANGUAGE} | awk '{print $4}')"
+information() {
+  country="$(sh ${BASE_DIR}/country-zonename.sh ${SELECTED_LANGUAGE})"
+  language=$(echo "$country" | awk '{print $NF}')
+  
+  case "$SELECTED_LANGUAGE" in
+    en)
+      if echo "$language" | grep -q "/"; then
+        echo -e "$(color "white" "Country: $(echo "$country" | awk '{print $1}')")"
+      else
+        echo -e "$(color "white" "Country: $language")"
+      fi
+      echo -e "$(color "white" "Language Package: $(echo "$country" | awk '{print $2}')")"
+      echo -e "$(color "white" "Country Code: $(echo "$country" | awk '{print $3}')")"
+      echo -e "$(color "white" "Zone Name: $(echo "$country" | awk '{print $4}')")"
+      echo -e "$(color "white" "Timezone: $(sh ${BASE_DIR}/country-timezone.sh ${SELECTED_LANGUAGE} | awk '{print $4}')")"
+      ;;
+    ja)
+      if echo "$language" | grep -q "/"; then
+        echo -e "$(color "white" "国名: $(echo "$country" | awk '{print $1}')")"
+      else
+        echo -e "$(color "white" "国名: $language")"
+      fi
+      echo -e "$(color "white" "言語パッケージ: $(echo "$country" | awk '{print $2}')")"
+      echo -e "$(color "white" "国名コード: $(echo "$country" | awk '{print $3}')")"
+      echo -e "$(color "white" "ゾーンネーム: $(echo "$country" | awk '{print $4}')")"
+      echo -e "$(color "white" "タイムゾーン: $(sh ${BASE_DIR}/country-timezone.sh ${SELECTED_LANGUAGE} | awk '{print $4}')")"
+      ;;
+    *)
+      echo "Unsupported language: $SELECTED_LANGUAGE"
+      ;;
+  esac
 }
 
 download_common
 download_country_zone
 check_common $1
-test
+information
 #set_device_name_password
 #set_wifi_ssid_password
 #set_device

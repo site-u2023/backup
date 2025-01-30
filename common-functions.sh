@@ -53,8 +53,86 @@ check_version() {
     fi
 }
 
-
 check_language() {
+    # データベースから情報を取得
+    country_zonename_data
+
+    # 言語選択画面を表示
+    echo -e "$(color "white" "------------------------------------------------------")"
+    echo -e "$(color "white" "Select your language")"
+
+    # 言語リスト
+    languages=(
+        "en: English"
+        "ja: 日本語"
+        "bg: български"
+        "ca: Català"
+        "cs: Čeština"
+        "de: Deutsch"
+        "el: Ελληνικά"
+        "es: Español"
+        "fr: Français"
+        "he: עִבְרִית"
+        "hi: हिंदी"
+        "hu: Magyar"
+        "it: Italiano"
+        "ko: 한국어"
+        "mr: मराठी"
+        "ms: Bahasa Melayu"
+        "no: Norsk"
+        "pl: Polski"
+        "pt: Português"
+        "pt-br: Português do Brasil"
+        "ro: Română"
+        "ru: Русский"
+        "sk: Slovenčina"
+        "sv: Svenska"
+        "tr: Türkçe"
+        "uk: Українська"
+        "vi: Tiếng Việt"
+        "zh-cn: 简体中文"
+        "zh-tw: 繁體中文"
+        "ar: العربية"
+        "bn: বাংলা"
+        "da: Dansk"
+        "fi: Suomi"
+        "nl: Nederlands"
+    )
+
+    # 言語リストを表示
+    for lang in "${languages[@]}"; do
+        code=$(echo "$lang" | cut -d: -f1)
+        name=$(echo "$lang" | cut -d: -f2)
+        echo -e "$(color "blue" "[$code]: $name")"
+    done
+
+    echo -e "$(color "white" "------------------------------------------------------")"
+
+    # ユーザー入力を受け取る
+    read -p "Choose an option: " lang_choice
+
+    # 入力がリストにあるか確認
+    found=false
+    for lang in "${languages[@]}"; do
+        code=$(echo "$lang" | cut -d: -f1)
+        if [ "$lang_choice" == "$code" ]; then
+            SELECTED_LANGUAGE="$code"
+            found=true
+            break
+        fi
+    done
+
+    # 見つからない場合は "xx" に設定
+    if [ "$found" == false ]; then
+        SELECTED_LANGUAGE="xx"
+        echo "Selected language is not supported. Defaulting to 'xx'."
+    fi
+
+    echo "${SELECTED_LANGUAGE}" > "${BASE_DIR}/check_language"
+}
+
+
+XXcheck_language() {
 while true; do
     echo -e "$(color "white" "------------------------------------------------------")"
     echo -e "$(color "white" "Select your language")"

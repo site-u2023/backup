@@ -40,12 +40,12 @@ information() {
       ;;
     ja)
       if echo "$language" | grep -q "/"; then
-        echo -e "$(color "white" "国名または言語: $(echo "$country" | awk '{print $1}')")"
+        echo -e "$(color "white" "国または言語: $(echo "$country" | awk '{print $1}')")"
       else
-        echo -e "$(color "white" "国名または言語: $language")"
+        echo -e "$(color "white" "国または言語: $language")"
       fi
       echo -e "$(color "white" "言語パッケージ: $(echo "$country" | awk '{print $2}')")"
-      echo -e "$(color "white" "国名コード: $(echo "$country" | awk '{print $3}')")"
+      echo -e "$(color "white" "国コード: $(echo "$country" | awk '{print $3}')")"
       echo -e "$(color "white" "ゾーンネーム: $(echo "$country" | awk '{print $4}')")"
       echo -e "$(color "white" "タイムゾーン: $(sh ${BASE_DIR}/country-timezone.sh ${SELECTED_LANGUAGE} | awk '{print $4}')")"
       ;;

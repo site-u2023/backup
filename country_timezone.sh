@@ -8,95 +8,95 @@ country_code="$1"
 # 国名 言語コード 国コード タイムゾーン(複数あり) 母国語または対応バージョン xxはluci-i18n-base非対応
 country_timezones_data() {
 country_timezones="
-Bulgaria bg BG EET-2 EEST-3 български  
-Canada ca CA NST3:30NDT2:30 AST4ADT3 EST5EDT4 CST6CDT5 MST7MDT6 PST8PDT7 Català  
-Czech_Republic cs CZ CET-1 CEST-2 Čeština  
-Germany de DE CET-1 CEST-2 Deutsch  
-Greece el GR EET-2 EEST-3 Ελληνικά  
-United_States en US EST5EDT4 CST6CDT5 MST7MDT6 PST8PDT7 AKST9AKDT8 HST10  
-Spain es ES CET-1 CEST-2 Español  
-Catalan ca ES CET-1 CEST-2 Català  
-France fr FR CET-1 CEST-2 Français  
-Israel he IL IST-2 IDT-3 עִבְרִית  
-India hi IN IST-5:30 हिंदी  
-Hungary hu HU CET-1 CEST-2 Magyar  
-Italy it IT CET-1 CEST-2 Italiano  
-Japan ja JP JST-9 日本語  
-Republic_of_Korea ko KR KST-9 한국어  
-Marathi mr IN IST-5:30 मराठी  
-Malaysia ms MY MYT-8 Bahasa_Melayu  
-Norway no NO CET-1 CEST-2 Norsk  
-Poland pl PL CET-1 CEST-2 Polski  
-Portugal pt PT AZOT1 AZOST0 WET0 WEST-1 Português  
-Brazil pt-br BR BRT3 BRST2 AMT4 ACT4:30 Português_do_Brasil  
-Romania ro RO EET-2 EEST-3 Română  
-Russia ru RU MSK-3 SAMT-4 YEKT-5 OMST-6 KRAT-7 IRKT-8 YAKT-9 VLAT-10 MAGT-11 Русский  
-Slovak_Republic sk SK CET-1 CEST-2 Slovenčina  
-Sweden sv SE CET-1 CEST-2 Svenska  
-Turkey tr TR TRT-3 Türkçe  
-Ukraine uk UA EET-2 EEST-3 Українська  
-Vietnam vi VN ICT-7 Tiếng_Việt  
-China zh-cn CN CST-8 简体中文  
-Taiwan zh-tw TW CST-8 繁體中文  
-Saudi_Arabia ar SA AST-3 العربية  
-Bangladesh bn BD BST-6 বাংলা  
-Denmark da DK CET-1 CEST-2 Dansk  
-Finland fi FI EET-2 EEST-3 Suomi  
-Netherlands nl NL CET-1 CEST-2 Nederlands  
-Luxembourg xx LU CET-1 CEST-2  
-Switzerland xx CH CET-1 CEST-2  
-United_Kingdom xx GB GMT0 BST-1  
-Hong_Kong xx HK HKT-8  
-Singapore xx SG SGT-8  
-United_Arab_Emirates xx AE GST-4  
-South_Africa xx ZA SAST-2  
-Argentina xx AR ART3  
-Australia xx AU AWST-8 ACST-9:30 AEST-10 LHST-10:30 NFT-11  
-Austria xx AT CET-1 CEST-2  
-Bolivia xx BO BOT4  
-Chile xx CL CLT4 CLST3  
-Iceland xx IS GMT0  
-Ireland xx IE GMT0 IST-1  
-Kuwait xx KW AST-3  
-Liechtenstein xx LI CET-1 CEST-2  
-Lithuania xx LT EET-2 EEST-3  
-Mexico xx MX CST6 CDT5 MST7 MDT6 PST8 PDT7  
-Morocco xx MA WET0 WEST-1  
-New_Zealand xx NZ NZST-12 NZDT-13  
-Puerto_Rico xx PR AST4  
-Slovenia xx SI CET-1 CEST-2  
-Thailand xx TH ICT-7  
-Uruguay xx UY UYT3  
-Panama xx PA EST5  
-Egypt xx EG EET-2  
-Trinidad_and_Tobago xx TT AST4  
-Costa_Rica xx CR CST6  
-Ecuador xx EC ECT5  
-Honduras xx HN CST6  
-Kenya xx KE EAT-3  
-Cyprus xx CY EET-2 EEST-3  
-Estonia xx EE EET-2 EEST-3  
-Mauritius xx MU MUT+4
-Serbia xx RS CET-1 CEST-2  
-Montenegro xx ME CET-1 CEST-2  
-Indonesia xx ID WIB-7 WITA-8 WIT-9  
-Peru xx PE PET5
-Venezuela xx VE VET-4:30
-Jamaica xx JM EST5  
-Bahrain xx BH AST-3  
-Oman xx OM GST-4  
-Jordan xx JO EET-2  
-Bermuda xx BM AST4  
-Colombia xx CO COT5  
-Dominican_Republic xx DO AST4  
-Guatemala xx GT CST6  
-Philippines xx PH PHT-8  
-Sri_Lanka xx LK IST-5:30  
-El_Salvador xx SV CST6  
-Tunisia xx TN CET-1  
-Pakistan xx PK PKT-5  
-Qatar xx QA AST-3  
-Algeria xx DZ CET-1  
+Bulgaria bg BG Europe/Sofia Europe/Sofia български  
+Canada ca CA America/St_Johns America/Toronto Català  
+Czech_Republic cs CZ Europe/Prague Europe/Prague Čeština  
+Germany de DE Europe/Berlin Europe/Berlin Deutsch  
+Greece el GR Europe/Athens Europe/Athens Ελληνικά  
+United_States en US America/New_York America/Chicago Catalan  
+Spain es ES Europe/Madrid Europe/Madrid Español  
+Catalan ca ES Europe/Madrid Europe/Madrid Català  
+France fr FR Europe/Paris Europe/Paris Français  
+Israel he IL Asia/Jerusalem Asia/Jerusalem עִבְרִית  
+India hi IN Asia/Kolkata Asia/Kolkata हिंदी  
+Hungary hu HU Europe/Budapest Europe/Budapest Magyar  
+Italy it IT Europe/Rome Europe/Rome Italiano  
+Japan ja JP Asia/Tokyo Asia/Tokyo 日本語  
+Republic_of_Korea ko KR Asia/Seoul Asia/Seoul 한국어  
+Marathi mr IN Asia/Kolkata Asia/Kolkata मराठी  
+Malaysia ms MY Asia/Kuala_Lumpur Asia/Kuala_Lumpur Bahasa_Melayu  
+Norway no NO Europe/Oslo Europe/Oslo Norsk  
+Poland pl PL Europe/Warsaw Europe/Warsaw Polski  
+Portugal pt PT Europe/Lisbon Europe/Lisbon Português  
+Brazil pt-br BR America/Sao_Paulo America/Sao_Paulo Português_do_Brasil  
+Romania ro RO Europe/Bucharest Europe/Bucharest Română  
+Russia ru RU Europe/Moscow Europe/Moscow Русский  
+Slovak_Republic sk SK Europe/Bratislava Europe/Bratislava Slovenčina  
+Sweden sv SE Europe/Stockholm Europe/Stockholm Svenska  
+Turkey tr TR Europe/Istanbul Europe/Istanbul Türkçe  
+Ukraine uk UA Europe/Kiev Europe/Kiev Українська  
+Vietnam vi VN Asia/Ho_Chi_Minh Asia/Ho_Chi_Minh Tiếng_Việt  
+China zh-cn CN Asia/Shanghai Asia/Shanghai 简体中文  
+Taiwan zh-tw TW Asia/Taipei Asia/Taipei 繁體中文  
+Saudi_Arabia ar SA Asia/Riyadh Asia/Riyadh العربية  
+Bangladesh bn BD Asia/Dhaka Asia/Dhaka বাংলা  
+Denmark da DK Europe/Copenhagen Europe/Copenhagen Dansk  
+Finland fi FI Europe/Helsinki Europe/Helsinki Suomi  
+Netherlands nl NL Europe/Amsterdam Europe/Amsterdam Nederlands  
+Luxembourg xx LU Europe/Luxembourg Europe/Luxembourg  
+Switzerland xx CH Europe/Zurich Europe/Zurich  
+United_Kingdom xx GB Europe/London Europe/London  
+Hong_Kong xx HK Asia/Hong_Kong Asia/Hong_Kong  
+Singapore xx SG Asia/Singapore Asia/Singapore  
+United_Arab_Emirates xx AE Asia/Dubai Asia/Dubai  
+South_Africa xx ZA Africa/Johannesburg Africa/Johannesburg  
+Argentina xx AR America/Argentina/Buenos_Aires America/Argentina/Buenos_Aires  
+Australia xx AU Australia/Perth Australia/Perth  
+Austria xx AT Europe/Vienna Europe/Vienna  
+Bolivia xx BO America/La_Paz America/La_Paz  
+Chile xx CL America/Santiago America/Santiago  
+Iceland xx IS Atlantic/Reykjavik Atlantic/Reykjavik  
+Ireland xx IE Europe/Dublin Europe/Dublin  
+Kuwait xx KW Asia/Kuwait Asia/Kuwait  
+Liechtenstein xx LI Europe/Vaduz Europe/Vaduz  
+Lithuania xx LT Europe/Vilnius Europe/Vilnius  
+Mexico xx MX America/Mexico_City America/Mexico_City  
+Morocco xx MA Africa/Casablanca Africa/Casablanca  
+New_Zealand xx NZ Pacific/Auckland Pacific/Auckland  
+Puerto_Rico xx PR America/Puerto_Rico America/Puerto_Rico  
+Slovenia xx SI Europe/Ljubljana Europe/Ljubljana  
+Thailand xx TH Asia/Bangkok Asia/Bangkok  
+Uruguay xx UY America/Montevideo America/Montevideo  
+Panama xx PA America/Panama America/Panama  
+Egypt xx EG Africa/Cairo Africa/Cairo  
+Trinidad_and_Tobago xx TT America/Port_of_Spain America/Port_of_Spain  
+Costa_Rica xx CR America/Costa_Rica America/Costa_Rica  
+Ecuador xx EC America/Guayaquil America/Guayaquil  
+Honduras xx HN America/Tegucigalpa America/Tegucigalpa  
+Kenya xx KE Africa/Nairobi Africa/Nairobi  
+Cyprus xx CY Asia/Nicosia Asia/Nicosia  
+Estonia xx EE Europe/Tallinn Europe/Tallinn  
+Mauritius xx MU Indian/Mauritius Indian/Mauritius  
+Serbia xx RS Europe/Belgrade Europe/Belgrade  
+Montenegro xx ME Europe/Belgrade Europe/Belgrade  
+Indonesia xx ID Asia/Jakarta Asia/Jakarta  
+Peru xx PE America/Lima America/Lima  
+Venezuela xx VE America/Caracas America/Caracas  
+Jamaica xx JM America/Jamaica America/Jamaica  
+Bahrain xx BH Asia/Bahrain Asia/Bahrain  
+Oman xx OM Asia/Muscat Asia/Muscat  
+Jordan xx JO Asia/Amman Asia/Amman  
+Bermuda xx BM Atlantic/Bermuda Atlantic/Bermuda  
+Colombia xx CO America/Bogota America/Bogota  
+Dominican_Republic xx DO America/Santo_Domingo America/Santo_Domingo  
+Guatemala xx GT America/Guatemala America/Guatemala  
+Philippines xx PH Asia/Manila Asia/Manila  
+Sri_Lanka xx LK Asia/Colombo Asia/Colombo  
+El_Salvador xx SV America/El_Salvador America/El_Salvador  
+Tunisia xx TN Africa/Tunis Africa/Tunis  
+Pakistan xx PK Asia/Karachi Asia/Karachi  
+Qatar xx QA Asia/Qatar Asia/Qatar  
+Algeria xx DZ Africa/Algiers Africa/Algiers
 "
 }
 

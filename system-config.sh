@@ -89,7 +89,7 @@ set_wifi_ssid_password() {
   local device iface iface_num ssid password enable_band band htmode devices network country
   local devices_to_enable=""
   local lang="${SELECTED_LANGUAGE:-en}"
-  local country=$(sh ${BASE_DIR}/country_timezone.sh ${SELECTED_LANGUAGE} | awk '{print $3}')
+  local country=$(sh ${BASE_DIR}/country-zonename.sh ${SELECTED_LANGUAGE} | awk '{print $3}')
 
   case "$lang" in
     "ja")

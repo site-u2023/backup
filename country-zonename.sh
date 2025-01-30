@@ -14,7 +14,7 @@ Canada ca CA America/Halifax America/Toronto America/Winnipeg America/Edmonton A
 Czech_Republic cs CZ Europe/Prague Čeština  
 Germany de DE Europe/Berlin Deutsch  
 Greece el GR Europe/Athens Ελληνικά  
-United_States en US America/New_York America/Chicago America/Denver America/Los_Angeles America/Anchorage America/Honolulu  
+United_States en US America/New_York America/Chicago America/Denver America/Los_Angeles America/Anchorage America/Honolulu English
 Spain es ES Europe/Madrid Español  
 Catalan ca ES Europe/Madrid Català  
 France fr FR Europe/Paris Français  

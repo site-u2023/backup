@@ -197,7 +197,7 @@ DESCRIPTION=`cat /etc/openwrt_version` # Description
 NOTES=`date` # Remarks
 ZONEDATA=$(sh ${BASE_DIR}/country_timezone.sh ${SELECTED_LANGUAGE})
 ZOONNAME=$(echo $ZONEDATA | awk '{print $3}' || echo "UTC")
-TIMEZOON=$(echo $ZONEDATA | awk '{print $4}' || echo "UTC+0")
+TIMEZOON=$(echo $ZONEDATA | awk '{print $4}' || echo "UTC")
 #local ZOONNAME=$(sh ${BASE_DIR}/country_timezone.sh ${SELECTED_LANGUAGE} | awk '{print $2}')
 #local TIMEZOON=$(sh ${BASE_DIR}/country_timezone.sh ${SELECTED_LANGUAGE} | awk '{print $4}')
 
@@ -268,16 +268,7 @@ reboot
 
 test() {
 sh ${BASE_DIR}/country_timezone.sh ${SELECTED_LANGUAGE}
-sh ${BASE_DIR}/country_timezone.sh 日本語
-sh ${BASE_DIR}/country_timezone.sh Japan
-sh ${BASE_DIR}/country_timezone.sh ja
-sh ${BASE_DIR}/country_timezone.sh JP
-sh ${BASE_DIR}/country_timezone.sh JST-9
-sh ${BASE_DIR}/country_timezone.sh japan
-sh ${BASE_DIR}/country_timezone.sh JA
-sh ${BASE_DIR}/country_timezone.sh jp
-sh ${BASE_DIR}/country_timezone.sh 日本
-sh ${BASE_DIR}/country_timezone.sh
+sh ${BASE_DIR}/country_timezone_2.sh ${SELECTED_LANGUAGE}
 }
 
 download_common

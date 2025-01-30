@@ -5,7 +5,7 @@
 country_code="$1"
 
 # タイムゾーンデータ
-# 国名 言語コード 国コード タイムゾーン(複数あり) xxはluci-i18n-base非対応
+# 国名 言語コード 国コード タイムゾーン(複数あり) 母国語または対応バージョン xxはluci-i18n-base非対応
 country_timezones_data() {
 country_timezones="
 Bulgaria bg BG EET-2 EEST-3 български  

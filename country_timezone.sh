@@ -100,38 +100,10 @@ Algeria xx DZ CET-1
 "
 }
 
-check_country_code_data() {
-#country_code="$1"
-
-found_entry=$(echo "$country_timezones" | grep -w "$country_code")
-
-#found_entry=$(echo "$country_timezones" | grep -E "\b$country_code\b")
-#found_entry=$(echo "$country_timezones" | grep -E "\b$country_code\b" | sed 's/-/\\-/g')
-#found_entry=$(echo "$country_timezones" | grep -w "$country_code\b" | sed 's/-/\\-/g')
-#found_entry=$(echo "$country_timezones" | grep -E "(^|\s)$country_code(\s|$)")
-
-if [ -n "$found_entry" ]; then
-  echo "$found_entry"
-else
-  echo "Country code or country name not found."
-  exit 1
-fi
-}
-
-#check_country_code() {
-#if [ -z "$1" ]; then
-#  echo "Usage: $0 <country_code>"
-#  exit 1
-#fi
-#check_country_code_data "$1"
-#}
-
-check_country_code_data() {
-# 引数がない場合は全データ表示
+check_country_timezone() {
 if [ -z "$country_code" ]; then
   echo "$country_timezones"
 else
-  # 引数があればフィルタリング
   found_entry=$(echo "$country_timezones" | grep -w "$country_code")
   if [ -n "$found_entry" ]; then
     echo "$found_entry"
@@ -143,5 +115,31 @@ fi
 }
 
 country_timezones_data
-check_country_code_data
+check_country_timezone
+
+#check_country_code_data() {
+#country_code="$1"
+
+#found_entry=$(echo "$country_timezones" | grep -w "$country_code")
+
+#found_entry=$(echo "$country_timezones" | grep -E "\b$country_code\b")
+#found_entry=$(echo "$country_timezones" | grep -E "\b$country_code\b" | sed 's/-/\\-/g')
+#found_entry=$(echo "$country_timezones" | grep -w "$country_code\b" | sed 's/-/\\-/g')
+#found_entry=$(echo "$country_timezones" | grep -E "(^|\s)$country_code(\s|$)")
+
+#if [ -n "$found_entry" ]; then
+#  echo "$found_entry"
+#else
+#  echo "Country code or country name not found."
+#  exit 1
+#fi
+#}
+
+#check_country_code() {
+#if [ -z "$1" ]; then
+#  echo "Usage: $0 <country_code>"
+#  exit 1
+#fi
+#check_country_code_data "$1"
+#}
 

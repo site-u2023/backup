@@ -196,6 +196,42 @@ fi
 }
 
 check_common() {
+  # バージョン情報の取得
+  if [ -f "${BASE_DIR}/check_version" ]; then
+    RELEASE_VERSION=$(cat "${BASE_DIR}/check_version")
+  fi
+  [ -z "$RELEASE_VERSION" ] && check_version
+
+  # データベースから情報を取得
+  source "${BASE_DIR}/country-zonename.sh"
+  country_zonename_data
+
+  # 言語選択の判定
+  if [ -n "$1" ]; then
+    found_entry=$(echo "$country_zonename" | awk '{print $2}' | grep -wx "$1")
+
+    if [ -n "$found_entry" ]; then
+      SELECTED_LANGUAGE="$1"
+    else
+      SELECTED_LANGUAGE="xx"
+      echo "Invalid language selection. Defaulting to 'xx'."
+    fi
+    echo "${SELECTED_LANGUAGE}" > "${BASE_DIR}/check_language"
+  elif [ -f "${BASE_DIR}/check_language" ]; then
+    SELECTED_LANGUAGE=$(cat "${BASE_DIR}/check_language")
+  fi
+
+  [ -z "${SELECTED_LANGUAGE}" ] && check_language
+
+  # パッケージマネージャーの確認
+  if [ -f "${BASE_DIR}/check_package_manager" ]; then
+    PACKAGE_MANAGER=$(cat "${BASE_DIR}/check_package_manager")
+  fi
+  [ -z "$PACKAGE_MANAGER" ] && check_package_manager
+}
+
+
+XXcheck_common() {
   if [ -f "${BASE_DIR}/check_version" ]; then
     RELEASE_VERSION=$(cat "${BASE_DIR}/check_version")
   fi

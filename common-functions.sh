@@ -297,7 +297,7 @@ menu_option() {
             ;;
         "delete")
             if ask_confirmation "delete"; then
-                rm -rf "${BASE_DIR}" /usr/bin/aios /tmp/aios-config.sh
+                rm -rf "${BASE_DIR}" /usr/bin/aios /tmp/aios.sh
                 show_notification "delete_success"
                 exit 0
             else

@@ -51,17 +51,6 @@ make_directory() {
     mkdir -p "$BASE_DIR"
 }
 
-download_and_execute_common() {
-    wget --quiet -O "${BASE_DIR%/}/common-functions.sh" "${BASE_URL}/common-functions.sh" || {
-        echo "Failed to download common-functions.sh"
-        exit 1
-    }
-    source "${BASE_DIR%/}/common-functions.sh" || {
-        echo "Failed to source common-functions.sh"
-        exit 1
-    }
-}
-
 download_country_zone() {
     wget --quiet -O "${BASE_DIR}/country-timezone.sh" "${BASE_URL}/country-timezone.sh" || {
         echo "Failed to download country-timezone.sh"
@@ -69,6 +58,17 @@ download_country_zone() {
     }
     wget --quiet -O "${BASE_DIR}/country-zonename.sh" "${BASE_URL}/country-zonename.sh" || {
         echo "Failed to download country-zonename.sh"
+        exit 1
+    }
+}
+
+download_and_execute_common() {
+    wget --quiet -O "${BASE_DIR%/}/common-functions.sh" "${BASE_URL}/common-functions.sh" || {
+        echo "Failed to download common-functions.sh"
+        exit 1
+    }
+    source "${BASE_DIR%/}/common-functions.sh" || {
+        echo "Failed to source common-functions.sh"
         exit 1
     }
 }
@@ -89,9 +89,9 @@ execute_openwrt_config() {
 
 delete_language
 make_directory
+download_country_zone
 download_and_execute_common
 check_common "$1"
-download_country_zone
 download_openwrt_config
 banner
 execute_openwrt_config

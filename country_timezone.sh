@@ -2,7 +2,7 @@
 # License: CC0
 # OpenWrt >= 19.07
 
-country_code="$1"
+SELECTED_LANGUAG="$1"
 
 # タイムゾーンデータ
 # 国名 言語コード 国コード タイムゾーン(複数あり) 母国語または対応バージョン xxはluci-i18n-base非対応
@@ -101,10 +101,10 @@ Algeria xx DZ CET-1
 }
 
 check_country_timezone() {
-  if [ -z "$country_code" ]; then
+  if [ -z "$SELECTED_LANGUAG" ]; then
     echo "$country_timezones"
   else
-    found_entry=$(echo "$country_timezones" | grep -iw "$country_code")
+    found_entry=$(echo "$country_timezones" | grep -iw "$SELECTED_LANGUAG")
     if [ -n "$found_entry" ]; then
       echo "$found_entry"
     else

@@ -186,12 +186,7 @@ echo "language_parameter result: $(source ${BASE_DIR}/check_language; echo $?)"
 }
 
 check_common() {
-    # 言語がセットされていない場合はデフォルトでenをセット
-    if [ -z "$SELECTED_LANGUAGE" ]; then
-        SELECTED_LANGUAGE="en"
-    fi
-    
-    # バージョン情報の取得
+        # バージョン情報の取得
     if [ -f "${BASE_DIR}/check_version" ]; then
         RELEASE_VERSION=$(cat "${BASE_DIR}/check_version")
     fi
@@ -201,6 +196,10 @@ check_common() {
     source "${BASE_DIR}/country-zonename.sh"
     country_zonename_data
 
+    # 言語がセットされていない場合はデフォルトでenをセット
+   # if [ -z "$SELECTED_LANGUAGE" ]; then
+    #    SELECTED_LANGUAGE="en"
+    #fi
     # 言語選択の判定
     if [ -n "$1" ]; then
         found_entry=$(echo "$country_zonename" | awk '{print $2}' | grep -wx "$1")

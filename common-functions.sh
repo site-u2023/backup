@@ -53,6 +53,12 @@ check_version() {
     fi
 }
 
+normalize_language() {
+    if [ "$SELECTED_LANGUAGE" != "ja" ]; then
+        SELECTED_LANGUAGE="en"
+    fi
+}
+
 check_language() {
     # データベースから情報を取得
     source "${BASE_DIR}/country-zonename.sh"

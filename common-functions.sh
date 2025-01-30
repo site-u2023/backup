@@ -112,61 +112,29 @@ check_language() {
     # ユーザーの入力を取得
     read -p "Choose an option: " lang_choice
 
-    # 選択された言語を変数に格納
-    case "${lang_choice}" in
-        "en"|"ja"|"bg"|"ca"|"cs"|"de"|"el"|"es"|"fr"|"he"|"hi"|"hu"|"it"|"ko"|"mr"|"ms"|"no"|"pl"|"pt"|"pt-br"|"ro"|"ru"|"sk"|"sv"|"tr"|"uk"|"vi"|"zh-cn"|"zh-tw"|"ar"|"bn"|"da"|"fi"|"nl")
-            SELECTED_LANGUAGE="${lang_choice}"
-            ;;
-        *)
-            echo -e "$(color "red" "Invalid choice.")"
-            exit 1
-            ;;
-    esac
+    # 選択された言語がリストにあるか確認
+    found_entry=$(echo "$country_zonename" | awk '{print $2}' | grep -wx "$lang_choice")
 
-    # 言語をcheck_languageファイルに書き込む
+    if [ -n "$found_entry" ]; then
+        SELECTED_LANGUAGE="$lang_choice"
+    else
+        SELECTED_LANGUAGE="xx"
+        echo -e "$(color "red" "Invalid choice. Defaulting to 'xx'.")" >&2
+    fi
+
+    # 言語を check_language ファイルに書き込む
     echo "$SELECTED_LANGUAGE" > "${BASE_DIR}/check_language"
+
+    # 言語の標準化（ja 以外は en 扱い）
+    normalize_language
 
     # 言語に応じたメッセージの出力
     case "$SELECTED_LANGUAGE" in
-        "en") echo -e "$(color "white" "You selected English.")" ;;
         "ja") echo -e "$(color "white" "日本語を選択しました。")" ;;
-        "bg") echo -e "$(color "white" "Избрахте български.")" ;;
-        "ca") echo -e "$(color "white" "Has triat el català.")" ;;
-        "cs") echo -e "$(color "white" "Vybrali jste češtinu.")" ;;
-        "de") echo -e "$(color "white" "Sie haben Deutsch gewählt.")" ;;
-        "el") echo -e "$(color "white" "Επιλέξατε Ελληνικά.")" ;;
-        "es") echo -e "$(color "white" "Has seleccionado Español.")" ;;
-        "fr") echo -e "$(color "white" "Vous avez sélectionné le Français.")" ;;
-        "he") echo -e "$(color "white" "בחרת עִבְרִית.")" ;;
-        "hi") echo -e "$(color "white" "आपने हिंदी चुनी है।")" ;;
-        "hu") echo -e "$(color "white" "Ön a Magyar nyelvet választotta.")" ;;
-        "it") echo -e "$(color "white" "Hai selezionato Italiano.")" ;;
-        "ko") echo -e "$(color "white" "한국어를 선택하셨습니다.")" ;;
-        "mr") echo -e "$(color "white" "तुम्ही मराठी निवडले आहे.")" ;;
-        "ms") echo -e "$(color "white" "Anda telah memilih Bahasa Melayu.")" ;;
-        "no") echo -e "$(color "white" "Du har valgt Norsk.")" ;;
-        "pl") echo -e "$(color "white" "Wybrałeś Polski.")" ;;
-        "pt") echo -e "$(color "white" "Você selecionou Português.")" ;;
-        "pt-br") echo -e "$(color "white" "Você selecionou Português do Brasil.")" ;;
-        "ro") echo -e "$(color "white" "Ați selectat Română.")" ;;
-        "ru") echo -e "$(color "white" "Вы выбрали Русский.")" ;;
-        "sk") echo -e "$(color "white" "Vybrali ste Slovenčina.")" ;;
-        "sv") echo -e "$(color "white" "Du har valt Svenska.")" ;;
-        "tr") echo -e "$(color "white" "Türkçe seçtiniz.")" ;;
-        "uk") echo -e "$(color "white" "Ви обрали Українська.")" ;;
-        "vi") echo -e "$(color "white" "Bạn đã chọn Tiếng Việt.")" ;;
-        "zh-cn") echo -e "$(color "white" "您选择了简体中文。")" ;;
-        "zh-tw") echo -e "$(color "white" "您選擇了繁體中文。")" ;;
-        "ar") echo -e "$(color "white" "لقد اخترت العربية.")" ;;
-        "bn") echo -e "$(color "white" "আপনি বাংলা নির্বাচন করেছেন।")" ;;
-        "da") echo -e "$(color "white" "Du har valgt Dansk.")" ;;
-        "fi") echo -e "$(color "white" "Olet valinnut Suomi.")" ;;
-        "nl") echo -e "$(color "white" "Je hebt Nederlands gekozen.")" ;;
-        *)
-            echo -e "$(color "red" "Unsupported language selected.")"
-            ;;
+        *) echo -e "$(color "white" "You selected $(echo "$SELECTED_LANGUAGE" | tr '[:lower:]' '[:upper:]') (Processed as English).")" ;;
     esac
 }
+
 
 
 

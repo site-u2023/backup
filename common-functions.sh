@@ -176,42 +176,41 @@ fi
 }
 
 check_common() {
-  # バージョン情報の取得
-  if [ -f "${BASE_DIR}/check_version" ]; then
-    RELEASE_VERSION=$(cat "${BASE_DIR}/check_version")
-  fi
-  [ -z "$RELEASE_VERSION" ] && check_version
-
-  # データベースから情報を取得
-  source "${BASE_DIR}/country-zonename.sh"
-  country_zonename_data
-
-  # 言語選択の判定
-  if [ -n "$1" ]; then
-    found_entry=$(echo "$country_zonename" | awk '{print $2}' | grep -wx "$1")
-
-    if [ -n "$found_entry" ]; then
-      SELECTED_LANGUAGE="$1"
-    else
-      SELECTED_LANGUAGE="xx"
-      echo "Invalid language selection. Defaulting to 'xx'." >&2
+    # 言語がセットされていない場合はデフォルトでenをセット
+    if [ -z "$SELECTED_LANGUAGE" ]; then
+        SELECTED_LANGUAGE="en"
     fi
-    echo "${SELECTED_LANGUAGE}" > "${BASE_DIR}/check_language"
-  elif [ -f "${BASE_DIR}/check_language" ]; then
-    SELECTED_LANGUAGE=$(cat "${BASE_DIR}/check_language")
-  fi
+    
+    # バージョン情報の取得
+    if [ -f "${BASE_DIR}/check_version" ]; then
+        RELEASE_VERSION=$(cat "${BASE_DIR}/check_version")
+    fi
+    [ -z "$RELEASE_VERSION" ] && check_version
 
-  [ -z "${SELECTED_LANGUAGE}" ] && check_language
+    # データベースから情報を取得
+    source "${BASE_DIR}/country-zonename.sh"
+    country_zonename_data
 
-  # 言語の標準化（ja 以外は en 扱い）
-  normalize_language
+    # 言語選択の判定
+    if [ -n "$1" ]; then
+        found_entry=$(echo "$country_zonename" | awk '{print $2}' | grep -wx "$1")
+        if [ -n "$found_entry" ]; then
+            SELECTED_LANGUAGE="$1"
+        else
+            SELECTED_LANGUAGE="xx"
+            echo "Invalid language selection. Defaulting to 'xx'."
+        fi
+    elif [ -f "${BASE_DIR}/check_language" ]; then
+        SELECTED_LANGUAGE=$(cat "${BASE_DIR}/check_language")
+    fi
 
-  # パッケージマネージャーの確認
-  if [ -f "${BASE_DIR}/check_package_manager" ]; then
-    PACKAGE_MANAGER=$(cat "${BASE_DIR}/check_package_manager")
-  fi
-  [ -z "$PACKAGE_MANAGER" ] && check_package_manager
+    # 言語設定の確認
+    echo "Selected language: ${SELECTED_LANGUAGE}"
+    
+    # 次の処理に進む
+    # 他の処理...
 }
+
 
 
 

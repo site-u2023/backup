@@ -270,7 +270,7 @@ language=$(echo "$input" | awk '{print $NF}')
 if echo "$language" | grep -q "/"; then
   echo "$input | awk '{print $1}'"
 else
-  echo "$language"
+  echo "$input | awk '{print $1}'"
 fi
 sh ${BASE_DIR}/country-zonename.sh ${SELECTED_LANGUAGE} | awk '{print $2}'
 sh ${BASE_DIR}/country-zonename.sh ${SELECTED_LANGUAGE} | awk '{print $3}'

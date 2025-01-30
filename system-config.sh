@@ -196,9 +196,6 @@ uci commit dropbear
 # system setup
 DESCRIPTION=`cat /etc/openwrt_version` # Description
 NOTES=`date` # Remarks
-#ZONEDATA=$(sh ${BASE_DIR}/country_timezone.sh ${SELECTED_LANGUAGE})
-#ZOONNAME=$(echo $ZONEDATA | awk '{print $4}' || echo "UTC")
-#TIMEZOON=$(echo $ZONEDATA | awk '{print $4}')
 local ZOONNAME=$(sh ${BASE_DIR}/country-zonename.sh ${SELECTED_LANGUAGE} | awk '{print $4}' || echo "00")
 local TIMEZOON=$(sh ${BASE_DIR}/country-timezone.sh ${SELECTED_LANGUAGE} | awk '{print $4}' || echo "UTC")
 

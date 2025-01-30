@@ -14,7 +14,7 @@ Canada ca CA NST3:30NDT2:30 AST4ADT3 EST5EDT4 CST6CDT5 MST7MDT6 PST8PDT7 Català
 Czech_Republic cs CZ CET-1 CEST-2 Čeština  
 Germany de DE CET-1 CEST-2 Deutsch  
 Greece el GR EET-2 EEST-3 Ελληνικά  
-United_States en US EST5EDT4 CST6CDT5 MST7MDT6 PST8PDT7 AKST9AKDT8 HST10  
+United_States en US EST5EDT4 CST6CDT5 MST7MDT6 PST8PDT7 AKST9AKDT8 HST10 English 
 Spain es ES CET-1 CEST-2 Español  
 Catalan ca ES CET-1 CEST-2 Català  
 France fr FR CET-1 CEST-2 Français  

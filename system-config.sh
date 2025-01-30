@@ -29,9 +29,9 @@ information() {
   case "$SELECTED_LANGUAGE" in
     en)
       if echo "$language" | grep -q "/"; then
-        echo -e "$(color "white" "Country or Language: $(echo "$country" | awk '{print $1}')")"
+        echo -e "$(color "white" "Language: $(echo "$country" | awk '{print $1}')")"
       else
-        echo -e "$(color "white" "Country or Language: $language")"
+        echo -e "$(color "white" "Country: $language")"
       fi
       echo -e "$(color "white" "Language Package: $(echo "$country" | awk '{print $2}')")"
       echo -e "$(color "white" "Country Code: $(echo "$country" | awk '{print $3}')")"
@@ -40,9 +40,9 @@ information() {
       ;;
     ja)
       if echo "$language" | grep -q "/"; then
-        echo -e "$(color "white" "国または言語: $(echo "$country" | awk '{print $1}')")"
+        echo -e "$(color "white" "言語: $(echo "$country" | awk '{print $1}')")"
       else
-        echo -e "$(color "white" "国または言語: $language")"
+        echo -e "$(color "white" "国名: $language")"
       fi
       echo -e "$(color "white" "言語パッケージ: $(echo "$country" | awk '{print $2}')")"
       echo -e "$(color "white" "国コード: $(echo "$country" | awk '{print $3}')")"

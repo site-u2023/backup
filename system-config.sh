@@ -22,6 +22,39 @@ download_country_zone() {
     fi    
 }
 
+information() {
+  country="$(sh ${BASE_DIR}/country-zonename.sh ${SELECTED_LANGUAGE})"
+  language=$(echo "$country" | awk '{print $NF}')
+  
+  case "$SELECTED_LANGUAGE" in
+    en)
+      if echo "$language" | grep -q "/"; then
+        echo -e "$(color "white" "Country: $(echo "$country" | awk '{print $1}')")"
+      else
+        echo -e "$(color "white" "Country: $language")"
+      fi
+      echo -e "$(color "white" "Language Package: $(echo "$country" | awk '{print $2}')")"
+      echo -e "$(color "white" "Country Code: $(echo "$country" | awk '{print $3}')")"
+      echo -e "$(color "white" "Zone Name: $(echo "$country" | awk '{print $4}')")"
+      echo -e "$(color "white" "Timezone: $(sh ${BASE_DIR}/country-timezone.sh ${SELECTED_LANGUAGE} | awk '{print $4}')")"
+      ;;
+    ja)
+      if echo "$language" | grep -q "/"; then
+        echo -e "$(color "white" "国名: $(echo "$country" | awk '{print $1}')")"
+      else
+        echo -e "$(color "white" "国名: $language")"
+      fi
+      echo -e "$(color "white" "言語パッケージ: $(echo "$country" | awk '{print $2}')")"
+      echo -e "$(color "white" "国名コード: $(echo "$country" | awk '{print $3}')")"
+      echo -e "$(color "white" "ゾーンネーム: $(echo "$country" | awk '{print $4}')")"
+      echo -e "$(color "white" "タイムゾーン: $(sh ${BASE_DIR}/country-timezone.sh ${SELECTED_LANGUAGE} | awk '{print $4}')")"
+      ;;
+    *)
+      echo "Unsupported language: $SELECTED_LANGUAGE"
+      ;;
+  esac
+}
+
 set_device_name_password() {
   local device_name password confirmation
   local lang="${SELECTED_LANGUAGE:-en}"
@@ -262,39 +295,6 @@ uci commit dhcp
 # /etc/init.d/odhcpd restart
 read -p " Press any key (Reboot the device)"
 reboot
-}
-
-information() {
-  country="$(sh ${BASE_DIR}/country-zonename.sh ${SELECTED_LANGUAGE})"
-  language=$(echo "$country" | awk '{print $NF}')
-  
-  case "$SELECTED_LANGUAGE" in
-    en)
-      if echo "$language" | grep -q "/"; then
-        echo -e "$(color "white" "Country: $(echo "$country" | awk '{print $1}')")"
-      else
-        echo -e "$(color "white" "Country: $language")"
-      fi
-      echo -e "$(color "white" "Language Package: $(echo "$country" | awk '{print $2}')")"
-      echo -e "$(color "white" "Country Code: $(echo "$country" | awk '{print $3}')")"
-      echo -e "$(color "white" "Zone Name: $(echo "$country" | awk '{print $4}')")"
-      echo -e "$(color "white" "Timezone: $(sh ${BASE_DIR}/country-timezone.sh ${SELECTED_LANGUAGE} | awk '{print $4}')")"
-      ;;
-    ja)
-      if echo "$language" | grep -q "/"; then
-        echo -e "$(color "white" "国名: $(echo "$country" | awk '{print $1}')")"
-      else
-        echo -e "$(color "white" "国名: $language")"
-      fi
-      echo -e "$(color "white" "言語パッケージ: $(echo "$country" | awk '{print $2}')")"
-      echo -e "$(color "white" "国名コード: $(echo "$country" | awk '{print $3}')")"
-      echo -e "$(color "white" "ゾーンネーム: $(echo "$country" | awk '{print $4}')")"
-      echo -e "$(color "white" "タイムゾーン: $(sh ${BASE_DIR}/country-timezone.sh ${SELECTED_LANGUAGE} | awk '{print $4}')")"
-      ;;
-    *)
-      echo "Unsupported language: $SELECTED_LANGUAGE"
-      ;;
-  esac
 }
 
 download_common

@@ -265,10 +265,10 @@ reboot
 }
 
 test() {
-input="$(sh ${BASE_DIR}/country-zonename.sh ${SELECTED_LANGUAGE})"
-language=$(echo "$input" | awk '{print $NF}')
+country="$(sh ${BASE_DIR}/country-zonename.sh ${SELECTED_LANGUAGE})"
+language=$(echo "$country" | awk '{print $NF}')
 if echo "$language" | grep -q "/"; then
-  echo "$input | awk '{print $1}'"
+  echo "$country" | awk '{print $1}'
 else
   echo "$language"
 fi

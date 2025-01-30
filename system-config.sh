@@ -300,6 +300,7 @@ reboot
 download_common
 download_country_zone
 check_common $1
+normalize_language
 information
 #set_device_name_password
 #set_wifi_ssid_password

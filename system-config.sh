@@ -199,8 +199,8 @@ NOTES=`date` # Remarks
 #ZONEDATA=$(sh ${BASE_DIR}/country_timezone.sh ${SELECTED_LANGUAGE})
 #ZOONNAME=$(echo $ZONEDATA | awk '{print $4}' || echo "UTC")
 #TIMEZOON=$(echo $ZONEDATA | awk '{print $4}')
-local ZOONNAME=$(sh ${BASE_DIR}/country-zonename.sh ${SELECTED_LANGUAGE} | awk '{print $4}')
-local TIMEZOON=$(sh ${BASE_DIR}/country-timezone.sh ${SELECTED_LANGUAGE} | awk '{print $4}')
+local ZOONNAME=$(sh ${BASE_DIR}/country-zonename.sh ${SELECTED_LANGUAGE} | awk '{print $4}' || echo "00")
+local TIMEZOON=$(sh ${BASE_DIR}/country-timezone.sh ${SELECTED_LANGUAGE} | awk '{print $4}' || echo "UTC")
 
 uci set system.@system[0]=system
 #uci set system.@system[0].hostname=${HOSTNAME}

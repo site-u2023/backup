@@ -2,12 +2,12 @@
 # License: CC0
 # OpenWrt >= 19.07
 
-country_code="$1"
+SELECTED_LANGUAG="$1"
 
 # タイムゾーンデータ
 # 国名 言語コード 国コード タイムゾーン(複数あり) 母国語または対応バージョン xxはluci-i18n-base非対応
-country_timezones_data_2() {
-country_timezones_2="
+country_zonename_data() {
+country_zonename="
 Bulgaria bg BG Europe/Sofia български  
 Canada ca CA America/Halifax America/Toronto America/Winnipeg America/Edmonton America/Vancouver Català  
 Czech_Republic cs CZ Europe/Prague Čeština  
@@ -100,11 +100,11 @@ Algeria xx DZ Africa/Algiers
 "
 }
 
-check_country_timezone_2() {
-  if [ -z "$country_code" ]; then
-    echo "$country_timezones_2"
+check_country_zonename() {
+  if [ -z "$SELECTED_LANGUAG" ]; then
+    echo "$country_zonename"
   else
-    found_entry=$(echo "$country_timezones_2" | grep -iw "$country_code")
+    found_entry=$(echo "$country_zonename" | grep -iw "$SELECTED_LANGUAG")
     if [ -n "$found_entry" ]; then
       echo "$found_entry"
     else
@@ -114,5 +114,5 @@ check_country_timezone_2() {
   fi
 }
 
-country_timezones_data_2
-check_country_timezone_2
+country_zonename_data
+check_country_zonename

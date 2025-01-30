@@ -55,6 +55,7 @@ check_version() {
 
 check_language() {
     # データベースから情報を取得
+    source "${BASE_DIR}/country-zonename.sh"
     country_zonename_data
 
     # 言語選択画面を表示

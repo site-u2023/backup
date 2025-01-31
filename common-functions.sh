@@ -53,20 +53,26 @@ check_version() {
     fi
 }
 
-normalize_language() {
-    case "$SELECTED_LANGUAGE" in
-        "ja") ;;  # 日本語はそのまま
-        *) SELECTED_LANGUAGE="en" ;;  # それ以外は英語扱い
-    esac
-
 # case "$SELECTED_LANGUAGE" in
 #      "ja" | "zh-cn" | "zh-tw") ;;  # そのまま維持
 #      *) SELECTED_LANGUAGE="en" ;;  # それ以外は英語扱い
 # esac
 
-echo "normalize_language:$SELECTED_LANGUAGE"
-echo "normalize_language result: $(source ${BASE_DIR}/check_language; echo $?)"
+normalize_language() {
+    if [ -f "${BASE_DIR}/check_language" ]; then
+        SELECTED_LANGUAGE=$(cat "${BASE_DIR}/check_language")
+    else
+        SELECTED_LANGUAGE="en"  # デフォルト値
+    fi
+
+    case "$SELECTED_LANGUAGE" in
+        "ja") ;;  # 日本語はそのまま
+        *) SELECTED_LANGUAGE="en" ;;  # それ以外は英語扱い
+    esac
+
+    echo "normalize_language:$SELECTED_LANGUAGE"
 }
+
 
 check_language() {
     # データベースから情報を取得

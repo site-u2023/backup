@@ -5,6 +5,8 @@
 BASE_URL="https://raw.githubusercontent.com/site-u2023/aios/main"
 BASE_DIR="/tmp/aios"
 SUPPORTED_VERSIONS="21 22 23 24 SN"
+SELECTED_LANGUAGE=$1
+echo "${SELECTED_LANGUAGE}" > ${BASE_DIR}/check_language
 
 download_common() {
     if [ ! -f "${BASE_DIR}/common-functions.sh" ]; then
@@ -298,7 +300,7 @@ reboot
 
 download_common
 download_country_zone
-check_common $1
+check_common
 information
 #set_device_name_password
 #set_wifi_ssid_password

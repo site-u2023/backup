@@ -54,66 +54,62 @@ check_version() {
 
 check_language() {
     # データベースから情報を取得
-    source "${BASE_DIR}/country-zonename.sh"
-    country_zonename_data
+    #source "${BASE_DIR}/country-zonename.sh"
+    #country_zonename_data
 
     # 言語選択画面を表示
     echo -e "$(color "white" "------------------------------------------------------")"
     echo -e "$(color "white" "Select your language")"
-    echo -e "$(color "blue" "[en]: English")"
-    echo -e "$(color "red" "[ja]: 日本語")"
-    echo -e "$(color "green" "[bg]: български")"
-    echo -e "$(color "yellow" "[ca]: Català")"
-    echo -e "$(color "cyan" "[cs]: Čeština")"
-    echo -e "$(color "magenta" "[de]: Deutsch")"
-    echo -e "$(color "lightblue" "[el]: Ελληνικά")"
+    echo -e "$(color "white" "[en]: English")"
+    echo -e "$(color "white" "[ja]: 日本語")"
+    echo -e "$(color "white" "[bg]: български")"
+    echo -e "$(color "white" "[ca]: Català")"
+    echo -e "$(color "white" "[cs]: Čeština")"
+    echo -e "$(color "white" "[de]: Deutsch")"
+    echo -e "$(color "white" "[el]: Ελληνικά")"
     echo -e "$(color "white" "[es]: Español")"
-    echo -e "$(color "lightred" "[fr]: Français")"
-    echo -e "$(color "lightgreen" "[he]: עִבְרִית")"
-    echo -e "$(color "lightcyan" "[hi]: हिंदी")"
-    echo -e "$(color "lightmagenta" "[hu]: Magyar")"
-    echo -e "$(color "lightyellow" "[it]: Italiano")"
-    echo -e "$(color "lightwhite" "[ko]: 한국어")"
-    echo -e "$(color "brown" "[mr]: मराठी")"
-    echo -e "$(color "pink" "[ms]: Bahasa Melayu")"
-    echo -e "$(color "gray" "[no]: Norsk")"
-    echo -e "$(color "blue" "[pl]: Polski")"
-    echo -e "$(color "green" "[pt]: Português")"
-    echo -e "$(color "red" "[pt-br]: Português do Brasil")"
-    echo -e "$(color "yellow" "[ro]: Română")"
-    echo -e "$(color "cyan" "[ru]: Русский")"
-    echo -e "$(color "magenta" "[sk]: Slovenčina")"
-    echo -e "$(color "lightblue" "[sv]: Svenska")"
+    echo -e "$(color "white" "[fr]: Français")"
+    echo -e "$(color "white" "[he]: עִבְרִית")"
+    echo -e "$(color "white" "[hi]: हिंदी")"
+    echo -e "$(color "white" "[hu]: Magyar")"
+    echo -e "$(color "white" "[it]: Italiano")"
+    echo -e "$(color "white" "[ko]: 한국어")"
+    echo -e "$(color "white" "[mr]: मराठी")"
+    echo -e "$(color "white" "[ms]: Bahasa Melayu")"
+    echo -e "$(color "white" "[no]: Norsk")"
+    echo -e "$(color "white" "[pl]: Polski")"
+    echo -e "$(color "white" "[pt]: Português")"
+    echo -e "$(color "white" "[pt-br]: Português do Brasil")"
+    echo -e "$(color "white" "[ro]: Română")"
+    echo -e "$(color "white" "[ru]: Русский")"
+    echo -e "$(color "white" "[sk]: Slovenčina")"
+    echo -e "$(color "white" "[sv]: Svenska")"
     echo -e "$(color "white" "[tr]: Türkçe")"
-    echo -e "$(color "lightred" "[uk]: Українська")"
-    echo -e "$(color "lightgreen" "[vi]: Tiếng Việt")"
-    echo -e "$(color "lightcyan" "[zh-cn]: 简体中文")"
-    echo -e "$(color "lightmagenta" "[zh-tw]: 繁體中文")"
-    echo -e "$(color "lightyellow" "[ar]: العربية")"
-    echo -e "$(color "lightwhite" "[bn]: বাংলা")"
-    echo -e "$(color "brown" "[da]: Dansk")"
-    echo -e "$(color "pink" "[fi]: Suomi")"
-    echo -e "$(color "gray" "[nl]: Nederlands")"
+    echo -e "$(color "white" "[uk]: Українська")"
+    echo -e "$(color "white" "[vi]: Tiếng Việt")"
+    echo -e "$(color "white" "[zh-cn]: 简体中文")"
+    echo -e "$(color "white" "[zh-tw]: 繁體中文")"
+    echo -e "$(color "white" "[ar]: العربية")"
+    echo -e "$(color "white" "[bn]: বাংলা")"
+    echo -e "$(color "white" "[da]: Dansk")"
+    echo -e "$(color "white" "[fi]: Suomi")"
+    echo -e "$(color "white" "[nl]: Nederlands")"
     echo -e "$(color "white" "------------------------------------------------------")"
 
     # ユーザーの入力を取得
     read -p "Choose an option: " lang_choice
 
     # 選択された言語がリストにあるか確認
-    found_entry=$(echo "$country_zonename" | awk '{print $2}' | grep -wx "$lang_choice")
-
-    if [ -n "$found_entry" ]; then
-        SELECTED_LANGUAGE="$lang_choice"
-    else
-        SELECTED_LANGUAGE="xx"
-        echo -e "$(color "red" "Invalid choice. Defaulting to 'xx'.")" >&2
+    SELECTED_LANGUAGE=$(sh /tmp/aios/country-zonename.sh "$lang_choice" | awk '{print $2}')
+        if [ -n "$SELECTED_LANGUAGE" ]; then
+            echo "$SELECTED_LANGUAGE" > "${BASE_DIR}/check_language"
+            normalize_language # 言語の標準化（ja 以外は en 扱い）
+        else
+            SELECTED_LANGUAGE="en"
+            echo "$SELECTED_LANGUAGE" > "${BASE_DIR}/check_language"
+            echo "Invalid language selection. Defaulting to 'en'."
+        fi
     fi
-
-    # 言語を check_language ファイルに書き込む
-    echo "$SELECTED_LANGUAGE" > "${BASE_DIR}/check_language"
-
-    # 言語の標準化（ja 以外は en 扱い）
-    normalize_language
 
     # 言語に応じたメッセージの出力
     case "$SELECTED_LANGUAGE" in
@@ -196,15 +192,16 @@ check_common() {
     [ -z "$PACKAGE_MANAGER" ] && check_package_manager
     
     # データベースから情報を取得
-    source "${BASE_DIR}/country-zonename.sh"
+    #source "${BASE_DIR}/country-zonename.sh"
     #country_zonename_data
-
+    
 　　# 地域情報の取得
     if [ -f "${BASE_DIR}/check_country" ]; then
         SELECTED_COUNTRY=$(cat "${BASE_DIR}/check_country")
     fi
     if [ -n "$1" ]; then
-        SELECTED_COUNTRY=$(echo "$country_zonename" | awk '{print $3}' | grep -wx "$1")
+        #SELECTED_COUNTRY=$(echo "sh /tmp/aios/country-zonename.sh ${SELECTED_COUNTRY}" | awk '{print $3}' | grep -wx "$1")
+        SELECTED_COUNTRY=$(sh /tmp/aios/country-zonename.sh "$1" | awk '{print $3}')
         echo "${SELECTED_COUNTRY}" > "${BASE_DIR}/check_country"
     fi
     
@@ -216,15 +213,15 @@ check_common() {
         #SELECTED_LANGUAGE=$(cat "${BASE_DIR}/check_language")
 
     if [ -n "$1" ]; then
-        found_entry=$(echo "$country_zonename" | awk '{print $2}' | grep -wx "$1") 
-        if [ -n "$found_entry" ]; then
-            echo "$1" > "${BASE_DIR}/check_language"
-            SELECTED_LANGUAGE="$1"
+        SELECTED_LANGUAGE=$(sh /tmp/aios/country-zonename.sh "$1" | awk '{print $2}')
+        #found_entry=$(echo "$country_zonename" | awk '{print $2}' | grep -wx "$1") 
+        if [ -n "$SELECTED_LANGUAGE" ]; then
+            echo "$SELECTED_LANGUAGE" > "${BASE_DIR}/check_language"
             normalize_language # 言語の標準化（ja 以外は en 扱い）
         else
-            SELECTED_LANGUAGE="xx"
+            SELECTED_LANGUAGE="en"
             echo "$SELECTED_LANGUAGE" > "${BASE_DIR}/check_language"
-            echo "Invalid language selection. Defaulting to 'xx'."
+            echo "Invalid language selection. Defaulting to 'en'."
         fi
     fi
 

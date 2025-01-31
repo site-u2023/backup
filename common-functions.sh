@@ -178,12 +178,6 @@ check_common() {
         fi
     fi
 
-    # 言語選択の判定 
-    if [ ! -f "${BASE_DIR}/check_language" ]; then
-        check_language
-    fi  
-    [ -z "$SELECTED_LANGUAGE" ] && check_language
-
     if [ -n "$1" ]; then
         SELECTED_LANGUAGE=$(sh /tmp/aios/country-zonename.sh "$1" | awk '{print $2}')
         if [ -n "$SELECTED_LANGUAGE" ]; then
@@ -195,7 +189,12 @@ check_common() {
             echo "Invalid language selection. Defaulting to 'en'."
         fi
     fi
-
+    # 言語選択の判定 
+    if [ ! -f "${BASE_DIR}/check_language" ]; then
+        check_language
+    fi  
+    [ -z "$SELECTED_LANGUAGE" ] && check_language
+    
 echo "check_common: $SELECTED_LANGUAGE"
 echo "check_common: $(cat ${BASE_DIR}/check_language; echo $?)"
 }

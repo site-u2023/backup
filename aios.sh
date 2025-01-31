@@ -58,7 +58,7 @@ download_and_execute() {
     echo -e "\nInstallation Complete"
     echo "aios has been installed successfully."
     echo "You can now run the 'aios' script anywhere."
-    /usr/bin/aios || {
+    /usr/bin/aios "${RELEASE_VERSION}" || {
         echo "Failed to execute aios script."
         echo "${SELECTED_LANGUAGE}" > ${BASE_DIR}/check_language
         echo "${RELEASE_VERSION}" > ${BASE_DIR}/check_version
@@ -66,7 +66,7 @@ download_and_execute() {
     }
 }
 
-check_version "$1"
+check_version
 make_directory
 check_ttyd_installed
 download_and_execute

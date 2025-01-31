@@ -23,31 +23,31 @@ download_country_zone() {
 }
 
 information() {
-  country="$(sh ${BASE_DIR}/country-zonename.sh ${SELECTED_LANGUAGE})"
-  language=$(echo "$country" | awk '{print $NF}')
-  
+  COUNTRY="$(sh ${BASE_DIR}/country-zonename.sh "$(cat ${BASE_DIR}/check_country)")"
+  LANGUAGE=$(echo "$COUNTRY" | awk '{print $NF}')
+
   case "$SELECTED_LANGUAGE" in
     en)
-      if echo "$language" | grep -q "/"; then
-        echo -e "$(color "white" "Language: $(echo "$country" | awk '{print $1}')")"
+      if echo "$LANGUAGE" | grep -q "/"; then
+        echo -e "$(color "white" "country: $(echo "$COUNTRY" | awk '{print $1}')")"
       else
-        echo -e "$(color "white" "Country: $language")"
+        echo -e "$(color "white" "Language: $LANGUAGE")"
       fi
-      echo -e "$(color "white" "Language Package: $(echo "$country" | awk '{print $2}')")"
-      echo -e "$(color "white" "Country Code: $(echo "$country" | awk '{print $3}')")"
-      echo -e "$(color "white" "Zone Name: $(echo "$country" | awk '{print $4}')")"
-      echo -e "$(color "white" "Timezone: $(sh ${BASE_DIR}/country-timezone.sh ${SELECTED_LANGUAGE} | awk '{print $4}')")"
+      echo -e "$(color "white" "Language Package: $(echo "$COUNTRY" | awk '{print $2}')")"
+      echo -e "$(color "white" "Country Code: $(echo "$COUNTRY" | awk '{print $3}')")"
+      echo -e "$(color "white" "Zone Name: $(echo "$COUNTRY" | awk '{print $4}')")"
+      echo -e "$(color "white" "Timezone: $(sh ${BASE_DIR}/country-timezone.sh "$(cat ${BASE_DIR}/check_country)" | awk '{print $4}')")"
       ;;
     ja)
-      if echo "$language" | grep -q "/"; then
-        echo -e "$(color "white" "言語: $(echo "$country" | awk '{print $1}')")"
+      if echo "$LANGUAGE" | grep -q "/"; then
+        echo -e "$(color "white" "国名: $(echo "$COUNTRY" | awk '{print $1}')")"
       else
-        echo -e "$(color "white" "国名: $language")"
+        echo -e "$(color "white" "言語: $LANGUAGE")"
       fi
-      echo -e "$(color "white" "言語パッケージ: $(echo "$country" | awk '{print $2}')")"
-      echo -e "$(color "white" "国コード: $(echo "$country" | awk '{print $3}')")"
-      echo -e "$(color "white" "ゾーンネーム: $(echo "$country" | awk '{print $4}')")"
-      echo -e "$(color "white" "タイムゾーン: $(sh ${BASE_DIR}/country-timezone.sh ${SELECTED_LANGUAGE} | awk '{print $4}')")"
+      echo -e "$(color "white" "言語パッケージ: $(echo "$COUNTRY" | awk '{print $2}')")"
+      echo -e "$(color "white" "国コード: $(echo "$COUNTRY" | awk '{print $3}')")"
+      echo -e "$(color "white" "ゾーンネーム: $(echo "$COUNTRY" | awk '{print $4}')")"
+      echo -e "$(color "white" "タイムゾーン: $(sh ${BASE_DIR}/country-timezone.sh "$(cat ${BASE_DIR}/check_country)" | awk '{print $4}')")"
       ;;
     *)
       echo "Unsupported language: $SELECTED_LANGUAGE"

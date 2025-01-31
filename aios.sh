@@ -69,8 +69,8 @@ download_and_execute() {
 check_version
 make_directory
 check_ttyd_installed
-
+echo OK
 echo "download_and_execute: $SELECTED_LANGUAGE"
 echo "download_and_execute result: $(cat ${BASE_DIR}/check_language; echo $?)"
-
+echo OK2
 download_and_execute

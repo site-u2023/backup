@@ -7,6 +7,7 @@ BASE_DIR="/tmp/aios"
 SUPPORTED_VERSIONS="19 21 22 23 24 SN"
 SELECTED_LANGUAGE=$1
 echo "${SELECTED_LANGUAGE}" > ${BASE_DIR}/check_language
+echo "${RELEASE_VERSION}" > ${BASE_DIR}/check_version
 
 main_menu() {
     local lang="${SELECTED_LANGUAGE:-en}" 
@@ -130,6 +131,5 @@ done
 
 download_common
 check_common "$1"
-normalize_language
 display_system_info
 main_menu

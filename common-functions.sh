@@ -5,6 +5,10 @@
 BASE_URL="${BASE_URL:-https://raw.githubusercontent.com/site-u2023/aios/main}"
 BASE_DIR="${BASE_DIR:-/tmp/aios}"
 SUPPORTED_VERSIONS="${SUPPORTED_VERSIONS:-19 21 22 23 24 SN}"
+SELECTED_LANGUAGE=$1
+if [ -n "$SELECTED_LANGUAGE" ]; then
+    echo "$SELECTED_LANGUAGE" > ${BASE_DIR}/check_language
+fi
 
 color_code_map() {
   local color=$1

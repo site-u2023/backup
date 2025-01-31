@@ -193,9 +193,6 @@ check_common() {
             echo "${SELECTED_LANGUAGE}" > "${BASE_DIR}/check_language"
         fi
     fi
-
-echo "check_common: $SELECTED_LANGUAGE"
-echo "check_common: $(cat ${BASE_DIR}/check_language; echo $?)"
 }
 
 xxx() {

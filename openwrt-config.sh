@@ -10,6 +10,7 @@ if [ -n "$SELECTED_LANGUAGE" ]; then
     echo "$SELECTED_LANGUAGE" > ${BASE_DIR}/check_language
 fi
 echo "${RELEASE_VERSION}" > ${BASE_DIR}/check_version
+source "${BASE_DIR%/}/common-functions.sh"
 
 main_menu() {
     local lang="${SELECTED_LANGUAGE:-en}" 

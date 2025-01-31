@@ -104,12 +104,14 @@ check_language() {
     SELECTED_LANGUAGE=$(sh /tmp/aios/country-zonename.sh "$lang_choice" | awk '{print $2}')
         if [ -n "$SELECTED_LANGUAGE" ]; then
             echo "$SELECTED_LANGUAGE" > "${BASE_DIR}/check_language"
+            echo "${SELECTED_COUNTRY}" > "${BASE_DIR}/check_country"
         else
             SELECTED_LANGUAGE="en"
             echo "$SELECTED_LANGUAGE" > "${BASE_DIR}/check_language"
+            echo "${SELECTED_COUNTRY}" > "${BASE_DIR}/check_country"
             echo "Invalid language selection. Defaulting to 'en'."
         fi
-
+        
     case "$SELECTED_LANGUAGE" in
         "ja")    echo -e "$(color "white" "日本語を選択しました。")" ;;
         "en")    echo -e "$(color "white" "You selected English.")" ;;

@@ -106,7 +106,6 @@ check_language() {
             echo "$SELECTED_LANGUAGE" > "${BASE_DIR}/check_language"
             echo "Invalid language selection. Defaulting to 'en'."
         fi
-    fi
 
     # 言語に応じたメッセージの出力
     case "$SELECTED_LANGUAGE" in

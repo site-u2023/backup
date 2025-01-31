@@ -132,8 +132,6 @@ for i in `seq 30 38` `seq 40 47` ; do
 done
 }
 
-source "${BASE_DIR%/}/common-functions.sh"
-
 download_common
 check_common "$1"
 display_system_info

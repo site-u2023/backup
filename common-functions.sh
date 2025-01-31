@@ -156,8 +156,6 @@ CHECK_LANGUAGE="${BASE_DIR}/check_language"
 
 if [ -f "$CHECK_LANGUAGE" ]; then
     READ_LANGUAGE=$(cat "$CHECK_LANGUAGE")
-else
-    READ_LANGUAGE="en"
 fi
 
 case "$READ_LANGUAGE" in

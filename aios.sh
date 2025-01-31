@@ -66,7 +66,7 @@ download_and_execute() {
     }
 }
 
-check_version
+check_version "$1"
 make_directory
 check_ttyd_installed
 download_and_execute

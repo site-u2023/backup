@@ -207,6 +207,8 @@ check_common() {
     #    SELECTED_LANGUAGE="en"
     #fi
     # 言語選択の判定
+    touch "${BASE_DIR}/check_language"
+    
     if [ -n "$1" ]; then
         found_entry=$(echo "$country_zonename" | awk '{print $2}' | grep -wx "$1")
         if [ -n "$found_entry" ]; then

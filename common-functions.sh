@@ -197,7 +197,7 @@ check_common() {
     
     # データベースから情報を取得
     source "${BASE_DIR}/country-zonename.sh"
-    country_zonename_data
+    #country_zonename_data
 
 　　# 地域情報の取得
     if [ -f "${BASE_DIR}/check_country" ]; then

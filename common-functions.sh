@@ -178,6 +178,23 @@ check_common() {
     fi
 
     # 言語選択の判定 
+    if [ -f "${BASE_DIR}/check_language" ]; then
+        SELECTED_LANGUAGE=$(cat "${BASE_DIR}/check_language")
+    else
+        if [ -n "$1" ]; then
+            SELECTED_LANGUAGE=$(sh /tmp/aios/country-zonename.sh "$1" | awk '{print $2}')
+            echo "${SELECTED_LANGUAGE}" > "${BASE_DIR}/check_language"
+        else
+            SELECTED_COUNTRY="en"
+            echo "${SELECTED_LANGUAGE}" > "${BASE_DIR}/check_language"
+        fi
+    fi
+
+echo "check_common: $SELECTED_LANGUAGE"
+echo "check_common: $(cat ${BASE_DIR}/check_language; echo $?)"
+}
+
+xxx() {
     if [ -n "$1" ]; then
         SELECTED_LANGUAGE=$(sh /tmp/aios/country-zonename.sh "$1" | awk '{print $2}')
         if [ -n "$SELECTED_LANGUAGE" ]; then
@@ -192,9 +209,6 @@ check_common() {
         check_language
     fi  
     [ -z "$SELECTED_LANGUAGE" ] && check_language
-    
-echo "check_common: $SELECTED_LANGUAGE"
-echo "check_common: $(cat ${BASE_DIR}/check_language; echo $?)"
 }
 
 ask_confirmation() {

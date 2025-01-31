@@ -61,8 +61,6 @@ check_version() {
 normalize_language() {
     if [ -f "${BASE_DIR}/check_language" ]; then
         SELECTED_LANGUAGE=$(cat "${BASE_DIR}/check_language")
-    else
-        SELECTED_LANGUAGE="en"  # デフォルト値
     fi
 
     case "$SELECTED_LANGUAGE" in
@@ -70,7 +68,8 @@ normalize_language() {
         *) SELECTED_LANGUAGE="en" ;;  # それ以外は英語扱い
     esac
 
-    echo "normalize_language:$SELECTED_LANGUAGE"
+    echo "normalize_language: $SELECTED_LANGUAGE"
+    echo "normalize_language result: $(source ${BASE_DIR}/check_language; echo $?)"
 }
 
 
@@ -144,8 +143,7 @@ check_language() {
     esac
 
 echo "check_language: $SELECTED_LANGUAGE"
-echo "check_language result: $(source ${BASE_DIR}/check_language; echo $?)"
-
+echo "check_language result: $(cat ${BASE_DIR}/check_language; echo $?)"
 }
 
 
@@ -188,7 +186,7 @@ if [ -n "${SELECTED_LANGUAGE}" ]; then
 fi
 
 echo "language_parameter: $SELECTED_LANGUAGE"
-echo "language_parameter result: $(source ${BASE_DIR}/check_language; echo $?)"
+echo "language_parameter result: $(cat ${BASE_DIR}/check_language; echo $?)"
 }
 
 check_common() {
@@ -225,7 +223,7 @@ check_common() {
     # 次の処理に進む
     # 他の処理...
 echo "check_common: $SELECTED_LANGUAGE"
-echo "check_common: $(source ${BASE_DIR}/check_language; echo $?)"
+echo "check_common: $(cat ${BASE_DIR}/check_language; echo $?)"
 }
 
 

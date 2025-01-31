@@ -161,13 +161,13 @@ check_common() {
         RELEASE_VERSION=$(cat "${BASE_DIR}/check_version")
     fi
     [ -z "$RELEASE_VERSION" ] && check_version
-
+echo 1
     # パッケージ情報の取得
     if [ -f "${BASE_DIR}/check_package_manager" ]; then
         PACKAGE_MANAGER=$(cat "${BASE_DIR}/check_package_manager")
     fi
     [ -z "$PACKAGE_MANAGER" ] && check_package_manager
-        
+echo 2        
 　　# 地域情報の取得
     if [ -f "${BASE_DIR}/check_country" ]; then
         SELECTED_COUNTRY=$(cat "${BASE_DIR}/check_country")
@@ -180,7 +180,7 @@ check_common() {
             echo "${SELECTED_COUNTRY}" > "${BASE_DIR}/check_country"
         fi
     fi
-
+echo 3
     # 言語選択の判定 
     if [ -f "${BASE_DIR}/check_language" ]; then
         SELECTED_LANGUAGE=$(cat "${BASE_DIR}/check_language")
@@ -193,6 +193,7 @@ check_common() {
             echo "${SELECTED_LANGUAGE}" > "${BASE_DIR}/check_language"
         fi
     fi
+echo 4
 }
 
 xxx() {

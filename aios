@@ -94,7 +94,6 @@ execute_openwrt_config() {
     }
 }
 
-#delete_language
 make_directory
 download_country_zone
 download_and_execute_common

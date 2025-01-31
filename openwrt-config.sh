@@ -102,7 +102,7 @@ display_system_info() {
         echo -e "$(color "white" "USB Devices: ${usb_devices}")"
         echo -e "$(color "white" "Scripts directory: ${BASE_DIR}")"
         echo -e "$(color "white" "OpenWrt version: ${RELEASE_VERSION} - Supported")"
-        echo -e "$(color "white" "Country: COUNTRY=$(cat "${BASE_DIR}/check_language") && echo "$(sh ${BASE_DIR}/country-zonename.sh "$COUNTRY")")"
+        echo -e "$(color "white" "Country: COUNTRY=$(cat "${BASE_DIR}/check_language") && echo "$(sh ${BASE_DIR}/country-zonename.sh "$COUNTRY")"")"
         echo -e "$(color "white" "Downloader: ${PACKAGE_MANAGER}")"
 
     elif [ "$lang" = "ja" ]; then
@@ -115,7 +115,7 @@ display_system_info() {
         echo -e "$(color "white" "USBデバイス: ${usb_devices}")"
         echo -e "$(color "white" "スクリプトディレクトリ: ${BASE_DIR}")"
         echo -e "$(color "white" "OpenWrtバージョン: ${RELEASE_VERSION} - サポートされています")"
-        echo -e "$(color "white" "カントリー: COUNTRY=$(cat "${BASE_DIR}/check_language") && echo "$(sh ${BASE_DIR}/country-zonename.sh "$COUNTRY")")"
+        echo -e "$(color "white" "カントリー: COUNTRY=$(cat "${BASE_DIR}/check_language") && echo "$(sh ${BASE_DIR}/country-zonename.sh "$COUNTRY")"")"
         echo -e "$(color "white" "ダウンローダー: ${PACKAGE_MANAGER}")"
     fi
 }

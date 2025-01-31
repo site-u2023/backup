@@ -209,16 +209,18 @@ check_common() {
 　　# 地域情報の取得
     if [ -f "${BASE_DIR}/check_country" ]; then
         SELECTED_COUNTRY=$(cat "${BASE_DIR}/check_country")
-    else 
+    fi
+    if [ -n "$1" ]; then
         SELECTED_COUNTRY=$(echo "$country_zonename" | awk '{print $3}' | grep -wx "$1")
         echo "${SELECTED_COUNTRY}" > "${BASE_DIR}/check_country"
     fi
     
     # 言語選択の判定 
-    if [ -f "${BASE_DIR}/check_language" ]; then
-        SELECTED_LANGUAGE=$(cat "${BASE_DIR}/check_language")
-    fi
+    if [ ! -f "${BASE_DIR}/check_language" ]; then
+        check_language
+    fi  
     [ -z "$SELECTED_LANGUAGE" ] && check_language
+        #SELECTED_LANGUAGE=$(cat "${BASE_DIR}/check_language")
 
     if [ -n "$1" ]; then
         found_entry=$(echo "$country_zonename" | awk '{print $2}' | grep -wx "$1") 

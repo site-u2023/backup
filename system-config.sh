@@ -164,7 +164,6 @@ set_wifi_ssid_password() {
     htmode=$(uci get wireless.${device}.htmode 2>/dev/null)
 
     printf "$msg_band\n" "$device" "$band"
-
     echo -n "$(printf "$msg_select_band" "$device" "$band")"
     read enable_band
     if [ "$enable_band" != "y" ]; then

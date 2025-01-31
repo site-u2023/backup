@@ -181,7 +181,7 @@ check_common() {
     fi
     [ -z "$PACKAGE_MANAGER" ] && check_package_manager
 echo 1       
-　　# 地域情報の取得
+    # カントリー情報の取得
     if [ -f "${BASE_DIR}/check_country" ]; then
 echo 2
         SELECTED_COUNTRY=$(cat "${BASE_DIR}/check_country")

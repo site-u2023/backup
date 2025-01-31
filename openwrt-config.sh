@@ -130,6 +130,6 @@ done
 }
 
 download_common
-check_common "$1"
+check_common
 display_system_info
 main_menu

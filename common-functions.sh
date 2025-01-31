@@ -229,9 +229,28 @@ echo "check_common: $(source ${BASE_DIR}/check_language; echo $?)"
 }
 
 
-
-
 check_common() {
+    if [ -f "${BASE_DIR}/check_version" ]; then
+        RELEASE_VERSION=$(cat "${BASE_DIR}/check_version")
+    fi
+    [ -z "$RELEASE_VERSION" ] && check_version
+
+    if [ -n "$1" ] && { [ "$1" = "ja" ] || [ "$1" = "en" ]; }; then
+        SELECTED_LANGUAGE="$1"
+        echo "${SELECTED_LANGUAGE}" > "${BASE_DIR}/check_language"
+    elif [ -f "${BASE_DIR}/check_language" ]; then
+        SELECTED_LANGUAGE=$(cat "${BASE_DIR}/check_language")
+    fi
+    [ -z "${SELECTED_LANGUAGE}" ] && check_language
+
+    if [ -f "${BASE_DIR}/check_package_manager" ]; then
+        PACKAGE_MANAGER=$(cat "${BASE_DIR}/check_package_manager")
+    fi
+    [ -z "$PACKAGE_MANAGER" ] && check_package_manager
+}
+
+
+XXXXXXXXcheck_common() {
   if [ -f "${BASE_DIR}/check_version" ]; then
     RELEASE_VERSION=$(cat "${BASE_DIR}/check_version")
   fi

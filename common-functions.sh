@@ -101,7 +101,8 @@ check_language() {
 
     # ユーザーの入力を取得
     read -p "Choose an option: " lang_choice
-
+    lang_choice=$(echo "$lang_choice" | tr -d '[:space:]')
+    
     # 選択された言語がリストにあるか確認
     SELECTED_LANGUAGE=$(sh /tmp/aios/country-zonename.sh "$lang_choice" | awk '{print $2}')
         if [ -n "$SELECTED_LANGUAGE" ]; then

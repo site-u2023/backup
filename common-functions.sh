@@ -68,8 +68,8 @@ normalize_language() {
         *) SELECTED_LANGUAGE="en" ;;  # それ以外は英語扱い
     esac
 
-    echo "normalize_language: $SELECTED_LANGUAGE"
-    echo "normalize_language result: $(source ${BASE_DIR}/check_language; echo $?)"
+echo "normalize_language: $SELECTED_LANGUAGE"
+echo "normalize_language result: $(source ${BASE_DIR}/check_language; echo $?)"
 }
 
 
@@ -180,53 +180,63 @@ check_package_manager() {
 }
 
 language_parameter() {
-SELECTED_LANGUAGE=$1
-if [ -n "${SELECTED_LANGUAGE}" ]; then
-  echo "${SELECTED_LANGUAGE}" > "${BASE_DIR}/check_language"
-fi
+    SELECTED_LANGUAGE=$1
+    if [ -n "${SELECTED_LANGUAGE}" ]; then
+        echo "${SELECTED_LANGUAGE}" > "${BASE_DIR}/check_language"
+    fi
 
 echo "language_parameter: $SELECTED_LANGUAGE"
 echo "language_parameter result: $(cat ${BASE_DIR}/check_language; echo $?)"
 }
 
 check_common() {
-        # バージョン情報の取得
+    # バージョン情報の取得
     if [ -f "${BASE_DIR}/check_version" ]; then
         RELEASE_VERSION=$(cat "${BASE_DIR}/check_version")
     fi
     [ -z "$RELEASE_VERSION" ] && check_version
 
+    # パッケージ情報の取得
+    if [ -f "${BASE_DIR}/check_package_manager" ]; then
+        PACKAGE_MANAGER=$(cat "${BASE_DIR}/check_package_manager")
+    fi
+    [ -z "$PACKAGE_MANAGER" ] && check_package_manager
+    
     # データベースから情報を取得
     source "${BASE_DIR}/country-zonename.sh"
     country_zonename_data
 
-    # 言語がセットされていない場合はデフォルトでenをセット
-   # if [ -z "$SELECTED_LANGUAGE" ]; then
-    #    SELECTED_LANGUAGE="en"
-    #fi
+　　# 地域情報の取得
+    if [ -f "${BASE_DIR}/check_country" ]; then
+        SELECTED_COUNTRY=$(cat "${BASE_DIR}/check_country")
+    else 
+        SELECTED_COUNTRY=$(echo "$country_zonename" | awk '{print $3}' | grep -wx "$1")
+        echo "${SELECTED_COUNTRY}" > "${BASE_DIR}/check_country"
+    fi
+    
     # 言語選択の判定 
-    if [ -n "$1" ]; then
-        found_entry=$(echo "$country_zonename" | awk '{print $2}' | grep -wx "$1")
-        if [ -n "$found_entry" ]; then
-            SELECTED_LANGUAGE="$1"
-        else
-            SELECTED_LANGUAGE="xx"
-            echo "Invalid language selection. Defaulting to 'xx'."
-        fi
-    elif [ -f "${BASE_DIR}/check_language" ]; then
+    if [ -f "${BASE_DIR}/check_language" ]; then
         SELECTED_LANGUAGE=$(cat "${BASE_DIR}/check_language")
     fi
+    [ -z "$SELECTED_LANGUAGE" ] && check_language
 
-    # 言語設定の確認
-#    echo "Selected language: ${SELECTED_LANGUAGE}"
-    
-    # 次の処理に進む
-    # 他の処理...
+    if [ -n "$1" ]; then
+        found_entry=$(echo "$country_zonename" | awk '{print $2}' | grep -wx "$1") 
+        if [ -n "$found_entry" ]; then
+            echo "$1" > "${BASE_DIR}/check_language"
+            SELECTED_LANGUAGE="$1"
+            normalize_language # 言語の標準化（ja 以外は en 扱い）
+        else
+            SELECTED_LANGUAGE="xx"
+            echo "$SELECTED_LANGUAGE" > "${BASE_DIR}/check_language"
+            echo "Invalid language selection. Defaulting to 'xx'."
+        fi
+    fi
+
 echo "check_common: $SELECTED_LANGUAGE"
 echo "check_common: $(cat ${BASE_DIR}/check_language; echo $?)"
 }
-
-
+    
 AAcheck_common() {
     if [ -f "${BASE_DIR}/check_version" ]; then
         RELEASE_VERSION=$(cat "${BASE_DIR}/check_version")

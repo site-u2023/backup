@@ -183,19 +183,27 @@ check_common() {
 echo 1       
 　　# 地域情報の取得
     if [ -f "${BASE_DIR}/check_country" ]; then
-        SELECTED_COUNTRY=$(cat "${BASE_DIR}/check_country")
 echo 2
-    else
-        if [ -n "$1" ]; then
-            SELECTED_COUNTRY=$(sh /tmp/aios/country-zonename.sh "$SELECTED_LANGUAGE" | awk '{print $3}')
-            echo "${SELECTED_COUNTRY}" > "${BASE_DIR}/check_country"
+        SELECTED_COUNTRY=$(cat "${BASE_DIR}/check_country")
 echo 3
-        else
-            SELECTED_COUNTRY="US"
-            echo "${SELECTED_COUNTRY}" > "${BASE_DIR}/check_country"
-        fi
-    fi
+    else
 echo 4
+        if [ -n "$1" ]; then
+echo 5
+            SELECTED_COUNTRY=$(sh /tmp/aios/country-zonename.sh "$SELECTED_LANGUAGE" | awk '{print $3}')
+echo 6
+            echo "${SELECTED_COUNTRY}" > "${BASE_DIR}/check_country"
+echo 7
+        else
+echo 8
+            SELECTED_COUNTRY="US"
+echo 9
+            echo "${SELECTED_COUNTRY}" > "${BASE_DIR}/check_country"
+echo 10
+        fi
+echo 11
+    fi
+echo 12
 }
 
 xxx() {

@@ -62,6 +62,8 @@ download_and_execute() {
         echo "Failed to execute aios script."
         echo "${SELECTED_LANGUAGE}" > ${BASE_DIR}/check_language
         echo "${RELEASE_VERSION}" > ${BASE_DIR}/check_version
+echo "download_and_execute: $SELECTED_LANGUAGE"
+echo "download_and_execute result: $(cat ${BASE_DIR}/check_language; echo $?)"
         exit 1
     }
 }

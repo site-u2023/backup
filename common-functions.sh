@@ -177,8 +177,8 @@ check_common() {
             SELECTED_LANGUAGE=$(cat "${BASE_DIR}/check_language")
             SELECTED_COUNTRY=$(cat "${BASE_DIR}/check_country")
         else
-		    check_language    
-	    fi
+            check_language    
+        fi
     fi
     normalize_language       
 }

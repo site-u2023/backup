@@ -51,6 +51,7 @@ check_version() {
         echo "Supported versions: ${SUPPORTED_VERSIONS}"
         exit 1
     fi
+}
 
 check_language() {
 

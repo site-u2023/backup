@@ -179,31 +179,19 @@ check_common() {
     if [ -f "${BASE_DIR}/check_package_manager" ]; then
         PACKAGE_MANAGER=$(cat "${BASE_DIR}/check_package_manager")
     fi
-    [ -z "$PACKAGE_MANAGER" ] && check_package_manager
-echo 1       
+    [ -z "$PACKAGE_MANAGER" ] && check_package_manager     
     # カントリー情報の取得
     if [ -f "${BASE_DIR}/check_country" ]; then
-echo 2
         SELECTED_COUNTRY=$(cat "${BASE_DIR}/check_country")
-echo 3
     else
-echo 4
         if [ -n "$1" ]; then
-echo 5
             SELECTED_COUNTRY=$(sh /tmp/aios/country-zonename.sh "$SELECTED_LANGUAGE" | awk '{print $3}')
-echo 6
             echo "${SELECTED_COUNTRY}" > "${BASE_DIR}/check_country"
-echo 7
         else
-echo 8
             SELECTED_COUNTRY="US"
-echo 9
             echo "${SELECTED_COUNTRY}" > "${BASE_DIR}/check_country"
-echo 10
         fi
-echo 11
     fi
-echo 12
 }
 
 xxx() {

@@ -173,7 +173,7 @@ check_common() {
         echo "${SELECTED_LANGUAGE}" > "${BASE_DIR}/check_language"
         echo "${SELECTED_COUNTRY}" > "${BASE_DIR}/check_country"
     else
-        [ -f "${BASE_DIR}/check_language" ]; then
+        if [ -f "${BASE_DIR}/check_language" ]; then
             SELECTED_LANGUAGE=$(cat "${BASE_DIR}/check_language")
             SELECTED_COUNTRY=$(cat "${BASE_DIR}/check_country")
         else

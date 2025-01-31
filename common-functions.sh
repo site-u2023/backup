@@ -123,8 +123,8 @@ normalize_language() {
         *) SELECTED_LANGUAGE="en" ;;  # それ以外は英語扱い
     esac
 
-echo "normalize_language: $SELECTED_LANGUAGE"
-echo "normalize_language result: $(source ${BASE_DIR}/check_language; echo $?)"
+echo "normalize_language result: $(cat ${BASE_DIR}/check_language; echo $?)"
+
 }
 
 check_package_manager() {
@@ -166,12 +166,16 @@ check_common() {
 　　# 地域情報の取得
     if [ -f "${BASE_DIR}/check_country" ]; then
         SELECTED_COUNTRY=$(cat "${BASE_DIR}/check_country")
+    else
+        if [ -n "$1" ]; then
+            SELECTED_COUNTRY=$(sh /tmp/aios/country-zonename.sh "$1" | awk '{print $3}')
+            echo "${SELECTED_COUNTRY}" > "${BASE_DIR}/check_country"
+        else
+            SELECTED_COUNTRY="US"
+            echo "${SELECTED_COUNTRY}" > "${BASE_DIR}/check_country"
+        fi
     fi
-    if [ -n "$1" ]; then
-        SELECTED_COUNTRY=$(sh /tmp/aios/country-zonename.sh "$1" | awk '{print $3}')
-        echo "${SELECTED_COUNTRY}" > "${BASE_DIR}/check_country"
-    fi
-    
+
     # 言語選択の判定 
     if [ ! -f "${BASE_DIR}/check_language" ]; then
         check_language

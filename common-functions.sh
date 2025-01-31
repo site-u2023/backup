@@ -92,6 +92,7 @@ check_language() {
     echo -e "$(color "white" "[da]: Dansk")"
     echo -e "$(color "white" "[fi]: Suomi")"
     echo -e "$(color "white" "[nl]: Nederlands")"
+    echo -e "$(color "white" "[xx]: otherwise")"
     echo -e "$(color "white" "------------------------------------------------------")"
 
     # ユーザーの入力を取得

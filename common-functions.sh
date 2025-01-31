@@ -153,7 +153,6 @@ check_language() {
 
 normalize_language() {
 CHECK_LANGUAGE="${BASE_DIR}/check_language"
-
 if [ -f "$CHECK_LANGUAGE" ]; then
     READ_LANGUAGE=$(cat "$CHECK_LANGUAGE")
 fi
@@ -166,8 +165,6 @@ case "$READ_LANGUAGE" in
         SELECTED_LANGUAGE="en"
         ;;
 esac
-
-echo "SELECTED_LANGUAGE: $SELECTED_LANGUAGE"
 }
 
 

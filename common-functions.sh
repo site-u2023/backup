@@ -51,27 +51,6 @@ check_version() {
         echo "Supported versions: ${SUPPORTED_VERSIONS}"
         exit 1
     fi
-}
-
-# case "$SELECTED_LANGUAGE" in
-#      "ja" | "zh-cn" | "zh-tw") ;;  # そのまま維持
-#      *) SELECTED_LANGUAGE="en" ;;  # それ以外は英語扱い
-# esac
-
-normalize_language() {
-    if [ -f "${BASE_DIR}/check_language" ]; then
-        SELECTED_LANGUAGE=$(cat "${BASE_DIR}/check_language")
-    fi
-
-    case "$SELECTED_LANGUAGE" in
-        "ja") ;;  # 日本語はそのまま
-        *) SELECTED_LANGUAGE="en" ;;  # それ以外は英語扱い
-    esac
-
-echo "normalize_language: $SELECTED_LANGUAGE"
-echo "normalize_language result: $(source ${BASE_DIR}/check_language; echo $?)"
-}
-
 
 check_language() {
     # データベースから情報を取得
@@ -146,8 +125,22 @@ echo "check_language: $SELECTED_LANGUAGE"
 echo "check_language result: $(cat ${BASE_DIR}/check_language; echo $?)"
 }
 
+}
 
+# case "$SELECTED_LANGUAGE" in
+#      "ja" | "zh-cn" | "zh-tw") ;;  # そのまま維持
+#      *) SELECTED_LANGUAGE="en" ;;  # それ以外は英語扱い
+# esac
 
+normalize_language() {
+    case "$SELECTED_LANGUAGE" in
+        "ja") ;;  # 日本語はそのまま
+        *) SELECTED_LANGUAGE="en" ;;  # それ以外は英語扱い
+    esac
+
+echo "normalize_language: $SELECTED_LANGUAGE"
+echo "normalize_language result: $(source ${BASE_DIR}/check_language; echo $?)"
+}
 
 XXcheck_language() {
 while true; do

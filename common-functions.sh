@@ -168,7 +168,7 @@ check_common() {
     if [ -f "${BASE_DIR}/check_country" ]; then
         SELECTED_COUNTRY=$(cat "${BASE_DIR}/check_country")
     else
-        if [ -n "$SELECTED_LANGUAGE" ]; then
+        if [ -n "$1" ]; then
             SELECTED_COUNTRY=$(sh /tmp/aios/country-zonename.sh "$SELECTED_LANGUAGE" | awk '{print $3}')
             echo "${SELECTED_COUNTRY}" > "${BASE_DIR}/check_country"
         else
@@ -181,7 +181,7 @@ check_common() {
     if [ -f "${BASE_DIR}/check_language" ]; then
         SELECTED_LANGUAGE=$(cat "${BASE_DIR}/check_language")
     else
-        if [ -n "$SELECTED_LANGUAGE" ]; then
+        if [ -n "$1" ]; then
             SELECTED_LANGUAGE=$(sh /tmp/aios/country-zonename.sh "$SELECTED_LANGUAGE" | awk '{print $2}')
             echo "${SELECTED_LANGUAGE}" > "${BASE_DIR}/check_language"
         else

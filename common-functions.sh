@@ -161,26 +161,28 @@ check_common() {
         RELEASE_VERSION=$(cat "${BASE_DIR}/check_version")
     fi
     [ -z "$RELEASE_VERSION" ] && check_version
-echo 1
+
     # パッケージ情報の取得
     if [ -f "${BASE_DIR}/check_package_manager" ]; then
         PACKAGE_MANAGER=$(cat "${BASE_DIR}/check_package_manager")
     fi
     [ -z "$PACKAGE_MANAGER" ] && check_package_manager
-echo 2        
+echo 1       
 　　# 地域情報の取得
     if [ -f "${BASE_DIR}/check_country" ]; then
         SELECTED_COUNTRY=$(cat "${BASE_DIR}/check_country")
+echo 2
     else
         if [ -n "$1" ]; then
             SELECTED_COUNTRY=$(sh /tmp/aios/country-zonename.sh "$SELECTED_LANGUAGE" | awk '{print $3}')
             echo "${SELECTED_COUNTRY}" > "${BASE_DIR}/check_country"
+echo 3
         else
             SELECTED_COUNTRY="US"
             echo "${SELECTED_COUNTRY}" > "${BASE_DIR}/check_country"
         fi
     fi
-echo 3
+echo 4
     # 言語選択の判定 
     if [ -f "${BASE_DIR}/check_language" ]; then
         SELECTED_LANGUAGE=$(cat "${BASE_DIR}/check_language")
@@ -193,7 +195,6 @@ echo 3
             echo "${SELECTED_LANGUAGE}" > "${BASE_DIR}/check_language"
         fi
     fi
-echo 4
 }
 
 xxx() {

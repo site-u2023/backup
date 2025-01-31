@@ -97,7 +97,7 @@ execute_openwrt_config() {
 make_directory
 download_country_zone
 download_and_execute_common
-check_common
+check_common "$1"
 banner
 download_openwrt_config
 execute_openwrt_config

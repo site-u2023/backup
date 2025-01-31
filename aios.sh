@@ -58,12 +58,10 @@ download_and_execute() {
     echo -e "\nInstallation Complete"
     echo "aios has been installed successfully."
     echo "You can now run the 'aios' script anywhere."
+    echo "${SELECTED_LANGUAGE}" > ${BASE_DIR}/check_language
+    echo "${RELEASE_VERSION}" > ${BASE_DIR}/check_version
     /usr/bin/aios "$1" || {
         echo "Failed to execute aios script."
-        echo "${SELECTED_LANGUAGE}" > ${BASE_DIR}/check_language
-        echo "${RELEASE_VERSION}" > ${BASE_DIR}/check_version
-echo "download_and_execute: $SELECTED_LANGUAGE"
-echo "download_and_execute result: $(cat ${BASE_DIR}/check_language; echo $?)"
         exit 1
     }
 }
@@ -71,4 +69,8 @@ echo "download_and_execute result: $(cat ${BASE_DIR}/check_language; echo $?)"
 check_version
 make_directory
 check_ttyd_installed
+
+echo "download_and_execute: $SELECTED_LANGUAGE"
+echo "download_and_execute result: $(cat ${BASE_DIR}/check_language; echo $?)"
+
 download_and_execute

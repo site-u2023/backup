@@ -58,10 +58,10 @@ download_and_execute() {
     echo -e "\nInstallation Complete"
     echo "aios has been installed successfully."
     echo "You can now run the 'aios' script anywhere."
-    RELEASE_VERSION="${RELEASE_VERSION}" /usr/bin/aios "${SELECTED_LANGUAGE}" || {
+    /usr/bin/aios || {
         echo "Failed to execute aios script."
-        #echo "${SELECTED_LANGUAGE}" > ${BASE_DIR}/check_language
-        #echo "${RELEASE_VERSION}" > ${BASE_DIR}/check_version
+        echo "${SELECTED_LANGUAGE}" > ${BASE_DIR}/check_language
+        echo "${RELEASE_VERSION}" > ${BASE_DIR}/check_version
         exit 1
     }
 }

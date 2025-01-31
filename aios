@@ -102,8 +102,14 @@ make_directory
 download_country_zone
 download_and_execute_common
 check_common "$1"
+banner
+
 echo "aios check_common: $SELECTED_LANGUAGE"
 echo "aios check_common result: $(cat ${BASE_DIR}/check_language; echo $?)"
-banner
+
 download_openwrt_config
+
+echo "aios check_common: $SELECTED_LANGUAGE"
+echo "aios check_common result: $(cat ${BASE_DIR}/check_language; echo $?)"
+
 execute_openwrt_config

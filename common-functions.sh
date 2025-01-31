@@ -59,7 +59,6 @@ check_version() {
 
 check_language() {
 
-    # 言語選択画面を表示
     echo -e "$(color "white" "------------------------------------------------------")"
     echo -e "$(color "white" "Select your language")"
     echo -e "$(color "white" "[en]: English")"
@@ -99,11 +98,9 @@ check_language() {
     echo -e "$(color "white" "[xx]: otherwise")"
     echo -e "$(color "white" "------------------------------------------------------")"
 
-    # ユーザーの入力を取得
     read -p "Choose an option: " lang_choice
     lang_choice=$(echo "$lang_choice" | tr -d '[:space:]')
     
-    # 選択された言語がリストにあるか確認
     SELECTED_LANGUAGE=$(sh /tmp/aios/country-zonename.sh "$lang_choice" | awk '{print $2}')
         if [ -n "$SELECTED_LANGUAGE" ]; then
             echo "$SELECTED_LANGUAGE" > "${BASE_DIR}/check_language"
@@ -113,9 +110,6 @@ check_language() {
             echo "Invalid language selection. Defaulting to 'en'."
         fi
 
-    # 言語に応じたメッセージの出力
-# 言語に応じたメッセージの出力
-    # 言語に応じたメッセージの出力
     case "$SELECTED_LANGUAGE" in
         "ja")    echo -e "$(color "white" "日本語を選択しました。")" ;;
         "en")    echo -e "$(color "white" "You selected English.")" ;;
@@ -155,13 +149,6 @@ check_language() {
     esac
 
     normalize_language
-}
-
-XXXnormalize_language() {
-    case "$SELECTED_LANGUAGE" in
-        "ja") ;;  # 日本語はそのまま
-        *) SELECTED_LANGUAGE="en" ;;  # それ以外は英語扱い
-    esac
 }
 
 normalize_language() {

@@ -191,7 +191,7 @@ echo "language_parameter: $SELECTED_LANGUAGE"
 echo "language_parameter result: $(source ${BASE_DIR}/check_language; echo $?)"
 }
 
-XXcheck_common() {
+check_common() {
         # バージョン情報の取得
     if [ -f "${BASE_DIR}/check_version" ]; then
         RELEASE_VERSION=$(cat "${BASE_DIR}/check_version")
@@ -229,7 +229,7 @@ echo "check_common: $(source ${BASE_DIR}/check_language; echo $?)"
 }
 
 
-check_common() {
+AAcheck_common() {
     if [ -f "${BASE_DIR}/check_version" ]; then
         RELEASE_VERSION=$(cat "${BASE_DIR}/check_version")
     fi

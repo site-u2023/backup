@@ -9,6 +9,7 @@ SELECTED_LANGUAGE=$1
 if [ -n "$SELECTED_LANGUAGE" ]; then
     echo "$SELECTED_LANGUAGE" > ${BASE_DIR}/check_language
 fi
+source "${BASE_DIR%/}/common-functions.sh"
 
 
 banner() {

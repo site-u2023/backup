@@ -167,6 +167,36 @@ check_common() {
     [ -z "$PACKAGE_MANAGER" ] && check_package_manager  
     
     # カントリー選択の判定 
+    if [ -n "$1" ]; then
+        SELECTED_LANGUAGE=$(sh /tmp/aios/country-zonename.sh "$SELECTED_LANGUAGE" | awk '{print $2}')
+        SELECTED_COUNTRY=$(sh /tmp/aios/country-zonename.sh "$SELECTED_LANGUAGE" | awk '{print $3}')
+        echo "${SELECTED_LANGUAGE}" > "${BASE_DIR}/check_language"
+        echo "${SELECTED_COUNTRY}" > "${BASE_DIR}/check_country"
+    else
+        [ -f "${BASE_DIR}/check_language" ]; then
+            SELECTED_LANGUAGE=$(cat "${BASE_DIR}/check_language")
+            SELECTED_COUNTRY=$(cat "${BASE_DIR}/check_country")
+        else
+		    check_language    
+	    fi
+    fi
+    normalize_language       
+}
+
+XXcheck_common() {
+    # バージョン情報の取得
+    if [ -f "${BASE_DIR}/check_version" ]; then
+        RELEASE_VERSION=$(cat "${BASE_DIR}/check_version")
+    fi
+    [ -z "$RELEASE_VERSION" ] && check_version
+
+    # パッケージ情報の取得
+    if [ -f "${BASE_DIR}/check_package_manager" ]; then
+        PACKAGE_MANAGER=$(cat "${BASE_DIR}/check_package_manager")
+    fi
+    [ -z "$PACKAGE_MANAGER" ] && check_package_manager  
+    
+    # カントリー選択の判定 
     if [ -f "${BASE_DIR}/check_language" ]; then
         SELECTED_LANGUAGE=$(cat "${BASE_DIR}/check_language")
         SELECTED_COUNTRY=$(cat "${BASE_DIR}/check_country")
@@ -181,23 +211,6 @@ check_common() {
         fi
     fi
     normalize_language
-}
-
-xxx() {
-    if [ -n "$1" ]; then
-        SELECTED_LANGUAGE=$(sh /tmp/aios/country-zonename.sh "$1" | awk '{print $2}')
-        if [ -n "$SELECTED_LANGUAGE" ]; then
-            echo "$SELECTED_LANGUAGE" > "${BASE_DIR}/check_language"
-        else
-            SELECTED_LANGUAGE="en"
-            echo "$SELECTED_LANGUAGE" > "${BASE_DIR}/check_language"
-            echo "Invalid language selection. Defaulting to 'en'."
-        fi
-    fi
-    if [ ! -f "${BASE_DIR}/check_language" ]; then
-        check_language
-    fi  
-    [ -z "$SELECTED_LANGUAGE" ] && check_language
 }
 
 ask_confirmation() {

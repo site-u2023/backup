@@ -117,18 +117,37 @@ check_language() {
         "ja") echo -e "$(color "white" "日本語を選択しました。")" ;;
         *) echo -e "$(color "white" "You selected $(echo "$SELECTED_LANGUAGE" | tr '[:lower:]' '[:upper:]') (Processed as English).")" ;;
     esac
-echo "SELECTED_LANGUAGE before normalization: '$SELECTED_LANGUAGE'"
-normalize_language
-echo "SELECTED_LANGUAGE after normalization: '$SELECTED_LANGUAGE'"
-
+    normalize_language
 }
 
-normalize_language() {
+XXXnormalize_language() {
     case "$SELECTED_LANGUAGE" in
         "ja") ;;  # 日本語はそのまま
         *) SELECTED_LANGUAGE="en" ;;  # それ以外は英語扱い
     esac
 }
+
+normalize_language() {
+CHECK_LANGUAGE="${BASE_DIR}/check_language"
+
+if [ -f "$CHECK_LANGUAGE" ]; then
+    READ_LANGUAGE=$(cat "$CHECK_LANGUAGE")
+else
+    READ_LANGUAGE="en"
+fi
+
+case "$READ_LANGUAGE" in
+    "ja"|"en")
+        SELECTED_LANGUAGE="$READ_LANGUAGE"
+        ;;
+    *)
+        SELECTED_LANGUAGE="en"
+        ;;
+esac
+
+echo "SELECTED_LANGUAGE: $SELECTED_LANGUAGE"
+}
+
 
 check_package_manager() {
     if command -v apk >/dev/null 2>&1; then
@@ -164,7 +183,8 @@ check_common() {
     [ -z "$PACKAGE_MANAGER" ] && check_package_manager  
     
     # カントリー選択の判定 
-    if [ -n "$1" ]; then
+    INPUT_LANG=$(echo "$1" | tr -d '[:space:]')
+    if [ -n "$LANG_FILE" ]; then
         SELECTED_LANGUAGE=$(sh /tmp/aios/country-zonename.sh "$SELECTED_LANGUAGE" | awk '{print $2}')
         SELECTED_COUNTRY=$(sh /tmp/aios/country-zonename.sh "$SELECTED_LANGUAGE" | awk '{print $3}')
         echo "${SELECTED_LANGUAGE}" > "${BASE_DIR}/check_language"
@@ -177,10 +197,7 @@ check_common() {
             check_language    
         fi
     fi
-echo "SELECTED_LANGUAGE before normalization: '$SELECTED_LANGUAGE'"
-normalize_language
-echo "SELECTED_LANGUAGE after normalization: '$SELECTED_LANGUAGE'"
-
+    normalize_language
 }
 
 ask_confirmation() {

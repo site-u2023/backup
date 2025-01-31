@@ -97,12 +97,17 @@ execute_openwrt_config() {
 
 echo "aios: $SELECTED_LANGUAGE"
 echo "aios result: $(cat ${BASE_DIR}/check_language; echo $?)"
-
+echo 1
 make_directory
+echo 2
 download_country_zone
+echo 3
 download_and_execute_common
+echo 4
 check_common "$1"
+echo 5
 banner
+echo 6
 
 echo "aios check_common: $SELECTED_LANGUAGE"
 echo "aios check_common result: $(cat ${BASE_DIR}/check_language; echo $?)"

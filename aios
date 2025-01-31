@@ -1,3 +1,4 @@
+
 #!/bin/sh
 # License: CC0
 # OpenWrt >= 19.07
@@ -75,7 +76,6 @@ download_and_execute_common() {
     }
     source "${BASE_DIR%/}/common-functions.sh" || {
         echo "Failed to source common-functions.sh"
-        source "${BASE_DIR%/}/common-functions.sh"
         exit 1
     }
 }

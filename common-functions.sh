@@ -117,7 +117,10 @@ check_language() {
         "ja") echo -e "$(color "white" "日本語を選択しました。")" ;;
         *) echo -e "$(color "white" "You selected $(echo "$SELECTED_LANGUAGE" | tr '[:lower:]' '[:upper:]') (Processed as English).")" ;;
     esac
-    normalize_language
+echo "SELECTED_LANGUAGE before normalization: '$SELECTED_LANGUAGE'"
+normalize_language
+echo "SELECTED_LANGUAGE after normalization: '$SELECTED_LANGUAGE'"
+
 }
 
 normalize_language() {
@@ -174,7 +177,10 @@ check_common() {
             check_language    
         fi
     fi
-    normalize_language       
+echo "SELECTED_LANGUAGE before normalization: '$SELECTED_LANGUAGE'"
+normalize_language
+echo "SELECTED_LANGUAGE after normalization: '$SELECTED_LANGUAGE'"
+
 }
 
 ask_confirmation() {

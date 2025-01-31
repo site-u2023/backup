@@ -75,6 +75,7 @@ download_and_execute_common() {
     }
     source "${BASE_DIR%/}/common-functions.sh" || {
         echo "Failed to source common-functions.sh"
+        source "${BASE_DIR%/}/common-functions.sh"
         exit 1
     }
 }
@@ -95,8 +96,6 @@ execute_openwrt_config() {
 
 echo "aios: $SELECTED_LANGUAGE"
 echo "aios result: $(cat ${BASE_DIR}/check_language; echo $?)"
-
-source "${BASE_DIR%/}/common-functions.sh"
 
 make_directory
 download_country_zone

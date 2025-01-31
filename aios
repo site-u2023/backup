@@ -42,7 +42,7 @@ banner() {
     echo -e "$(color "yellow"    "        aa  aa      ii      oo  oo         ss         ")"
     echo -e "$(color "red"       "         aaaaa     iiii      oooo     ssssss          ")"
     echo -e "$(color "white"     "                                                      ")"
-    echo -e "$(color "white"     "$all_in_one                                           ")"
+    echo -e "$(color "white"     "$all_in_one")"
     echo -e "$(color "white"     "                                                      ")"
     echo -e "$(color "red_white" "$disclaimer")"
 }

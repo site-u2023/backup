@@ -182,7 +182,7 @@ check_common() {
         SELECTED_LANGUAGE=$(sh /tmp/aios/country-zonename.sh "$1" | awk '{print $2}')
         if [ -n "$SELECTED_LANGUAGE" ]; then
             echo "$SELECTED_LANGUAGE" > "${BASE_DIR}/check_language"
-            normalize_language # 言語の標準化（ja 以外は en 扱い）
+            #normalize_language # 言語の標準化（ja 以外は en 扱い）
         else
             SELECTED_LANGUAGE="en"
             echo "$SELECTED_LANGUAGE" > "${BASE_DIR}/check_language"

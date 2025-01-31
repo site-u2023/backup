@@ -9,8 +9,6 @@ SELECTED_LANGUAGE=$1
 if [ -n "$SELECTED_LANGUAGE" ]; then
     echo "$SELECTED_LANGUAGE" > ${BASE_DIR}/check_language
 fi
-source "${BASE_DIR%/}/common-functions.sh"
-
 
 banner() {
     local lang="${SELECTED_LANGUAGE:-en}"
@@ -97,6 +95,8 @@ execute_openwrt_config() {
 
 echo "aios: $SELECTED_LANGUAGE"
 echo "aios result: $(cat ${BASE_DIR}/check_language; echo $?)"
+
+source "${BASE_DIR%/}/common-functions.sh"
 
 make_directory
 download_country_zone

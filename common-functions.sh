@@ -206,8 +206,8 @@ check_common() {
     # カントリー選択の判定 
     INPUT_LANG=$(echo "$1" | tr -d '[:space:]')
     if [ -n "$INPUT_LANG" ]; then
-        SELECTED_LANGUAGE=$(sh /tmp/aios/country-zonename.sh "$LANG_FILE" | awk '{print $2}')
-        SELECTED_COUNTRY=$(sh /tmp/aios/country-zonename.sh "$LANG_FILE" | awk '{print $3}')
+        SELECTED_LANGUAGE=$(sh /tmp/aios/country-zonename.sh "$INPUT_LANG" | awk '{print $2}')
+        SELECTED_COUNTRY=$(sh /tmp/aios/country-zonename.sh "$INPUT_LANG" | awk '{print $3}')
         echo "${SELECTED_LANGUAGE}" > "${BASE_DIR}/check_language"
         echo "${SELECTED_COUNTRY}" > "${BASE_DIR}/check_country"
     else

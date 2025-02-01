@@ -48,6 +48,77 @@ download_and_execute_common() {
     }
 }
 
+display_system_info() {
+    normalize_language
+    echo -e "$(color "white" "------------------------------------------------------")"
+    MEM_TOTAL=$(grep MemTotal /proc/meminfo | awk '{print $2 / 1024 " MB"}')
+    FLASH_TOTAL=$(df -h | grep '/overlay' | awk '{print $2}')
+    if lsusb >/dev/null 2>&1; then
+        USB_STATUS="Available"
+    else
+        USB_STATUS="Not Available"
+    fi
+    
+    if [ -f "${BASE_DIR}/check_country" ]; then
+        COUNTRY=$(cat "${BASE_DIR}/check_country")
+    else
+        COUNTRY="Not Set"
+    fi
+    
+    RELEASE_VERSION=$(awk -F"'" '/DISTRIB_RELEASE/ {print $2}' /etc/openwrt_release)
+    PACKAGE_MANAGER=$(command -v opkg >/dev/null 2>&1 && echo "OPKG" || echo "APK")
+
+    case "$SELECTED_LANGUAGE" in
+        en)
+            echo -e "$(color "cyan" "Memory Capacity: ${MEM_TOTAL}")"
+            echo -e "$(color "green" "Flash Capacity: ${FLASH_TOTAL}")"
+            echo -e "$(color "yellow" "USB Support: ${USB_STATUS}")"
+            echo -e "$(color "magenta" "Directory: ${BASE_DIR}")"
+            echo -e "$(color "magenta" "OpenWrt Version: ${RELEASE_VERSION}")"
+            echo -e "$(color "magenta" "Country: ${COUNTRY}")"
+            echo -e "$(color "magenta" "Downloader: ${PACKAGE_MANAGER}")"
+            ;;
+        ja)
+            echo -e "$(color "cyan" "メモリ容量: ${MEM_TOTAL}")"
+            echo -e "$(color "green" "フラッシュ容量: ${FLASH_TOTAL}")"
+            echo -e "$(color "yellow" "USBサポート: ${USB_STATUS}")"
+            echo -e "$(color "magenta" "ディレクトリ: ${BASE_DIR}")"
+            echo -e "$(color "magenta" "OpenWrtバージョン: ${RELEASE_VERSION}")"
+            echo -e "$(color "magenta" "カントリー: ${COUNTRY}")"
+            echo -e "$(color "magenta" "ダウンローダー: ${PACKAGE_MANAGER}")"
+            ;;
+        zh-cn)
+            echo -e "$(color "cyan" "内存容量: ${MEM_TOTAL}")"
+            echo -e "$(color "green" "闪存容量: ${FLASH_TOTAL}")"
+            echo -e "$(color "yellow" "USB支持: ${USB_STATUS}")"
+            echo -e "$(color "magenta" "目录: ${BASE_DIR}")"
+            echo -e "$(color "magenta" "OpenWrt版本: ${RELEASE_VERSION}")"
+            echo -e "$(color "magenta" "国家: ${COUNTRY}")"
+            echo -e "$(color "magenta" "下载器: ${PACKAGE_MANAGER}")"
+            ;;
+        zh-tw)
+            echo -e "$(color "cyan" "記憶體容量: ${MEM_TOTAL}")"
+            echo -e "$(color "green" "快閃記憶體容量: ${FLASH_TOTAL}")"
+            echo -e "$(color "yellow" "USB 支援: ${USB_STATUS}")"
+            echo -e "$(color "magenta" "目錄: ${BASE_DIR}")"
+            echo -e "$(color "magenta" "OpenWrt版本: ${RELEASE_VERSION}")"
+            echo -e "$(color "magenta" "國家: ${COUNTRY}")"
+            echo -e "$(color "magenta" "下載器: ${PACKAGE_MANAGER}")"
+            ;;
+        *)
+            echo -e "$(color "cyan" "Memory Capacity: ${MEM_TOTAL}")"
+            echo -e "$(color "green" "Flash Capacity: ${FLASH_TOTAL}")"
+            echo -e "$(color "yellow" "USB Support: ${USB_STATUS}")"
+            echo -e "$(color "magenta" "Directory: ${BASE_DIR}")"
+            echo -e "$(color "magenta" "OpenWrt Version: ${RELEASE_VERSION}")"
+            echo -e "$(color "magenta" "Country: ${COUNTRY}")"
+            echo -e "$(color "magenta" "Downloader: ${PACKAGE_MANAGER}")"
+            ;;
+    esac
+
+    echo -e "$(color "white" "------------------------------------------------------")"
+}
+
 main_menu() {
     normalize_language
     local lang="$SELECTED_LANGUAGE" 
@@ -144,6 +215,7 @@ main_menu() {
     done
 }
 
+make_directory
 download_country_zone
 download_and_execute_common
 check_common "$1"

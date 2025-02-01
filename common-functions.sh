@@ -68,31 +68,25 @@ check_package_manager() {
 }
 
 check_common() {
-
     # バージョン情報の取得
-    if [ -f "${BASE_DIR}/check_version" ]; then
-        RELEASE_VERSION=$(cat "${BASE_DIR}/check_version")
-    fi
+    [ -f "${BASE_DIR}/check_version" ] && read -r RELEASE_VERSION < "${BASE_DIR}/check_version"
     [ -z "$RELEASE_VERSION" ] && check_version
 
     # パッケージ情報の取得
-    if [ -f "${BASE_DIR}/check_package_manager" ]; then
-        PACKAGE_MANAGER=$(cat "${BASE_DIR}/check_package_manager")
-    fi
+    [ -f "${BASE_DIR}/check_package_manager" ] && read -r PACKAGE_MANAGER < "${BASE_DIR}/check_package_manager"
     [ -z "$PACKAGE_MANAGER" ] && check_package_manager  
 
-    # カントリー選択の判定 
+    # 言語と国の情報が既に存在する場合は再取得しない
     if [ -f "${BASE_DIR}/check_language" ] && [ -f "${BASE_DIR}/check_country" ]; then
-        SELECTED_LANGUAGE=$(cat "${BASE_DIR}/check_language")
-        SELECTED_COUNTRY=$(cat "${BASE_DIR}/check_country")
+        read -r SELECTED_LANGUAGE < "${BASE_DIR}/check_language"
+        read -r SELECTED_COUNTRY < "${BASE_DIR}/check_country"
         echo "Using previously selected language and country."
         normalize_language
         return
     fi
 
-    INPUT_LANG=$1
-    INPUT_LANG=$(echo "$INPUT_LANG" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//' | tr -d '\n')
-    echo "Input Language: $INPUT_LANG"
+    INPUT_LANG="$1"
+    INPUT_LANG=$(echo "$INPUT_LANG" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
 
     if [ -n "$INPUT_LANG" ]; then
         found_entries=$(sh /tmp/aios/country-timezone.sh "$INPUT_LANG")
@@ -100,13 +94,10 @@ check_common() {
 
         if [ "$num_matches" -gt 1 ]; then
             echo "Multiple matches found. Please select:"
-            i=1
-            echo "$found_entries" | while IFS= read -r line; do
-                echo "$i) $line"
-                i=$((i+1))
+            select found_entry in $found_entries; do
+                [ -n "$found_entry" ] && break
+                echo "Invalid selection. Please try again."
             done
-            read -p "Enter the number of your choice: " choice
-            found_entry=$(echo "$found_entries" | sed -n "${choice}p")
         else
             found_entry="$found_entries"
         fi
@@ -121,6 +112,7 @@ check_common() {
     else
         check_language    
     fi
+
     normalize_language
 }
 

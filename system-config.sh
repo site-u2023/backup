@@ -20,7 +20,6 @@ download_country_zone() {
     if [ ! -f "${BASE_DIR%/}/country-zonename.sh" ]; then
         wget --quiet -O "${BASE_DIR%/}/country-zonename.sh" "${BASE_URL}/country-zonename.sh" || {
             echo "Failed to download country-zonename.sh"
-            source "${BASE_DIR%/}/common-functions.sh"
             exit 1
         }
     fi

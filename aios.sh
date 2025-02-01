@@ -9,7 +9,12 @@ SUPPORTED_VERSIONS="19 21 22 23 24 SN"
 
 check_version() {
     RELEASE_VERSION=$(awk -F"'" '/DISTRIB_RELEASE/ {print $2}' /etc/openwrt_release | cut -c 1-2)
-    if ! echo "${SUPPORTED_VERSIONS}" | grep -qw "${RELEASE_VERSION}"; then
+    if echo "${SUPPORTED_VERSIONS}" | grep -qw "${RELEASE_VERSION}"; then
+        echo "${RELEASE_VERSION}" > ${BASE_DIR}/check_version
+        INPUT_LANG=$1
+        INPUT_LANG=$(echo "$INPUT_LANG" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//' | tr -d '\n')
+        echo "${INPUT_LANG}" > ${BASE_DIR}/check_language
+    else
         echo "Unsupported OpenWrt version: ${RELEASE_VERSION}"
         echo "Supported versions: ${SUPPORTED_VERSIONS}"
         exit 1
@@ -57,9 +62,7 @@ download_and_execute() {
     echo -e "\nInstallation Complete"
     echo "aios has been installed successfully."
     echo "You can now run the 'aios' script anywhere."
-    #echo "${SELECTED_LANGUAGE}" > ${BASE_DIR}/check_language
-    echo "${RELEASE_VERSION}" > ${BASE_DIR}/check_version
-    /usr/bin/aios "$1" || {
+    /usr/bin/aios || {
         echo "Failed to execute aios script."
         exit 1
     }

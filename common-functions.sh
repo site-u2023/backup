@@ -100,7 +100,7 @@ check_language() {
 
     read -p "Choose an option: " INPUT_LANG
     #INPUT_LANG=$(echo "$INPUT_LANG" | awk '{$1=$1; print}')
-    INPUT_LANG=$(echo "$INPUT_LANG" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//' | tr -d '\n')
+    #INPUT_LANG=$(echo "$INPUT_LANG" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//' | tr -d '\n')
     #INPUT_LANG=$(echo "$INPUT_LANG" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
     #INPUT_LANG=$(echo "$1" | tr -d '[:space:]')
 echo 1 $INPUT_LANG
@@ -212,9 +212,9 @@ check_common() {
     
     # カントリー選択の判定 
 echo x1 $1
-    #INPUT_LANG=$1
+    INPUT_LANG=$1
     #INPUT_LANG=$(echo "$INPUT_LANG" | awk '{$1=$1; print}')
-    INPUT_LANG=$(echo "$INPUT_LANG" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//' | tr -d '\n')
+    #INPUT_LANG=$(echo "$INPUT_LANG" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//' | tr -d '\n')
     #INPUT_LANG=$(echo "$INPUT_LANG" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
     #INPUT_LANG=$(echo "$1" | tr -d '[:space:]')
 echo x2 $INPUT_LANG

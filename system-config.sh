@@ -9,20 +9,35 @@ SELECTED_COUNTRY=$(cat "${BASE_DIR}/check_country")
 echo 1 $SELECTED_COUNTRY
 SUPPORTED_LANGUAGES="en ja zh-cn zh-tw"
 
-download_common() {
-    if [ ! -f "${BASE_DIR}/common-functions.sh" ]; then
-        wget --quiet -O "${BASE_DIR}/common-functions.sh" "${BASE_URL}/common-functions.sh"
+download_country_zone() {
+    if [ ! -f "${BASE_DIR%/}/country-timezone.sh" ]; then
+        wget --quiet -O "${BASE_DIR%/}/country-timezone.sh" "${BASE_URL}/country-timezone.sh" || {
+            echo "Failed to download country-timezone.sh"
+            exit 1
+        }
     fi
-    source "${BASE_DIR}/common-functions.sh"
+
+    if [ ! -f "${BASE_DIR%/}/country-zonename.sh" ]; then
+        wget --quiet -O "${BASE_DIR%/}/country-zonename.sh" "${BASE_URL}/country-zonename.sh" || {
+            echo "Failed to download country-zonename.sh"
+            source "${BASE_DIR%/}/common-functions.sh"
+            exit 1
+        }
+    fi
 }
 
-download_country_zone() {
-    if [ ! -f "${BASE_DIR}/country-timezone.sh" ]; then
-        wget --quiet -O "${BASE_DIR}/country-timezone.sh" "${BASE_URL}/country-timezone.sh"
+download_and_execute_common() {
+    if [ ! -f "${BASE_DIR%/}/common-functions.sh" ]; then
+        wget --quiet -O "${BASE_DIR%/}/common-functions.sh" "${BASE_URL}/common-functions.sh" || {
+            echo "Failed to download common-functions.sh"
+            exit 1
+        }
     fi
-    if [ ! -f "${BASE_DIR}/country-zonename.sh" ]; then
-        wget --quiet -O "${BASE_DIR}/country-zonename.sh" "${BASE_URL}/country-zonename.sh"
-    fi    
+
+    source "${BASE_DIR%/}/common-functions.sh" || {
+        echo "Failed to source common-functions.sh"
+        exit 1
+    }
 }
 
 information() {
@@ -307,8 +322,8 @@ read -p " Press any key (Reboot the device)"
 reboot
 }
 
-download_common
 download_country_zone
+download_and_execute_common
 check_common "$1"
 country_zone
 information

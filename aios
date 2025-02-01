@@ -35,17 +35,17 @@ banner() {
             all_in_one="all in one scripts"
             ;;
         ja)
-            msg="OpenWrt 専用設定ソフトウェア"
+            msg="OpenWrt専用設定ソフトウェア"
             disclaimer="免責事項: 本スクリプトは自己責任でご使用下さい"
             all_in_one="オールインワンスクリプト"
             ;;
         zh-cn)
-            msg="OpenWrt 封装配置软件"
+            msg="OpenWrt封装配置软件"
             disclaimer="声明: 使用本脚本风险自承"
             all_in_one="全面集成脚本"
             ;;
         zh-tw)
-            msg="OpenWrt 專用設定軟體"
+            msg="OpenWrt專用設定軟體"
             disclaimer="免責聲明: 請自行承擔使用本脚本"
             all_in_one="全功能集成脚本"
             ;;

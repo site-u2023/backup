@@ -146,7 +146,7 @@ check_language() {
 }
 
 normalize_language() {
-echo common1 $SELECTED_COUNTRY
+echo common3 $SELECTED_COUNTRY
     CHECK_LANGUAGE="${BASE_DIR}/check_language"
     if [ -f "$CHECK_LANGUAGE" ]; then
         READ_LANGUAGE=$(cat "$CHECK_LANGUAGE")
@@ -158,7 +158,7 @@ echo common1 $SELECTED_COUNTRY
             return
         fi
     done
-echo common1 $SELECTED_COUNTRY
+echo common4 $SELECTED_COUNTRY
     SELECTED_LANGUAGE="en"
 }
 
@@ -213,7 +213,7 @@ echo common1 $SELECTED_COUNTRY
             check_language    
         fi
     fi
-echo common1 $SELECTED_COUNTRY
+echo common2 $SELECTED_COUNTRY
     normalize_language
 }
 

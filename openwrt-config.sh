@@ -43,9 +43,7 @@ get_system_info() {
     MEM_FREE=$(grep MemAvailable /proc/meminfo | awk '{print $2 / 1024 " MB"}')
     MEM_USAGE="${MEM_FREE} / ${MEM_TOTAL}"
 
-    FLASH_TOTAL=$(df -h | grep '/overlay' | awk '{print $2}')
-    FLASH_AVAILABLE=$(df -h | grep '/overlay' | awk '{print $4}')
-    FLASH_USAGE="${FLASH_AVAILABLE} / ${FLASH_TOTAL}"
+    FLASH_INFO=$(df -h | grep '/overlay' | awk '{print $4 " / " $2}')
 
     if lsusb >/dev/null 2>&1; then
         USB_STATUS_EN="Detected"
@@ -58,13 +56,20 @@ get_system_info() {
         USB_STATUS_ZH_CN="未检测"
         USB_STATUS_ZH_TW="未檢測"
     fi
+
+    if [ -f "${BASE_DIR}/check_country" ]; then
+        ZONENAME_FULL=$(sh ${BASE_DIR}/country-zonename.sh "$(cat ${BASE_DIR}/check_country)")
+        ZONENAME=$(echo "$ZONENAME_FULL" | awk '{print $1}')
+    else
+        ZONENAME="Not Set"
+    fi
 }
 
 display_info() {
     case "$SELECTED_LANGUAGE" in
         en)
             echo -e "$(color "white" "Memory (Free/Total): ${MEM_USAGE}")"
-            echo -e "$(color "white" "Flash (Free/Total): ${FLASH_USAGE}")"
+            echo -e "$(color "white" "Flash (Free/Total): ${FLASH_INFO}")"
             echo -e "$(color "white" "USB: ${USB_STATUS_EN}")"
             echo -e "$(color "white" "Directory: ${BASE_DIR}")"
             echo -e "$(color "white" "OpenWrt Version: ${RELEASE_VERSION}")"
@@ -73,7 +78,7 @@ display_info() {
             ;;
         ja)
             echo -e "$(color "white" "メモリ (残量/総容量): ${MEM_USAGE}")"
-            echo -e "$(color "white" "フラッシュ (残量/総容量): ${FLASH_USAGE}")"
+            echo -e "$(color "white" "フラッシュ (残量/総容量): ${FLASH_INFO}")"
             echo -e "$(color "white" "USB: ${USB_STATUS_JA}")"
             echo -e "$(color "white" "ディレクトリ: ${BASE_DIR}")"
             echo -e "$(color "white" "OpenWrtバージョン: ${RELEASE_VERSION}")"
@@ -82,7 +87,7 @@ display_info() {
             ;;
         zh-cn)
             echo -e "$(color "white" "内存 (剩余/总计): ${MEM_USAGE}")"
-            echo -e "$(color "white" "闪存 (剩余/总计): ${FLASH_USAGE}")"
+            echo -e "$(color "white" "闪存 (剩余/总计): ${FLASH_INFO}")"
             echo -e "$(color "white" "USB: ${USB_STATUS_ZH_CN}")"
             echo -e "$(color "white" "目录: ${BASE_DIR}")"
             echo -e "$(color "white" "OpenWrt版本: ${RELEASE_VERSION}")"
@@ -91,7 +96,7 @@ display_info() {
             ;;
         zh-tw)
             echo -e "$(color "white" "記憶體 (剩餘/總計): ${MEM_USAGE}")"
-            echo -e "$(color "white" "快閃記憶體 (剩餘/總計): ${FLASH_USAGE}")"
+            echo -e "$(color "white" "快閃記憶體 (剩餘/總計): ${FLASH_INFO}")"
             echo -e "$(color "white" "USB: ${USB_STATUS_ZH_TW}")"
             echo -e "$(color "white" "目錄: ${BASE_DIR}")"
             echo -e "$(color "white" "OpenWrt版本: ${RELEASE_VERSION}")"
@@ -100,7 +105,7 @@ display_info() {
             ;;
         *)
             echo -e "$(color "white" "Memory (Free/Total): ${MEM_USAGE}")"
-            echo -e "$(color "white" "Flash (Free/Total): ${FLASH_USAGE}")"
+            echo -e "$(color "white" "Flash (Free/Total): ${FLASH_INFO}")"
             echo -e "$(color "white" "USB: ${USB_STATUS_EN}")"
             echo -e "$(color "white" "Directory: ${BASE_DIR}")"
             echo -e "$(color "white" "OpenWrt Version: ${RELEASE_VERSION}")"

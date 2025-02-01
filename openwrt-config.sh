@@ -7,10 +7,6 @@ BASE_DIR="/tmp/aios"
 SUPPORTED_VERSIONS="19 21 22 23 24 SN"
 SUPPORTED_LANGUAGES="en ja zh-cn zh-tw"
 
-make_directory() {
-    mkdir -p "$BASE_DIR"
-}
-
 download_country_zone() {
     if [ ! -f "${BASE_DIR%/}/country-timezone.sh" ]; then
         wget --quiet -O "${BASE_DIR%/}/country-timezone.sh" "${BASE_URL}/country-timezone.sh" || {
@@ -201,7 +197,6 @@ main_menu() {
     done
 }
 
-make_directory
 download_country_zone
 download_and_execute_common
 check_common "$1"

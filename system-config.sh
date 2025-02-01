@@ -5,6 +5,7 @@
 BASE_URL="https://raw.githubusercontent.com/site-u2023/aios/main"
 BASE_DIR="/tmp/aios"
 SUPPORTED_VERSIONS="21 22 23 24 SN"
+SELECTED_COUNTRY=$(cat "${BASE_DIR}/check_country")
 SUPPORTED_LANGUAGES="en ja zh-cn zh-tw"
 
 download_common() {
@@ -24,7 +25,7 @@ download_country_zone() {
 }
 
 information() {
-  local lang="${SELECTED_LANGUAGE:-en}"
+  local lang="${SELECTED_COUNTRY:-en}"
   
   case "$lang" in
     en)

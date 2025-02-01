@@ -57,9 +57,9 @@ banner() {
 
 delete_language() {
     rm -rf "${BASE_DIR}/check_language"
+    rm -rf "${BASE_DIR}/check_country"
     echo "Initialized check_language."
-    SELECTED_LANGUAGE=$1
-    echo "${SELECTED_LANGUAGE}" > ${BASE_DIR}/check_language
+    echo "Initialized check_country."
 }
 
 make_directory() {

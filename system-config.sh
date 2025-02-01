@@ -29,7 +29,7 @@ information() {
   case "$SELECTED_LANGUAGE" in
     en)
       if echo "$LANGUAGE" | grep -q "/"; then
-        echo -e "$(color "white" "country: $(echo "$COUNTRY" | awk '{print $1}')")"
+        echo -e "$(color "white" "Country: $(echo "$COUNTRY" | awk '{print $1}')")"
       else
         echo -e "$(color "white" "Language: $LANGUAGE")"
       fi

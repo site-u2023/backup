@@ -68,6 +68,12 @@ check_package_manager() {
 }
 
 check_common() {
+    # --reset オプションが渡された場合、キャッシュをクリア
+    if [ "$1" = "--reset" ]; then
+        rm -f "${BASE_DIR}/check_language" "${BASE_DIR}/check_country"
+        echo "Language and country cache cleared."
+        shift  # 次の引数（言語コード）を処理するためにシフト
+    fi
 
     # バージョン情報の取得
     if [ -f "${BASE_DIR}/check_version" ]; then
@@ -81,117 +87,98 @@ check_common() {
     fi
     [ -z "$PACKAGE_MANAGER" ] && check_package_manager  
 
-    # カントリー選択の判定 
-    if [ -f "${BASE_DIR}/check_language" ] && [ -f "${BASE_DIR}/check_country" ]; then
-        SELECTED_LANGUAGE=$(cat "${BASE_DIR}/check_language")
-        SELECTED_COUNTRY=$(cat "${BASE_DIR}/check_country")
-        echo "Using previously selected language and country."
-        normalize_language
-        return
+    # コマンドライン引数で言語が指定されている場合、それを優先
+    if [ -n "$1" ]; then
+        process_language_selection "$1"
     fi
 
-    INPUT_LANG=$1
-    INPUT_LANG=$(echo "$INPUT_LANG" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//' | tr -d '\n')
+    # キャッシュが存在する場合、読み込み
+    if [ -f "${BASE_DIR}/check_language" ]; then
+        SELECTED_LANGUAGE=$(cat "${BASE_DIR}/check_language")
+    fi
+    if [ -f "${BASE_DIR}/check_country" ]; then
+        SELECTED_COUNTRY=$(cat "${BASE_DIR}/check_country")
+    fi
+
+    # 言語が未設定の場合はユーザーに選択を促す
+    if [ -z "$SELECTED_LANGUAGE" ]; then
+        check_language
+    fi
+
+    normalize_language  # 言語の正規化（最後に実行）
+}
+
+process_language_selection() {
+    INPUT_LANG=$(echo "$1" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//' | tr -d '\n')
     echo "Input Language: $INPUT_LANG"
 
-    if [ -n "$INPUT_LANG" ]; then
-        found_entries=$(sh /tmp/aios/country-timezone.sh "$INPUT_LANG")
-        num_matches=$(echo "$found_entries" | wc -l)
+    found_entries=$(sh /tmp/aios/country-timezone.sh "$INPUT_LANG")
+    num_matches=$(echo "$found_entries" | wc -l)
 
-        if [ "$num_matches" -gt 1 ]; then
-            echo "Multiple matches found. Please select:"
-            i=1
-            echo "$found_entries" | while IFS= read -r line; do
-                echo "$i) $line"
-                i=$((i+1))
-            done
-            read -p "Enter the number of your choice: " choice
-            found_entry=$(echo "$found_entries" | sed -n "${choice}p")
-        else
-            found_entry="$found_entries"
-        fi
-
-        SELECTED_LANGUAGE=$(echo "$found_entry" | awk '{print $2}')
-        SELECTED_COUNTRY=$(echo "$found_entry" | awk '{print $3}')
-
-        echo "Selected Language: $SELECTED_LANGUAGE"
-        echo "Selected Country (after script): $SELECTED_COUNTRY"
-        echo "$SELECTED_LANGUAGE" > "${BASE_DIR}/check_language"
-        echo "$SELECTED_COUNTRY" > "${BASE_DIR}/check_country"
+    if [ "$num_matches" -gt 1 ]; then
+        echo "Multiple matches found. Please select:"
+        i=1
+        echo "$found_entries" | while IFS= read -r line; do
+            echo "$i) $line"
+            i=$((i+1))
+        done
+        read -p "Enter the number of your choice: " choice
+        found_entry=$(echo "$found_entries" | sed -n "${choice}p")
     else
-        check_language    
+        found_entry="$found_entries"
     fi
-    normalize_language
+
+    SELECTED_LANGUAGE=$(echo "$found_entry" | awk '{print $2}')
+    SELECTED_COUNTRY=$(echo "$found_entry" | awk '{print $3}')
+
+    echo "Selected Language: $SELECTED_LANGUAGE"
+    echo "Selected Country (after script): $SELECTED_COUNTRY"
+    echo "$SELECTED_LANGUAGE" > "${BASE_DIR}/check_language"
+    echo "$SELECTED_COUNTRY" > "${BASE_DIR}/check_country"
 }
 
 check_language() {
-
-    echo -e "$(color "white" "------------------------------------------------------")"
-    echo -e "$(color "white" "Select your language")"
-    echo -e "$(color "white" "[en]: English")"
-    echo -e "$(color "white" "[ja]: 日本語")"
-    echo -e "$(color "white" "[bg]: български")"
-    echo -e "$(color "white" "[ca]: Català")"
-    echo -e "$(color "white" "[cs]: Čeština")"
-    echo -e "$(color "white" "[de]: Deutsch")"
-    echo -e "$(color "white" "[el]: Ελληνικά")"
-    echo -e "$(color "white" "[es]: Español")"
-    echo -e "$(color "white" "[fr]: Français")"
-    echo -e "$(color "white" "[he]: עִבְרִית")"
-    echo -e "$(color "white" "[hi]: हिंदी")"
-    echo -e "$(color "white" "[hu]: Magyar")"
-    echo -e "$(color "white" "[it]: Italiano")"
-    echo -e "$(color "white" "[ko]: 한국어")"
-    echo -e "$(color "white" "[mr]: मराठी")"
-    echo -e "$(color "white" "[ms]: Bahasa Melayu")"
-    echo -e "$(color "white" "[no]: Norsk")"
-    echo -e "$(color "white" "[pl]: Polski")"
-    echo -e "$(color "white" "[pt]: Português")"
-    echo -e "$(color "white" "[pt-br]: Português do Brasil")"
-    echo -e "$(color "white" "[ro]: Română")"
-    echo -e "$(color "white" "[ru]: Русский")"
-    echo -e "$(color "white" "[sk]: Slovenčina")"
-    echo -e "$(color "white" "[sv]: Svenska")"
-    echo -e "$(color "white" "[tr]: Türkçe")"
-    echo -e "$(color "white" "[uk]: Українська")"
-    echo -e "$(color "white" "[vi]: Tiếng Việt")"
-    echo -e "$(color "white" "[zh-cn]: 简体中文")"
-    echo -e "$(color "white" "[zh-tw]: 繁體中文")"
-    echo -e "$(color "white" "[ar]: العربية")"
-    echo -e "$(color "white" "[bn]: বাংলা")"
-    echo -e "$(color "white" "[da]: Dansk")"
-    echo -e "$(color "white" "[fi]: Suomi")"
-    echo -e "$(color "white" "[nl]: Nederlands")"
-    echo -e "$(color "white" "[xx]: otherwise")"
-    echo -e "$(color "white" "------------------------------------------------------")"
+    echo -e "$(color \"white\" \"------------------------------------------------------\")"
+    echo -e "$(color \"white\" \"Select your language\")"
+    echo -e "$(color \"white\" \"[en]: English\")"
+    echo -e "$(color \"white\" \"[ja]: 日本語\")"
+    echo -e "$(color \"white\" \"[bg]: български\")"
+    echo -e "$(color \"white\" \"[ca]: Catal\u00e0\")"
+    echo -e "$(color \"white\" \"[cs]: Čeština\")"
+    echo -e "$(color \"white\" \"[de]: Deutsch\")"
+    echo -e "$(color \"white\" \"[el]: Ελληνικά\")"
+    echo -e "$(color \"white\" \"[es]: Español\")"
+    echo -e "$(color \"white\" \"[fr]: Français\")"
+    echo -e "$(color \"white\" \"[he]: עִבְרִית\")"
+    echo -e "$(color \"white\" \"[hi]: हिंदी\")"
+    echo -e "$(color \"white\" \"[hu]: Magyar\")"
+    echo -e "$(color \"white\" \"[it]: Italiano\")"
+    echo -e "$(color \"white\" \"[ko]: 한국어\")"
+    echo -e "$(color \"white\" \"[mr]: मराठी\")"
+    echo -e "$(color \"white\" \"[ms]: Bahasa Melayu\")"
+    echo -e "$(color \"white\" \"[no]: Norsk\")"
+    echo -e "$(color \"white\" \"[pl]: Polski\")"
+    echo -e "$(color \"white\" \"[pt]: Português\")"
+    echo -e "$(color \"white\" \"[pt-br]: Português do Brasil\")"
+    echo -e "$(color \"white\" \"[ro]: Română\")"
+    echo -e "$(color \"white\" \"[ru]: Русский\")"
+    echo -e "$(color \"white\" \"[sk]: Slovenčina\")"
+    echo -e "$(color \"white\" \"[sv]: Svenska\")"
+    echo -e "$(color \"white\" \"[tr]: Türkçe\")"
+    echo -e "$(color \"white\" \"[uk]: Українська\")"
+    echo -e "$(color \"white\" \"[vi]: Tiếng Việt\")"
+    echo -e "$(color \"white\" \"[zh-cn]: 简体中文\")"
+    echo -e "$(color \"white\" \"[zh-tw]: 繁體中文\")"
+    echo -e "$(color \"white\" \"[ar]: العربية\")"
+    echo -e "$(color \"white\" \"[bn]: বাংলা\")"
+    echo -e "$(color \"white\" \"[da]: Dansk\")"
+    echo -e "$(color \"white\" \"[fi]: Suomi\")"
+    echo -e "$(color \"white\" \"[nl]: Nederlands\")"
+    echo -e "$(color \"white\" \"[xx]: otherwise\")"
+    echo -e "$(color \"white\" \"------------------------------------------------------\")"
 
     read -p "Choose an option: " INPUT_LANG
-    INPUT_LANG=$(echo "$INPUT_LANG" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//' | tr -d '\n')
-
-    if [ -n "$INPUT_LANG" ]; then
-        found_entries=$(sh /tmp/aios/country-timezone.sh "$INPUT_LANG")
-        num_matches=$(echo "$found_entries" | wc -l)
-
-        if [ "$num_matches" -gt 1 ]; then
-            echo "Multiple matches found. Please select:"
-            i=1
-            printf "%s\n" "$found_entries" | while IFS= read -r line; do
-                echo "$i) $line"
-                i=$((i+1))
-            done
-
-            read -p "Enter the number of your choice: " choice
-            found_entry=$(echo "$found_entries" | sed -n "${choice}p")
-        else
-            found_entry="$found_entries"
-        fi
-
-        SELECTED_LANGUAGE=$(echo "$found_entry" | awk '{print $2}')
-        SELECTED_COUNTRY=$(echo "$found_entry" | awk '{print $3}')
-
-        echo "$SELECTED_LANGUAGE" > "${BASE_DIR}/check_language"
-        echo "$SELECTED_COUNTRY" > "${BASE_DIR}/check_country"
-    fi
+    process_language_selection "$INPUT_LANG"
 
     normalize_language
 }

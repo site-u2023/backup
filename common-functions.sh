@@ -68,8 +68,6 @@ check_package_manager() {
 }
 
 check_common() {
-    SELECTED_COUNTRY=$(cat "${BASE_DIR}/check_country")
-    echo common1 $SELECTED_COUNTRY
 
     # バージョン情報の取得
     if [ -f "${BASE_DIR}/check_version" ]; then
@@ -108,7 +106,7 @@ EOF
         fi
 
         SELECTED_LANGUAGE=$(echo "$found_entry" | awk '{print $2}')
-        SELECTED_COUNTRY=$(sh /tmp/aios/country-zonename.sh "$INPUT_LANG" | awk '{print $3}' | head -n 1)
+        SELECTED_COUNTRY=$(echo "$found_entry" | awk '{print $3}')
 
         echo "Selected Language: $SELECTED_LANGUAGE"
         echo "Selected Country (after script): $SELECTED_COUNTRY"
@@ -124,7 +122,6 @@ EOF
             check_language    
         fi
     fi
-    echo common2 $SELECTED_COUNTRY
     normalize_language
 }
 

@@ -373,7 +373,7 @@ menu_option() {
             if ask_confirmation "download"; then
                 if wget --quiet -O "${BASE_DIR}/${script_name}" "${BASE_URL}/${script_name}"; then
                     show_notification "download_success"
-                    . "${BASE_DIR}/${script_name}" "$INPUT_LANG"
+                    . "${BASE_DIR}/${script_name}" # "$INPUT_LANG"
                 else
                     show_notification "download_failure"
                 fi

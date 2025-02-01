@@ -73,5 +73,5 @@ uci commit ttyd
 }
 
 download_common
-check_common #"$INPUT_LANG"
+check_common "$INPUT_LANG"
 check_ttyd_installed

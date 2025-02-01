@@ -13,33 +13,32 @@ banner() {
 
     case "$lang" in
         en)
-            msg="    Dedicated configuration software for OpenWrt.     "
-            disclaimer="    Disclaimer: Use this script at your own risk.     "
-            all_in_one="                  all in one scripts                  "
+            msg="Dedicated configuration software for OpenWrt."
+            disclaimer="Disclaimer: Use this script at your own risk."
+            all_in_one="all in one scripts"
             ;;
         ja)
-            msg="              OpenWrt 専用設定ソフトウェア              "
-            disclaimer="      免責事項: 本スクリプトは自己責任でご使用下さい      "
-            all_in_one="                オールインワンスクリプト                "
+            msg="OpenWrt 専用設定ソフトウェア"
+            disclaimer="免責事項: 本スクリプトは自己責任でご使用下さい"
+            all_in_one="オールインワンスクリプト"
             ;;
         zh-cn)
-            msg="              OpenWrt 封装配置软件              "
-            disclaimer="      声明: 使用本脚本风险自承      "
-            all_in_one="                全面集成脚本                "
+            msg="OpenWrt 封装配置软件"
+            disclaimer="声明: 使用本脚本风险自承"
+            all_in_one="全面集成脚本"
             ;;
         zh-tw)
-            msg="              OpenWrt 專用設定軟體              "
-            disclaimer="      免責聲明: 請自行承擔使用本脚本      "
-            all_in_one="                全功能集成脚本                "
+            msg="OpenWrt 專用設定軟體"
+            disclaimer="免責聲明: 請自行承擔使用本脚本"
+            all_in_one="全功能集成脚本"
             ;;
         *)
-            msg="    Unknown language setting. Please set 'en' or 'ja'."
-            disclaimer="    Disclaimer: Language setting is not recognized."
-            all_in_one="                  Language Error                    "
+            msg="Unknown language setting. Please set 'en' or 'ja'."
+            disclaimer="Disclaimer: Language setting is not recognized."
+            all_in_one="Language Error"
             ;;
     esac
 
-    echo -e "$(color "white"     "$msg")"
     echo -e "$(color "white"     "                                                      ")"
     echo -e "$(color "magenta"   "                    ii i                              ")"
     echo -e "$(color "blue"      "         aaaa      iii       oooo      sssss          ")"
@@ -48,8 +47,9 @@ banner() {
     echo -e "$(color "yellow"    "        aa  aa      ii      oo  oo         ss         ")"
     echo -e "$(color "red"       "         aaaaa     iiii      oooo     ssssss          ")"
     echo -e "$(color "white"     "                                                      ")"
-    echo -e "$(color "white"     "$all_in_one")"
     echo -e "$(color "white"     "                                                      ")"
+    echo -e "$(color "white"     "$msg")"
+    echo -e "$(color "white"     "$all_in_one")"
     echo -e "$(color "red_white" "$disclaimer")"
 }
 

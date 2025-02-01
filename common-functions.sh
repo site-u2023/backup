@@ -86,6 +86,7 @@ check_common() {
         SELECTED_LANGUAGE=$(cat "${BASE_DIR}/check_language")
         SELECTED_COUNTRY=$(cat "${BASE_DIR}/check_country")
         echo "Using previously selected language and country."
+        normalize_language
         return
     fi
 

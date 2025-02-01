@@ -58,7 +58,9 @@ get_system_info() {
 }
 
 display_info() {
-    case "$SELECTED_LANGUAGE" in
+    local lang="$SELECTED_LANGUAGE" 
+    
+    case "$lang" in
         en)
             echo -e "$(color "white" "Memory (Free/Total): ${MEM_USAGE}")"
             echo -e "$(color "white" "Flash (Free/Total): ${FLASH_INFO}")"

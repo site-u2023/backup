@@ -148,7 +148,7 @@ check_language() {
     normalize_language
 }
 
-normalize_language() {
+XXXnormalize_language() {
 CHECK_LANGUAGE="${BASE_DIR}/check_language"
 if [ -f "$CHECK_LANGUAGE" ]; then
     READ_LANGUAGE=$(cat "$CHECK_LANGUAGE")
@@ -164,6 +164,21 @@ case "$READ_LANGUAGE" in
 esac
 }
 
+normalize_language() {
+    CHECK_LANGUAGE="${BASE_DIR}/check_language"
+    if [ -f "$CHECK_LANGUAGE" ]; then
+        READ_LANGUAGE=$(cat "$CHECK_LANGUAGE")
+    fi
+
+    for lang in $SUPPORTED_LANGUAGES; do
+        if [ "$READ_LANGUAGE" = "$lang" ]; then
+            SELECTED_LANGUAGE="$READ_LANGUAGE"
+            return
+        fi
+    done
+
+    SELECTED_LANGUAGE="en"
+}
 
 check_package_manager() {
     if command -v apk >/dev/null 2>&1; then

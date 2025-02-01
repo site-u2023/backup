@@ -101,12 +101,10 @@ check_common() {
         if [ "$num_matches" -gt 1 ]; then
             echo "Multiple matches found. Please select:"
             i=1
-            while IFS= read -r line; do
+            echo "$found_entries" | while IFS= read -r line; do
                 echo "$i) $line"
                 i=$((i+1))
-            done <<EOF
-$found_entries
-EOF
+            done
             read -p "Enter the number of your choice: " choice
             found_entry=$(echo "$found_entries" | sed -n "${choice}p")
         else

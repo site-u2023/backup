@@ -233,21 +233,48 @@ ask_confirmation() {
     local message_key="$1"
     local message
 
-    if [ "${SELECTED_LANGUAGE}" = "en" ]; then
-        case "$message_key" in
-            "download") message="Execute download?" ;;
-            "exit") message="Are you sure you want to exit?" ;;
-            "delete") message="Are you sure you want to delete the script and exit?" ;;
-            *) message="Are you sure?" ;;
-        esac
-    elif [ "${SELECTED_LANGUAGE}" = "ja" ]; then
-        case "$message_key" in
-            "download") message="ダウンロードを実行しますか？" ;;
-            "exit") message="終了してもよろしいですか？" ;;
-            "delete") message="スクリプトを削除して終了しますか？" ;;
-            *) message="実行しますか？" ;;
-        esac
-    fi
+    case "${SELECTED_LANGUAGE}" in
+        en)
+            case "$message_key" in
+                "download") message="Execute download?" ;;
+                "exit") message="Are you sure you want to exit?" ;;
+                "delete") message="Are you sure you want to delete the script and exit?" ;;
+                *) message="Are you sure?" ;;
+            esac
+            ;;
+        ja)
+            case "$message_key" in
+                "download") message="ダウンロードを実行しますか？" ;;
+                "exit") message="終了してもよろしいですか？" ;;
+                "delete") message="スクリプトを削除して終了しますか？" ;;
+                *) message="実行しますか？" ;;
+            esac
+            ;;
+        zh-cn)
+            case "$message_key" in
+                "download") message="要执行下载吗？" ;;
+                "exit") message="您确定要退出吗？" ;;
+                "delete") message="您确定要删除脚本并退出吗？" ;;
+                *) message="您确定吗？" ;;
+            esac
+            ;;
+        zh-tw)
+            case "$message_key" in
+                "download") message="要執行下載嗎？" ;;
+                "exit") message="您確定要退出嗎？" ;;
+                "delete") message="您確定要刪除腳本並退出嗎？" ;;
+                *) message="您確定嗎？" ;;
+            esac
+            ;;
+        *)
+            case "$message_key" in
+                "download") message="Execute download?" ;;
+                "exit") message="Are you sure you want to exit?" ;;
+                "delete") message="Are you sure you want to delete the script and exit?" ;;
+                *) message="Are you sure?" ;;
+            esac
+            ;;
+    esac
 
     while true; do
         read -p "$(color "white" "${message} [y/n]: ")" choice
@@ -262,33 +289,74 @@ ask_confirmation() {
 show_notification() {
     local message_key="$1"
     local message
-    local lang="${SELECTED_LANGUAGE:-en}"
-    
-    if [ "$lang" = "en" ]; then
-        case "$message_key" in
-            "download_success") message="Download successful." ;;
-            "download_failure") message="Download failed." ;;
-            "exit_cancelled") message="Exit operation cancelled." ;;
-            "delete_cancelled") message="Delete operation cancelled." ;;
-            "delete_success") message="Script and configuration deleted." ;;
-            "download_cancelled") message="Download operation cancelled." ;;
-            "exit") message="Exit operation completed." ;;
-            "delete") message="Delete operation completed." ;;
-            *) message="Operation completed." ;;
-        esac
-    elif [ "$lang" = "ja" ]; then
-        case "$message_key" in
-            "download_success") message="ダウンロードが成功しました。" ;;
-            "download_failure") message="ダウンロードに失敗しました。" ;;
-            "exit_cancelled") message="終了操作がキャンセルされました。" ;;
-            "delete_cancelled") message="削除操作がキャンセルされました。" ;;
-            "delete_success") message="スクリプトと設定が削除されました。" ;;
-            "download_cancelled") message="ダウンロード操作がキャンセルされました。" ;;
-            "exit") message="終了操作が完了しました。" ;;
-            "delete") message="削除操作が完了しました。" ;;
-            *) message="操作が完了しました。" ;;
-        esac
-    fi
+
+    case "${SELECTED_LANGUAGE}" in
+        en)
+            case "$message_key" in
+                "download_success") message="Download successful." ;;
+                "download_failure") message="Download failed." ;;
+                "exit_cancelled") message="Exit operation cancelled." ;;
+                "delete_cancelled") message="Delete operation cancelled." ;;
+                "delete_success") message="Script and configuration deleted." ;;
+                "download_cancelled") message="Download operation cancelled." ;;
+                "exit") message="Exit operation completed." ;;
+                "delete") message="Delete operation completed." ;;
+                *) message="Operation completed." ;;
+            esac
+            ;;
+        ja)
+            case "$message_key" in
+                "download_success") message="ダウンロードが成功しました。" ;;
+                "download_failure") message="ダウンロードに失敗しました。" ;;
+                "exit_cancelled") message="終了操作がキャンセルされました。" ;;
+                "delete_cancelled") message="削除操作がキャンセルされました。" ;;
+                "delete_success") message="スクリプトと設定が削除されました。" ;;
+                "download_cancelled") message="ダウンロード操作がキャンセルされました。" ;;
+                "exit") message="終了操作が完了しました。" ;;
+                "delete") message="削除操作が完了しました。" ;;
+                *) message="操作が完了しました。" ;;
+            esac
+            ;;
+        zh-cn)
+            case "$message_key" in
+                "download_success") message="下载成功。" ;;
+                "download_failure") message="下载失败。" ;;
+                "exit_cancelled") message="退出操作已取消。" ;;
+                "delete_cancelled") message="删除操作已取消。" ;;
+                "delete_success") message="脚本和配置已删除。" ;;
+                "download_cancelled") message="下载操作已取消。" ;;
+                "exit") message="退出操作已完成。" ;;
+                "delete") message="删除操作已完成。" ;;
+                *) message="操作已完成。" ;;
+            esac
+            ;;
+        zh-tw)
+            case "$message_key" in
+                "download_success") message="下載成功。" ;;
+                "download_failure") message="下載失敗。" ;;
+                "exit_cancelled") message="退出操作已取消。" ;;
+                "delete_cancelled") message="刪除操作已取消。" ;;
+                "delete_success") message="腳本和配置已刪除。" ;;
+                "download_cancelled") message="下載操作已取消。" ;;
+                "exit") message="退出操作已完成。" ;;
+                "delete") message="刪除操作已完成。" ;;
+                *) message="操作已完成。" ;;
+            esac
+            ;;
+        *)
+            case "$message_key" in
+                "download_success") message="Download successful." ;;
+                "download_failure") message="Download failed." ;;
+                "exit_cancelled") message="Exit operation cancelled." ;;
+                "delete_cancelled") message="Delete operation cancelled." ;;
+                "delete_success") message="Script and configuration deleted." ;;
+                "download_cancelled") message="Download operation cancelled." ;;
+                "exit") message="Exit operation completed." ;;
+                "delete") message="Delete operation completed." ;;
+                *) message="Operation completed." ;;
+            esac
+            ;;
+    esac
 
     echo -e "$(color "white" "${message}")"
 }

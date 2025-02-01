@@ -162,9 +162,11 @@ check_language() {
     echo -e "$(color \"white\" \"[xx]: otherwise\")"
     echo -e "$(color \"white\" \"------------------------------------------------------\")"
 
+    # 言語の入力を促す
     read -p "Choose an option: " INPUT_LANG
-    INPUT_LANG=$(echo "$INPUT_LANG" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//' | tr -d '\n')
+    INPUT_LANG=$(echo "$INPUT_LANG" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
 
+    # 入力がある場合の処理
     if [ -n "$INPUT_LANG" ]; then
         found_entries=$(sh /tmp/aios/country-timezone.sh "$INPUT_LANG")
         num_matches=$(echo "$found_entries" | wc -l)
@@ -172,10 +174,10 @@ check_language() {
         if [ "$num_matches" -gt 1 ]; then
             echo "Multiple matches found. Please select:"
             i=1
-            while IFS= read -r line; do
+            echo "$found_entries" | while IFS= read -r line; do
                 echo "$i) $line"
-                i=$((i+1))
-            done <<< "$found_entries"
+                i=$((i + 1))
+            done
 
             read -p "Enter the number of your choice: " choice
             found_entry=$(echo "$found_entries" | sed -n "${choice}p")
@@ -183,9 +185,9 @@ check_language() {
             found_entry="$found_entries"
         fi
 
+        # 言語と国コードの設定
         SELECTED_LANGUAGE=$(echo "$found_entry" | awk '{print $2}')
         SELECTED_COUNTRY=$(echo "$found_entry" | awk '{print $3}')
-
         echo "$SELECTED_LANGUAGE" > "${BASE_DIR}/check_language"
         echo "$SELECTED_COUNTRY" > "${BASE_DIR}/check_country"
     fi

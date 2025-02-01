@@ -146,7 +146,6 @@ check_language() {
 }
 
 normalize_language() {
-echo common3 $SELECTED_COUNTRY
     CHECK_LANGUAGE="${BASE_DIR}/check_language"
     if [ -f "$CHECK_LANGUAGE" ]; then
         READ_LANGUAGE=$(cat "$CHECK_LANGUAGE")
@@ -158,7 +157,6 @@ echo common3 $SELECTED_COUNTRY
             return
         fi
     done
-echo common4 $SELECTED_COUNTRY
     SELECTED_LANGUAGE="en"
 }
 
@@ -183,8 +181,6 @@ language_parameter() {
 }
 
 check_common() {
-    SELECTED_COUNTRY=$(cat "${BASE_DIR}/check_country")
-    echo common1 $SELECTED_COUNTRY
 
     # バージョン情報の取得
     if [ -f "${BASE_DIR}/check_version" ]; then
@@ -233,7 +229,6 @@ check_common() {
             check_language    
         fi
     fi
-    echo common2 $SELECTED_COUNTRY
     normalize_language
 }
 

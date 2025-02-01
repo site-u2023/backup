@@ -200,13 +200,18 @@ echo common1 $SELECTED_COUNTRY
     # カントリー選択の判定 
     INPUT_LANG=$1
     INPUT_LANG=$(echo "$INPUT_LANG" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//' | tr -d '\n')
+echo "Input Language: $INPUT_LANG"
     if [ -n "$INPUT_LANG" ]; then
         SELECTED_LANGUAGE=$(sh /tmp/aios/country-timezone.sh "$INPUT_LANG" | awk '{print $2}')
         SELECTED_COUNTRY=$(sh /tmp/aios/country-zonename.sh "$INPUT_LANG" | awk '{print $3}')
+echo "Selected Language: $SELECTED_LANGUAGE"
+echo "Selected Country (after script): $SELECTED_COUNTRY"
         echo "${SELECTED_LANGUAGE}" > "${BASE_DIR}/check_language"
         echo "${SELECTED_COUNTRY}" > "${BASE_DIR}/check_country"
     else
         if [ -f "${BASE_DIR}/check_language" ]; then
+echo "Selected Language: $SELECTED_LANGUAGE"
+echo "Selected Country (after script): $SELECTED_COUNTRY"
             SELECTED_LANGUAGE=$(cat "${BASE_DIR}/check_language")
             SELECTED_COUNTRY=$(cat "${BASE_DIR}/check_country")
         else

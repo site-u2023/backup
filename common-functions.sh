@@ -183,8 +183,6 @@ language_parameter() {
 }
 
 check_common() {
-SELECTED_COUNTRY=$(cat "${BASE_DIR}/check_country")
-echo common1 $SELECTED_COUNTRY
     # バージョン情報の取得
     if [ -f "${BASE_DIR}/check_version" ]; then
         RELEASE_VERSION=$(cat "${BASE_DIR}/check_version")
@@ -200,25 +198,19 @@ echo common1 $SELECTED_COUNTRY
     # カントリー選択の判定 
     INPUT_LANG=$1
     INPUT_LANG=$(echo "$INPUT_LANG" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//' | tr -d '\n')
-echo "Input Language: $INPUT_LANG"
     if [ -n "$INPUT_LANG" ]; then
         SELECTED_LANGUAGE=$(sh /tmp/aios/country-timezone.sh "$INPUT_LANG" | awk '{print $2}')
         SELECTED_COUNTRY=$(sh /tmp/aios/country-zonename.sh "$INPUT_LANG" | awk '{print $3}')
-echo "Selected Language: $SELECTED_LANGUAGE"
-echo "Selected Country (after script): $SELECTED_COUNTRY"
         echo "${SELECTED_LANGUAGE}" > "${BASE_DIR}/check_language"
         echo "${SELECTED_COUNTRY}" > "${BASE_DIR}/check_country"
     else
         if [ -f "${BASE_DIR}/check_language" ]; then
-echo "Selected Language: $SELECTED_LANGUAGE"
-echo "Selected Country (after script): $SELECTED_COUNTRY"
             SELECTED_LANGUAGE=$(cat "${BASE_DIR}/check_language")
             SELECTED_COUNTRY=$(cat "${BASE_DIR}/check_country")
         else
             check_language    
         fi
     fi
-echo common2 $SELECTED_COUNTRY
     normalize_language
 }
 
@@ -358,7 +350,8 @@ menu_option() {
     local action="$1"
     local description="$2"
     local script_name="$3"
-
+    local lang_param="$4"  
+    
     echo -e "$(color "white" "${description}")"
 
     case "${action}" in
@@ -383,7 +376,7 @@ menu_option() {
             if ask_confirmation "download"; then
                 if wget --quiet -O "${BASE_DIR}/${script_name}" "${BASE_URL}/${script_name}"; then
                     show_notification "download_success"
-                    . "${BASE_DIR}/${script_name}"
+                    . "${BASE_DIR}/${script_name}" "$lang_param"
                 else
                     show_notification "download_failure"
                 fi

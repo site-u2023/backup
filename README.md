@@ -23,6 +23,16 @@ wget -O /tmp/aios.sh https://raw.githubusercontent.com/site-u2023/aios/main/aios
 wget -O /tmp/aios.sh https://raw.githubusercontent.com/site-u2023/aios/main/aios.sh; sh /tmp/aios.sh ja
 ```
 
+- 简体中文
+```sh
+wget -O /tmp/aios.sh https://raw.githubusercontent.com/site-u2023/aios/main/aios.sh; sh /tmp/aios.sh zh-cn
+```
+
+- 繁體中文
+```sh
+wget -O /tmp/aios.sh https://raw.githubusercontent.com/site-u2023/aios/main/aios.sh; sh /tmp/aios.sh zh-tw
+```
+
 - --timestamping
 ```sh
 opkg update && opkg install wget-ssl

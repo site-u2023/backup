@@ -181,7 +181,6 @@ language_parameter() {
 }
 
 check_common() {
-
     # バージョン情報の取得
     if [ -f "${BASE_DIR}/check_version" ]; then
         RELEASE_VERSION=$(cat "${BASE_DIR}/check_version")
@@ -200,20 +199,20 @@ check_common() {
     echo "Input Language: $INPUT_LANG"
 
     if [ -n "$INPUT_LANG" ]; then
-        # 複数ヒットを考慮したフィルタリング
-        SELECTED_LANGUAGE=$(sh /tmp/aios/country-timezone.sh "$INPUT_LANG" | awk '{print $2}' | head -n 1)
+        found_entries=$(sh /tmp/aios/country-timezone.sh "$INPUT_LANG")
+        num_matches=$(echo "$found_entries" | wc -l)
+
+        if [ "$num_matches" -gt 1 ]; then
+            echo "Multiple matches found. Please select:"
+            echo "$found_entries" | nl
+            read -p "Enter the number of your choice: " choice
+            found_entry=$(echo "$found_entries" | sed -n "${choice}p")
+        else
+            found_entry="$found_entries"
+        fi
+
+        SELECTED_LANGUAGE=$(echo "$found_entry" | awk '{print $2}')
         SELECTED_COUNTRY=$(sh /tmp/aios/country-zonename.sh "$INPUT_LANG" | awk '{print $3}' | head -n 1)
-
-        # 完全一致の確認
-        exact_match_language=$(sh /tmp/aios/country-timezone.sh "$INPUT_LANG" | awk '$2 == "'$INPUT_LANG'" {print $2}')
-        exact_match_country=$(sh /tmp/aios/country-zonename.sh "$INPUT_LANG" | awk '$3 == "'$INPUT_LANG'" {print $3}')
-
-        if [ -n "$exact_match_language" ]; then
-            SELECTED_LANGUAGE="$exact_match_language"
-        fi
-        if [ -n "$exact_match_country" ]; then
-            SELECTED_COUNTRY="$exact_match_country"
-        fi
 
         echo "Selected Language: $SELECTED_LANGUAGE"
         echo "Selected Country (after script): $SELECTED_COUNTRY"
@@ -225,38 +224,6 @@ check_common() {
             SELECTED_COUNTRY=$(cat "${BASE_DIR}/check_country")
             echo "Selected Language: $SELECTED_LANGUAGE"
             echo "Selected Country (after script): $SELECTED_COUNTRY"
-        else
-            check_language    
-        fi
-    fi
-    normalize_language
-}
-
-xxxcheck_common() {
-    # バージョン情報の取得
-    if [ -f "${BASE_DIR}/check_version" ]; then
-        RELEASE_VERSION=$(cat "${BASE_DIR}/check_version")
-    fi
-    [ -z "$RELEASE_VERSION" ] && check_version
-
-    # パッケージ情報の取得
-    if [ -f "${BASE_DIR}/check_package_manager" ]; then
-        PACKAGE_MANAGER=$(cat "${BASE_DIR}/check_package_manager")
-    fi
-    [ -z "$PACKAGE_MANAGER" ] && check_package_manager  
-    
-    # カントリー選択の判定 
-    INPUT_LANG=$1
-    INPUT_LANG=$(echo "$INPUT_LANG" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//' | tr -d '\n')
-    if [ -n "$INPUT_LANG" ]; then
-        SELECTED_LANGUAGE=$(sh /tmp/aios/country-timezone.sh "$INPUT_LANG" | awk '{print $2}')
-        SELECTED_COUNTRY=$(sh /tmp/aios/country-zonename.sh "$INPUT_LANG" | awk '{print $3}')
-        echo "${SELECTED_LANGUAGE}" > "${BASE_DIR}/check_language"
-        echo "${SELECTED_COUNTRY}" > "${BASE_DIR}/check_country"
-    else
-        if [ -f "${BASE_DIR}/check_language" ]; then
-            SELECTED_LANGUAGE=$(cat "${BASE_DIR}/check_language")
-            SELECTED_COUNTRY=$(cat "${BASE_DIR}/check_country")
         else
             check_language    
         fi

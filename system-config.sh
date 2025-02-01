@@ -6,6 +6,7 @@ BASE_URL="https://raw.githubusercontent.com/site-u2023/aios/main"
 BASE_DIR="/tmp/aios"
 SUPPORTED_VERSIONS="21 22 23 24 SN"
 SUPPORTED_LANGUAGES="en ja zh-cn zh-tw"
+INPUT_LANG="$1"
 
 download_country_zone() {
     if [ ! -f "${BASE_DIR%/}/country-timezone.sh" ]; then
@@ -318,7 +319,7 @@ reboot
 
 download_country_zone
 download_and_execute_common
-check_common "$1"
+check_common "$INPUT_LANG"
 country_zone
 information
 #set_device_name_password

@@ -43,7 +43,7 @@ get_system_info() {
     MEM_FREE=$(grep MemAvailable /proc/meminfo | awk '{print $2 / 1024 " MB"}')
     MEM_USAGE="${MEM_FREE} / ${MEM_TOTAL}"
 
-    FLASH_INFO=$(df -h | grep '/overlay' | awk '{print $4 " / " $2}')
+    FLASH_INFO=$(df -h | grep '/overlay' | head -n 1 | awk '{print $4 " / " $2}')
 
     if lsusb >/dev/null 2>&1; then
         USB_STATUS_EN="Detected"

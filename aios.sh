@@ -6,7 +6,7 @@
 BASE_URL="https://raw.githubusercontent.com/site-u2023/aios/main"
 BASE_DIR="/tmp/aios"
 SUPPORTED_VERSIONS="19 21 22 23 24 SN"
-INPUT_LANG=$1
+INPUT_LANG="$1"
 echo aios 1 $INPUT_LANG
 
 check_version() {

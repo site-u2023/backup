@@ -98,12 +98,13 @@ check_language() {
     echo -e "$(color "white" "[xx]: otherwise")"
     echo -e "$(color "white" "------------------------------------------------------")"
 
-    read -p "Choose an option: " lang_choice
+    read -p "Choose an option: " INPUT_LANG
+    INPUT_LANG=$(echo "$INPUT_LANG" | awk '{$1=$1; print}')
     #lang_choice=$(echo "$lang_choice" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//' | tr -d '\n')
     #lang_choice=$(echo "$lang_choice" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
     #lang_choice=$(echo "$lang_choice" | tr -d '[:space:]')
-echo 1 $SELECTED_LANGUAGE
-    SELECTED_LANGUAGE=$(sh /tmp/aios/country-zonename.sh "$lang_choice" | awk '{print $2}')
+echo 1 $INPUT_LANG
+    SELECTED_LANGUAGE=$(sh /tmp/aios/country-zonename.sh "$INPUT_LANG" | awk '{print $2}')
         if [ -n "$SELECTED_LANGUAGE" ]; then
 echo 2 $SELECTED_LANGUAGE
             echo "$SELECTED_LANGUAGE" > "${BASE_DIR}/check_language"
@@ -211,7 +212,8 @@ check_common() {
     
     # カントリー選択の判定 
 echo x1 $1
-    INPUT_LANG=$1
+    #INPUT_LANG=$1
+    INPUT_LANG=$(echo "$INPUT_LANG" | awk '{$1=$1; print}')
     #lang_choice=$(echo "$lang_choice" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//' | tr -d '\n')
     #lang_choice=$(echo "$lang_choice" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
     #INPUT_LANG=$(echo "$1" | tr -d '[:space:]')

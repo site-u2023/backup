@@ -207,7 +207,7 @@ main_menu() {
 
 download_country_zone
 download_and_execute_common
-check_common "$INPUT_LANG"
+check_common # "$INPUT_LANG"
 country_zone
 get_system_info
 display_info

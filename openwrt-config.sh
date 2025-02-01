@@ -95,7 +95,7 @@ display_system_info() {
         echo -e "$(color "white" "Available Flash Storage: ${available_flash} MB")"
         echo -e "$(color "white" "USB Devices: ${usb_devices}")"
         echo -e "$(color "white" "Scripts directory: ${BASE_DIR}")"
-        echo -e "$(color "white" "OpenWrt version: ${RELEASE_VERSION} - Supported")"
+        echo -e "$(color "white" "OpenWrt version: ${RELEASE_VERSION}")"
         echo -e "$(color "white" "Country: $(cat "${BASE_DIR}/check_language") && echo $(sh ${BASE_DIR}/country-zonename.sh $(cat "${BASE_DIR}/check_language"))")"
         echo -e "$(color "white" "Downloader: ${PACKAGE_MANAGER}")"
 
@@ -108,7 +108,7 @@ display_system_info() {
         echo -e "$(color "white" "利用可能フラッシュストレージ: ${available_flash} MB")"
         echo -e "$(color "white" "USBデバイス: ${usb_devices}")"
         echo -e "$(color "white" "スクリプトディレクトリ: ${BASE_DIR}")"
-        echo -e "$(color "white" "OpenWrtバージョン: ${RELEASE_VERSION} - サポートされています")"
+        echo -e "$(color "white" "OpenWrtバージョン: ${RELEASE_VERSION}")"
         echo -e "$(color "white" "カントリー: $(cat "${BASE_DIR}/check_language") && echo $(sh ${BASE_DIR}/country-zonename.sh $(cat "${BASE_DIR}/check_language"))")"
         echo -e "$(color "white" "ダウンローダー: ${PACKAGE_MANAGER}")"
     fi

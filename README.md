@@ -46,7 +46,7 @@ aiosインストール後
 ```sh
 aios
 ```
-- 言語追加
+- English
 ```sh
 aios en
 ```

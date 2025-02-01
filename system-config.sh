@@ -28,26 +28,32 @@ information() {
   
   case "$lang" in
     en)
-      if echo "$LANGUAGE" | grep -q "/"; then
-        echo -e "$(color "white" "Country: $(echo "$ZONENAME" | awk '{print $1}')")"
-      else
-        echo -e "$(color "white" "Language: $LANGUAGE")"
-      fi
-      echo -e "$(color "white" "Language Package: $(echo "$ZONENAME" | awk '{print $2}')")"
-      echo -e "$(color "white" "Country Code: $(echo "$ZONENAME" | awk '{print $3}')")"
-      echo -e "$(color "white" "Zone Name: $(echo "$ZONENAME" | awk '{print $4}')")"
-      echo -e "$(color "white" "Zone Name: $(echo "$TIMEZONE" | awk '{print $4}')")"
+      echo -e "$(color \"white\" \"Country: $(echo \"$ZONENAME\" | awk '{print $1}')\")"
+      echo -e "$(color \"white\" \"Language Package: $(echo \"$ZONENAME\" | awk '{print $2}')\")"
+      echo -e "$(color \"white\" \"Country Code: $(echo \"$ZONENAME\" | awk '{print $3}')\")"
+      echo -e "$(color \"white\" \"Time Zones: $(echo \"$ZONENAME\" | grep -o '[A-Za-z_/]*' | grep '/')\")"
+      echo -e "$(color \"white\" \"Language: $(echo \"$ZONENAME\" | awk '{print $NF}')\")"
       ;;
     ja)
-      if echo "$LANGUAGE" | grep -q "/"; then
-        echo -e "$(color "white" "国名: $(echo "$ZONENAME" | awk '{print $1}')")"
-      else
-        echo -e "$(color "white" "言語: $LANGUAGE")"
-      fi
-      echo -e "$(color "white" "言語パッケージ: $(echo "$ZONENAME" | awk '{print $2}')")"
-      echo -e "$(color "white" "国コード: $(echo "$ZONENAME" | awk '{print $3}')")"
-      echo -e "$(color "white" "ゾーンネーム: $(echo "$ZONENAME" | awk '{print $4}')")"
-      echo -e "$(color "white" "タイムゾーン: $(echo "$TIMEZONE" | awk '{print $4}')")"
+      echo -e "$(color \"white\" \"国名: $(echo \"$ZONENAME\" | awk '{print $1}')\")"
+      echo -e "$(color \"white\" \"言語パッケージ: $(echo \"$ZONENAME\" | awk '{print $2}')\")"
+      echo -e "$(color \"white\" \"国コード: $(echo \"$ZONENAME\" | awk '{print $3}')\")"
+      echo -e "$(color \"white\" \"タイムゾーン: $(echo \"$ZONENAME\" | grep -o '[A-Za-z_/]*' | grep '/')\")"
+      echo -e "$(color \"white\" \"言語: $(echo \"$ZONENAME\" | awk '{print $NF}')\")"
+      ;;
+    zh-cn)
+      echo -e "$(color \"white\" \"国家: $(echo \"$ZONENAME\" | awk '{print $1}')\")"
+      echo -e "$(color \"white\" \"语言包: $(echo \"$ZONENAME\" | awk '{print $2}')\")"
+      echo -e "$(color \"white\" \"国家代码: $(echo \"$ZONENAME\" | awk '{print $3}')\")"
+      echo -e "$(color \"white\" \"时区: $(echo \"$ZONENAME\" | grep -o '[A-Za-z_/]*' | grep '/')\")"
+      echo -e "$(color \"white\" \"语言: $(echo \"$ZONENAME\" | awk '{print $NF}')\")"
+      ;;
+    zh-tw)
+      echo -e "$(color \"white\" \"國家: $(echo \"$ZONENAME\" | awk '{print $1}')\")"
+      echo -e "$(color \"white\" \"語言包: $(echo \"$ZONENAME\" | awk '{print $2}')\")"
+      echo -e "$(color \"white\" \"國家代碼: $(echo \"$ZONENAME\" | awk '{print $3}')\")"
+      echo -e "$(color \"white\" \"時區: $(echo \"$ZONENAME\" | grep -o '[A-Za-z_/]*' | grep '/')\")"
+      echo -e "$(color \"white\" \"語言: $(echo \"$ZONENAME\" | awk '{print $NF}')\")"
       ;;
     *)
       echo "Unsupported language: $lang"

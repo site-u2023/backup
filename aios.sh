@@ -13,6 +13,10 @@ delete_aios() {
     echo "Initialized aios"
 }
 
+make_directory() {
+    mkdir -p "$BASE_DIR"
+}
+
 check_version() {
     local RELEASE_VERSION
     RELEASE_VERSION=$(awk -F"'" '/DISTRIB_RELEASE/ {print $2}' /etc/openwrt_release | cut -c 1-2)
@@ -23,10 +27,6 @@ check_version() {
         echo "Supported versions: ${SUPPORTED_VERSIONS}"
         exit 1
     fi
-}
-
-make_directory() {
-    mkdir -p "$BASE_DIR"
 }
 
 check_ttyd_installed() {
@@ -75,7 +75,7 @@ download_and_execute() {
 }
 
 delete_aios
-check_version
 make_directory
+check_version
 check_ttyd_installed
 download_and_execute

@@ -5,8 +5,6 @@
 BASE_URL="https://raw.githubusercontent.com/site-u2023/aios/main"
 BASE_DIR="/tmp/aios"
 SUPPORTED_VERSIONS="21 22 23 24 SN"
-SELECTED_COUNTRY=$(cat "${BASE_DIR}/check_country")
-echo 1 $SELECTED_COUNTRY
 SUPPORTED_LANGUAGES="en ja zh-cn zh-tw"
 
 download_country_zone() {
@@ -40,11 +38,9 @@ download_and_execute_common() {
 }
 
 information() {
-echo 2 $SELECTED_COUNTRY
-  local lang="${SELECTED_COUNTRY:-en}"
-echo x $lang
-
-  case "$lang" in
+    local lang="$SELECTED_LANGUAGE" 
+    
+    case "$lang" in
     en)
       echo -e "$(color \"white\" \"Country: $(echo \"$ZONENAME\" | awk '{print $1}')\")"
       echo -e "$(color \"white\" \"Language Package: $(echo \"$ZONENAME\" | awk '{print $2}')\")"
@@ -77,14 +73,13 @@ echo x $lang
       echo "Unsupported language: $lang"
       ;;
   esac
-echo 3 $SELECTED_COUNTRY
 }
 
 set_device_name_password() {
-  local device_name password confirmation
-  local lang="${SELECTED_LANGUAGE:-en}"
-  
-  case "$lang" in
+    local device_name password confirmation
+    local lang="$SELECTED_LANGUAGE" 
+    
+    case "$lang" in
     "en")
       msg_device="Enter the new device name: "
       msg_password="Enter the new password: "
@@ -144,12 +139,12 @@ set_device_name_password() {
 }
 
 set_wifi_ssid_password() {
-  local device iface iface_num ssid password enable_band band htmode devices network country
-  local devices_to_enable=""
-  local lang="${SELECTED_LANGUAGE:-en}"  
-  local country=$(echo "$TIMEZONE" | awk '{print $3}')
-
-  case "$lang" in
+    local device iface iface_num ssid password enable_band band htmode devices network country
+    local devices_to_enable=""
+    local country=$(echo "$TIMEZONE" | awk '{print $3}')
+    local lang="$SELECTED_LANGUAGE" 
+    
+    case "$lang" in
     "ja")
       msg_no_devices="Wi-Fiデバイスが見つかりません。終了します。"
       msg_band="デバイス %s (帯域: %s)"

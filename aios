@@ -96,7 +96,7 @@ download_openwrt_config() {
 }
 
 execute_openwrt_config() {
-    sh "${BASE_DIR%/}/openwrt-config.sh" "${INPUT_LANG}" || {
+    sh "${BASE_DIR%/}/openwrt-config.sh" || {
         echo "Failed to execute openwrt-config.sh"
         exit 1
     }
@@ -106,7 +106,7 @@ execute_openwrt_config() {
 make_directory
 download_country_zone
 download_and_execute_common
-check_common # "$INPUT_LANG"
+check_common "$INPUT_LANG"
 banner
 download_openwrt_config
 execute_openwrt_config

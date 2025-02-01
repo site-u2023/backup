@@ -54,6 +54,75 @@ check_version() {
     fi
 }
 
+check_common() {
+
+    # バージョン情報の取得
+    if [ -f "${BASE_DIR}/check_version" ]; then
+        RELEASE_VERSION=$(cat "${BASE_DIR}/check_version")
+    fi
+    [ -z "$RELEASE_VERSION" ] && check_version
+
+    # パッケージ情報の取得
+    if [ -f "${BASE_DIR}/check_package_manager" ]; then
+        PACKAGE_MANAGER=$(cat "${BASE_DIR}/check_package_manager")
+    fi
+    [ -z "$PACKAGE_MANAGER" ] && check_package_manager  
+
+    # カントリー選択の判定 
+    INPUT_LANG=$1
+    INPUT_LANG=$(echo "$INPUT_LANG" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//' | tr -d '\n')
+    echo "Input Language: $INPUT_LANG"
+
+    if [ -n "$INPUT_LANG" ]; then
+        # country-timezone.shからの取得
+        timezone_entries=$(sh /tmp/aios/country-timezone.sh "$INPUT_LANG")
+        num_timezones=$(echo "$timezone_entries" | wc -l)
+
+        # 複数マッチ時の処理
+        if [ "$num_timezones" -gt 1 ]; then
+            echo "Multiple timezone matches found. Please select:"
+            echo "$timezone_entries" | nl
+            read -p "Enter the number of your choice: " choice
+            selected_timezone=$(echo "$timezone_entries" | sed -n "${choice}p")
+        else
+            selected_timezone="$timezone_entries"
+        fi
+
+        SELECTED_LANGUAGE=$(echo "$selected_timezone" | awk '{print $2}')
+
+        zonename_entries=$(sh /tmp/aios/country-zonename.sh "$INPUT_LANG")
+        num_zonenames=$(echo "$zonename_entries" | wc -l)
+
+        if [ "$num_zonenames" -gt 1 ]; then
+            echo "Multiple zone name matches found. Please select:"
+            echo "$zonename_entries" | nl
+            read -p "Enter the number of your choice: " choice
+            selected_zonename=$(echo "$zonename_entries" | sed -n "${choice}p")
+        else
+            selected_zonename="$zonename_entries"
+        fi
+
+        SELECTED_COUNTRY=$(echo "$selected_zonename" | awk '{print $3}')
+
+        echo "Selected Language: $SELECTED_LANGUAGE"
+        echo "Selected Country (after script): $SELECTED_COUNTRY"
+
+        echo "$SELECTED_LANGUAGE" > "${BASE_DIR}/check_language"
+        echo "$SELECTED_COUNTRY" > "${BASE_DIR}/check_country"
+    else
+        if [ -f "${BASE_DIR}/check_language" ]; then
+            SELECTED_LANGUAGE=$(cat "${BASE_DIR}/check_language")
+            SELECTED_COUNTRY=$(cat "${BASE_DIR}/check_country")
+            echo "Selected Language: $SELECTED_LANGUAGE"
+            echo "Selected Country (after script): $SELECTED_COUNTRY"
+        else
+            check_language    
+        fi
+    fi
+
+    normalize_language
+}
+
 check_language() {
 
     echo -e "$(color "white" "------------------------------------------------------")"
@@ -178,57 +247,6 @@ language_parameter() {
     if [ -n "${SELECTED_LANGUAGE}" ]; then
         echo "${SELECTED_LANGUAGE}" > "${BASE_DIR}/check_language"
     fi
-}
-
-check_common() {
-    # バージョン情報の取得
-    if [ -f "${BASE_DIR}/check_version" ]; then
-        RELEASE_VERSION=$(cat "${BASE_DIR}/check_version")
-    fi
-    [ -z "$RELEASE_VERSION" ] && check_version
-
-    # パッケージ情報の取得
-    if [ -f "${BASE_DIR}/check_package_manager" ]; then
-        PACKAGE_MANAGER=$(cat "${BASE_DIR}/check_package_manager")
-    fi
-    [ -z "$PACKAGE_MANAGER" ] && check_package_manager  
-
-    # カントリー選択の判定 
-    INPUT_LANG=$1
-    INPUT_LANG=$(echo "$INPUT_LANG" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//' | tr -d '\n')
-    echo "Input Language: $INPUT_LANG"
-
-    if [ -n "$INPUT_LANG" ]; then
-        found_entries=$(sh /tmp/aios/country-timezone.sh "$INPUT_LANG")
-        num_matches=$(echo "$found_entries" | wc -l)
-
-        if [ "$num_matches" -gt 1 ]; then
-            echo "Multiple matches found. Please select:"
-            echo "$found_entries" | nl
-            read -p "Enter the number of your choice: " choice
-            found_entry=$(echo "$found_entries" | sed -n "${choice}p")
-        else
-            found_entry="$found_entries"
-        fi
-
-        SELECTED_LANGUAGE=$(echo "$found_entry" | awk '{print $2}')
-        SELECTED_COUNTRY=$(sh /tmp/aios/country-zonename.sh "$INPUT_LANG" | awk '{print $3}' | head -n 1)
-
-        echo "Selected Language: $SELECTED_LANGUAGE"
-        echo "Selected Country (after script): $SELECTED_COUNTRY"
-        echo "$SELECTED_LANGUAGE" > "${BASE_DIR}/check_language"
-        echo "$SELECTED_COUNTRY" > "${BASE_DIR}/check_country"
-    else
-        if [ -f "${BASE_DIR}/check_language" ]; then
-            SELECTED_LANGUAGE=$(cat "${BASE_DIR}/check_language")
-            SELECTED_COUNTRY=$(cat "${BASE_DIR}/check_country")
-            echo "Selected Language: $SELECTED_LANGUAGE"
-            echo "Selected Country (after script): $SELECTED_COUNTRY"
-        else
-            check_language    
-        fi
-    fi
-    normalize_language
 }
 
 ask_confirmation() {

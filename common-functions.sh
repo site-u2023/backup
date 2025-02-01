@@ -400,7 +400,7 @@ menu_option() {
     local action="$1"
     local description="$2"
     local script_name="$3"
-    local lang_param="$4"  
+    local INPUT_LANG="$4"  
     
     echo -e "$(color "white" "${description}")"
 
@@ -426,7 +426,7 @@ menu_option() {
             if ask_confirmation "download"; then
                 if wget --quiet -O "${BASE_DIR}/${script_name}" "${BASE_URL}/${script_name}"; then
                     show_notification "download_success"
-                    . "${BASE_DIR}/${script_name}" "$lang_param"
+                    . "${BASE_DIR}/${script_name}" "$INPUT_LANG"
                 else
                     show_notification "download_failure"
                 fi

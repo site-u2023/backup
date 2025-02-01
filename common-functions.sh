@@ -81,11 +81,14 @@ check_common() {
     fi
     [ -z "$PACKAGE_MANAGER" ] && check_package_manager  
 
-    # カントリー選択の判定 
-    INPUT_LANG=$1
-    INPUT_LANG=$(echo "$INPUT_LANG" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//' | tr -d '\n')
-    echo "Input Language: $INPUT_LANG"
+    # 既に言語と国が選択されている場合は再選択しない
+    if [ -f "${BASE_DIR}/check_language" ] && [ -f "${BASE_DIR}/check_country" ]; then
+        SELECTED_LANGUAGE=$(cat "${BASE_DIR}/check_language")
+        SELECTED_COUNTRY=$(cat "${BASE_DIR}/check_country")
+        return  # 既に選択されている場合はここで終了
+    fi
 
+    INPUT_LANG="$1"
     if [ -n "$INPUT_LANG" ]; then
         found_entries=$(sh /tmp/aios/country-timezone.sh "$INPUT_LANG")
         num_matches=$(echo "$found_entries" | wc -l)
@@ -93,7 +96,7 @@ check_common() {
         if [ "$num_matches" -gt 1 ]; then
             echo "Multiple matches found. Please select:"
             i=1
-            echo "$found_entries" | while IFS= read -r line; do
+            printf "%s\n" "$found_entries" | while IFS= read -r line; do
                 echo "$i) $line"
                 i=$((i+1))
             done
@@ -107,17 +110,12 @@ check_common() {
         SELECTED_LANGUAGE=$(echo "$found_entry" | awk '{print $2}')
         SELECTED_COUNTRY=$(echo "$found_entry" | awk '{print $3}')
 
-        echo "Selected Language: $SELECTED_LANGUAGE"
-        echo "Selected Country (after script): $SELECTED_COUNTRY"
         echo "$SELECTED_LANGUAGE" > "${BASE_DIR}/check_language"
         echo "$SELECTED_COUNTRY" > "${BASE_DIR}/check_country"
-    elif [ -f "${BASE_DIR}/check_language" ] && [ -f "${BASE_DIR}/check_country" ]; then
-        SELECTED_LANGUAGE=$(cat "${BASE_DIR}/check_language")
-        SELECTED_COUNTRY=$(cat "${BASE_DIR}/check_country")
-        echo "Using previously selected language and country."
     else
-        check_language    
+        check_language  # 引数が無い場合のみ対話的に選択
     fi
+
     normalize_language
 }
 

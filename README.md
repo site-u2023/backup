@@ -23,14 +23,14 @@ wget -O /tmp/aios.sh https://raw.githubusercontent.com/site-u2023/aios/main/aios
 wget -O /tmp/aios.sh https://raw.githubusercontent.com/site-u2023/aios/main/aios.sh; sh /tmp/aios.sh ja
 ```
 
-- 简体中文
+- 简体中文 (zh-cn or cn)
 ```sh
-wget -O /tmp/aios.sh https://raw.githubusercontent.com/site-u2023/aios/main/aios.sh; sh /tmp/aios.sh zh-cn
+wget -O /tmp/aios.sh https://raw.githubusercontent.com/site-u2023/aios/main/aios.sh; sh /tmp/aios.sh cn
 ```
 
-- 繁體中文
+- 繁體中文 (zh-tw or tw)
 ```sh
-wget -O /tmp/aios.sh https://raw.githubusercontent.com/site-u2023/aios/main/aios.sh; sh /tmp/aios.sh zh-tw
+wget -O /tmp/aios.sh https://raw.githubusercontent.com/site-u2023/aios/main/aios.sh; sh /tmp/aios.sh tw
 ```
 
 - --timestamping

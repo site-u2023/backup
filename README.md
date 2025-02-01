@@ -9,6 +9,7 @@ Dedicated configuration software for OpenWrt
 January 25, 2025: version α
 
 $1は曖昧な入力も受け付けます。
+
 例: `wget -O /tmp/aios.sh https://raw.githubusercontent.com/site-u2023/aios/main/aios.sh; sh /tmp/aios.sh 日本`
 
 - Select your language

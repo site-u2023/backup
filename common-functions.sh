@@ -100,12 +100,14 @@ check_language() {
 
     read -p "Choose an option: " lang_choice
     lang_choice=$(echo "$lang_choice" | tr -d '[:space:]')
-    
+echo 1 $SELECTED_LANGUAGE
     SELECTED_LANGUAGE=$(sh /tmp/aios/country-zonename.sh "$lang_choice" | awk '{print $2}')
         if [ -n "$SELECTED_LANGUAGE" ]; then
+echo 2 $SELECTED_LANGUAGE
             echo "$SELECTED_LANGUAGE" > "${BASE_DIR}/check_language"
             echo "${SELECTED_COUNTRY}" > "${BASE_DIR}/check_country"
         else
+echo 3 $SELECTED_LANGUAGE
             SELECTED_LANGUAGE="en"
             echo "$SELECTED_LANGUAGE" > "${BASE_DIR}/check_language"
             echo "${SELECTED_COUNTRY}" > "${BASE_DIR}/check_country"
@@ -149,11 +151,12 @@ check_language() {
         "nl")    echo -e "$(color "white" "Je hebt Nederlands geselecteerd.")" ;;
         *)       echo -e "$(color "white" "You selected $(echo "$SELECTED_LANGUAGE" | tr '[:lower:]' '[:upper:]') (Processed as English).")" ;;
     esac
-
-    #normalize_language
+    
+    normalize_language
 }
 
 normalize_language() {
+echo 4 $SELECTED_LANGUAGE
 CHECK_LANGUAGE="${BASE_DIR}/check_language"
 if [ -f "$CHECK_LANGUAGE" ]; then
     READ_LANGUAGE=$(cat "$CHECK_LANGUAGE")
@@ -167,6 +170,7 @@ case "$READ_LANGUAGE" in
         SELECTED_LANGUAGE="en"
         ;;
 esac
+echo 5 $SELECTED_LANGUAGE
 }
 
 
@@ -206,11 +210,13 @@ check_common() {
     # カントリー選択の判定 
     INPUT_LANG=$(echo "$1" | tr -d '[:space:]')
     if [ -n "$INPUT_LANG" ]; then
+echo 6 $SELECTED_LANGUAGE
         SELECTED_LANGUAGE=$(sh /tmp/aios/country-timezone.sh "$INPUT_LANG" | awk '{print $2}')
         SELECTED_COUNTRY=$(sh /tmp/aios/country-zonename.sh "$INPUT_LANG" | awk '{print $3}')
         echo "${SELECTED_LANGUAGE}" > "${BASE_DIR}/check_language"
         echo "${SELECTED_COUNTRY}" > "${BASE_DIR}/check_country"
     else
+echo 7 $SELECTED_LANGUAGE
         if [ -f "${BASE_DIR}/check_language" ]; then
             SELECTED_LANGUAGE=$(cat "${BASE_DIR}/check_language")
             SELECTED_COUNTRY=$(cat "${BASE_DIR}/check_country")
@@ -218,7 +224,7 @@ check_common() {
             check_language    
         fi
     fi
-    #normalize_language
+    normalize_language
 }
 
 ask_confirmation() {

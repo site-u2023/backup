@@ -6,6 +6,7 @@ BASE_URL="https://raw.githubusercontent.com/site-u2023/aios/main"
 BASE_DIR="/tmp/aios"
 SUPPORTED_VERSIONS="21 22 23 24 SN"
 SELECTED_COUNTRY=$(cat "${BASE_DIR}/check_country")
+echo 1 $SELECTED_COUNTRY
 SUPPORTED_LANGUAGES="en ja zh-cn zh-tw"
 
 download_common() {
@@ -25,8 +26,10 @@ download_country_zone() {
 }
 
 information() {
+echo 2 $SELECTED_COUNTRY
   local lang="${SELECTED_COUNTRY:-en}"
-  
+echo x $lang
+
   case "$lang" in
     en)
       echo -e "$(color \"white\" \"Country: $(echo \"$ZONENAME\" | awk '{print $1}')\")"
@@ -60,6 +63,7 @@ information() {
       echo "Unsupported language: $lang"
       ;;
   esac
+echo 3 $SELECTED_COUNTRY
 }
 
 set_device_name_password() {

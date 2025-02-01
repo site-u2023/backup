@@ -319,7 +319,7 @@ reboot
 
 download_country_zone
 download_and_execute_common
-check_common "$INPUT_LANG"
+check_common #"$INPUT_LANG"
 country_zone
 information
 #set_device_name_password

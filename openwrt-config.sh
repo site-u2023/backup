@@ -5,38 +5,82 @@
 BASE_URL="https://raw.githubusercontent.com/site-u2023/aios/main"
 BASE_DIR="/tmp/aios"
 SUPPORTED_VERSIONS="19 21 22 23 24 SN"
-SUPPORTED_LANGUAGES="en ja"
+SUPPORTED_LANGUAGES="en ja zh-cn zh-tw"
+
+normalize_language() {
+    CHECK_LANGUAGE="${BASE_DIR}/check_language"
+    if [ -f "$CHECK_LANGUAGE" ]; then
+        READ_LANGUAGE=$(cat "$CHECK_LANGUAGE")
+    fi
+
+    for lang in $SUPPORTED_LANGUAGES; do
+        if [ "$READ_LANGUAGE" = "$lang" ]; then
+            SELECTED_LANGUAGE="$READ_LANGUAGE"
+            return
+        fi
+    done
+
+    SELECTED_LANGUAGE="en"
+}
 
 main_menu() {
-    local lang="${SELECTED_LANGUAGE:-en}" 
-    local MENU1 MENU2 MENU3 MENU4 MENU5 MENU6 MENU00 MENU01 SELECT1
-    local ACTION1 ACTION2 ACTION3 ACTION4 ACTION5 ACTION6 ACTION00 ACTION01
-    local TARGET1 TARGET2 TARGET3 TARGET4 TARGET5 TARGET6 TARGET00 TARGET01
+    normalize_language
+    local lang="$SELECTED_LANGUAGE" 
+    local MENU1 MENU2 MENU3 MENU4 MENU5 MENU6 MENU00 MENU01 MENU02 SELECT1
+    local ACTION1 ACTION2 ACTION3 ACTION4 ACTION5 ACTION6 ACTION00 ACTION01 ACTION02
+    local TARGET1 TARGET2 TARGET3 TARGET4 TARGET5 TARGET6 TARGET00 TARGET01 TARGET02
     local option
     
-    if [ "$lang" = "en" ]; then
-        MENU1="Internet settings (Japan Only)" 
-        MENU2="Initial System Settings"
-        MENU3="Recommended Package Installation"
-        MENU4="Ad blocker installation settings"
-        MENU5="Access Point Settings"
-        MENU6="Other Script Settings"
-        MENU00="Exit Script"
-        MENU01="Remove script and exit"
-        MENU02="country code"
-        SELECT1="Select an option: "
-    elif [ "$lang" = "ja" ]; then
-        MENU1="インターネット設定"
-        MENU2="システム初期設定"
-        MENU3="推奨パッケージインストール"  
-        MENU4="広告ブロッカーインストール設定" 
-        MENU5="アクセスポイント設定"
-        MENU6="その他のスクリプト設定"
-        MENU00="スクリプト終了"
-        MENU01="スクリプト削除終了"
-        MENU02="カントリーコード"
-        SELECT1="選択してください: "
-    fi
+    case "$lang" in
+        en)
+            MENU1="Internet settings (Japan Only)"
+            MENU2="Initial System Settings"
+            MENU3="Recommended Package Installation"
+            MENU4="Ad blocker installation settings"
+            MENU5="Access Point Settings"
+            MENU6="Other Script Settings"
+            MENU00="Exit Script"
+            MENU01="Remove script and exit"
+            MENU02="country code"
+            SELECT1="Select an option: "
+            ;;
+        ja)
+            MENU1="インターネット設定"
+            MENU2="システム初期設定"
+            MENU3="推奨パッケージインストール"
+            MENU4="広告ブロッカーインストール設定"
+            MENU5="アクセスポイント設定"
+            MENU6="その他のスクリプト設定"
+            MENU00="スクリプト終了"
+            MENU01="スクリプト削除終了"
+            MENU02="カントリーコード"
+            SELECT1="選択してください: "
+            ;;
+        zh-cn)
+            MENU1="互联网设置 (陕西一地区)"
+            MENU2="系统初始设置"
+            MENU3="推荐安装包"
+            MENU4="广告拦截器设置"
+            MENU5="访问点设置"
+            MENU6="其他脚本设置"
+            MENU00="退出脚本"
+            MENU01="删除脚本并退出"
+            MENU02="国码"
+            SELECT1="选择一个选项: "
+            ;;
+        zh-tw)
+            MENU1="網路設定 (日本限定)"
+            MENU2="系統初始設定"
+            MENU3="推薦包對應"
+            MENU4="廣告防錯設定"
+            MENU5="連線點設定"
+            MENU6="其他脚本設定"
+            MENU00="退出脚本"
+            MENU01="移除脚本並退出"
+            MENU02="國碼"
+            SELECT1="選擇一個選項: "
+            ;;
+    esac
 
     ACTION1="download" ; TARGET1="internet-config.sh"
     ACTION2="download" ; TARGET2="system-config.sh"
@@ -47,7 +91,7 @@ main_menu() {
     ACTION00="exit"
     ACTION01="delete"
     ACTION02="download" ; TARGET02="country_timezone.sh"
-    
+
     while :; do
         echo -e "$(color "white" "------------------------------------------------------")"
         echo -e "$(color "blue" "[i]: ${MENU1}")"
@@ -69,62 +113,10 @@ main_menu() {
             "o") menu_option "${ACTION6}" "${MENU6}" "${TARGET6}" ;;
             "e") menu_option "${ACTION00}" "${MENU00}" ;;
             "d") menu_option "${ACTION01}" "${MENU01}" ;;
-            "c") color_code ;;
             "cc") menu_option "${ACTION02}" "${MENU02}" "${TARGET02}" ;;
             *) echo -e "$(color "red" "Invalid option. Please try again.")" ;;
         esac
     done
-}
-
-download_common() {
-    if [ ! -f "${BASE_DIR}/common-functions.sh" ]; then
-        wget --no-check-certificate --quiet -O "${BASE_DIR}/common-functions.sh" "${BASE_URL}/common-functions.sh"
-
-    fi
-    source "${BASE_DIR}/common-functions.sh"
-}
-
-display_system_info() {
-    local lang="${SELECTED_LANGUAGE:-en}" 
-
-    if [ "$lang" = "en" ]; then
-        local available_memory=$(free | awk '/Mem:/ { print int($4 / 1024) }')
-        local available_flash=$(df | awk '/overlayfs:\/overlay/ { print int($4 / 1024) }')
-        local usb_devices=$(ls /sys/bus/usb/devices | grep -q usb && echo "Detected" || echo "Not detected")
-
-        echo -e "$(color "white" "Available Memory: ${available_memory} MB")"
-        echo -e "$(color "white" "Available Flash Storage: ${available_flash} MB")"
-        echo -e "$(color "white" "USB Devices: ${usb_devices}")"
-        echo -e "$(color "white" "Scripts directory: ${BASE_DIR}")"
-        echo -e "$(color "white" "OpenWrt version: ${RELEASE_VERSION}")"
-        echo -e "$(color "white" "Country: $ZONENAME")"
-        echo -e "$(color "white" "Downloader: ${PACKAGE_MANAGER}")"
-
-    elif [ "$lang" = "ja" ]; then
-        local available_memory=$(free | awk '/Mem:/ { print int($4 / 1024) }')
-        local available_flash=$(df | awk '/overlayfs:\/overlay/ { print int($4 / 1024) }')
-        local usb_devices=$(ls /sys/bus/usb/devices | grep -q usb && echo "検出済み" || echo "未検出")
-
-        echo -e "$(color "white" "利用可能メモリ: ${available_memory} MB")"
-        echo -e "$(color "white" "利用可能フラッシュストレージ: ${available_flash} MB")"
-        echo -e "$(color "white" "USBデバイス: ${usb_devices}")"
-        echo -e "$(color "white" "スクリプトディレクトリ: ${BASE_DIR}")"
-        echo -e "$(color "white" "OpenWrtバージョン: ${RELEASE_VERSION}")"
-        echo -e "$(color "white" "カントリー: $ZONENAME")"
-        echo -e "$(color "white" "ダウンローダー: ${PACKAGE_MANAGER}")"
-    fi
-}
-
-color_code() {
-for i in `seq 30 38` `seq 40 47` ; do
-    for j in 0 1 2 3 4 5 6 7 ; do
-        printf "\033[${j};${i}m"
-        printf " ${j};${i} "
-        printf "\033[0;39;49m"
-        printf " "
-    done
-    printf "\n"
-done
 }
 
 download_common

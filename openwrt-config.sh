@@ -17,8 +17,6 @@ download_country_zone() {
             echo "Failed to download country-timezone.sh"
             exit 1
         }
-    else
-        echo "country-timezone.sh already exists. Skipping download."
     fi
 
     if [ ! -f "${BASE_DIR%/}/country-zonename.sh" ]; then
@@ -27,8 +25,6 @@ download_country_zone() {
             source "${BASE_DIR%/}/common-functions.sh"
             exit 1
         }
-    else
-        echo "country-zonename.sh already exists. Skipping download."
     fi
 }
 
@@ -38,8 +34,6 @@ download_and_execute_common() {
             echo "Failed to download common-functions.sh"
             exit 1
         }
-    else
-        echo "common-functions.sh already exists. Skipping download."
     fi
 
     source "${BASE_DIR%/}/common-functions.sh" || {
@@ -49,8 +43,6 @@ download_and_execute_common() {
 }
 
 display_system_info() {
-    normalize_language
-    echo -e "$(color "white" "------------------------------------------------------")"
     MEM_TOTAL=$(grep MemTotal /proc/meminfo | awk '{print $2 / 1024 " MB"}')
     FLASH_TOTAL=$(df -h | grep '/overlay' | awk '{print $2}')
     if lsusb >/dev/null 2>&1; then
@@ -115,12 +107,9 @@ display_system_info() {
             echo -e "$(color "magenta" "Downloader: ${PACKAGE_MANAGER}")"
             ;;
     esac
-
-    echo -e "$(color "white" "------------------------------------------------------")"
 }
 
 main_menu() {
-    normalize_language
     local lang="$SELECTED_LANGUAGE" 
     local MENU1 MENU2 MENU3 MENU4 MENU5 MENU6 MENU00 MENU01 MENU02 SELECT1
     local ACTION1 ACTION2 ACTION3 ACTION4 ACTION5 ACTION6 ACTION00 ACTION01 ACTION02

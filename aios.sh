@@ -9,6 +9,7 @@ SUPPORTED_VERSIONS="19 21 22 23 24 SN"
 INPUT_LANG="$1"
 
 check_version() {
+    local RELEASE_VERSION
     RELEASE_VERSION=$(awk -F"'" '/DISTRIB_RELEASE/ {print $2}' /etc/openwrt_release | cut -c 1-2)
     if echo "${SUPPORTED_VERSIONS}" | grep -qw "${RELEASE_VERSION}"; then
         echo "${RELEASE_VERSION}" > ${BASE_DIR}/check_version
@@ -26,6 +27,7 @@ make_directory() {
 check_ttyd_installed() {
     if ! command -v ttyd >/dev/null 2>&1; then
         echo "ttyd is not installed."
+        local choice
         read -p "Do you want to install ttyd? (y/n, default: n): " choice
         choice=${choice:-n}
         case "$choice" in
@@ -39,6 +41,7 @@ check_ttyd_installed() {
                     echo "Error: ttyd installation script not found."
                     exit 1
                 fi
+                local RELEASE_VERSION
                 RELEASE_VERSION="${RELEASE_VERSION}" sh "${BASE_DIR}/ttyd.sh" "$SELECTED_LANGUAGE"
                 ;;
             *)

@@ -8,6 +8,11 @@ BASE_DIR="/tmp/aios"
 SUPPORTED_VERSIONS="19 21 22 23 24 SN"
 INPUT_LANG="$1"
 
+delete_aios() {
+    rm -rf "${BASE_DIR}" /usr/bin/aios
+    echo "Initialized aios"
+}
+
 check_version() {
     local RELEASE_VERSION
     RELEASE_VERSION=$(awk -F"'" '/DISTRIB_RELEASE/ {print $2}' /etc/openwrt_release | cut -c 1-2)
@@ -69,6 +74,7 @@ download_and_execute() {
     }
 }
 
+delete_aios
 check_version
 make_directory
 check_ttyd_installed

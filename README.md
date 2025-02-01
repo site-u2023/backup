@@ -40,3 +40,19 @@ opkg update && opkg install wget-ssl
 ```sh
 wget -N /tmp/aios.sh https://raw.githubusercontent.com/site-u2023/aios/main/aios.sh; sh /tmp/aios.sh ja
 ```
+
+aiosインストール後
+- aios
+```sh
+aios
+```
+- 言語追加
+```sh
+aios en
+```
+- 初期化 （再度wgetも初期化される）
+```sh
+aios --reset
+```
+
+

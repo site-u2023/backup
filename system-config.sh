@@ -23,8 +23,9 @@ download_country_zone() {
 }
 
 information() {
-    
-  case "$SELECTED_LANGUAGE" in
+  local lang="${SELECTED_LANGUAGE:-en}"
+  
+  case "$lang" in
     en)
       if echo "$LANGUAGE" | grep -q "/"; then
         echo -e "$(color "white" "Country: $(echo "$ZONENAME" | awk '{print $1}')")"
@@ -48,7 +49,7 @@ information() {
       echo -e "$(color "white" "タイムゾーン: $(echo "$TIMEZONE" | awk '{print $4}')")"
       ;;
     *)
-      echo "Unsupported language: $SELECTED_LANGUAGE"
+      echo "Unsupported language: $lang"
       ;;
   esac
 }
@@ -226,7 +227,7 @@ uci commit dropbear
 # system setup
 DESCRIPTION=`cat /etc/openwrt_version` # Description
 NOTES=`date` # Remarks
-local ZONENAME=$(echo "$TIMEZONE" | awk '{print $4}' || echo "00")
+local ZONENAME=$(echo "$ZONENAME" | awk '{print $4}' || echo "00")
 local TIMEZONE=$(echo "$TIMEZONE" | awk '{print $4}' || echo "UTC")
 
 uci set system.@system[0]=system

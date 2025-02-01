@@ -82,14 +82,6 @@ check_common() {
     [ -z "$PACKAGE_MANAGER" ] && check_package_manager  
 
     # カントリー選択の判定 
-    if [ -f "${BASE_DIR}/check_language" ] && [ -f "${BASE_DIR}/check_country" ]; then
-        SELECTED_LANGUAGE=$(cat "${BASE_DIR}/check_language")
-        SELECTED_COUNTRY=$(cat "${BASE_DIR}/check_country")
-        echo "Using previously selected language and country."
-        normalize_language
-        return
-    fi
-
     INPUT_LANG=$1
     INPUT_LANG=$(echo "$INPUT_LANG" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//' | tr -d '\n')
     echo "Input Language: $INPUT_LANG"
@@ -119,11 +111,16 @@ check_common() {
         echo "Selected Country (after script): $SELECTED_COUNTRY"
         echo "$SELECTED_LANGUAGE" > "${BASE_DIR}/check_language"
         echo "$SELECTED_COUNTRY" > "${BASE_DIR}/check_country"
+    elif [ -f "${BASE_DIR}/check_language" ] && [ -f "${BASE_DIR}/check_country" ]; then
+        SELECTED_LANGUAGE=$(cat "${BASE_DIR}/check_language")
+        SELECTED_COUNTRY=$(cat "${BASE_DIR}/check_country")
+        echo "Using previously selected language and country."
     else
         check_language    
     fi
     normalize_language
 }
+
 
 check_language() {
 

@@ -99,23 +99,13 @@ check_language() {
     echo -e "$(color "white" "------------------------------------------------------")"
 
     read -p "Choose an option: " INPUT_LANG
-    #INPUT_LANG=$(echo "$INPUT_LANG" | awk '{$1=$1; print}')
     INPUT_LANG=$(echo "$INPUT_LANG" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//' | tr -d '\n')
-    #INPUT_LANG=$(echo "$INPUT_LANG" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
-    #INPUT_LANG=$(echo "$1" | tr -d '[:space:]')
-echo 1 $INPUT_LANG
-    SELECTED_LANGUAGE=$(sh /tmp/aios/country-zonename.sh "$INPUT_LANG" | awk '{print $2}')
-        if [ -n "$SELECTED_LANGUAGE" ]; then
-echo 2 $SELECTED_LANGUAGE
-            echo "$SELECTED_LANGUAGE" > "${BASE_DIR}/check_language"
-            echo "${SELECTED_COUNTRY}" > "${BASE_DIR}/check_country"
-        else
-echo 3 $SELECTED_LANGUAGE
-            SELECTED_LANGUAGE="en"
-            echo "$SELECTED_LANGUAGE" > "${BASE_DIR}/check_language"
-            echo "${SELECTED_COUNTRY}" > "${BASE_DIR}/check_country"
-            echo "Invalid language selection. Defaulting to 'en'."
-        fi
+    if [ -n "$INPUT_LANG" ]; then
+        SELECTED_LANGUAGE=$(sh /tmp/aios/country-timezone.sh "$INPUT_LANG" | awk '{print $2}')
+        SELECTED_COUNTRY=$(sh /tmp/aios/country-zonename.sh "$INPUT_LANG" | awk '{print $3}')
+        echo "${SELECTED_LANGUAGE}" > "${BASE_DIR}/check_language"
+        echo "${SELECTED_COUNTRY}" > "${BASE_DIR}/check_country"
+    fi
         
     case "$SELECTED_LANGUAGE" in
         "ja")    echo -e "$(color "white" "日本語を選択しました。")" ;;
@@ -159,7 +149,6 @@ echo 3 $SELECTED_LANGUAGE
 }
 
 normalize_language() {
-echo 4 $SELECTED_LANGUAGE
 CHECK_LANGUAGE="${BASE_DIR}/check_language"
 if [ -f "$CHECK_LANGUAGE" ]; then
     READ_LANGUAGE=$(cat "$CHECK_LANGUAGE")
@@ -173,7 +162,6 @@ case "$READ_LANGUAGE" in
         SELECTED_LANGUAGE="en"
         ;;
 esac
-echo 5 $SELECTED_LANGUAGE
 }
 
 
@@ -211,21 +199,14 @@ check_common() {
     [ -z "$PACKAGE_MANAGER" ] && check_package_manager  
     
     # カントリー選択の判定 
-echo x1 $1
     INPUT_LANG=$1
-    #INPUT_LANG=$(echo "$INPUT_LANG" | awk '{$1=$1; print}')
     INPUT_LANG=$(echo "$INPUT_LANG" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//' | tr -d '\n')
-    #INPUT_LANG=$(echo "$INPUT_LANG" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
-    #INPUT_LANG=$(echo "$1" | tr -d '[:space:]')
-echo x2 $INPUT_LANG
     if [ -n "$INPUT_LANG" ]; then
-echo 6 $SELECTED_LANGUAGE
         SELECTED_LANGUAGE=$(sh /tmp/aios/country-timezone.sh "$INPUT_LANG" | awk '{print $2}')
         SELECTED_COUNTRY=$(sh /tmp/aios/country-zonename.sh "$INPUT_LANG" | awk '{print $3}')
         echo "${SELECTED_LANGUAGE}" > "${BASE_DIR}/check_language"
         echo "${SELECTED_COUNTRY}" > "${BASE_DIR}/check_country"
     else
-echo 7 $SELECTED_LANGUAGE
         if [ -f "${BASE_DIR}/check_language" ]; then
             SELECTED_LANGUAGE=$(cat "${BASE_DIR}/check_language")
             SELECTED_COUNTRY=$(cat "${BASE_DIR}/check_country")

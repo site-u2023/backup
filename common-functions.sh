@@ -323,3 +323,8 @@ menu_option() {
             ;;
     esac
 }
+
+country_zone() {
+  ZONENAME="$(sh ${BASE_DIR}/country-zonename.sh "$(cat ${BASE_DIR}/check_country)")"
+  TIMEZONE="$(sh ${BASE_DIR}/country-timezone.sh "$(cat ${BASE_DIR}/check_country)")"
+}

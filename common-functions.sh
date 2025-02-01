@@ -208,7 +208,9 @@ check_common() {
     [ -z "$PACKAGE_MANAGER" ] && check_package_manager  
     
     # カントリー選択の判定 
+echo x1 $1
     INPUT_LANG=$(echo "$1" | tr -d '[:space:]')
+echo x2 $INPUT_LANG
     if [ -n "$INPUT_LANG" ]; then
 echo 6 $SELECTED_LANGUAGE
         SELECTED_LANGUAGE=$(sh /tmp/aios/country-timezone.sh "$INPUT_LANG" | awk '{print $2}')

@@ -23,7 +23,6 @@ download_country_zone() {
 }
 
 information() {
-country_zone
     
   case "$SELECTED_LANGUAGE" in
     en)
@@ -120,8 +119,8 @@ set_device_name_password() {
 set_wifi_ssid_password() {
   local device iface iface_num ssid password enable_band band htmode devices network country
   local devices_to_enable=""
-  local lang="${SELECTED_LANGUAGE:-en}"
-  local country=$(sh ${BASE_DIR}/country-zonename.sh ${SELECTED_LANGUAGE} | awk '{print $3}')
+  local lang="${SELECTED_LANGUAGE:-en}"  
+  local country=$(echo "$TIMEZONE" | awk '{print $3}')
 
   case "$lang" in
     "ja")
@@ -227,8 +226,8 @@ uci commit dropbear
 # system setup
 DESCRIPTION=`cat /etc/openwrt_version` # Description
 NOTES=`date` # Remarks
-local ZOONNAME=$(sh ${BASE_DIR}/country-zonename.sh ${SELECTED_LANGUAGE} | awk '{print $4}' || echo "00")
-local TIMEZOON=$(sh ${BASE_DIR}/country-timezone.sh ${SELECTED_LANGUAGE} | awk '{print $4}' || echo "UTC")
+local ZONENAME=$(echo "$TIMEZONE" | awk '{print $4}' || echo "00")
+local TIMEZONE=$(echo "$TIMEZONE" | awk '{print $4}' || echo "UTC")
 
 uci set system.@system[0]=system
 #uci set system.@system[0].hostname=${HOSTNAME}
@@ -298,6 +297,7 @@ reboot
 download_common
 download_country_zone
 check_common "$1"
+country_zone
 information
 #set_device_name_password
 #set_wifi_ssid_password

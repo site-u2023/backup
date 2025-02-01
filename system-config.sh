@@ -25,7 +25,8 @@ download_country_zone() {
 information() {
   COUNTRY="$(sh ${BASE_DIR}/country-zonename.sh "$(cat ${BASE_DIR}/check_country)")"
   LANGUAGE=$(echo "$COUNTRY" | awk '{print $NF}')
-
+  TIMEZONE="$(sh ${BASE_DIR}/country-timezone.sh "$(cat ${BASE_DIR}/check_country)")"
+  
   case "$SELECTED_LANGUAGE" in
     en)
       if echo "$LANGUAGE" | grep -q "/"; then
@@ -36,7 +37,7 @@ information() {
       echo -e "$(color "white" "Language Package: $(echo "$COUNTRY" | awk '{print $2}')")"
       echo -e "$(color "white" "Country Code: $(echo "$COUNTRY" | awk '{print $3}')")"
       echo -e "$(color "white" "Zone Name: $(echo "$COUNTRY" | awk '{print $4}')")"
-      echo -e "$(color "white" "Timezone: $(sh ${BASE_DIR}/country-timezone.sh "$(cat ${BASE_DIR}/check_country)" | awk '{print $4}')")"
+      echo -e "$(color "white" "Zone Name: $(echo "$TIMEZONE" | awk '{print $4}')")"
       ;;
     ja)
       if echo "$LANGUAGE" | grep -q "/"; then

@@ -38,62 +38,70 @@ download_and_execute_common() {
     }
 }
 
-display_system_info() {
+get_system_info() {
     MEM_TOTAL=$(grep MemTotal /proc/meminfo | awk '{print $2 / 1024 " MB"}')
+    MEM_FREE=$(grep MemAvailable /proc/meminfo | awk '{print $2 / 1024 " MB"}')
+    MEM_USAGE="${MEM_FREE} / ${MEM_TOTAL}"
+
     FLASH_TOTAL=$(df -h | grep '/overlay' | awk '{print $2}')
+    FLASH_AVAILABLE=$(df -h | grep '/overlay' | awk '{print $4}')
+    FLASH_USAGE="${FLASH_AVAILABLE} / ${FLASH_TOTAL}"
+
     if lsusb >/dev/null 2>&1; then
-        USB_STATUS="Available"
+        USB_STATUS_EN="Detected"
+        USB_STATUS_JA="検出済み"
+        USB_STATUS_ZH_CN="已检测"
+        USB_STATUS_ZH_TW="已檢測"
     else
-        USB_STATUS="Not Available"
+        USB_STATUS_EN="Not Detected"
+        USB_STATUS_JA="未検出"
+        USB_STATUS_ZH_CN="未检测"
+        USB_STATUS_ZH_TW="未檢測"
     fi
+}
 
-    if [ -f "${BASE_DIR}/check_country" ]; then
-        ZONENAME=$(cat "${BASE_DIR}/check_country")
-    else
-        ZONENAME="Not Set"
-    fi
-
+display_info() {
     case "$SELECTED_LANGUAGE" in
         en)
-            echo -e "$(color "white" "Memory Capacity: ${MEM_TOTAL}")"
-            echo -e "$(color "white" "Flash Capacity: ${FLASH_TOTAL}")"
-            echo -e "$(color "white" "USB Support: ${USB_STATUS}")"
+            echo -e "$(color "white" "Memory (Free/Total): ${MEM_USAGE}")"
+            echo -e "$(color "white" "Flash (Free/Total): ${FLASH_USAGE}")"
+            echo -e "$(color "white" "USB: ${USB_STATUS_EN}")"
             echo -e "$(color "white" "Directory: ${BASE_DIR}")"
             echo -e "$(color "white" "OpenWrt Version: ${RELEASE_VERSION}")"
             echo -e "$(color "white" "Zonename: ${ZONENAME}")"
             echo -e "$(color "white" "Downloader: ${PACKAGE_MANAGER}")"
             ;;
         ja)
-            echo -e "$(color "white" "メモリ容量: ${MEM_TOTAL}")"
-            echo -e "$(color "white" "フラッシュ容量: ${FLASH_TOTAL}")"
-            echo -e "$(color "white" "USBサポート: ${USB_STATUS}")"
+            echo -e "$(color "white" "メモリ (残量/総容量): ${MEM_USAGE}")"
+            echo -e "$(color "white" "フラッシュ (残量/総容量): ${FLASH_USAGE}")"
+            echo -e "$(color "white" "USB: ${USB_STATUS_JA}")"
             echo -e "$(color "white" "ディレクトリ: ${BASE_DIR}")"
             echo -e "$(color "white" "OpenWrtバージョン: ${RELEASE_VERSION}")"
             echo -e "$(color "white" "ゾーン名: ${ZONENAME}")"
             echo -e "$(color "white" "ダウンローダー: ${PACKAGE_MANAGER}")"
             ;;
         zh-cn)
-            echo -e "$(color "white" "内存容量: ${MEM_TOTAL}")"
-            echo -e "$(color "white" "闪存容量: ${FLASH_TOTAL}")"
-            echo -e "$(color "white" "USB支持: ${USB_STATUS}")"
+            echo -e "$(color "white" "内存 (剩余/总计): ${MEM_USAGE}")"
+            echo -e "$(color "white" "闪存 (剩余/总计): ${FLASH_USAGE}")"
+            echo -e "$(color "white" "USB: ${USB_STATUS_ZH_CN}")"
             echo -e "$(color "white" "目录: ${BASE_DIR}")"
             echo -e "$(color "white" "OpenWrt版本: ${RELEASE_VERSION}")"
             echo -e "$(color "white" "区域名称: ${ZONENAME}")"
             echo -e "$(color "white" "下载器: ${PACKAGE_MANAGER}")"
             ;;
         zh-tw)
-            echo -e "$(color "white" "記憶體容量: ${MEM_TOTAL}")"
-            echo -e "$(color "white" "快閃記憶體容量: ${FLASH_TOTAL}")"
-            echo -e "$(color "white" "USB 支援: ${USB_STATUS}")"
+            echo -e "$(color "white" "記憶體 (剩餘/總計): ${MEM_USAGE}")"
+            echo -e "$(color "white" "快閃記憶體 (剩餘/總計): ${FLASH_USAGE}")"
+            echo -e "$(color "white" "USB: ${USB_STATUS_ZH_TW}")"
             echo -e "$(color "white" "目錄: ${BASE_DIR}")"
             echo -e "$(color "white" "OpenWrt版本: ${RELEASE_VERSION}")"
             echo -e "$(color "white" "區域名稱: ${ZONENAME}")"
             echo -e "$(color "white" "下載器: ${PACKAGE_MANAGER}")"
             ;;
         *)
-            echo -e "$(color "white" "Memory Capacity: ${MEM_TOTAL}")"
-            echo -e "$(color "white" "Flash Capacity: ${FLASH_TOTAL}")"
-            echo -e "$(color "white" "USB Support: ${USB_STATUS}")"
+            echo -e "$(color "white" "Memory (Free/Total): ${MEM_USAGE}")"
+            echo -e "$(color "white" "Flash (Free/Total): ${FLASH_USAGE}")"
+            echo -e "$(color "white" "USB: ${USB_STATUS_EN}")"
             echo -e "$(color "white" "Directory: ${BASE_DIR}")"
             echo -e "$(color "white" "OpenWrt Version: ${RELEASE_VERSION}")"
             echo -e "$(color "white" "Zonename: ${ZONENAME}")"
@@ -201,5 +209,6 @@ download_country_zone
 download_and_execute_common
 check_common "$1"
 country_zone
-display_system_info
+get_system_info
+display_info
 main_menu

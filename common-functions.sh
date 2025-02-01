@@ -68,6 +68,8 @@ check_package_manager() {
 }
 
 check_common() {
+    SELECTED_COUNTRY=$(cat "${BASE_DIR}/check_country")
+    echo common1 $SELECTED_COUNTRY
 
     # バージョン情報の取得
     if [ -f "${BASE_DIR}/check_version" ]; then
@@ -96,7 +98,9 @@ check_common() {
             while IFS= read -r line; do
                 echo "$i) $line"
                 i=$((i+1))
-            done <<< "$found_entries"
+            done <<EOF
+$found_entries
+EOF
             read -p "Enter the number of your choice: " choice
             found_entry=$(echo "$found_entries" | sed -n "${choice}p")
         else
@@ -120,6 +124,7 @@ check_common() {
             check_language    
         fi
     fi
+    echo common2 $SELECTED_COUNTRY
     normalize_language
 }
 

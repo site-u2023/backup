@@ -6,9 +6,9 @@
 BASE_URL="https://raw.githubusercontent.com/site-u2023/aios/main"
 BASE_DIR="/tmp/aios"
 SUPPORTED_VERSIONS="19 21 22 23 24 SN"
-INPUT_LANG="$1"
+#INPUT_LANG="$1"
 echo aios.sh x "$1"
-echo aios.sh 1 $INPUT_LANG
+#echo aios.sh 1 $INPUT_LANG
 
 check_version() {
     RELEASE_VERSION=$(awk -F"'" '/DISTRIB_RELEASE/ {print $2}' /etc/openwrt_release | cut -c 1-2)
@@ -64,7 +64,7 @@ download_and_execute() {
     echo -e "\nInstallation Complete"
     echo "aios has been installed successfully."
     echo "You can now run the 'aios' script anywhere."
-    echo aios.sh  2 $INPUT_LANG
+    #echo aios.sh  2 $INPUT_LANG
     echo aios.sh x1 "$1"
     /usr/bin/aios "$1" || {
         echo "Failed to execute aios script."

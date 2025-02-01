@@ -81,13 +81,6 @@ check_common() {
     fi
     [ -z "$PACKAGE_MANAGER" ] && check_package_manager  
 
-    # 既に言語と国が選択されている場合は再選択しない
-    if [ -f "${BASE_DIR}/check_language" ] && [ -f "${BASE_DIR}/check_country" ]; then
-        SELECTED_LANGUAGE=$(cat "${BASE_DIR}/check_language")
-        SELECTED_COUNTRY=$(cat "${BASE_DIR}/check_country")
-        return  # 既に選択されている場合はここで終了
-    fi
-
     INPUT_LANG="$1"
     if [ -n "$INPUT_LANG" ]; then
         found_entries=$(sh /tmp/aios/country-timezone.sh "$INPUT_LANG")

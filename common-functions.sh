@@ -150,7 +150,7 @@ check_language() {
         *)       echo -e "$(color "white" "You selected $(echo "$SELECTED_LANGUAGE" | tr '[:lower:]' '[:upper:]') (Processed as English).")" ;;
     esac
 
-    normalize_language
+    #normalize_language
 }
 
 normalize_language() {
@@ -218,7 +218,7 @@ check_common() {
             check_language    
         fi
     fi
-    normalize_language
+    #normalize_language
 }
 
 ask_confirmation() {

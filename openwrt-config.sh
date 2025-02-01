@@ -56,13 +56,6 @@ get_system_info() {
         USB_STATUS_ZH_CN="未检测"
         USB_STATUS_ZH_TW="未檢測"
     fi
-
-    if [ -f "${BASE_DIR}/check_country" ]; then
-        ZONENAME_FULL=$(sh ${BASE_DIR}/country-zonename.sh "$(cat ${BASE_DIR}/check_country)")
-        ZONENAME=$(echo "$ZONENAME_FULL" | awk '{print $1}')
-    else
-        ZONENAME="Not Set"
-    fi
 }
 
 display_info() {

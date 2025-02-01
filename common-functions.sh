@@ -119,6 +119,7 @@ check_common() {
     normalize_language
 }
 
+
 check_language() {
 
     echo -e "$(color "white" "------------------------------------------------------")"

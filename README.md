@@ -50,7 +50,7 @@ aios
 ```sh
 aios en
 ```
-- 初期化 （再度wgetも初期化される）
+- Select your language（初期化）※再度wgetも初期化される
 ```sh
 aios --reset
 ```

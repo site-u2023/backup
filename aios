@@ -2,109 +2,125 @@
 # License: CC0
 # OpenWrt >= 19.07
 
-BASE_URL="https://raw.githubusercontent.com/site-u2023/aios/main/"
+BASE_URL="https://raw.githubusercontent.com/site-u2023/aios/main"
 BASE_DIR="/tmp/aios"
 SUPPORTED_VERSIONS="19 21 22 23 24 SN"
 SUPPORTED_LANGUAGES="en ja zh-cn zh-tw"
 
-banner() {
-    local lang="${SELECTED_LANGUAGE:-en}"
-    local msg disclaimer all_in_one
+normalize_language() {
+    CHECK_LANGUAGE="${BASE_DIR}/check_language"
+    if [ -f "$CHECK_LANGUAGE" ]; then
+        READ_LANGUAGE=$(cat "$CHECK_LANGUAGE")
+    fi
 
+    for lang in $SUPPORTED_LANGUAGES; do
+        if [ "$READ_LANGUAGE" = "$lang" ]; then
+            SELECTED_LANGUAGE="$READ_LANGUAGE"
+            return
+        fi
+    done
+
+    SELECTED_LANGUAGE="en"
+}
+
+main_menu() {
+    normalize_language
+    local lang="$SELECTED_LANGUAGE" 
+    local MENU1 MENU2 MENU3 MENU4 MENU5 MENU6 MENU00 MENU01 MENU02 SELECT1
+    local ACTION1 ACTION2 ACTION3 ACTION4 ACTION5 ACTION6 ACTION00 ACTION01 ACTION02
+    local TARGET1 TARGET2 TARGET3 TARGET4 TARGET5 TARGET6 TARGET00 TARGET01 TARGET02
+    local option
+    
     case "$lang" in
         en)
-            msg="Dedicated configuration software for OpenWrt."
-            disclaimer="Disclaimer: Use this script at your own risk."
-            all_in_one="all in one scripts"
+            MENU1="Internet settings (Japan Only)"
+            MENU2="Initial System Settings"
+            MENU3="Recommended Package Installation"
+            MENU4="Ad blocker installation settings"
+            MENU5="Access Point Settings"
+            MENU6="Other Script Settings"
+            MENU00="Exit Script"
+            MENU01="Remove script and exit"
+            MENU02="country code"
+            SELECT1="Select an option: "
             ;;
         ja)
-            msg="OpenWrt専用設定ソフトウェア"
-            disclaimer="免責事項: 本スクリプトは自己責任でご使用下さい"
-            all_in_one="オールインワンスクリプト"
+            MENU1="インターネット設定"
+            MENU2="システム初期設定"
+            MENU3="推奨パッケージインストール"
+            MENU4="広告ブロッカーインストール設定"
+            MENU5="アクセスポイント設定"
+            MENU6="その他のスクリプト設定"
+            MENU00="スクリプト終了"
+            MENU01="スクリプト削除終了"
+            MENU02="カントリーコード"
+            SELECT1="選択してください: "
             ;;
         zh-cn)
-            msg="OpenWrt封装配置软件"
-            disclaimer="声明: 使用本脚本风险自承"
-            all_in_one="全面集成脚本"
+            MENU1="互联网设置 (陕西一地区)"
+            MENU2="系统初始设置"
+            MENU3="推荐安装包"
+            MENU4="广告拦截器设置"
+            MENU5="访问点设置"
+            MENU6="其他脚本设置"
+            MENU00="退出脚本"
+            MENU01="删除脚本并退出"
+            MENU02="国码"
+            SELECT1="选择一个选项: "
             ;;
         zh-tw)
-            msg="OpenWrt專用設定軟體"
-            disclaimer="免責聲明: 請自行承擔使用本脚本"
-            all_in_one="全功能集成脚本"
-            ;;
-        *)
-            msg="Unknown language setting. Please set 'en' or 'ja'."
-            disclaimer="Disclaimer: Language setting is not recognized."
-            all_in_one="Language Error"
+            MENU1="網路設定 (日本限定)"
+            MENU2="系統初始設定"
+            MENU3="推薦包對應"
+            MENU4="廣告防錯設定"
+            MENU5="連線點設定"
+            MENU6="其他脚本設定"
+            MENU00="退出脚本"
+            MENU01="移除脚本並退出"
+            MENU02="國碼"
+            SELECT1="選擇一個選項: "
             ;;
     esac
 
-    echo -e "$(color "white"     "                                                      ")"
-    echo -e "$(color "magenta"   "                    ii i                              ")"
-    echo -e "$(color "blue"      "         aaaa      iii       oooo      sssss          ")"
-    echo -e "$(color "cyan"      "            aa      ii      oo  oo    ss              ")"
-    echo -e "$(color "green"     "         aaaaa      ii      oo  oo     sssss          ")"
-    echo -e "$(color "yellow"    "        aa  aa      ii      oo  oo         ss         ")"
-    echo -e "$(color "red"       "         aaaaa     iiii      oooo     ssssss          ")"
-    echo -e "$(color "white"     "                                                      ")"
-    echo -e "$(color "white"     "                                                      ")"
-    echo -e "$(color "white"     "$msg")"
-    echo -e "$(color "white"     "$all_in_one")"
-    echo -e "$(color "red_white" "$disclaimer")"
+    ACTION1="download" ; TARGET1="internet-config.sh"
+    ACTION2="download" ; TARGET2="system-config.sh"
+    ACTION3="download" ; TARGET3="package-config.sh"
+    ACTION4="download" ; TARGET4="ad-dns-blocking-config.sh"
+    ACTION5="download" ; TARGET5="accesspoint-config.sh"
+    ACTION6="download" ; TARGET6="etc-config.sh"
+    ACTION00="exit"
+    ACTION01="delete"
+    ACTION02="download" ; TARGET02="country_timezone.sh"
+
+    while :; do
+        echo -e "$(color "white" "------------------------------------------------------")"
+        echo -e "$(color "blue" "[i]: ${MENU1}")"
+        echo -e "$(color "yellow" "[s]: ${MENU2}")"
+        echo -e "$(color "green" "[p]: ${MENU3}")"
+        echo -e "$(color "magenta" "[b]: ${MENU4}")"
+        echo -e "$(color "red" "[a]: ${MENU5}")"
+        echo -e "$(color "cyan" "[o]: ${MENU6}")"
+        echo -e "$(color "white" "[e]: ${MENU00}")"
+        echo -e "$(color "white_black" "[d]: ${MENU01}")"
+        echo -e "$(color "white" "------------------------------------------------------")"
+        read -p "$(color "white" "${SELECT1}")" option
+        case "${option}" in
+            "i") menu_option "${ACTION1}" "${MENU1}" "${TARGET1}" ;;
+            "s") menu_option "${ACTION2}" "${MENU2}" "${TARGET2}" ;;
+            "p") menu_option "${ACTION3}" "${MENU3}" "${TARGET3}" ;;
+            "b") menu_option "${ACTION4}" "${MENU4}" "${TARGET4}" ;;
+            "a") menu_option "${ACTION5}" "${MENU5}" "${TARGET5}" ;;
+            "o") menu_option "${ACTION6}" "${MENU6}" "${TARGET6}" ;;
+            "e") menu_option "${ACTION00}" "${MENU00}" ;;
+            "d") menu_option "${ACTION01}" "${MENU01}" ;;
+            "cc") menu_option "${ACTION02}" "${MENU02}" "${TARGET02}" ;;
+            *) echo -e "$(color "red" "Invalid option. Please try again.")" ;;
+        esac
+    done
 }
 
-delete_language() {
-    rm -rf "${BASE_DIR}/check_language"
-    echo "Initialized check_language."
-    SELECTED_LANGUAGE=$1
-    echo "${SELECTED_LANGUAGE}" > ${BASE_DIR}/check_language
-}
-
-make_directory() {
-    mkdir -p "$BASE_DIR"
-}
-
-download_country_zone() {
-    wget --quiet -O "${BASE_DIR%/}/country-timezone.sh" "${BASE_URL}/country-timezone.sh" || {
-        echo "Failed to download country-timezone.sh"
-        exit 1
-    }
-    wget --quiet -O "${BASE_DIR%/}/country-zonename.sh" "${BASE_URL}/country-zonename.sh" || {
-        echo "Failed to download country-zonename.sh"
-        source "${BASE_DIR%/}/common-functions.sh"
-        exit 1
-    }
-}
-
-download_and_execute_common() {
-    wget --quiet -O "${BASE_DIR%/}/common-functions.sh" "${BASE_URL}/common-functions.sh" || {
-        echo "Failed to download common-functions.sh"
-        exit 1
-    }
-    source "${BASE_DIR%/}/common-functions.sh" || {
-        echo "Failed to source common-functions.sh"
-        exit 1
-    }
-}
-
-download_openwrt_config() {
-    wget --quiet -O "${BASE_DIR%/}/openwrt-config.sh" "${BASE_URL}/openwrt-config.sh" || {
-        echo "Failed to download openwrt-config.sh"
-        exit 1
-    }
-}
-
-execute_openwrt_config() {
-    sh "${BASE_DIR%/}/openwrt-config.sh" || {
-        echo "Failed to execute openwrt-config.sh"
-        exit 1
-    }
-}
-
-make_directory
-download_country_zone
-download_and_execute_common
+download_common
 check_common "$1"
-banner
-download_openwrt_config
-execute_openwrt_config
+country_zone
+display_system_info
+main_menu

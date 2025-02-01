@@ -68,18 +68,12 @@ check_package_manager() {
 }
 
 check_common() {
-
-    # バージョン情報の取得
-    if [ -f "${BASE_DIR}/check_version" ]; then
-        RELEASE_VERSION=$(cat "${BASE_DIR}/check_version")
+    # 既に言語と国が選択されている場合は再選択しない
+    if [ -f "${BASE_DIR}/check_language" ] && [ -f "${BASE_DIR}/check_country" ]; then
+        SELECTED_LANGUAGE=$(cat "${BASE_DIR}/check_language")
+        SELECTED_COUNTRY=$(cat "${BASE_DIR}/check_country")
+        return  # 既に選択されている場合はここで終了
     fi
-    [ -z "$RELEASE_VERSION" ] && check_version
-
-    # パッケージ情報の取得
-    if [ -f "${BASE_DIR}/check_package_manager" ]; then
-        PACKAGE_MANAGER=$(cat "${BASE_DIR}/check_package_manager")
-    fi
-    [ -z "$PACKAGE_MANAGER" ] && check_package_manager  
 
     INPUT_LANG="$1"
     if [ -n "$INPUT_LANG" ]; then

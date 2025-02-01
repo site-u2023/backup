@@ -68,7 +68,6 @@ check_package_manager() {
 }
 
 check_common() {
-
     # バージョン情報の取得
     if [ -f "${BASE_DIR}/check_version" ]; then
         RELEASE_VERSION=$(cat "${BASE_DIR}/check_version")
@@ -80,8 +79,15 @@ check_common() {
         PACKAGE_MANAGER=$(cat "${BASE_DIR}/check_package_manager")
     fi
     [ -z "$PACKAGE_MANAGER" ] && check_package_manager  
+    
+    if [ -f "${BASE_DIR}/check_language" ] && [ -f "${BASE_DIR}/check_country" ]; then
+        SELECTED_LANGUAGE=$(cat "${BASE_DIR}/check_language")
+        SELECTED_COUNTRY=$(cat "${BASE_DIR}/check_country")
+        echo "Using previously selected language and country."
+        return
+    fi
 
-    # カントリー選択の判定 
+    # ここから先は初回実行時のみ
     INPUT_LANG=$1
     INPUT_LANG=$(echo "$INPUT_LANG" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//' | tr -d '\n')
     echo "Input Language: $INPUT_LANG"
@@ -113,15 +119,9 @@ EOF
         echo "$SELECTED_LANGUAGE" > "${BASE_DIR}/check_language"
         echo "$SELECTED_COUNTRY" > "${BASE_DIR}/check_country"
     else
-        if [ -f "${BASE_DIR}/check_language" ]; then
-            SELECTED_LANGUAGE=$(cat "${BASE_DIR}/check_language")
-            SELECTED_COUNTRY=$(cat "${BASE_DIR}/check_country")
-            echo "Selected Language: $SELECTED_LANGUAGE"
-            echo "Selected Country (after script): $SELECTED_COUNTRY"
-        else
-            check_language    
-        fi
+        check_language
     fi
+
     normalize_language
 }
 

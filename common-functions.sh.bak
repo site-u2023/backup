@@ -5,6 +5,7 @@
 BASE_URL="${BASE_URL:-https://raw.githubusercontent.com/site-u2023/aios/main}"
 BASE_DIR="${BASE_DIR:-/tmp/aios}"
 SUPPORTED_VERSIONS="${SUPPORTED_VERSIONS:-19 21 22 23 24 SN}"
+SUPPORTED_LANGUAGES="${SUPPORTED_LANGUAGES:-en ja}"
 
 color_code_map() {
   local color=$1
@@ -51,13 +52,10 @@ check_version() {
         echo "Supported versions: ${SUPPORTED_VERSIONS}"
         exit 1
     fi
+}
 
 check_language() {
-    # データベースから情報を取得
-    #source "${BASE_DIR}/country-zonename.sh"
-    #country_zonename_data
 
-    # 言語選択画面を表示
     echo -e "$(color "white" "------------------------------------------------------")"
     echo -e "$(color "white" "Select your language")"
     echo -e "$(color "white" "[en]: English")"
@@ -94,65 +92,72 @@ check_language() {
     echo -e "$(color "white" "[da]: Dansk")"
     echo -e "$(color "white" "[fi]: Suomi")"
     echo -e "$(color "white" "[nl]: Nederlands")"
+    echo -e "$(color "white" "[xx]: otherwise")"
     echo -e "$(color "white" "------------------------------------------------------")"
 
-    # ユーザーの入力を取得
-    read -p "Choose an option: " lang_choice
-
-    # 選択された言語がリストにあるか確認
-    SELECTED_LANGUAGE=$(sh /tmp/aios/country-zonename.sh "$lang_choice" | awk '{print $2}')
-        if [ -n "$SELECTED_LANGUAGE" ]; then
-            echo "$SELECTED_LANGUAGE" > "${BASE_DIR}/check_language"
-            normalize_language # 言語の標準化（ja 以外は en 扱い）
-        else
-            SELECTED_LANGUAGE="en"
-            echo "$SELECTED_LANGUAGE" > "${BASE_DIR}/check_language"
-            echo "Invalid language selection. Defaulting to 'en'."
-        fi
+    read -p "Choose an option: " INPUT_LANG
+    INPUT_LANG=$(echo "$INPUT_LANG" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//' | tr -d '\n')
+    if [ -n "$INPUT_LANG" ]; then
+        SELECTED_LANGUAGE=$(sh /tmp/aios/country-timezone.sh "$INPUT_LANG" | awk '{print $2}')
+        SELECTED_COUNTRY=$(sh /tmp/aios/country-zonename.sh "$INPUT_LANG" | awk '{print $3}')
+        echo "${SELECTED_LANGUAGE}" > "${BASE_DIR}/check_language"
+        echo "${SELECTED_COUNTRY}" > "${BASE_DIR}/check_country"
     fi
-
-    # 言語に応じたメッセージの出力
+        
     case "$SELECTED_LANGUAGE" in
-        "ja") echo -e "$(color "white" "日本語を選択しました。")" ;;
-        *) echo -e "$(color "white" "You selected $(echo "$SELECTED_LANGUAGE" | tr '[:lower:]' '[:upper:]') (Processed as English).")" ;;
+        "ja")    echo -e "$(color "white" "日本語を選択しました。")" ;;
+        "en")    echo -e "$(color "white" "You selected English.")" ;;
+        "bg")    echo -e "$(color "white" "Избрахте български.")" ;;
+        "ca")    echo -e "$(color "white" "Has seleccionat Català.")" ;;
+        "cs")    echo -e "$(color "white" "Vybrali jste češtinu.")" ;;
+        "de")    echo -e "$(color "white" "Sie haben Deutsch ausgewählt.")" ;;
+        "el")    echo -e "$(color "white" "Επιλέξατε Ελληνικά.")" ;;
+        "es")    echo -e "$(color "white" "Has seleccionado Español.")" ;;
+        "fr")    echo -e "$(color "white" "Vous avez sélectionné Français.")" ;;
+        "he")    echo -e "$(color "white" "בחרת עברית.")" ;;
+        "hi")    echo -e "$(color "white" "आपने हिंदी चुनी है।")" ;;
+        "hu")    echo -e "$(color "white" "Magyar nyelvet választottál.")" ;;
+        "it")    echo -e "$(color "white" "Hai selezionato Italiano.")" ;;
+        "ko")    echo -e "$(color "white" "한국어를 선택했습니다.")" ;;
+        "mr")    echo -e "$(color "white" "तुम्ही मराठी निवडले आहे.")" ;;
+        "ms")    echo -e "$(color "white" "Anda telah memilih Bahasa Melayu.")" ;;
+        "no")    echo -e "$(color "white" "Du har valgt Norsk.")" ;;
+        "pl")    echo -e "$(color "white" "Wybrałeś język polski.")" ;;
+        "pt")    echo -e "$(color "white" "Você selecionou Português.")" ;;
+        "pt-br") echo -e "$(color "white" "Você selecionou Português do Brasil.")" ;;
+        "ro")    echo -e "$(color "white" "Ați selectat Română.")" ;;
+        "ru")    echo -e "$(color "white" "Вы выбрали Русский.")" ;;
+        "sk")    echo -e "$(color "white" "Vybrali ste Slovenčina.")" ;;
+        "sv")    echo -e "$(color "white" "Du har valt Svenska.")" ;;
+        "tr")    echo -e "$(color "white" "Türkçe'yi seçtiniz.")" ;;
+        "uk")    echo -e "$(color "white" "Ви обрали Українську.")" ;;
+        "vi")    echo -e "$(color "white" "Bạn đã chọn Tiếng Việt.")" ;;
+        "zh-cn") echo -e "$(color "white" "您选择了简体中文。")" ;;
+        "zh-tw") echo -e "$(color "white" "您選擇了繁體中文。")" ;;
+        "ar")    echo -e "$(color "white" "لقد اخترت العربية.")" ;;
+        "bn")    echo -e "$(color "white" "আপনি বাংলা নির্বাচন করেছেন।")" ;;
+        "da")    echo -e "$(color "white" "Du har valgt Dansk.")" ;;
+        "fi")    echo -e "$(color "white" "Olet valinnut suomen.")" ;;
+        "nl")    echo -e "$(color "white" "Je hebt Nederlands geselecteerd.")" ;;
+        *)       echo -e "$(color "white" "You selected $(echo "$SELECTED_LANGUAGE" | tr '[:lower:]' '[:upper:]') (Processed as English).")" ;;
     esac
-
-echo "check_language: $SELECTED_LANGUAGE"
-echo "check_language result: $(cat ${BASE_DIR}/check_language; echo $?)"
+    
+    normalize_language
 }
-
-}
-
-# case "$SELECTED_LANGUAGE" in
-#      "ja" | "zh-cn" | "zh-tw") ;;  # そのまま維持
-#      *) SELECTED_LANGUAGE="en" ;;  # それ以外は英語扱い
-# esac
 
 normalize_language() {
-    case "$SELECTED_LANGUAGE" in
-        "ja") ;;  # 日本語はそのまま
-        *) SELECTED_LANGUAGE="en" ;;  # それ以外は英語扱い
-    esac
+    CHECK_LANGUAGE="${BASE_DIR}/check_language"
+    if [ -f "$CHECK_LANGUAGE" ]; then
+        READ_LANGUAGE=$(cat "$CHECK_LANGUAGE")
+    fi
 
-echo "normalize_language: $SELECTED_LANGUAGE"
-echo "normalize_language result: $(source ${BASE_DIR}/check_language; echo $?)"
-}
-
-XXcheck_language() {
-while true; do
-    echo -e "$(color "white" "------------------------------------------------------")"
-    echo -e "$(color "white" "Select your language")"
-    echo -e "$(color "blue" "[en]: English")"
-    echo -e "$(color "red" "[ja]: 日本語")"
-    echo -e "$(color "white" "------------------------------------------------------")"
-    read -p "Choose an option [en/ja]: " lang_choice
-    case "${lang_choice}" in
-        "en") SELECTED_LANGUAGE="en"; break ;;
-        "ja") SELECTED_LANGUAGE="ja"; break ;;
-         *) echo "Invalid choice." ;;
-   esac
-done
-echo "${SELECTED_LANGUAGE}" > ${BASE_DIR}/check_language
+    for lang in $SUPPORTED_LANGUAGES; do
+        if [ "$READ_LANGUAGE" = "$lang" ]; then
+            SELECTED_LANGUAGE="$READ_LANGUAGE"
+            return
+        fi
+    done
+    SELECTED_LANGUAGE="en"
 }
 
 check_package_manager() {
@@ -173,12 +178,10 @@ language_parameter() {
     if [ -n "${SELECTED_LANGUAGE}" ]; then
         echo "${SELECTED_LANGUAGE}" > "${BASE_DIR}/check_language"
     fi
-
-echo "language_parameter: $SELECTED_LANGUAGE"
-echo "language_parameter result: $(cat ${BASE_DIR}/check_language; echo $?)"
 }
 
 check_common() {
+
     # バージョン情報の取得
     if [ -f "${BASE_DIR}/check_version" ]; then
         RELEASE_VERSION=$(cat "${BASE_DIR}/check_version")
@@ -189,106 +192,124 @@ check_common() {
     if [ -f "${BASE_DIR}/check_package_manager" ]; then
         PACKAGE_MANAGER=$(cat "${BASE_DIR}/check_package_manager")
     fi
-    [ -z "$PACKAGE_MANAGER" ] && check_package_manager
-    
-    # データベースから情報を取得
-    #source "${BASE_DIR}/country-zonename.sh"
-    #country_zonename_data
-    
-　　# 地域情報の取得
-    if [ -f "${BASE_DIR}/check_country" ]; then
-        SELECTED_COUNTRY=$(cat "${BASE_DIR}/check_country")
-    fi
-    if [ -n "$1" ]; then
-        #SELECTED_COUNTRY=$(echo "sh /tmp/aios/country-zonename.sh ${SELECTED_COUNTRY}" | awk '{print $3}' | grep -wx "$1")
-        SELECTED_COUNTRY=$(sh /tmp/aios/country-zonename.sh "$1" | awk '{print $3}')
-        echo "${SELECTED_COUNTRY}" > "${BASE_DIR}/check_country"
-    fi
-    
-    # 言語選択の判定 
-    if [ ! -f "${BASE_DIR}/check_language" ]; then
-        check_language
-    fi  
-    [ -z "$SELECTED_LANGUAGE" ] && check_language
-        #SELECTED_LANGUAGE=$(cat "${BASE_DIR}/check_language")
+    [ -z "$PACKAGE_MANAGER" ] && check_package_manager  
 
-    if [ -n "$1" ]; then
-        SELECTED_LANGUAGE=$(sh /tmp/aios/country-zonename.sh "$1" | awk '{print $2}')
-        #found_entry=$(echo "$country_zonename" | awk '{print $2}' | grep -wx "$1") 
-        if [ -n "$SELECTED_LANGUAGE" ]; then
-            echo "$SELECTED_LANGUAGE" > "${BASE_DIR}/check_language"
-            normalize_language # 言語の標準化（ja 以外は en 扱い）
+    # カントリー選択の判定 
+    INPUT_LANG=$1
+    INPUT_LANG=$(echo "$INPUT_LANG" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//' | tr -d '\n')
+    echo "Input Language: $INPUT_LANG"
+
+    if [ -n "$INPUT_LANG" ]; then
+        # 複数ヒットを考慮したフィルタリング
+        SELECTED_LANGUAGE=$(sh /tmp/aios/country-timezone.sh "$INPUT_LANG" | awk '{print $2}' | head -n 1)
+        SELECTED_COUNTRY=$(sh /tmp/aios/country-zonename.sh "$INPUT_LANG" | awk '{print $3}' | head -n 1)
+
+        # 完全一致の確認
+        exact_match_language=$(sh /tmp/aios/country-timezone.sh "$INPUT_LANG" | awk '$2 == "'$INPUT_LANG'" {print $2}')
+        exact_match_country=$(sh /tmp/aios/country-zonename.sh "$INPUT_LANG" | awk '$3 == "'$INPUT_LANG'" {print $3}')
+
+        if [ -n "$exact_match_language" ]; then
+            SELECTED_LANGUAGE="$exact_match_language"
+        fi
+        if [ -n "$exact_match_country" ]; then
+            SELECTED_COUNTRY="$exact_match_country"
+        fi
+
+        echo "Selected Language: $SELECTED_LANGUAGE"
+        echo "Selected Country (after script): $SELECTED_COUNTRY"
+        echo "$SELECTED_LANGUAGE" > "${BASE_DIR}/check_language"
+        echo "$SELECTED_COUNTRY" > "${BASE_DIR}/check_country"
+    else
+        if [ -f "${BASE_DIR}/check_language" ]; then
+            SELECTED_LANGUAGE=$(cat "${BASE_DIR}/check_language")
+            SELECTED_COUNTRY=$(cat "${BASE_DIR}/check_country")
+            echo "Selected Language: $SELECTED_LANGUAGE"
+            echo "Selected Country (after script): $SELECTED_COUNTRY"
         else
-            SELECTED_LANGUAGE="en"
-            echo "$SELECTED_LANGUAGE" > "${BASE_DIR}/check_language"
-            echo "Invalid language selection. Defaulting to 'en'."
+            check_language    
         fi
     fi
-
-echo "check_common: $SELECTED_LANGUAGE"
-echo "check_common: $(cat ${BASE_DIR}/check_language; echo $?)"
+    normalize_language
 }
-    
-AAcheck_common() {
+
+xxxcheck_common() {
+    # バージョン情報の取得
     if [ -f "${BASE_DIR}/check_version" ]; then
         RELEASE_VERSION=$(cat "${BASE_DIR}/check_version")
     fi
     [ -z "$RELEASE_VERSION" ] && check_version
 
-    if [ -n "$1" ] && { [ "$1" = "ja" ] || [ "$1" = "en" ]; }; then
-        SELECTED_LANGUAGE="$1"
-        echo "${SELECTED_LANGUAGE}" > "${BASE_DIR}/check_language"
-    elif [ -f "${BASE_DIR}/check_language" ]; then
-        SELECTED_LANGUAGE=$(cat "${BASE_DIR}/check_language")
-    fi
-    [ -z "${SELECTED_LANGUAGE}" ] && check_language
-
+    # パッケージ情報の取得
     if [ -f "${BASE_DIR}/check_package_manager" ]; then
         PACKAGE_MANAGER=$(cat "${BASE_DIR}/check_package_manager")
     fi
-    [ -z "$PACKAGE_MANAGER" ] && check_package_manager
-}
-
-
-XXXXXXXXcheck_common() {
-  if [ -f "${BASE_DIR}/check_version" ]; then
-    RELEASE_VERSION=$(cat "${BASE_DIR}/check_version")
-  fi
-  [ -z "$RELEASE_VERSION" ] && check_version
-
-  if [ -n "$1" ] && { [ "$1" = "ja" ] || [ "$1" = "en" ]; }; then
-    SELECTED_LANGUAGE="$1"
-    echo "${SELECTED_LANGUAGE}" > "${BASE_DIR}/check_language"
-  elif [ -f "${BASE_DIR}/check_language" ]; then
-    SELECTED_LANGUAGE=$(cat "${BASE_DIR}/check_language")
-  fi
-  [ -z "${SELECTED_LANGUAGE}" ] && check_language
-
-  if [ -f "${BASE_DIR}/check_package_manager" ]; then
-    PACKAGE_MANAGER=$(cat "${BASE_DIR}/check_package_manager")
-  fi
-  [ -z "$PACKAGE_MANAGER" ] && check_package_manager
+    [ -z "$PACKAGE_MANAGER" ] && check_package_manager  
+    
+    # カントリー選択の判定 
+    INPUT_LANG=$1
+    INPUT_LANG=$(echo "$INPUT_LANG" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//' | tr -d '\n')
+    if [ -n "$INPUT_LANG" ]; then
+        SELECTED_LANGUAGE=$(sh /tmp/aios/country-timezone.sh "$INPUT_LANG" | awk '{print $2}')
+        SELECTED_COUNTRY=$(sh /tmp/aios/country-zonename.sh "$INPUT_LANG" | awk '{print $3}')
+        echo "${SELECTED_LANGUAGE}" > "${BASE_DIR}/check_language"
+        echo "${SELECTED_COUNTRY}" > "${BASE_DIR}/check_country"
+    else
+        if [ -f "${BASE_DIR}/check_language" ]; then
+            SELECTED_LANGUAGE=$(cat "${BASE_DIR}/check_language")
+            SELECTED_COUNTRY=$(cat "${BASE_DIR}/check_country")
+        else
+            check_language    
+        fi
+    fi
+    normalize_language
 }
 
 ask_confirmation() {
     local message_key="$1"
     local message
 
-    if [ "${SELECTED_LANGUAGE}" = "en" ]; then
-        case "$message_key" in
-            "download") message="Execute download?" ;;
-            "exit") message="Are you sure you want to exit?" ;;
-            "delete") message="Are you sure you want to delete the script and exit?" ;;
-            *) message="Are you sure?" ;;
-        esac
-    elif [ "${SELECTED_LANGUAGE}" = "ja" ]; then
-        case "$message_key" in
-            "download") message="ダウンロードを実行しますか？" ;;
-            "exit") message="終了してもよろしいですか？" ;;
-            "delete") message="スクリプトを削除して終了しますか？" ;;
-            *) message="実行しますか？" ;;
-        esac
-    fi
+    case "${SELECTED_LANGUAGE}" in
+        en)
+            case "$message_key" in
+                "download") message="Execute download?" ;;
+                "exit") message="Are you sure you want to exit?" ;;
+                "delete") message="Are you sure you want to delete the script and exit?" ;;
+                *) message="Are you sure?" ;;
+            esac
+            ;;
+        ja)
+            case "$message_key" in
+                "download") message="ダウンロードを実行しますか？" ;;
+                "exit") message="終了してもよろしいですか？" ;;
+                "delete") message="スクリプトを削除して終了しますか？" ;;
+                *) message="実行しますか？" ;;
+            esac
+            ;;
+        zh-cn)
+            case "$message_key" in
+                "download") message="要执行下载吗？" ;;
+                "exit") message="您确定要退出吗？" ;;
+                "delete") message="您确定要删除脚本并退出吗？" ;;
+                *) message="您确定吗？" ;;
+            esac
+            ;;
+        zh-tw)
+            case "$message_key" in
+                "download") message="要執行下載嗎？" ;;
+                "exit") message="您確定要退出嗎？" ;;
+                "delete") message="您確定要刪除腳本並退出嗎？" ;;
+                *) message="您確定嗎？" ;;
+            esac
+            ;;
+        *)
+            case "$message_key" in
+                "download") message="Execute download?" ;;
+                "exit") message="Are you sure you want to exit?" ;;
+                "delete") message="Are you sure you want to delete the script and exit?" ;;
+                *) message="Are you sure?" ;;
+            esac
+            ;;
+    esac
 
     while true; do
         read -p "$(color "white" "${message} [y/n]: ")" choice
@@ -303,33 +324,74 @@ ask_confirmation() {
 show_notification() {
     local message_key="$1"
     local message
-    local lang="${SELECTED_LANGUAGE:-en}"
-    
-    if [ "$lang" = "en" ]; then
-        case "$message_key" in
-            "download_success") message="Download successful." ;;
-            "download_failure") message="Download failed." ;;
-            "exit_cancelled") message="Exit operation cancelled." ;;
-            "delete_cancelled") message="Delete operation cancelled." ;;
-            "delete_success") message="Script and configuration deleted." ;;
-            "download_cancelled") message="Download operation cancelled." ;;
-            "exit") message="Exit operation completed." ;;
-            "delete") message="Delete operation completed." ;;
-            *) message="Operation completed." ;;
-        esac
-    elif [ "$lang" = "ja" ]; then
-        case "$message_key" in
-            "download_success") message="ダウンロードが成功しました。" ;;
-            "download_failure") message="ダウンロードに失敗しました。" ;;
-            "exit_cancelled") message="終了操作がキャンセルされました。" ;;
-            "delete_cancelled") message="削除操作がキャンセルされました。" ;;
-            "delete_success") message="スクリプトと設定が削除されました。" ;;
-            "download_cancelled") message="ダウンロード操作がキャンセルされました。" ;;
-            "exit") message="終了操作が完了しました。" ;;
-            "delete") message="削除操作が完了しました。" ;;
-            *) message="操作が完了しました。" ;;
-        esac
-    fi
+
+    case "${SELECTED_LANGUAGE}" in
+        en)
+            case "$message_key" in
+                "download_success") message="Download successful." ;;
+                "download_failure") message="Download failed." ;;
+                "exit_cancelled") message="Exit operation cancelled." ;;
+                "delete_cancelled") message="Delete operation cancelled." ;;
+                "delete_success") message="Script and configuration deleted." ;;
+                "download_cancelled") message="Download operation cancelled." ;;
+                "exit") message="Exit operation completed." ;;
+                "delete") message="Delete operation completed." ;;
+                *) message="Operation completed." ;;
+            esac
+            ;;
+        ja)
+            case "$message_key" in
+                "download_success") message="ダウンロードが成功しました。" ;;
+                "download_failure") message="ダウンロードに失敗しました。" ;;
+                "exit_cancelled") message="終了操作がキャンセルされました。" ;;
+                "delete_cancelled") message="削除操作がキャンセルされました。" ;;
+                "delete_success") message="スクリプトと設定が削除されました。" ;;
+                "download_cancelled") message="ダウンロード操作がキャンセルされました。" ;;
+                "exit") message="終了操作が完了しました。" ;;
+                "delete") message="削除操作が完了しました。" ;;
+                *) message="操作が完了しました。" ;;
+            esac
+            ;;
+        zh-cn)
+            case "$message_key" in
+                "download_success") message="下载成功。" ;;
+                "download_failure") message="下载失败。" ;;
+                "exit_cancelled") message="退出操作已取消。" ;;
+                "delete_cancelled") message="删除操作已取消。" ;;
+                "delete_success") message="脚本和配置已删除。" ;;
+                "download_cancelled") message="下载操作已取消。" ;;
+                "exit") message="退出操作已完成。" ;;
+                "delete") message="删除操作已完成。" ;;
+                *) message="操作已完成。" ;;
+            esac
+            ;;
+        zh-tw)
+            case "$message_key" in
+                "download_success") message="下載成功。" ;;
+                "download_failure") message="下載失敗。" ;;
+                "exit_cancelled") message="退出操作已取消。" ;;
+                "delete_cancelled") message="刪除操作已取消。" ;;
+                "delete_success") message="腳本和配置已刪除。" ;;
+                "download_cancelled") message="下載操作已取消。" ;;
+                "exit") message="退出操作已完成。" ;;
+                "delete") message="刪除操作已完成。" ;;
+                *) message="操作已完成。" ;;
+            esac
+            ;;
+        *)
+            case "$message_key" in
+                "download_success") message="Download successful." ;;
+                "download_failure") message="Download failed." ;;
+                "exit_cancelled") message="Exit operation cancelled." ;;
+                "delete_cancelled") message="Delete operation cancelled." ;;
+                "delete_success") message="Script and configuration deleted." ;;
+                "download_cancelled") message="Download operation cancelled." ;;
+                "exit") message="Exit operation completed." ;;
+                "delete") message="Delete operation completed." ;;
+                *) message="Operation completed." ;;
+            esac
+            ;;
+    esac
 
     echo -e "$(color "white" "${message}")"
 }
@@ -338,7 +400,8 @@ menu_option() {
     local action="$1"
     local description="$2"
     local script_name="$3"
-
+    local INPUT_LANG="$4"  
+    
     echo -e "$(color "white" "${description}")"
 
     case "${action}" in
@@ -363,7 +426,7 @@ menu_option() {
             if ask_confirmation "download"; then
                 if wget --quiet -O "${BASE_DIR}/${script_name}" "${BASE_URL}/${script_name}"; then
                     show_notification "download_success"
-                    . "${BASE_DIR}/${script_name}"
+                    . "${BASE_DIR}/${script_name}" "$INPUT_LANG"
                 else
                     show_notification "download_failure"
                 fi
@@ -375,4 +438,10 @@ menu_option() {
             echo -e "$(color "red" "Unknown action.")"
             ;;
     esac
+}
+
+country_zone() {
+    ZONENAME="$(sh ${BASE_DIR}/country-zonename.sh "$(cat ${BASE_DIR}/check_country)")"
+    TIMEZONE="$(sh ${BASE_DIR}/country-timezone.sh "$(cat ${BASE_DIR}/check_country)")"
+    LANGUAGE=$(echo "$ZONENAME" | awk '{print $NF}')
 }

@@ -54,6 +54,19 @@ check_version() {
     fi
 }
 
+check_package_manager() {
+    if command -v apk >/dev/null 2>&1; then
+        PACKAGE_MANAGER="APK"
+        echo "${PACKAGE_MANAGER}" > ${BASE_DIR}/check_package_manager
+    elif command -v opkg >/dev/null 2>&1; then
+        PACKAGE_MANAGER="OPKG"
+        echo "${PACKAGE_MANAGER}" > ${BASE_DIR}/check_package_manager
+    else
+        echo "No package manager found"
+        exit 1
+    fi
+}
+
 check_common() {
 
     # バージョン情報の取得
@@ -74,39 +87,27 @@ check_common() {
     echo "Input Language: $INPUT_LANG"
 
     if [ -n "$INPUT_LANG" ]; then
-        # country-timezone.shからの取得
-        timezone_entries=$(sh /tmp/aios/country-timezone.sh "$INPUT_LANG")
-        num_timezones=$(echo "$timezone_entries" | wc -l)
+        found_entries=$(sh /tmp/aios/country-timezone.sh "$INPUT_LANG")
+        num_matches=$(echo "$found_entries" | wc -l)
 
-        # 複数マッチ時の処理
-        if [ "$num_timezones" -gt 1 ]; then
-            echo "Multiple timezone matches found. Please select:"
-            echo "$timezone_entries" | nl
+        if [ "$num_matches" -gt 1 ]; then
+            echo "Multiple matches found. Please select:"
+            i=1
+            while IFS= read -r line; do
+                echo "$i) $line"
+                i=$((i+1))
+            done <<< "$found_entries"
             read -p "Enter the number of your choice: " choice
-            selected_timezone=$(echo "$timezone_entries" | sed -n "${choice}p")
+            found_entry=$(echo "$found_entries" | sed -n "${choice}p")
         else
-            selected_timezone="$timezone_entries"
+            found_entry="$found_entries"
         fi
 
-        SELECTED_LANGUAGE=$(echo "$selected_timezone" | awk '{print $2}')
-
-        zonename_entries=$(sh /tmp/aios/country-zonename.sh "$INPUT_LANG")
-        num_zonenames=$(echo "$zonename_entries" | wc -l)
-
-        if [ "$num_zonenames" -gt 1 ]; then
-            echo "Multiple zone name matches found. Please select:"
-            echo "$zonename_entries" | nl
-            read -p "Enter the number of your choice: " choice
-            selected_zonename=$(echo "$zonename_entries" | sed -n "${choice}p")
-        else
-            selected_zonename="$zonename_entries"
-        fi
-
-        SELECTED_COUNTRY=$(echo "$selected_zonename" | awk '{print $3}')
+        SELECTED_LANGUAGE=$(echo "$found_entry" | awk '{print $2}')
+        SELECTED_COUNTRY=$(sh /tmp/aios/country-zonename.sh "$INPUT_LANG" | awk '{print $3}' | head -n 1)
 
         echo "Selected Language: $SELECTED_LANGUAGE"
         echo "Selected Country (after script): $SELECTED_COUNTRY"
-
         echo "$SELECTED_LANGUAGE" > "${BASE_DIR}/check_language"
         echo "$SELECTED_COUNTRY" > "${BASE_DIR}/check_country"
     else
@@ -119,7 +120,6 @@ check_common() {
             check_language    
         fi
     fi
-
     normalize_language
 }
 
@@ -227,19 +227,6 @@ normalize_language() {
         fi
     done
     SELECTED_LANGUAGE="en"
-}
-
-check_package_manager() {
-    if command -v apk >/dev/null 2>&1; then
-        PACKAGE_MANAGER="APK"
-        echo "${PACKAGE_MANAGER}" > ${BASE_DIR}/check_package_manager
-    elif command -v opkg >/dev/null 2>&1; then
-        PACKAGE_MANAGER="OPKG"
-        echo "${PACKAGE_MANAGER}" > ${BASE_DIR}/check_package_manager
-    else
-        echo "No package manager found"
-        exit 1
-    fi
 }
 
 language_parameter() {

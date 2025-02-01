@@ -7,7 +7,7 @@ BASE_URL="https://raw.githubusercontent.com/site-u2023/aios/main"
 BASE_DIR="/tmp/aios"
 SUPPORTED_VERSIONS="19 21 22 23 24 SN"
 #INPUT_LANG="$1"
-echo aios.sh x "$1"
+#echo aios.sh x "$1"
 #echo aios.sh 1 $INPUT_LANG
 
 check_version() {
@@ -65,7 +65,7 @@ download_and_execute() {
     echo "aios has been installed successfully."
     echo "You can now run the 'aios' script anywhere."
     #echo aios.sh  2 $INPUT_LANG
-    echo aios.sh x1 "$1"
+    #echo aios.sh x1 "$1"
     /usr/bin/aios "$1" || {
         echo "Failed to execute aios script."
         exit 1

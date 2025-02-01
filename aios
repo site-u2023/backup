@@ -21,6 +21,16 @@ banner() {
             disclaimer="      免責事項: 本スクリプトは自己責任でご使用下さい      "
             all_in_one="                オールインワンスクリプト                "
             ;;
+        zh-cn)
+            msg="              OpenWrt 封装配置软件              "
+            disclaimer="      声明: 使用本脚本风险自承      "
+            all_in_one="                全面集成脚本                "
+            ;;
+        zh-tw)
+            msg="              OpenWrt 專用設定軟體              "
+            disclaimer="      免責聲明: 請自行承擔使用本脚本      "
+            all_in_one="                全功能集成脚本                "
+            ;;
         *)
             msg="    Unknown language setting. Please set 'en' or 'ja'."
             disclaimer="    Disclaimer: Language setting is not recognized."
@@ -43,10 +53,10 @@ banner() {
 }
 
 delete_language() {
-rm -rf "${BASE_DIR}/check_language"
+    rm -rf "${BASE_DIR}/check_language"
     echo "Initialized check_language."
-SELECTED_LANGUAGE=$1
-echo "${SELECTED_LANGUAGE}" > ${BASE_DIR}/check_language
+    SELECTED_LANGUAGE=$1
+    echo "${SELECTED_LANGUAGE}" > ${BASE_DIR}/check_language
 }
 
 make_directory() {

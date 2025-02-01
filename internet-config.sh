@@ -5,6 +5,8 @@
 BASE_URL="https://raw.githubusercontent.com/site-u2023/aios/main"
 BASE_DIR="/tmp/aios"
 SUPPORTED_VERSIONS="19 21 22 23 24 SN"
+SUPPORTED_LANGUAGES="en ja zh-cn zh-tw"
+INPUT_LANG="$1"
 
 if [ ! -f "${BASE_DIR}/common-functions.sh" ]; then
   wget --no-check-certificate -O "${BASE_DIR}/common-functions.sh" "${BASE_URL}/common-functions.sh"
@@ -184,5 +186,5 @@ check_openwrt_version() {
 }
 
 download_common
-check_common "$1"
+check_common
 main_menu

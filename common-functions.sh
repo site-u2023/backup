@@ -99,7 +99,8 @@ check_language() {
     echo -e "$(color "white" "------------------------------------------------------")"
 
     read -p "Choose an option: " lang_choice
-    lang_choice=$(echo "$lang_choice" | tr -d '[:space:]')
+    lang_choice=$(echo "$lang_choice" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//' | tr -d '\n')
+    #lang_choice=$(echo "$lang_choice" | tr -d '[:space:]')
 echo 1 $SELECTED_LANGUAGE
     SELECTED_LANGUAGE=$(sh /tmp/aios/country-zonename.sh "$lang_choice" | awk '{print $2}')
         if [ -n "$SELECTED_LANGUAGE" ]; then
@@ -209,7 +210,8 @@ check_common() {
     
     # カントリー選択の判定 
 echo x1 $1
-    INPUT_LANG=$(echo "$1" | tr -d '[:space:]')
+    lang_choice=$(echo "$lang_choice" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//' | tr -d '\n')
+    #INPUT_LANG=$(echo "$1" | tr -d '[:space:]')
 echo x2 $INPUT_LANG
     if [ -n "$INPUT_LANG" ]; then
 echo 6 $SELECTED_LANGUAGE

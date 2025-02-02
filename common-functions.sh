@@ -143,7 +143,6 @@ check_language() {
 # check_common: 初期化処理（オプション処理、バージョン・パッケージマネージャ確認、言語選択）
 #########################################################################
 check_common() {
-    # オプション処理
     case "$1" in
         -h|-help|--help)
             print_help
@@ -152,28 +151,24 @@ check_common() {
         --reset|-reset|-r)
             rm -f "${BASE_DIR}/check_language" "${BASE_DIR}/check_country" || handle_error "キャッシュの削除に失敗しました。"
             echo "Language and country cache cleared."
-            shift  # 次の引数を処理するためにシフト
+            shift
             ;;
     esac
 
-    # バージョン情報の取得
     if [ -f "${BASE_DIR}/check_version" ]; then
         RELEASE_VERSION=$(cat "${BASE_DIR}/check_version")
     fi
     [ -z "$RELEASE_VERSION" ] && check_version
 
-    # パッケージマネージャーの取得
     if [ -f "${BASE_DIR}/check_package_manager" ]; then
         PACKAGE_MANAGER=$(cat "${BASE_DIR}/check_package_manager")
     fi
     [ -z "$PACKAGE_MANAGER" ] && check_package_manager  
 
-    # コマンドライン引数で言語指定があれば優先する
     if [ -n "$1" ]; then
         process_language_selection "$1"
     fi
 
-    # キャッシュから言語・国コードを読み込む
     if [ -f "${BASE_DIR}/check_language" ]; then
         SELECTED_LANGUAGE=$(cat "${BASE_DIR}/check_language")
     fi
@@ -181,12 +176,11 @@ check_common() {
         SELECTED_COUNTRY=$(cat "${BASE_DIR}/check_country")
     fi
 
-    # 言語が未設定の場合、言語選択メニューを表示する
     if [ -z "$SELECTED_LANGUAGE" ]; then
         check_language
     fi
 
-    normalize_language  # 言語の正規化
+    normalize_language
 }
 
 #########################################################################
@@ -197,7 +191,7 @@ process_language_selection() {
     while true; do
         INPUT_LANG=$(echo "$INPUT_LANG" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
 
-        found_entries=$(sh "${BASE_DIR}/country-zone.sh" | grep -w "$INPUT_LANG")
+        found_entries=$(sh "${BASE_DIR}/country-zone.sh" "$INPUT_LANG")
 
         if [ -z "$found_entries" ] || echo "$found_entries" | grep -qi "not found"; then
             echo "No matching entry found."

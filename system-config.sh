@@ -1,7 +1,7 @@
 #!/bin/sh
 # License: CC0
 # OpenWrt >= 19.07
-# 202520202319-11
+# 202520202319-13
 # system-config.sh
 #
 # 本スクリプトは、デバイスの初期設定を行うためのスクリプトです。
@@ -76,13 +76,17 @@ information() {
     local lang="$SELECTED_LANGUAGE"
     local country_name display_name language_code country_code timezones
 
-    # 修正版: echo とパイプで ZONENAME を分割
-    echo "$ZONENAME" | IFS=';' read -r zone_part timezones_part
+    # セミコロンで分割（ヒアストリングやパイプを使わない）
+    zone_part="${ZONENAME%%;*}"     # セミコロン前のデータ
+    timezones_part="${ZONENAME#*;}" # セミコロン後のデータ
 
-    # zone_part をスペース区切りで分割
-    IFS=' ' read -r country_name display_name language_code country_code cities <<< "$zone_part"
+    # zone_part をスペースで分割して情報抽出
+    country_name=$(echo "$zone_part" | awk '{print $1}')
+    display_name=$(echo "$zone_part" | awk '{print $2}')
+    language_code=$(echo "$zone_part" | awk '{print $3}')
+    country_code=$(echo "$zone_part" | awk '{print $4}')
 
-    # timezones_part をカンマ区切りで分割してスペースで表示
+    # タイムゾーンをカンマ区切りからスペース区切りに変換
     timezones=$(echo "$timezones_part" | tr ',' ' ')
 
     case "$lang" in

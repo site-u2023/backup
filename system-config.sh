@@ -12,7 +12,7 @@
 #  4. デバイス名・パスワードの設定 (set_device_name_password)
 #  5. Wi-Fi SSID・パスワードの設定 (set_wifi_ssid_password)
 #  6. システム全体の設定 (set_device)
-echo 202520202319-26
+echo 202520202319-27
 
 # 定数の設定
 BASE_URL="https://raw.githubusercontent.com/site-u2023/aios/main"
@@ -54,22 +54,22 @@ select_timezone() {
     available_cities=$(sh /tmp/aios/country-zone.sh "$SELECTED_COUNTRY" "cities")
     available_timezones=$(sh /tmp/aios/country-zone.sh "$SELECTED_COUNTRY" "offsets")
 
-    # 配列をシンプルなスペース区切りのリストに変換
+    # 配列に変換
     city_list=$(echo "$available_cities" | tr ',' ' ')
     timezone_list=$(echo "$available_timezones" | tr ',' ' ')
 
     echo "Available Time Zones:"
     i=1
     for city in $city_list; do
-        # 対応するタイムゾーンを取得
         timezone=$(echo "$timezone_list" | awk -v idx="$i" '{print $idx}')
         echo "[$i] $city - $timezone"
         i=$((i+1))
     done
 
-    read -p "Select the time zone by number: " selected_index
+    # 翻訳されたメッセージを使用
+    read -p "$msg_select_tz" selected_index
 
-    # 選択したゾーンネームとタイムゾーンを取得
+    # 選択されたゾーンネームとタイムゾーンを取得
     selected_zone=$(echo "$city_list" | awk -v idx="$selected_index" '{print $idx}')
     selected_timezone=$(echo "$timezone_list" | awk -v idx="$selected_index" '{print $idx}')
 
@@ -79,7 +79,6 @@ select_timezone() {
         selected_timezone=$(echo "$timezone_list" | awk '{print $1}')
     fi
 
-    # 選択結果の表示
     echo "Selected Time Zone: $selected_zone - $selected_timezone"
     TIMEZONE="$selected_timezone"
     ZONENAME="$selected_zone"
@@ -101,35 +100,47 @@ information() {
     language_code=$(echo "$country_data" | awk '{print $3}')
     country_code=$(echo "$country_data" | awk '{print $4}')
 
+    # 各言語ごとのメッセージ設定
     case "$lang" in
         en)
-            echo -e "$(color white "Country: $country_name")"
-            echo -e "$(color white "Display Name: $display_name")"
-            echo -e "$(color white "Language Code: $language_code")"
-            echo -e "$(color white "Country Code: $country_code")"
+            msg_country="Country: $country_name"
+            msg_display="Display Name: $display_name"
+            msg_lang_code="Language Code: $language_code"
+            msg_country_code="Country Code: $country_code"
+            msg_select_tz="Select the time zone by number: "
             ;;
         ja)
-            echo -e "$(color white "国名: $country_name")"
-            echo -e "$(color white "表示名: $display_name")"
-            echo -e "$(color white "言語コード: $language_code")"
-            echo -e "$(color white "国コード: $country_code")"
+            msg_country="国名: $country_name"
+            msg_display="表示名: $display_name"
+            msg_lang_code="言語コード: $language_code"
+            msg_country_code="国コード: $country_code"
+            msg_select_tz="タイムゾーンの番号を選択してください: "
             ;;
         zh-cn)
-            echo -e "$(color white "国家: $country_name")"
-            echo -e "$(color white "显示名称: $display_name")"
-            echo -e "$(color white "语言代码: $language_code")"
-            echo -e "$(color white "国家代码: $country_code")"
+            msg_country="国家: $country_name"
+            msg_display="显示名称: $display_name"
+            msg_lang_code="语言代码: $language_code"
+            msg_country_code="国家代码: $country_code"
+            msg_select_tz="请选择时区编号: "
             ;;
         zh-tw)
-            echo -e "$(color white "國家: $country_name")"
-            echo -e "$(color white "顯示名稱: $display_name")"
-            echo -e "$(color white "語言代碼: $language_code")"
-            echo -e "$(color white "國家代碼: $country_code")"
+            msg_country="國家: $country_name"
+            msg_display="顯示名稱: $display_name"
+            msg_lang_code="語言代碼: $language_code"
+            msg_country_code="國家代碼: $country_code"
+            msg_select_tz="請選擇時區編號: "
             ;;
         *)
             handle_error "Unsupported language: $lang"
+            msg_select_tz="Select the time zone by number: "
             ;;
     esac
+
+    # 情報表示
+    echo -e "$(color white "$msg_country")"
+    echo -e "$(color white "$msg_display")"
+    echo -e "$(color white "$msg_lang_code")"
+    echo -e "$(color white "$msg_country_code")"
 }
 
 #########################################################################

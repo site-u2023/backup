@@ -44,6 +44,32 @@ download_and_execute_common() {
 }
 
 #########################################################################
+# select_timezone: 複数のタイムゾーンから選択
+#########################################################################
+select_timezone() {
+    local available_timezones selected_timezone
+    available_timezones=$(echo "$ZONENAME" | awk -F';' '{print $2}' | tr ',' '\n')
+
+    echo "Available Time Zones:"
+    local i=1
+    while IFS= read -r tz; do
+        echo "[$i] $tz"
+        i=$((i+1))
+    done <<< "$available_timezones"
+
+    read -p "Select the time zone by number: " selected_index
+    selected_timezone=$(echo "$available_timezones" | sed -n "${selected_index}p")
+
+    if [ -z "$selected_timezone" ]; then
+        echo "Invalid selection. Defaulting to the first time zone."
+        selected_timezone=$(echo "$available_timezones" | head -n 1)
+    fi
+
+    TIMEZONE="$selected_timezone"
+    echo "Selected Time Zone: $TIMEZONE"
+}
+
+#########################################################################
 # information: country_zone で取得済みのゾーン情報を元にシステム情報を表示する
 #########################################################################
 information() {
@@ -364,6 +390,7 @@ download_and_execute_common
 check_common "$INPUT_LANG"
 country_zone
 information
+select_timezone
 #set_device_name_password
 #set_wifi_ssid_password
 #set_device

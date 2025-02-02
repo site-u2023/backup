@@ -147,7 +147,7 @@ check_language() {
     echo -e "$(color white "------------------------------------------------------")"
     echo -e "$(color white "Select your language")"
 
-    # country-zonename.sh を引数空で実行して、全データを取得
+    # country-zonename.sh を実行して全データを取得（引数は空文字）
     country_data=$(sh "${BASE_DIR}/country-zonename.sh" "")
 
     # 取得したデータを1行ずつ処理
@@ -155,24 +155,18 @@ check_language() {
         # 空行はスキップ
         [ -z "$line" ] && continue
 
-        # 第2フィールドを抽出
+        # 第2フィールド（言語コード）を抽出
         lang_field=$(echo "$line" | awk '{print $2}')
-        # 第2フィールドが "xx" でなければ表示対象
+        # "xx" でない行のみ表示する
         if [ "$lang_field" != "xx" ]; then
-            # 各フィールドを抽出
-            field1=$(echo "$line" | awk '{print $1}')   # 国名
-            field2=$(echo "$line" | awk '{print $2}')   # 言語コード
-            field3=$(echo "$line" | awk '{print $3}')   # 国コード
-            fieldLast=$(echo "$line" | awk '{print $NF}')  # 最後のフィールド（母国語または対応バージョン）
-
-            # 例： "en: United_States US - English" のように表示
-            echo -e "$(color white "$field2: $field1 $field3 - $fieldLast")"
+            # 最後のフィールド（母国語）、$1（国名）、$2（言語コード）、$3（国コード）を出力
+            output=$(echo "$line" | awk '{print $NF, $1, $2, $3}')
+            echo -e "$(color white "$output")"
         fi
     done
 
     echo -e "$(color white "------------------------------------------------------")"
-
-    read -p "$(color white 'Please choose: ')" INPUT_LANG
+    read -p "$(color green 'Please choose: ')" INPUT_LANG
     process_language_selection "$INPUT_LANG"
     normalize_language
 }

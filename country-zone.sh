@@ -17,6 +17,7 @@
 # 全データを出力する場合:
 # sh country-zone.sh
 
+country_data() {
 cat << 'EOF'
 Bulgaria български bg BG Europe/Sofia;EET-2,EEST-3
 Canada English ca CA America/Halifax,America/Toronto,America/Winnipeg,America/Edmonton,America/Vancouver;NST3:30NDT2:30,AST4ADT3,EST5EDT4,CST6CDT5,MST7MDT6,PST8PDT7
@@ -108,6 +109,7 @@ Pakistan Urdu xx PK Asia/Karachi;PKT-5
 Qatar Arabic xx QA Asia/Qatar;AST-3
 Algeria Arabic xx DZ Africa/Algiers;CET-1
 EOF
+}
 
 # 引数に応じて情報を取得
 get_country_info() {

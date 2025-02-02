@@ -130,7 +130,6 @@ process_language_selection() {
                 *)
                     echo "Defaulting to English (en)."
                     found_entries=$(sh "${BASE_DIR}/country-zonename.sh" "en")
-                    # ※ ここは break せず、下記で採用候補として処理する
             esac
         fi
 
@@ -164,37 +163,10 @@ process_language_selection() {
 
         # 取得した行から各フィールドを抽出
         # ※ データ形式例：<国名> <言語コード> <国コード> ... <母国語>
-        candidate_lang=$(echo "$found_entry" | awk '{print $2}')
-        candidate_country=$(echo "$found_entry" | awk '{print $3}')
+        SELECTED_LANGUAGE=$(echo "$found_entry" | awk '{print $2}')
+        SELECTED_COUNTRY=$(echo "$found_entry" | awk '{print $3}')
 
-        # SUPPORTED_LANGUAGES に含まれるか確認（例："en ja"）
-        supported=false
-        for lang in $SUPPORTED_LANGUAGES; do
-            if [ "$candidate_lang" = "$lang" ]; then
-                supported=true
-                break
-            fi
-        done
-
-        if [ "$supported" != "true" ]; then
-            echo "Selected language ($candidate_lang) is not supported."
-            read -p "Do you want to re-enter? [y/N]: " answer
-            case "$answer" in
-                [yY])
-                    read -p "Please re-enter language: " new_input
-                    set -- "$new_input"
-                    continue
-                    ;;
-                *)
-                    echo "Defaulting to English (en)."
-                    candidate_lang="en"
-                    candidate_country="US"
-            esac
-        fi
-
-        # 採用決定：グローバル変数およびキャッシュに保存
-        SELECTED_LANGUAGE="$candidate_lang"
-        SELECTED_COUNTRY="$candidate_country"
+        # キャッシュファイルに選択結果を保存
         echo "$SELECTED_LANGUAGE" > "${BASE_DIR}/check_language"
         echo "$SELECTED_COUNTRY" > "${BASE_DIR}/check_country"
 
@@ -237,21 +209,12 @@ normalize_language() {
     if [ -f "$CHECK_LANGUAGE" ]; then
         READ_LANGUAGE=$(cat "$CHECK_LANGUAGE")
     fi
-
-    supported=false
-    for lang in $SUPPORTED_LANGUAGES; do
-        if [ "$READ_LANGUAGE" = "$lang" ]; then
-            supported=true
-            break
-        fi
-    done
-
-    if [ "$supported" != "true" ]; then
-        echo "Language not supported. Defaulting to English (en)."
+    if [ -z "$READ_LANGUAGE" ]; then
         SELECTED_LANGUAGE="en"
-        SELECTED_COUNTRY="US"
+        echo "Language not set. Defaulting to English (en)."
         echo "$SELECTED_LANGUAGE" > "${BASE_DIR}/check_language"
-        echo "$SELECTED_COUNTRY" > "${BASE_DIR}/check_country"
+    else
+        SELECTED_LANGUAGE="$READ_LANGUAGE"
     fi
 }
 

@@ -7,6 +7,45 @@ BASE_DIR="${BASE_DIR:-/tmp/aios}"
 SUPPORTED_VERSIONS="${SUPPORTED_VERSIONS:-19 21 22 23 24 SN}"
 SUPPORTED_LANGUAGES="${SUPPORTED_LANGUAGES:-en}"
 
+print_help() {
+    cat << 'EOF'
+aios - Dedicated configuration software for OpenWrt
+
+Usage:
+  aios [OPTION] [LANGUAGE]
+
+Options:
+  -h, --help       Display this help message and exit.
+  -r, -reset, --reset
+                   Clear cached language and country settings.
+
+Arguments:
+  LANGUAGE         Language code to be used immediately.
+                   If not provided, an interactive language selection menu will be displayed.
+
+Supported Languages:
+  en, ja, zh-cn, zh-tw
+
+Examples:
+  aios
+    -> Launches the interactive language selection menu.
+
+  aios en
+    -> Runs the script with English language.
+
+  aios -r ja
+    -> Clears cache and runs the script with Japanese language.
+EOF
+}
+
+# メイン処理の先頭でオプションをチェックする例
+case "$1" in
+    -h|--help)
+        print_help
+        exit 0
+        ;;
+esac
+
 color_code_map() {
   local color=$1
   case $color in

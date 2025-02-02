@@ -1,7 +1,7 @@
 #!/bin/sh
 # License: CC0
 # OpenWrt >= 19.07
-# 202520202319-22
+#
 # system-config.sh
 #
 # 本スクリプトは、デバイスの初期設定を行うためのスクリプトです。
@@ -12,6 +12,7 @@
 #  4. デバイス名・パスワードの設定 (set_device_name_password)
 #  5. Wi-Fi SSID・パスワードの設定 (set_wifi_ssid_password)
 #  6. システム全体の設定 (set_device)
+echo "202520202319-23"
 
 # 定数の設定
 BASE_URL="https://raw.githubusercontent.com/site-u2023/aios/main"
@@ -47,28 +48,36 @@ download_and_execute_common() {
 # select_timezone: 複数のタイムゾーンから選択
 #########################################################################
 select_timezone() {
-    local available_timezones selected_timezone
+    local available_cities available_timezones selected_timezone selected_zone
 
-    # 直接都市情報を取得
-    available_timezones=$(sh /tmp/aios/country-zone.sh "$SELECTED_COUNTRY" "cities" | tr ',' '\n')
+    # 都市名とタイムゾーンの情報を取得
+    available_cities=$(sh /tmp/aios/country-zone.sh "$SELECTED_COUNTRY" "cities")
+    available_timezones=$(sh /tmp/aios/country-zone.sh "$SELECTED_COUNTRY" "offsets")
+
+    IFS=',' read -ra city_array <<< "$available_cities"
+    IFS=',' read -ra timezone_array <<< "$available_timezones"
 
     echo "Available Time Zones:"
-    local i=1
-    echo "$available_timezones" | while IFS= read -r tz; do
-        echo "[$i] $tz"
-        i=$((i+1))
+    for i in "${!city_array[@]}"; do
+        echo "[$((i+1))] ${city_array[$i]} - ${timezone_array[$i]}"
     done
 
     read -p "Select the time zone by number: " selected_index
-    selected_timezone=$(echo "$available_timezones" | sed -n "${selected_index}p")
 
-    if [ -z "$selected_timezone" ]; then
+    # 選択したゾーンネームとタイムゾーンを取得
+    selected_zone="${city_array[$((selected_index-1))]}"
+    selected_timezone="${timezone_array[$((selected_index-1))]}"
+
+    if [ -z "$selected_zone" ] || [ -z "$selected_timezone" ]; then
         echo "Invalid selection. Defaulting to the first time zone."
-        selected_timezone=$(echo "$available_timezones" | head -n 1)
+        selected_zone="${city_array[0]}"
+        selected_timezone="${timezone_array[0]}"
     fi
 
+    # 選択結果の表示
+    echo "Selected Time Zone: $selected_zone - $selected_timezone"
     TIMEZONE="$selected_timezone"
-    echo "Selected Time Zone: $TIMEZONE"
+    ZONENAME="$selected_zone"
 }
 
 #########################################################################
@@ -79,14 +88,15 @@ information() {
     local country_data
 
     # 選択された言語に基づいて国情報を取得
-    country_data=$(sh /tmp/aios/country-zone.sh "$lang" "all")
+    country_data=$(sh /tmp/aios/country-zone.sh "$SELECTED_COUNTRY" "all")
 
     # データの分割と抽出
     country_name=$(echo "$country_data" | awk '{print $1}')
     display_name=$(echo "$country_data" | awk '{print $2}')
     language_code=$(echo "$country_data" | awk '{print $3}')
     country_code=$(echo "$country_data" | awk '{print $4}')
-    timezones=$(echo "$country_data" | sed 's/.*;//' | tr ',' ' ')
+    cities=$(echo "$country_data" | awk -F';' '{print $1}' | cut -d' ' -f5-)
+    timezones=$(echo "$country_data" | awk -F';' '{print $2}')
 
     case "$lang" in
         en)
@@ -94,7 +104,7 @@ information() {
             echo -e "$(color white "Display Name: $display_name")"
             echo -e "$(color white "Language Code: $language_code")"
             echo -e "$(color white "Country Code: $country_code")"
-            echo -e "$(color white "Time Zones: $timezones")"
+            echo -e "$(color white "Zone Names and Time Zones:")"
             ;;
         ja)
             echo -e "$(color white "国名: $country_name")"
@@ -119,6 +129,14 @@ information() {
             ;;
         *)
             handle_error "Unsupported language: $lang"
+            
+            IFS=',' read -ra city_array <<< "$cities"
+            IFS=',' read -ra timezone_array <<< "$timezones"
+
+            for i in "${!city_array[@]}"; do
+                echo -e "$(color white "${city_array[$i]} - ${timezone_array[$i]}")"
+            done
+            
             ;;
     esac
 }

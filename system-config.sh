@@ -76,13 +76,13 @@ information() {
     local lang="$SELECTED_LANGUAGE"
     local country_name display_name language_code country_code timezones
 
-    # 1. データの抽出
+    # 直接 country-zone.sh を実行して結果を取得
+    ZONENAME=$(sh /tmp/aios/country-zone.sh ja)
+    # 各フィールドを抽出して表示
     country_name=$(echo "$ZONENAME" | awk '{print $1}')
     display_name=$(echo "$ZONENAME" | awk '{print $2}')
     language_code=$(echo "$ZONENAME" | awk '{print $3}')
     country_code=$(echo "$ZONENAME" | awk '{print $4}')
-
-    # 2. タイムゾーン部分を抽出（セミコロン以降の部分）
     timezones=$(echo "$ZONENAME" | sed 's/.*;//' | tr ',' ' ')
 
     case "$lang" in

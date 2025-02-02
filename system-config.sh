@@ -12,7 +12,7 @@
 #  4. デバイス名・パスワードの設定 (set_device_name_password)
 #  5. Wi-Fi SSID・パスワードの設定 (set_wifi_ssid_password)
 #  6. システム全体の設定 (set_device)
-echo 202520202319-27
+echo 202520202319-28
 
 # 定数の設定
 BASE_URL="https://raw.githubusercontent.com/site-u2023/aios/main"
@@ -58,7 +58,9 @@ select_timezone() {
     city_list=$(echo "$available_cities" | tr ',' ' ')
     timezone_list=$(echo "$available_timezones" | tr ',' ' ')
 
-    echo "Available Time Zones:"
+    # 翻訳された「利用可能なタイムゾーン」メッセージを表示
+    echo "$msg_available_tz"
+    
     i=1
     for city in $city_list; do
         timezone=$(echo "$timezone_list" | awk -v idx="$i" '{print $idx}')
@@ -66,7 +68,7 @@ select_timezone() {
         i=$((i+1))
     done
 
-    # 翻訳されたメッセージを使用
+    # 翻訳された「タイムゾーン選択」メッセージを使用
     read -p "$msg_select_tz" selected_index
 
     # 選択されたゾーンネームとタイムゾーンを取得
@@ -107,6 +109,7 @@ information() {
             msg_display="Display Name: $display_name"
             msg_lang_code="Language Code: $language_code"
             msg_country_code="Country Code: $country_code"
+            msg_available_tz="Available Time Zones:"
             msg_select_tz="Select the time zone by number: "
             ;;
         ja)
@@ -114,6 +117,7 @@ information() {
             msg_display="表示名: $display_name"
             msg_lang_code="言語コード: $language_code"
             msg_country_code="国コード: $country_code"
+            msg_available_tz="利用可能なタイムゾーン:"
             msg_select_tz="タイムゾーンの番号を選択してください: "
             ;;
         zh-cn)
@@ -121,6 +125,7 @@ information() {
             msg_display="显示名称: $display_name"
             msg_lang_code="语言代码: $language_code"
             msg_country_code="国家代码: $country_code"
+            msg_available_tz="可用时区:"
             msg_select_tz="请选择时区编号: "
             ;;
         zh-tw)
@@ -128,10 +133,12 @@ information() {
             msg_display="顯示名稱: $display_name"
             msg_lang_code="語言代碼: $language_code"
             msg_country_code="國家代碼: $country_code"
+            msg_available_tz="可用時區:"
             msg_select_tz="請選擇時區編號: "
             ;;
         *)
             handle_error "Unsupported language: $lang"
+            msg_available_tz="Available Time Zones:"
             msg_select_tz="Select the time zone by number: "
             ;;
     esac

@@ -128,7 +128,7 @@ check_language() {
         [ -z "$line" ] && continue
         lang_field=$(echo "$line" | awk '{print $3}')
         if [ "$lang_field" != "xx" ]; then
-            output=$(echo "$line" | awk '{print $5, $1, $3, $4}')
+            output=$(echo "$line" | awk '{print $1, $2, $3, $4}')
             echo -e "$(color white "$output")"
         fi
     done

@@ -12,10 +12,10 @@
 #  - TZ_Cities: タイムゾーン都市のリスト（カンマ区切り）
 #  - TZ_Offsets: タイムゾーンオフセットのリスト（カンマ区切り）
 #
-# 例:
-#   Japan 日本語 ja JP Asia/Tokyo;JST-9
-#   Canada English ca CA America/Halifax,America/Toronto,America/Winnipeg,America/Edmonton,America/Vancouver;NST3:30NDT2:30,AST4ADT3,EST5EDT4,CST6CDT5,MST7MDT6,PST8PDT7
-#
+# 特定の国を検索する場合:
+# sh country-zone.sh Japan
+# 全データを出力する場合:
+# sh country-zone.sh
 
 cat << 'EOF'
 Bulgaria български bg BG Europe/Sofia;EET-2,EEST-3
@@ -113,7 +113,7 @@ get_country_info() {
     local query="$1"
     local country_info
 
-    country_info=$(grep -iw "$query" "${BASE_DIR}/country-info.sh")
+    country_info=$(country_data | grep -iw "$query")
 
     if [ -n "$country_info" ]; then
         echo "$country_info"
@@ -123,4 +123,9 @@ get_country_info() {
     fi
 }
 
-get_country_info
+# コマンドライン引数が指定されている場合、その国の情報を取得
+if [ -n "$1" ]; then
+    get_country_info "$1"
+else
+    country_data
+fi

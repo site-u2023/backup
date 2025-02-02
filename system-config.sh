@@ -12,7 +12,7 @@
 #  4. デバイス名・パスワードの設定 (set_device_name_password)
 #  5. Wi-Fi SSID・パスワードの設定 (set_wifi_ssid_password)
 #  6. システム全体の設定 (set_device)
-echo 202520202319-31
+echo 202520202319-32
 
 # 定数の設定
 BASE_URL="https://raw.githubusercontent.com/site-u2023/aios/main"
@@ -54,43 +54,32 @@ select_timezone() {
     available_cities=$(sh /tmp/aios/country-zone.sh "$SELECTED_COUNTRY" "cities")
     available_timezones=$(sh /tmp/aios/country-zone.sh "$SELECTED_COUNTRY" "offsets")
 
-    # 配列に変換（<<<を使用しない）
-    city_array=()
-    timezone_array=()
+    # 都市名とタイムゾーンを行ごとに分割
+    echo "$available_cities" | tr ',' '\n' > /tmp/aios/city_list.txt
+    echo "$available_timezones" | tr ',' '\n' > /tmp/aios/timezone_list.txt
 
-    # 都市名の配列化
-    echo "$available_cities" | tr ',' '\n' | while IFS= read -r city; do
-        city_array+=("$city")
-    done
+    total_cities=$(wc -l < /tmp/aios/city_list.txt)
 
-    # タイムゾーンの配列化
-    echo "$available_timezones" | tr ',' '\n' | while IFS= read -r tz; do
-        timezone_array+=("$tz")
-    done
-
-    # タイムゾーンが1つだけの場合、表示も選択もスキップ
-    if [ "${#city_array[@]}" -eq 1 ]; then
-        TIMEZONE="${timezone_array[0]}"
-        ZONENAME="${city_array[0]}"
+    if [ "$total_cities" -eq 1 ]; then
+        ZONENAME=$(head -n 1 /tmp/aios/city_list.txt)
+        TIMEZONE=$(head -n 1 /tmp/aios/timezone_list.txt)
     else
-        # 複数のタイムゾーンがある場合のみ表示と選択
         echo "$msg_available_tz"
-        for i in "${!city_array[@]}"; do
-            echo "[$((i+1))] ${city_array[$i]} - ${timezone_array[$i]}"
-        done
+        i=1
+        while read -r city && read -r tz <&3; do
+            echo "[$i] $city - $tz"
+            i=$((i+1))
+        done < /tmp/aios/city_list.txt 3< /tmp/aios/timezone_list.txt
 
         read -p "$msg_select_tz" selected_index
 
-        selected_zone="${city_array[$((selected_index-1))]}"
-        selected_timezone="${timezone_array[$((selected_index-1))]}"
+        ZONENAME=$(sed -n "${selected_index}p" /tmp/aios/city_list.txt)
+        TIMEZONE=$(sed -n "${selected_index}p" /tmp/aios/timezone_list.txt)
 
-        if [ -z "$selected_zone" ] || [ -z "$selected_timezone" ]; then
-            selected_zone="${city_array[0]}"
-            selected_timezone="${timezone_array[0]}"
+        if [ -z "$ZONENAME" ] || [ -z "$TIMEZONE" ]; then
+            ZONENAME=$(head -n 1 /tmp/aios/city_list.txt)
+            TIMEZONE=$(head -n 1 /tmp/aios/timezone_list.txt)
         fi
-
-        TIMEZONE="$selected_timezone"
-        ZONENAME="$selected_zone"
     fi
 }
 

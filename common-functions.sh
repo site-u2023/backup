@@ -197,7 +197,7 @@ process_language_selection() {
     while true; do
         INPUT_LANG=$(echo "$INPUT_LANG" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
 
-        found_entries=$(sh "${BASE_DIR}/country-zone.sh" "$INPUT_LANG")
+        found_entries=$(sh "${BASE_DIR}/country-zone.sh" | grep -w "$INPUT_LANG")
 
         if [ -z "$found_entries" ] || echo "$found_entries" | grep -qi "not found"; then
             echo "No matching entry found."

@@ -12,7 +12,7 @@
 #  4. デバイス名・パスワードの設定 (set_device_name_password)
 #  5. Wi-Fi SSID・パスワードの設定 (set_wifi_ssid_password)
 #  6. システム全体の設定 (set_device)
-echo "202520202319-23"
+echo 202520202319-24
 
 # 定数の設定
 BASE_URL="https://raw.githubusercontent.com/site-u2023/aios/main"
@@ -54,8 +54,9 @@ select_timezone() {
     available_cities=$(sh /tmp/aios/country-zone.sh "$SELECTED_COUNTRY" "cities")
     available_timezones=$(sh /tmp/aios/country-zone.sh "$SELECTED_COUNTRY" "offsets")
 
-    IFS=',' read -ra city_array <<< "$available_cities"
-    IFS=',' read -ra timezone_array <<< "$available_timezones"
+    # Bash特有の<<<を使わず、echoとパイプで代用
+    echo "$available_cities" | IFS=',' read -ra city_array
+    echo "$available_timezones" | IFS=',' read -ra timezone_array
 
     echo "Available Time Zones:"
     for i in "${!city_array[@]}"; do

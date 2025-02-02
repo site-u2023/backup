@@ -113,7 +113,7 @@ get_country_info() {
     local query="$1"
     local country_info
 
-    country_info=$(country_data | grep -iw "$query")
+    country_info=$(echo "$country_list" | grep -iw "$query")
 
     if [ -n "$country_info" ]; then
         echo "$country_info"
@@ -127,7 +127,5 @@ get_country_info() {
 if [ -n "$1" ]; then
     get_country_info "$1"
 else
-    country_data
+    echo "$country_list"
 fi
-
-get_country_info

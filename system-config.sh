@@ -12,7 +12,7 @@
 #  4. デバイス名・パスワードの設定 (set_device_name_password)
 #  5. Wi-Fi SSID・パスワードの設定 (set_wifi_ssid_password)
 #  6. システム全体の設定 (set_device)
-echo 202520202319-24
+echo 202520202319-25
 
 # 定数の設定
 BASE_URL="https://raw.githubusercontent.com/site-u2023/aios/main"
@@ -54,25 +54,29 @@ select_timezone() {
     available_cities=$(sh /tmp/aios/country-zone.sh "$SELECTED_COUNTRY" "cities")
     available_timezones=$(sh /tmp/aios/country-zone.sh "$SELECTED_COUNTRY" "offsets")
 
-    # Bash特有の<<<を使わず、echoとパイプで代用
-    echo "$available_cities" | IFS=',' read -ra city_array
-    echo "$available_timezones" | IFS=',' read -ra timezone_array
+    # 配列をシンプルなスペース区切りのリストに変換
+    city_list=$(echo "$available_cities" | tr ',' ' ')
+    timezone_list=$(echo "$available_timezones" | tr ',' ' ')
 
     echo "Available Time Zones:"
-    for i in "${!city_array[@]}"; do
-        echo "[$((i+1))] ${city_array[$i]} - ${timezone_array[$i]}"
+    i=1
+    for city in $city_list; do
+        # 対応するタイムゾーンを取得
+        timezone=$(echo "$timezone_list" | awk -v idx="$i" '{print $idx}')
+        echo "[$i] $city - $timezone"
+        i=$((i+1))
     done
 
     read -p "Select the time zone by number: " selected_index
 
     # 選択したゾーンネームとタイムゾーンを取得
-    selected_zone="${city_array[$((selected_index-1))]}"
-    selected_timezone="${timezone_array[$((selected_index-1))]}"
+    selected_zone=$(echo "$city_list" | awk -v idx="$selected_index" '{print $idx}')
+    selected_timezone=$(echo "$timezone_list" | awk -v idx="$selected_index" '{print $idx}')
 
     if [ -z "$selected_zone" ] || [ -z "$selected_timezone" ]; then
         echo "Invalid selection. Defaulting to the first time zone."
-        selected_zone="${city_array[0]}"
-        selected_timezone="${timezone_array[0]}"
+        selected_zone=$(echo "$city_list" | awk '{print $1}')
+        selected_timezone=$(echo "$timezone_list" | awk '{print $1}')
     fi
 
     # 選択結果の表示
@@ -130,16 +134,15 @@ information() {
             ;;
         *)
             handle_error "Unsupported language: $lang"
-            
-            # <<< の代わりに echo とパイプを使用
-            echo "$cities" | IFS=',' read -ra city_array
-            echo "$timezones" | IFS=',' read -ra timezone_array
-
-            for i in "${!city_array[@]}"; do
-                echo -e "$(color white "${city_array[$i]} - ${timezone_array[$i]}")"
-            done
             ;;
     esac
+
+    i=1
+    for city in $city_list; do
+        timezone=$(echo "$timezone_list" | awk -v idx="$i" '{print $idx}')
+        echo -e "$(color white "$city - $timezone")"
+        i=$((i+1))
+    done
 }
 
 #########################################################################

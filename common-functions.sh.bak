@@ -128,13 +128,19 @@ process_language_selection() {
         found_entry="$found_entries"
     fi
 
+    # 言語と国の選択処理
     SELECTED_LANGUAGE=$(echo "$found_entry" | awk '{print $2}')
     SELECTED_COUNTRY=$(echo "$found_entry" | awk '{print $3}')
 
-    echo "Selected Language: $SELECTED_LANGUAGE"
-    echo "Selected Country (after script): $SELECTED_COUNTRY"
+    # 選択結果の保存
     echo "$SELECTED_LANGUAGE" > "${BASE_DIR}/check_language"
     echo "$SELECTED_COUNTRY" > "${BASE_DIR}/check_country"
+
+    echo "Selected Language: $SELECTED_LANGUAGE"
+    echo "Selected Country (after script): $SELECTED_COUNTRY"
+
+    # 選択完了後、即座にリターンして二重呼び出しを防ぐ
+    return
 }
 
 check_language() {

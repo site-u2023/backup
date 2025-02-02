@@ -1,7 +1,7 @@
 #!/bin/sh
 # License: CC0
 # OpenWrt >= 19.07
-#
+# 202502022215-1
 # openwrt-config.sh
 #
 # このスクリプトは、OpenWrt 用のメインメニューおよびシステム情報表示、

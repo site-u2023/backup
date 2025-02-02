@@ -143,7 +143,7 @@ check_language() {
         [ -z "$line" ] && continue
         lang_field=$(echo "$line" | awk '{print $3}')  # 言語コード
         if [ "$lang_field" != "xx" ]; then
-            output=$(echo "$line" | awk '{print $1, $2, $3, $4}')  # 国名、母国語、言語コード、国コードを表示
+            output=$(echo "$line" | awk '{print $1, $2, $3, $4, $5}')  # 国名、母国語、言語コード、国コード、タイムゾーンを表示
             echo -e "$(color white "$output")"
         fi
     done

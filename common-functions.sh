@@ -139,7 +139,7 @@ process_language_selection() {
     fi
 
     # 取得した行から各フィールドを抽出
-    # データ形式：<国名> <言語コード> <国コード> ... <母国語>
+    # データ形式例：<国名> <言語コード> <国コード> ... <母国語>
     SELECTED_LANGUAGE=$(echo "$found_entry" | awk '{print $2}')
     SELECTED_COUNTRY=$(echo "$found_entry" | awk '{print $3}')
 
@@ -187,16 +187,21 @@ normalize_language() {
         READ_LANGUAGE=$(cat "$CHECK_LANGUAGE")
     fi
 
-    # SUPPORTED_LANGUAGES 例： "en ja"（LuCiパッケージで対応している言語）
+    supported=false
     for lang in $SUPPORTED_LANGUAGES; do
         if [ "$READ_LANGUAGE" = "$lang" ]; then
-            SELECTED_LANGUAGE="$READ_LANGUAGE"
-            return
+            supported=true
+            break
         fi
     done
 
-    SELECTED_LANGUAGE="en"
-    echo "Language not supported. Defaulting to English (en)."
+    if [ "$supported" != "true" ]; then
+        echo "Language not supported. Defaulting to English (en)."
+        SELECTED_LANGUAGE="en"
+        SELECTED_COUNTRY="US"
+        echo "$SELECTED_LANGUAGE" > "${BASE_DIR}/check_language"
+        echo "$SELECTED_COUNTRY" > "${BASE_DIR}/check_country"
+    fi
 }
 
 language_parameter() {

@@ -1,7 +1,7 @@
 #!/bin/sh
 # License: CC0
 # OpenWrt >= 19.07
-# 202520202319-17
+# 202520202319-18
 # system-config.sh
 #
 # 本スクリプトは、デバイスの初期設定を行うためのスクリプトです。
@@ -77,7 +77,7 @@ information() {
     local country_name display_name language_code country_code timezones
 
     # 直接 country-zone.sh を実行して結果を取得
-    ZONENAME=$(sh /tmp/aios/country-zone.sh ja)
+    ZONENAME=$(sh /tmp/aios/country-zone.sh "$lang")
     # 各フィールドを抽出して表示
     country_name=$(echo "$ZONENAME" | awk '{print $1}')
     display_name=$(echo "$ZONENAME" | awk '{print $2}')

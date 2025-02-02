@@ -107,21 +107,16 @@ check_language() {
 
     # 取得したデータを1行ずつ処理して表示
     echo "$country_data" | while IFS= read -r line; do
-        # 空行はスキップ
         [ -z "$line" ] && continue
-
-        # 第2フィールド（言語コード）を抽出
         lang_field=$(echo "$line" | awk '{print $2}')
-        # "xx" でない行のみ表示する
         if [ "$lang_field" != "xx" ]; then
-            # 表示形式：<母国語> <国名> <言語コード> <国コード>
             output=$(echo "$line" | awk '{print $NF, $1, $2, $3}')
             echo -e "$(color white "$output")"
         fi
     done
 
     echo -e "$(color white "------------------------------------------------------")"
-    read -p "$(color white 'Please choose: ')" INPUT_LANG
+    read -p "$(color white "$(get_message choose_prompt)")" INPUT_LANG
     process_language_selection "$INPUT_LANG"
     normalize_language
 }
@@ -220,14 +215,14 @@ menu_option() {
 # 共通のメッセージ取得関数 #
 #############################
 get_message() {
-    # 引数：$1 ... メッセージキー
     local key="$1"
-    local lang="${SELECTED_LANGUAGE:-en}"  # $SELECTED_LANGUAGE がなければ英語をデフォルトとする
+    local lang="${SELECTED_LANGUAGE:-en}"  # SELECTED_LANGUAGE が未設定の場合は英語をデフォルト
     case "$lang" in
         en)
             case "$key" in
                 confirm_default) echo "Are you sure?" ;;
                 reenter_prompt)  echo "Do you want to re-enter?" ;;
+                choose_prompt)   echo "Please choose: " ;;
                 download_success) echo "Download successful." ;;
                 download_failure) echo "Download failed." ;;
                 exit_cancelled) echo "Exit operation cancelled." ;;
@@ -243,6 +238,7 @@ get_message() {
             case "$key" in
                 confirm_default) echo "本当に実行しますか？" ;;
                 reenter_prompt)  echo "再入力しますか？" ;;
+                choose_prompt)   echo "選択してください: " ;;
                 download_success) echo "ダウンロードが成功しました。" ;;
                 download_failure) echo "ダウンロードに失敗しました。" ;;
                 exit_cancelled) echo "終了操作がキャンセルされました。" ;;
@@ -258,6 +254,7 @@ get_message() {
             case "$key" in
                 confirm_default) echo "您确定吗？" ;;
                 reenter_prompt)  echo "您要重新输入吗？" ;;
+                choose_prompt)   echo "请选择: " ;;
                 download_success) echo "下载成功。" ;;
                 download_failure) echo "下载失败。" ;;
                 exit_cancelled) echo "退出操作已取消。" ;;
@@ -273,6 +270,7 @@ get_message() {
             case "$key" in
                 confirm_default) echo "您確定嗎？" ;;
                 reenter_prompt)  echo "您要重新輸入嗎？" ;;
+                choose_prompt)   echo "請選擇: " ;;
                 download_success) echo "下載成功。" ;;
                 download_failure) echo "下載失敗。" ;;
                 exit_cancelled) echo "退出操作已取消。" ;;
@@ -289,6 +287,7 @@ get_message() {
             case "$key" in
                 confirm_default) echo "Are you sure?" ;;
                 reenter_prompt)  echo "Do you want to re-enter?" ;;
+                choose_prompt)   echo "Please choose: " ;;
                 download_success) echo "Download successful." ;;
                 download_failure) echo "Download failed." ;;
                 exit_cancelled) echo "Exit operation cancelled." ;;

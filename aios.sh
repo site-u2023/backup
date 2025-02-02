@@ -4,12 +4,6 @@
 #
 # 初期設定用 all-in-one スクリプト (aios) のセットアップスクリプト
 #
-# ・既存の aios 関連ファイルの削除
-# ・必要なディレクトリの作成
-# ・OpenWrt バージョンのチェック
-# ・ttyd のインストール確認（未インストールの場合はインストール促し）
-# ・aios スクリプトのダウンロードおよび実行
-#
 
 # 定数の設定
 BASE_URL="https://raw.githubusercontent.com/site-u2023/aios/main"
@@ -69,15 +63,23 @@ check_ttyd_installed() {
                     echo "Error: ttyd installation script not found."
                     exit 1
                 fi
-                # ※ 以下の RELEASE_VERSION の扱いは、必要に応じて修正してください
-                local RELEASE_VERSION
-                RELEASE_VERSION="${RELEASE_VERSION}" sh "${BASE_DIR}/ttyd.sh" "$SELECTED_LANGUAGE"
+                sh "${BASE_DIR}/ttyd.sh" "$INPUT_LANG"
                 ;;
             *)
                 echo "Skipping ttyd installation."
                 ;;
         esac
     fi
+}
+
+#########################################################################
+# download_country_zone: 国・ゾーン情報の統合スクリプト (country-zone.sh) をダウンロード
+#########################################################################
+download_country_zone() {
+    wget --quiet -O "${BASE_DIR}/country-zone.sh" "${BASE_URL}/country-zone.sh" || {
+        echo "Failed to download country-zone.sh"
+        exit 1
+    }
 }
 
 #########################################################################
@@ -109,4 +111,5 @@ delete_aios
 make_directory
 check_version
 check_ttyd_installed
+download_country_zone
 download_and_execute

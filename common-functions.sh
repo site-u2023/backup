@@ -139,18 +139,17 @@ check_language() {
 
     country_data=$(sh "${BASE_DIR}/country-zone.sh" "") || handle_error "country-zone.sh の実行に失敗しました。"
 
-    # 取得したデータを1行ずつ処理して表示する
     echo "$country_data" | while IFS= read -r line; do
         [ -z "$line" ] && continue
-        lang_field=$(echo "$line" | awk '{print $3}')  # 言語コードを第3フィールドに修正
+        lang_field=$(echo "$line" | awk '{print $3}')
         if [ "$lang_field" != "xx" ]; then
-            output=$(echo "$line" | awk '{print $1, $2, $3, $4}')  # 国名、表示名、言語コード、国コード
+            output=$(echo "$line" | awk '{print $1, $3, $4, $5}')  # 国名、言語コード、国コード、母国語
             echo -e "$(color white "$output")"
         fi
     done
 
     echo -e "$(color white "------------------------------------------------------")"
-    read -p "$(color white "$(get_message choose_prompt)")" INPUT_LANG
+    read -p "$(color white "Please choose: ")" INPUT_LANG
     process_language_selection "$INPUT_LANG"
     normalize_language
 }

@@ -404,8 +404,8 @@ country_zone() {
     
     zone_info=$(sh "${BASE_DIR}/country-zone.sh" "$(cat "${BASE_DIR}/check_country")")
     ZONENAME=$(echo "$zone_info" | awk '{print $1}')
-    TIMEZONE=$(echo "$zone_info" | awk -F';' '{print $2}' | cut -d' ' -f1)
-    LANGUAGE=$(echo "$zone_info" | awk '{print $3}')
+    TIMEZONE=$(echo "$zone_info" | awk -F';' '{print $2}')
+    LANGUAGE=$(echo "$zone_info" | awk '{print $2}')
     lang_out=$(echo "$ZONENAME" | awk '{print $NF}')
     LANGUAGE="$lang_out"
 }

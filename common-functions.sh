@@ -15,7 +15,7 @@ Usage:
   aios [OPTION] [LANGUAGE]
 
 Options:
-  -h, --help       Display this help message and exit.
+  -h, -help, --help       Display this help message and exit.
   -r, -reset, --reset
                    Clear cached language and country settings.
 
@@ -37,14 +37,6 @@ Examples:
     -> Clears cache and runs the script with Japanese language.
 EOF
 }
-
-# メイン処理の先頭でオプションをチェックする例
-case "$1" in
-    -h|--help)
-        print_help
-        exit 0
-        ;;
-esac
 
 color_code_map() {
   local color=$1

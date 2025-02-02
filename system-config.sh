@@ -1,7 +1,7 @@
 #!/bin/sh
 # License: CC0
 # OpenWrt >= 19.07
-# 202520202319-18
+# 202520202319-19
 # system-config.sh
 #
 # 本スクリプトは、デバイスの初期設定を行うためのスクリプトです。
@@ -74,16 +74,17 @@ select_timezone() {
 #########################################################################
 information() {
     local lang="$SELECTED_LANGUAGE"
-    local country_name display_name language_code country_code timezones
+    local country_data
 
-    # 直接 country-zone.sh を実行して結果を取得
-    ZONENAME=$(sh /tmp/aios/country-zone.sh "$lang")
-    # 各フィールドを抽出して表示
-    country_name=$(echo "$ZONENAME" | awk '{print $1}')
-    display_name=$(echo "$ZONENAME" | awk '{print $2}')
-    language_code=$(echo "$ZONENAME" | awk '{print $3}')
-    country_code=$(echo "$ZONENAME" | awk '{print $4}')
-    timezones=$(echo "$ZONENAME" | sed 's/.*;//' | tr ',' ' ')
+    # 選択された言語に基づいて国情報を取得
+    country_data=$(sh /tmp/aios/country-zone.sh "$lang" "all")
+
+    # データの分割と抽出
+    country_name=$(echo "$country_data" | awk '{print $1}')
+    display_name=$(echo "$country_data" | awk '{print $2}')
+    language_code=$(echo "$country_data" | awk '{print $3}')
+    country_code=$(echo "$country_data" | awk '{print $4}')
+    timezones=$(echo "$country_data" | sed 's/.*;//' | tr ',' ' ')
 
     case "$lang" in
         en)

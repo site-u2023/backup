@@ -76,6 +76,8 @@ Add-WindowsCapability -Online -Name OpenSSH.Server~~~~0.0.1.0
 ```
 ---
 
+</details>
+
 ### オールインワンスクリプト初期設定
 
 $1は曖昧な入力も受け付けます。

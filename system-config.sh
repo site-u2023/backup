@@ -47,37 +47,43 @@ download_and_execute_common() {
 # information: country_zone で取得済みのゾーン情報を元にシステム情報を表示する
 #########################################################################
 information() {
-    local lang
-    lang="$SELECTED_LANGUAGE"
+    local lang="$SELECTED_LANGUAGE"
+    local country_name display_name language_code country_code timezones
+
+    country_name=$(echo "$ZONENAME" | awk '{print $1}')
+    display_name=$(echo "$ZONENAME" | awk '{print $2}')
+    language_code=$(echo "$ZONENAME" | awk '{print $3}')
+    country_code=$(echo "$ZONENAME" | awk '{print $4}')
+    timezones=$(echo "$ZONENAME" | awk -F';' '{print $2}' | tr ',' ' ')
 
     case "$lang" in
         en)
-            echo -e "$(color white "Country: $(echo "$ZONENAME" | awk '{print $1}')")"
-            echo -e "$(color white "Display Name: $(echo "$ZONENAME" | awk '{print $2}')")"
-            echo -e "$(color white "Language Code: $(echo "$ZONENAME" | awk '{print $3}')")"
-            echo -e "$(color white "Country Code: $(echo "$ZONENAME" | awk '{print $4}')")"
-            echo -e "$(color white "Time Zones: $(echo "$ZONENAME" | awk -F';' '{print $2}' | tr ',' ' ')")"
+            echo -e "$(color white "Country: $country_name")"
+            echo -e "$(color white "Display Name: $display_name")"
+            echo -e "$(color white "Language Code: $language_code")"
+            echo -e "$(color white "Country Code: $country_code")"
+            echo -e "$(color white "Time Zones: $timezones")"
             ;;
         ja)
-            echo -e "$(color white "国名: $(echo "$ZONENAME" | awk '{print $1}')")"
-            echo -e "$(color white "表示名: $(echo "$ZONENAME" | awk '{print $2}')")"
-            echo -e "$(color white "言語コード: $(echo "$ZONENAME" | awk '{print $3}')")"
-            echo -e "$(color white "国コード: $(echo "$ZONENAME" | awk '{print $4}')")"
-            echo -e "$(color white "タイムゾーン: $(echo "$ZONENAME" | awk -F';' '{print $2}' | tr ',' ' ')")"
+            echo -e "$(color white "国名: $country_name")"
+            echo -e "$(color white "表示名: $display_name")"
+            echo -e "$(color white "言語コード: $language_code")"
+            echo -e "$(color white "国コード: $country_code")"
+            echo -e "$(color white "タイムゾーン: $timezones")"
             ;;
         zh-cn)
-            echo -e "$(color white "国家: $(echo "$ZONENAME" | awk '{print $1}')")"
-            echo -e "$(color white "显示名称: $(echo "$ZONENAME" | awk '{print $2}')")"
-            echo -e "$(color white "语言代码: $(echo "$ZONENAME" | awk '{print $3}')")"
-            echo -e "$(color white "国家代码: $(echo "$ZONENAME" | awk '{print $4}')")"
-            echo -e "$(color white "时区: $(echo "$ZONENAME" | awk -F';' '{print $2}' | tr ',' ' ')")"
+            echo -e "$(color white "国家: $country_name")"
+            echo -e "$(color white "显示名称: $display_name")"
+            echo -e "$(color white "语言代码: $language_code")"
+            echo -e "$(color white "国家代码: $country_code")"
+            echo -e "$(color white "时区: $timezones")"
             ;;
         zh-tw)
-            echo -e "$(color white "國家: $(echo "$ZONENAME" | awk '{print $1}')")"
-            echo -e "$(color white "顯示名稱: $(echo "$ZONENAME" | awk '{print $2}')")"
-            echo -e "$(color white "語言代碼: $(echo "$ZONENAME" | awk '{print $3}')")"
-            echo -e "$(color white "國家代碼: $(echo "$ZONENAME" | awk '{print $4}')")"
-            echo -e "$(color white "時區: $(echo "$ZONENAME" | awk -F';' '{print $2}' | tr ',' ' ')")"
+            echo -e "$(color white "國家: $country_name")"
+            echo -e "$(color white "顯示名稱: $display_name")"
+            echo -e "$(color white "語言代碼: $language_code")"
+            echo -e "$(color white "國家代碼: $country_code")"
+            echo -e "$(color white "時區: $timezones")"
             ;;
         *)
             handle_error "Unsupported language: $lang"
@@ -155,11 +161,10 @@ set_device_name_password() {
 # 各 Wi-Fi デバイスごとにユーザー入力を受け、uci コマンドで更新する
 #########################################################################
 set_wifi_ssid_password() {
-    local device iface iface_num ssid password enable_band band htmode devices network country
-    local devices_to_enable=""
+    local device iface iface_num ssid password enable_band band htmode devices
+    local wifi_country_code=$(echo "$ZONENAME" | awk '{print $4}')
     local lang msg_no_devices msg_band msg_enter_ssid msg_enter_password msg_password_invalid
     local msg_updated msg_select_band msg_confirm msg_reenter msg_invalid
-    wifi_country_code=$(echo "$ZONENAME" | awk '{print $4}')
     
     lang="$SELECTED_LANGUAGE"
     case "$lang" in
@@ -254,7 +259,7 @@ set_wifi_ssid_password() {
         uci set wireless."$iface".key="${password:-password}"
         uci set wireless."$iface".encryption="${encryption:-sae-mixed}"
         uci set wireless."$iface".network='lan'
-        uci set wireless."$device".country="${wifi_country_code:-00}"
+        uci set wireless."$device".country="$wifi_country_code"
         uci -q delete wireless."$device".disabled
 
         devices_to_enable="$devices_to_enable $device"
@@ -359,6 +364,6 @@ download_and_execute_common
 check_common "$INPUT_LANG"
 country_zone
 information
-set_device_name_password
-set_wifi_ssid_password
-set_device
+#set_device_name_password
+#set_wifi_ssid_password
+#set_device

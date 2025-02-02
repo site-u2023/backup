@@ -155,7 +155,7 @@ check_language() {
     echo -e "$(color "white" "[el]: Ελληνικά")"
     echo -e "$(color "white" "[es]: Español")"
     echo -e "$(color "white" "[fr]: Français")"
-    echo -e "$(color "white" "[he]: עִבְרִת)"
+    echo -e "$(color "white" "[he]: עִבְרִת")"
     echo -e "$(color "white" "[hi]: हिंदी")"
     echo -e "$(color "white" "[hu]: Magyar")"
     echo -e "$(color "white" "[it]: Italiano")"

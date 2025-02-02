@@ -1,7 +1,7 @@
 #!/bin/sh
 # License: CC0
 # OpenWrt >= 19.07
-# 202502022041-7
+# 202502022041-8
 # common-functions.sh
 #
 # 各種共通処理（ヘルプ表示、カラー出力、システム情報確認、言語選択、確認・通知メッセージの多言語対応など）を提供する。
@@ -396,26 +396,6 @@ normalize_language() {
 }
 
 #########################################################################
-# country_zone: 国・ゾーン情報を取得する関数
-# country-zonename.sh および country-timezone.sh を利用してゾーン名、タイムゾーン、言語情報を取得する
-#########################################################################
-
-country_zone() {
-    local country_file="${BASE_DIR}/country-zone.sh"
-
-    # 選択された国の情報を取得
-    zone_info=$(sh "$country_file" "$(cat "${BASE_DIR}/check_country")")
-
-    # 情報をフィールドごとに分割して取得
-    ZONENAME=$(echo "$zone_info" | awk '{print $1}')  # 国名
-    DISPLAYNAME=$(echo "$zone_info" | awk '{print $2}')  # 表示名
-    LANGUAGE=$(echo "$zone_info" | awk '{print $3}')  # 言語コード
-    COUNTRYCODE=$(echo "$zone_info" | awk '{print $4}')  # 国コード
-    TIMEZONE_CITIES=$(echo "$zone_info" | awk -F';' '{print $1}' | awk '{$1=$2=$3=$4=""; print $0}' | sed 's/^ *//')  # タイムゾーン都市
-    TIMEZONE_OFFSETS=$(echo "$zone_info" | awk -F';' '{print $2}')  # タイムゾーンオフセット
-}
-
-#########################################################################
 # process_language_selection: ユーザー入力の言語コードから有効な候補を選択する
 #########################################################################
 process_language_selection() {
@@ -481,4 +461,35 @@ process_language_selection() {
 
     echo "Selected Language: $SELECTED_LANGUAGE"
     echo "Selected Country: $SELECTED_COUNTRY"
+}
+
+#########################################################################
+# country_zone: 国・ゾーン情報を取得する関数
+# country-zonename.sh および country-timezone.sh を利用してゾーン名、タイムゾーン、言語情報を取得する
+#########################################################################
+
+country_zone() {
+    local country_file="${BASE_DIR}/country-zone.sh"
+
+    # 選択された国の情報を取得
+    zone_info=$(sh "$country_file" "$(cat "${BASE_DIR}/check_country")")
+
+    # 情報をフィールドごとに分割して取得
+    ZONENAME=$(echo "$zone_info" | awk '{print $1}')  # 国名
+    DISPLAYNAME=$(echo "$zone_info" | awk '{print $2}')  # 表示名
+    LANGUAGE=$(echo "$zone_info" | awk '{print $3}')  # 言語コード
+    COUNTRYCODE=$(echo "$zone_info" | awk '{print $4}')  # 国コード
+    TIMEZONE_CITIES=$(echo "$zone_info" | awk -F';' '{print $1}' | awk '{$1=$2=$3=$4=""; print $0}' | sed 's/^ *//')  # タイムゾーン都市
+    TIMEZONE_OFFSETS=$(echo "$zone_info" | awk -F';' '{print $2}')  # タイムゾーンオフセット
+}
+
+# 国の全情報を取得して表示する関数
+country_full_info() {
+    local country_file="${BASE_DIR}/country-zone.sh"
+
+    # 選択された国の情報を取得
+    full_info=$(sh "$country_file" "$(cat "${BASE_DIR}/check_country")")
+
+    # 全情報をそのまま表示
+    echo "$full_info"
 }

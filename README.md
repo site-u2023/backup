@@ -8,8 +8,10 @@ Dedicated configuration software for OpenWrt
 
 January 25, 2025: version α
 
-### デバイスアクセス
-#### [PowerShell](https://learn.microsoft.com/ja-jp/powershell/scripting/what-is-windows-powershell?view=powershell-7.4)の開始
+## デバイスアクセス
+
+[PowerShell](https://learn.microsoft.com/ja-jp/powershell/scripting/what-is-windows-powershell?view=powershell-7.4)の開始
+
 - キー入力：**`Win`+`x` > `a` > `はい`**
 
 <details><summary>パワーシェル7のインストールとショートカット作成</summary>
@@ -47,7 +49,8 @@ Write-Host "PowerShell 7 administrator shortcut has been created."
 
 </details>
 
-#### [UCI（SSH）アクセス](https://openwrt.org/docs/guide-quick-start/sshadministration)
+[UCI（SSH）アクセス](https://openwrt.org/docs/guide-quick-start/sshadministration)
+
 ```powershell:powershell:初期設定用
 ssh -o StrictHostKeyChecking=no -oHostKeyAlgorithms=+ssh-rsa root@192.168.1.1
 ```
@@ -78,7 +81,7 @@ Add-WindowsCapability -Online -Name OpenSSH.Server~~~~0.0.1.0
 
 </details>
 
-### オールインワンスクリプト初期設定
+## オールインワンスクリプト初期設定
 
 $1は曖昧な入力も受け付けます。
 

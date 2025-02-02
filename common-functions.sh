@@ -112,6 +112,7 @@ process_language_selection() {
     INPUT_LANG=$(echo "$1" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//' | tr -d '\n')
     echo "Input Language: $INPUT_LANG"
 
+    # 言語と国の情報を取得
     found_entries=$(sh /tmp/aios/country-timezone.sh "$INPUT_LANG")
     num_matches=$(echo "$found_entries" | wc -l)
 
@@ -129,15 +130,17 @@ process_language_selection() {
     fi
 
     # 言語と国の選択処理
-    SELECTED_LANGUAGE=$(echo "$found_entry" | awk '{print $2}')
-    SELECTED_COUNTRY=$(echo "$found_entry" | awk '{print $3}')
+    # ここでダブルクォートを削除するために sed で余計なクォートを除去
+    SELECTED_LANGUAGE=$(echo "$found_entry" | awk '{print $2}' | sed 's/"//g')
+    SELECTED_COUNTRY=$(echo "$found_entry" | awk '{print $3}' | sed 's/"//g')
 
     # 選択結果の保存
     echo "$SELECTED_LANGUAGE" > "${BASE_DIR}/check_language"
     echo "$SELECTED_COUNTRY" > "${BASE_DIR}/check_country"
 
-    echo "Selected Language: $SELECTED_LANGUAGE"
-    echo "Selected Country (after script): $SELECTED_COUNTRY"
+    # 出力時もダブルクォートが含まれないようにする
+    echo Selected Language: $SELECTED_LANGUAGE
+    echo Selected Country \(after script\): $SELECTED_COUNTRY
 
     # 選択完了後、即座にリターンして二重呼び出しを防ぐ
     return

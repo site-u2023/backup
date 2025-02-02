@@ -88,7 +88,7 @@ display_info() {
             echo -e "$(color "white" "USB: ${USB_STATUS_EN}")"
             echo -e "$(color "white" "Directory: ${BASE_DIR}")"
             echo -e "$(color "white" "OpenWrt Version: ${RELEASE_VERSION}")"
-            echo -e "$(color "white" "Zonename: ${ZONENAME}")"
+            echo -e "$(color "white" "Zonename: ${TIMEZONE}")"
             echo -e "$(color "white" "Downloader: ${PACKAGE_MANAGER}")"
             ;;
         ja)
@@ -97,7 +97,7 @@ display_info() {
             echo -e "$(color "white" "USB: ${USB_STATUS_JA}")"
             echo -e "$(color "white" "ディレクトリ: ${BASE_DIR}")"
             echo -e "$(color "white" "OpenWrtバージョン: ${RELEASE_VERSION}")"
-            echo -e "$(color "white" "ゾーン名: ${ZONENAME}")"
+            echo -e "$(color "white" "ゾーン名: ${TIMEZONE}")"
             echo -e "$(color "white" "ダウンローダー: ${PACKAGE_MANAGER}")"
             ;;
         zh-cn)
@@ -106,7 +106,7 @@ display_info() {
             echo -e "$(color "white" "USB: ${USB_STATUS_ZH_CN}")"
             echo -e "$(color "white" "目录: ${BASE_DIR}")"
             echo -e "$(color "white" "OpenWrt版本: ${RELEASE_VERSION}")"
-            echo -e "$(color "white" "区域名称: ${ZONENAME}")"
+            echo -e "$(color "white" "区域名称: ${TIMEZONE}")"
             echo -e "$(color "white" "下载器: ${PACKAGE_MANAGER}")"
             ;;
         zh-tw)
@@ -115,7 +115,7 @@ display_info() {
             echo -e "$(color "white" "USB: ${USB_STATUS_ZH_TW}")"
             echo -e "$(color "white" "目錄: ${BASE_DIR}")"
             echo -e "$(color "white" "OpenWrt版本: ${RELEASE_VERSION}")"
-            echo -e "$(color "white" "區域名稱: ${ZONENAME}")"
+            echo -e "$(color "white" "區域名稱: ${TIMEZONE}")"
             echo -e "$(color "white" "下載器: ${PACKAGE_MANAGER}")"
             ;;
         *)
@@ -124,7 +124,7 @@ display_info() {
             echo -e "$(color "white" "USB: ${USB_STATUS_EN}")"
             echo -e "$(color "white" "Directory: ${BASE_DIR}")"
             echo -e "$(color "white" "OpenWrt Version: ${RELEASE_VERSION}")"
-            echo -e "$(color "white" "Zonename: ${ZONENAME}")"
+            echo -e "$(color "white" "Zonename: ${TIMEZONE}")"
             echo -e "$(color "white" "Downloader: ${PACKAGE_MANAGER}")"
             ;;
     esac

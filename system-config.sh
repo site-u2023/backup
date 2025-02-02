@@ -52,10 +52,10 @@ select_timezone() {
 
     echo "Available Time Zones:"
     local i=1
-    while IFS= read -r tz; do
+    echo "$available_timezones" | while IFS= read -r tz; do
         echo "[$i] $tz"
         i=$((i+1))
-    done <<< "$available_timezones"
+    done
 
     read -p "Select the time zone by number: " selected_index
 

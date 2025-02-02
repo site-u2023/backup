@@ -109,37 +109,47 @@ check_common() {
 }
 
 process_language_selection() {
+    # 入力値の前後の空白を除去
     INPUT_LANG=$(echo "$1" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//' | tr -d '\n')
     echo "Input Language: $INPUT_LANG"
 
+    # country-timezone.sh を使って該当するエントリを検索
     found_entries=$(sh /tmp/aios/country-timezone.sh "$INPUT_LANG")
-    num_matches=$(echo "$found_entries" | wc -l)
 
-    if [ "$num_matches" -gt 1 ]; then
-        echo "Multiple matches found. Please select:"
-        i=1
-        echo "$found_entries" | while IFS= read -r line; do
-            echo "$i) $line"
-            i=$((i+1))
-        done
-        read -p "Enter the number of your choice: " choice
-        found_entry=$(echo "$found_entries" | sed -n "${choice}p")
+    # 該当エントリが全くなければ、デフォルトとして英語 (en) を取得
+    if [ -z "$found_entries" ]; then
+        echo "No matching entry found. Defaulting to English (en)."
+        found_entry=$(sh /tmp/aios/country-timezone.sh "en")
     else
-        found_entry="$found_entries"
+        # 複数件ヒットしているかを確認
+        num_matches=$(echo "$found_entries" | wc -l)
+        if [ "$num_matches" -gt 1 ]; then
+            echo "Multiple matches found. Please select:"
+            i=1
+            # [1] [2] の形式で番号付きリストを表示
+            echo "$found_entries" | while IFS= read -r line; do
+                echo "[$i] $line"
+                i=$((i+1))
+            done
+            read -p "Enter the number of your choice: " choice
+            found_entry=$(echo "$found_entries" | sed -n "${choice}p")
+        else
+            found_entry="$found_entries"
+        fi
     fi
 
-    # 言語と国の選択処理
+    # 取得した行から、各フィールドを抽出
+    # ※ country-timezone.sh の出力は、[国名] [言語コード] [国コード] … の形式になっている前提です。
     SELECTED_LANGUAGE=$(echo "$found_entry" | awk '{print $2}')
     SELECTED_COUNTRY=$(echo "$found_entry" | awk '{print $3}')
 
-    # 選択結果の保存
+    # 選択結果をキャッシュファイルに保存
     echo "$SELECTED_LANGUAGE" > "${BASE_DIR}/check_language"
     echo "$SELECTED_COUNTRY" > "${BASE_DIR}/check_country"
 
     echo "Selected Language: $SELECTED_LANGUAGE"
     echo "Selected Country (after script): $SELECTED_COUNTRY"
 
-    # 選択完了後、即座にリターンして二重呼び出しを防ぐ
     return
 }
 

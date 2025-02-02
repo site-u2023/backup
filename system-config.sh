@@ -12,7 +12,7 @@
 #  4. デバイス名・パスワードの設定 (set_device_name_password)
 #  5. Wi-Fi SSID・パスワードの設定 (set_wifi_ssid_password)
 #  6. システム全体の設定 (set_device)
-echo 202520202319-36
+echo 202520202319-37
 
 # 定数の設定
 BASE_URL="https://raw.githubusercontent.com/site-u2023/aios/main"
@@ -65,7 +65,8 @@ select_timezone() {
         TIMEZONE=$(head -n 1 "${BASE_DIR}/timezone_list")
         echo "$(color white "タイムゾーン: $ZONENAME - $TIMEZONE")"
     else
-        echo "$(color white "$msg_available_tz")"
+        # ここで明示的にタイトルを表示
+        echo "$(color white "Available Time Zones:")"
 
         i=1
         while IFS= read -r zonename_line && IFS= read -r timezone_line <&3; do
@@ -73,7 +74,7 @@ select_timezone() {
             i=$((i + 1))
         done < "${BASE_DIR}/zonename_list" 3< "${BASE_DIR}/timezone_list"
 
-        read -p "$(color white "$msg_select_tz")" selected_index
+        read -p "$(color white "Select the time zone by number: ")" selected_index
 
         ZONENAME=$(sed -n "${selected_index}p" "${BASE_DIR}/zonename_list")
         TIMEZONE=$(sed -n "${selected_index}p" "${BASE_DIR}/timezone_list")

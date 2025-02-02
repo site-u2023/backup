@@ -99,8 +99,11 @@ check_package_manager() {
 }
 
 check_common() {
-    # キャッシュクリアのオプション（--reset, -reset, -r）を受け付ける
     case "$1" in
+        -h|-help|--help)
+            print_help
+            exit 0
+            ;;
         --reset|-reset|-r)
             rm -f "${BASE_DIR}/check_language" "${BASE_DIR}/check_country"
             echo "Language and country cache cleared."

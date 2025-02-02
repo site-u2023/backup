@@ -330,6 +330,8 @@ show_notification() {
 # 言語選択処理（再入力なども含む）         #
 ############################################
 process_language_selection() {
+    local INPUT_LANG found_entries found_entry new_input choice num_matches
+    
     while true; do
         # 入力値の前後の空白を除去
         INPUT_LANG=$(echo "$1" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')

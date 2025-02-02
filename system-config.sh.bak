@@ -322,6 +322,6 @@ download_and_execute_common
 check_common "$INPUT_LANG"
 country_zone
 information
-#set_device_name_password
-#set_wifi_ssid_password
-#set_device
+set_device_name_password
+set_wifi_ssid_password
+set_device

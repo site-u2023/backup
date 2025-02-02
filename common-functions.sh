@@ -144,48 +144,37 @@ process_language_selection() {
 }
 
 check_language() {
-    echo -e "$(color "white" "------------------------------------------------------")"
-    echo -e "$(color "white" "Select your language")"
-    echo -e "$(color "white" "[en]: English")"
-    echo -e "$(color "white" "[ja]: 日本語")"
-    echo -e "$(color "white" "[bg]: български")"
-    echo -e "$(color "white" "[ca]: Catal\u00e0")"
-    echo -e "$(color "white" "[cs]: Čeština")"
-    echo -e "$(color "white" "[de]: Deutsch")"
-    echo -e "$(color "white" "[el]: Ελληνικά")"
-    echo -e "$(color "white" "[es]: Español")"
-    echo -e "$(color "white" "[fr]: Français")"
-    echo -e "$(color "white" "[he]: עִבְרִת")"
-    echo -e "$(color "white" "[hi]: हिंदी")"
-    echo -e "$(color "white" "[hu]: Magyar")"
-    echo -e "$(color "white" "[it]: Italiano")"
-    echo -e "$(color "white" "[ko]: 한국어")"
-    echo -e "$(color "white" "[mr]: मराठी")"
-    echo -e "$(color "white" "[ms]: Bahasa Melayu")"
-    echo -e "$(color "white" "[no]: Norsk")"
-    echo -e "$(color "white" "[pl]: Polski")"
-    echo -e "$(color "white" "[pt]: Português")"
-    echo -e "$(color "white" "[pt-br]: Português do Brasil")"
-    echo -e "$(color "white" "[ro]: Română")"
-    echo -e "$(color "white" "[ru]: Русский")"
-    echo -e "$(color "white" "[sk]: Slovenčina")"
-    echo -e "$(color "white" "[sv]: Svenska")"
-    echo -e "$(color "white" "[tr]: Türkçe")"
-    echo -e "$(color "white" "[uk]: Українська")"
-    echo -e "$(color "white" "[vi]: Tiếng Việt")"
-    echo -e "$(color "white" "[zh-cn]: 简体中文")"
-    echo -e "$(color "white" "[zh-tw]: 繁體中文")"
-    echo -e "$(color "white" "[ar]: العربية")"
-    echo -e "$(color "white" "[bn]: বাংলা")"
-    echo -e "$(color "white" "[da]: Dansk")"
-    echo -e "$(color "white" "[fi]: Suomi")"
-    echo -e "$(color "white" "[nl]: Nederlands")"
-    echo -e "$(color "white" "[xx]: otherwise")"
-    echo -e "$(color "white" "------------------------------------------------------")"
+    echo -e "$(color white "------------------------------------------------------")"
+    echo -e "$(color white "Select your language")"
 
+    # country-zonename.sh を引数空で実行して、全データを取得
+    country_data=$(sh "${BASE_DIR}/country-zonename.sh" "")
+
+    # 取得したデータを1行ずつ処理
+    echo "$country_data" | while IFS= read -r line; do
+        # 空行はスキップ
+        [ -z "$line" ] && continue
+
+        # 第2フィールドを抽出
+        lang_field=$(echo "$line" | awk '{print $2}')
+        # 第2フィールドが "xx" でなければ表示対象
+        if [ "$lang_field" != "xx" ]; then
+            # 各フィールドを抽出
+            field1=$(echo "$line" | awk '{print $1}')   # 国名
+            field2=$(echo "$line" | awk '{print $2}')   # 言語コード
+            field3=$(echo "$line" | awk '{print $3}')   # 国コード
+            fieldLast=$(echo "$line" | awk '{print $NF}')  # 最後のフィールド（母国語または対応バージョン）
+
+            # 例： "en: United_States US - English" のように表示
+            echo -e "$(color white "$field2: $field1 $field3 - $fieldLast")"
+        fi
+    done
+
+    echo -e "$(color white "------------------------------------------------------")"
+
+    # ユーザーに選択させる
     read -p "Choose an option: " INPUT_LANG
     process_language_selection "$INPUT_LANG"
-
     normalize_language
 }
 

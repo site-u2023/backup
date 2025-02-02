@@ -370,14 +370,57 @@ show_notification() {
 }
 
 #########################################################################
+# normalize_language: キャッシュの言語コードがサポート対象か検証し、
+#                      サポート外の場合はデフォルト (en) に上書きする
+#########################################################################
+normalize_language() {
+    local CHECK_LANGUAGE READ_LANGUAGE
+    CHECK_LANGUAGE="${BASE_DIR}/check_language"
+    if [ -f "$CHECK_LANGUAGE" ]; then
+        READ_LANGUAGE=$(cat "$CHECK_LANGUAGE")
+    fi
+
+    SELECTED_LANGUAGE=""
+    for lang in $SUPPORTED_LANGUAGES; do
+        if [ "$READ_LANGUAGE" = "$lang" ]; then
+            SELECTED_LANGUAGE="$READ_LANGUAGE"
+            break
+        fi
+    done
+
+    if [ -z "$SELECTED_LANGUAGE" ]; then
+        SELECTED_LANGUAGE="en"
+        echo "Language not supported. Defaulting to English (en)."
+        echo "$SELECTED_LANGUAGE" > "${BASE_DIR}/check_language"
+    fi
+}
+
+#########################################################################
+# country_zone: 国・ゾーン情報を取得する関数
+# country-zonename.sh および country-timezone.sh を利用してゾーン名、タイムゾーン、言語情報を取得する
+#########################################################################
+country_zone() {
+    local country_file timezone_file lang_out
+    
+    zone_info=$(sh "${BASE_DIR}/country-zone.sh" "$(cat "${BASE_DIR}/check_country")")
+    ZONENAME=$(echo "$zone_info" | awk '{print $1}')
+    TIMEZONE=$(echo "$zone_info" | awk -F';' '{print $2}' | cut -d' ' -f1)
+    LANGUAGE=$(echo "$zone_info" | awk '{print $3}')
+    lang_out=$(echo "$ZONENAME" | awk '{print $NF}')
+    LANGUAGE="$lang_out"
+}
+
+#########################################################################
 # process_language_selection: ユーザー入力の言語コードから有効な候補を選択する
 #########################################################################
 process_language_selection() {
     local INPUT_LANG="$1" found_entries found_entry new_input choice num_matches
     while true; do
         INPUT_LANG=$(echo "$INPUT_LANG" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
+        echo "Debug: Searching for language '$INPUT_LANG'"
 
         found_entries=$(sh "${BASE_DIR}/country-zone.sh" "$INPUT_LANG")
+        echo "Debug: Found entries: $found_entries"
 
         if [ -z "$found_entries" ] || echo "$found_entries" | grep -qi "not found"; then
             echo "No matching entry found."
@@ -437,50 +480,12 @@ process_language_selection() {
         break
     done
 
-    # 新しい country-zone.sh に基づくフィールドの抽出
-    SELECTED_LANGUAGE=$(echo "$found_entry" | awk '{print $3}')  # 言語コード
-    SELECTED_COUNTRY=$(echo "$found_entry" | awk '{print $4}')   # 国コード
+    echo "Debug: Selected entry - $found_entry"
+
+    SELECTED_LANGUAGE=$(echo "$found_entry" | awk '{print $3}')
+    SELECTED_COUNTRY=$(echo "$found_entry" | awk '{print $4}')
+    echo "Debug: SELECTED_LANGUAGE=$SELECTED_LANGUAGE, SELECTED_COUNTRY=$SELECTED_COUNTRY"
+
     echo "$SELECTED_LANGUAGE" > "${BASE_DIR}/check_language"
     echo "$SELECTED_COUNTRY" > "${BASE_DIR}/check_country"
-}
-
-#########################################################################
-# normalize_language: キャッシュの言語コードがサポート対象か検証し、
-#                      サポート外の場合はデフォルト (en) に上書きする
-#########################################################################
-normalize_language() {
-    local CHECK_LANGUAGE READ_LANGUAGE
-    CHECK_LANGUAGE="${BASE_DIR}/check_language"
-    if [ -f "$CHECK_LANGUAGE" ]; then
-        READ_LANGUAGE=$(cat "$CHECK_LANGUAGE")
-    fi
-
-    SELECTED_LANGUAGE=""
-    for lang in $SUPPORTED_LANGUAGES; do
-        if [ "$READ_LANGUAGE" = "$lang" ]; then
-            SELECTED_LANGUAGE="$READ_LANGUAGE"
-            break
-        fi
-    done
-
-    if [ -z "$SELECTED_LANGUAGE" ]; then
-        SELECTED_LANGUAGE="en"
-        echo "Language not supported. Defaulting to English (en)."
-        echo "$SELECTED_LANGUAGE" > "${BASE_DIR}/check_language"
-    fi
-}
-
-#########################################################################
-# country_zone: 国・ゾーン情報を取得する関数
-# country-zonename.sh および country-timezone.sh を利用してゾーン名、タイムゾーン、言語情報を取得する
-#########################################################################
-country_zone() {
-    local country_file timezone_file lang_out
-    
-    zone_info=$(sh "${BASE_DIR}/country-zone.sh" "$(cat "${BASE_DIR}/check_country")")
-    ZONENAME=$(echo "$zone_info" | awk '{print $1}')
-    TIMEZONE=$(echo "$zone_info" | awk -F';' '{print $2}' | cut -d' ' -f1)
-    LANGUAGE=$(echo "$zone_info" | awk '{print $3}')
-    lang_out=$(echo "$ZONENAME" | awk '{print $NF}')
-    LANGUAGE="$lang_out"
 }

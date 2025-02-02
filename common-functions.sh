@@ -141,9 +141,9 @@ check_language() {
 
     echo "$country_data" | while IFS= read -r line; do
         [ -z "$line" ] && continue
-        lang_field=$(echo "$line" | awk '{print $3}')
+        lang_field=$(echo "$line" | awk '{print $3}')  # 言語コード
         if [ "$lang_field" != "xx" ]; then
-            output=$(echo "$line" | awk '{print $1, $3, $4, $5}')  # 国名、言語コード、国コード、母国語
+            output=$(echo "$line" | awk '{print $1, $2, $3, $4}')  # 国名、母国語、言語コード、国コードを表示
             echo -e "$(color white "$output")"
         fi
     done

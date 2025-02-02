@@ -71,6 +71,8 @@ get_system_info() {
         USB_STATUS_ZH_CN="未检测"
         USB_STATUS_ZH_TW="未檢測"
     fi
+
+    full_info=$(country_full_info)
 }
 
 #########################################################################

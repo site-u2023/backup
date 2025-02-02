@@ -1,7 +1,7 @@
 #!/bin/sh
 # License: CC0
 # OpenWrt >= 19.07
-# 202502022041-2
+# 202502022041-3
 # common-functions.sh
 #
 # 各種共通処理（ヘルプ表示、カラー出力、システム情報確認、言語選択、確認・通知メッセージの多言語対応など）を提供する。
@@ -417,12 +417,12 @@ process_language_selection() {
     local INPUT_LANG="$1" found_entries found_entry new_input choice num_matches
     while true; do
         INPUT_LANG=$(echo "$INPUT_LANG" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
-        echo "Debug: Searching for language '$INPUT_LANG'"
 
-        found_entries=$(sh "${BASE_DIR}/country-zone.sh" "$INPUT_LANG")
-        echo "Debug: Found entries: $found_entries"
+        # 言語コードが含まれる行を正確にフィルタリング
+        found_entries=$(sh "${BASE_DIR}/country-zone.sh" | grep -i "\b${INPUT_LANG}\b")
 
-        if [ -z "$found_entries" ] || echo "$found_entries" | grep -qi "not found"; then
+        # 該当エントリがない場合の処理
+        if [ -z "$found_entries" ]; then
             echo "No matching entry found."
             read -p "$(color white "Do you want to re-enter? [y/n]: ")" choice
             case "$choice" in
@@ -433,11 +433,12 @@ process_language_selection() {
                     ;;
                 *)
                     echo "Defaulting to English (en)."
-                    found_entries=$(sh "${BASE_DIR}/country-zone.sh" "en")
+                    found_entries=$(sh "${BASE_DIR}/country-zone.sh" | grep -i "\ben\b")
             esac
         fi
 
-        num_matches=$(echo "$found_entries" | grep -c '^')
+        # 複数候補があれば番号選択
+        num_matches=$(echo "$found_entries" | wc -l)
         if [ "$num_matches" -gt 1 ]; then
             echo "Multiple matches found. Please select:"
             local i=1
@@ -463,29 +464,16 @@ process_language_selection() {
             found_entry="$found_entries"
         fi
 
-        if echo "$found_entry" | grep -qi "not found"; then
-            echo "No valid entry selected."
-            read -p "$(color white "Do you want to re-enter? [y/n]: ")" choice
-            case "$choice" in
-                [Yy])
-                    read -p "$(color white "Please re-enter language: ")" new_input
-                    INPUT_LANG="$new_input"
-                    continue
-                    ;;
-                *)
-                    echo "Defaulting to English (en)."
-                    found_entry=$(sh "${BASE_DIR}/country-zone.sh" "en")
-            esac
-        fi
-        break
+        break  # 有効な候補が取得できたのでループを抜ける
     done
 
-    echo "Debug: Selected entry - $found_entry"
-
-    SELECTED_LANGUAGE=$(echo "$found_entry" | awk '{print $3}')
-    SELECTED_COUNTRY=$(echo "$found_entry" | awk '{print $4}')
-    echo "Debug: SELECTED_LANGUAGE=$SELECTED_LANGUAGE, SELECTED_COUNTRY=$SELECTED_COUNTRY"
+    # フィールド抽出の修正
+    SELECTED_LANGUAGE=$(echo "$found_entry" | awk '{print $3}')  # 言語コード
+    SELECTED_COUNTRY=$(echo "$found_entry" | awk '{print $4}')   # 国コード
 
     echo "$SELECTED_LANGUAGE" > "${BASE_DIR}/check_language"
     echo "$SELECTED_COUNTRY" > "${BASE_DIR}/check_country"
+
+    echo "Selected Language: $SELECTED_LANGUAGE"
+    echo "Selected Country: $SELECTED_COUNTRY"
 }

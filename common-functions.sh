@@ -98,139 +98,6 @@ check_package_manager() {
     fi
 }
 
-check_common() {
-    case "$1" in
-        -h|-help|--help)
-            print_help
-            exit 0
-            ;;
-        --reset|-reset|-r)
-            rm -f "${BASE_DIR}/check_language" "${BASE_DIR}/check_country"
-            echo "Language and country cache cleared."
-            shift  # 次の引数（言語コード）を処理するためにシフト
-            ;;
-    esac
-
-    # バージョン情報の取得
-    if [ -f "${BASE_DIR}/check_version" ]; then
-        RELEASE_VERSION=$(cat "${BASE_DIR}/check_version")
-    fi
-    [ -z "$RELEASE_VERSION" ] && check_version
-
-    # パッケージ情報の取得
-    if [ -f "${BASE_DIR}/check_package_manager" ]; then
-        PACKAGE_MANAGER=$(cat "${BASE_DIR}/check_package_manager")
-    fi
-    [ -z "$PACKAGE_MANAGER" ] && check_package_manager  
-
-    # コマンドライン引数で言語が指定されている場合、それを優先
-    if [ -n "$1" ]; then
-        process_language_selection "$1"
-    fi
-
-    # キャッシュが存在する場合、読み込み
-    if [ -f "${BASE_DIR}/check_language" ]; then
-        SELECTED_LANGUAGE=$(cat "${BASE_DIR}/check_language")
-    fi
-    if [ -f "${BASE_DIR}/check_country" ]; then
-        SELECTED_COUNTRY=$(cat "${BASE_DIR}/check_country")
-    fi
-
-    # 言語が未設定の場合はユーザーに選択を促す
-    if [ -z "$SELECTED_LANGUAGE" ]; then
-        check_language
-    fi
-
-    normalize_language  # 言語の正規化（最後に実行）
-}
-
-process_language_selection() {
-    while true; do
-        # 入力値の前後の空白を除去
-        INPUT_LANG=$(echo "$1" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
-        echo "Input Language: $INPUT_LANG"
-
-        # country-zonename.sh を使って該当するエントリを検索
-        found_entries=$(sh "${BASE_DIR}/country-zonename.sh" "$INPUT_LANG")
-
-        # 該当エントリが空またはエラーメッセージ（例："not found" を含む）なら再入力を促す
-        if [ -z "$found_entries" ] || echo "$found_entries" | grep -qi "not found"; then
-            echo "No matching entry found."
-            read -p "Do you want to re-enter? [y/N]: " answer
-            case "$answer" in
-                [yY])
-                    read -p "Please re-enter language: " new_input
-                    set -- "$new_input"
-                    continue
-                    ;;
-                *)
-                    echo "Defaulting to English (en)."
-                    found_entries=$(sh "${BASE_DIR}/country-zonename.sh" "en")
-                    # その後、found_entries から有効な候補を採用する
-            esac
-        fi
-
-        # 複数候補がヒットしている場合
-        num_matches=$(echo "$found_entries" | grep -c '^')
-        if [ "$num_matches" -gt 1 ]; then
-            echo "Multiple matches found. Please select:"
-            i=1
-            # 番号付きリスト（[1] [2] ...）で表示
-            echo "$found_entries" | while IFS= read -r line; do
-                echo "[$i] $line"
-                i=$((i+1))
-            done
-            echo "[0] Re-enter language"
-            read -p "Enter the number of your choice: " choice
-            if [ "$choice" = "0" ]; then
-                read -p "Please re-enter language: " new_input
-                set -- "$new_input"
-                continue
-            fi
-            found_entry=$(echo "$found_entries" | sed -n "${choice}p")
-            if [ -z "$found_entry" ]; then
-                echo "Invalid selection. Please re-enter."
-                read -p "Please re-enter language: " new_input
-                set -- "$new_input"
-                continue
-            fi
-        else
-            found_entry="$found_entries"
-        fi
-
-        # ここで見つかった候補がエラーメッセージになっていないか最終チェック
-        if echo "$found_entry" | grep -qi "not found"; then
-            echo "No valid entry selected."
-            read -p "Do you want to re-enter? [y/N]: " answer
-            case "$answer" in
-                [yY])
-                    read -p "Please re-enter language: " new_input
-                    set -- "$new_input"
-                    continue
-                    ;;
-                *)
-                    echo "Defaulting to English (en)."
-                    found_entry=$(sh "${BASE_DIR}/country-zonename.sh" "en")
-            esac
-        fi
-
-        # 有効な候補が取得できたのでループを抜ける
-        break
-    done
-
-    # 取得した行から各フィールドを抽出
-    # ※ データ形式例：<国名> <言語コード> <国コード> ... <母国語>
-    SELECTED_LANGUAGE=$(echo "$found_entry" | awk '{print $2}')
-    SELECTED_COUNTRY=$(echo "$found_entry" | awk '{print $3}')
-
-    # キャッシュファイルに選択結果を保存
-    echo "$SELECTED_LANGUAGE" > "${BASE_DIR}/check_language"
-    echo "$SELECTED_COUNTRY" > "${BASE_DIR}/check_country"
-
-    echo "Selected Language: $SELECTED_LANGUAGE"
-    echo "Selected Country (after script): $SELECTED_COUNTRY"
-}
-
 check_language() {
     echo -e "$(color white "------------------------------------------------------")"
     echo -e "$(color white "Select your language")"
@@ -282,143 +149,50 @@ normalize_language() {
     fi
 }
 
-language_parameter() {
-    SELECTED_LANGUAGE=$1
-    if [ -n "${SELECTED_LANGUAGE}" ]; then
-        echo "${SELECTED_LANGUAGE}" > "${BASE_DIR}/check_language"
+check_common() {
+    case "$1" in
+        -h|-help|--help)
+            print_help
+            exit 0
+            ;;
+        --reset|-reset|-r)
+            rm -f "${BASE_DIR}/check_language" "${BASE_DIR}/check_country"
+            echo "Language and country cache cleared."
+            shift  # 次の引数（言語コード）を処理するためにシフト
+            ;;
+    esac
+
+    # バージョン情報の取得
+    if [ -f "${BASE_DIR}/check_version" ]; then
+        RELEASE_VERSION=$(cat "${BASE_DIR}/check_version")
     fi
-}
+    [ -z "$RELEASE_VERSION" ] && check_version
 
-ask_confirmation() {
-    local message_key="$1"
-    local message
+    # パッケージ情報の取得
+    if [ -f "${BASE_DIR}/check_package_manager" ]; then
+        PACKAGE_MANAGER=$(cat "${BASE_DIR}/check_package_manager")
+    fi
+    [ -z "$PACKAGE_MANAGER" ] && check_package_manager  
 
-    case "${SELECTED_LANGUAGE}" in
-        en)
-            case "$message_key" in
-                "download") message="Execute download?" ;;
-                "exit") message="Are you sure you want to exit?" ;;
-                "delete") message="Are you sure you want to delete the script and exit?" ;;
-                *) message="Are you sure?" ;;
-            esac
-            ;;
-        ja)
-            case "$message_key" in
-                "download") message="ダウンロードを実行しますか？" ;;
-                "exit") message="終了してもよろしいですか？" ;;
-                "delete") message="スクリプトを削除して終了しますか？" ;;
-                *) message="実行しますか？" ;;
-            esac
-            ;;
-        zh-cn)
-            case "$message_key" in
-                "download") message="要执行下载吗？" ;;
-                "exit") message="您确定要退出吗？" ;;
-                "delete") message="您确定要删除脚本并退出吗？" ;;
-                *) message="您确定吗？" ;;
-            esac
-            ;;
-        zh-tw)
-            case "$message_key" in
-                "download") message="要執行下載嗎？" ;;
-                "exit") message="您確定要退出嗎？" ;;
-                "delete") message="您確定要刪除腳本並退出嗎？" ;;
-                *) message="您確定嗎？" ;;
-            esac
-            ;;
-        *)
-            case "$message_key" in
-                "download") message="Execute download?" ;;
-                "exit") message="Are you sure you want to exit?" ;;
-                "delete") message="Are you sure you want to delete the script and exit?" ;;
-                *) message="Are you sure?" ;;
-            esac
-            ;;
-    esac
+    # コマンドライン引数で言語が指定されている場合、それを優先
+    if [ -n "$1" ]; then
+        process_language_selection "$1"
+    fi
 
-    while true; do
-        read -p "$(color "white" "${message} [y/n]: ")" choice
-        case "${choice}" in
-            [Yy]*) return 0 ;;
-            [Nn]*) return 1 ;;
-            *) echo -e "$(color "white" "Invalid choice, please enter 'y' or 'n'.")" ;;
-        esac
-    done
-}
+    # キャッシュが存在する場合、読み込み
+    if [ -f "${BASE_DIR}/check_language" ]; then
+        SELECTED_LANGUAGE=$(cat "${BASE_DIR}/check_language")
+    fi
+    if [ -f "${BASE_DIR}/check_country" ]; then
+        SELECTED_COUNTRY=$(cat "${BASE_DIR}/check_country")
+    fi
 
-show_notification() {
-    local message_key="$1"
-    local message
+    # 言語が未設定の場合はユーザーに選択を促す
+    if [ -z "$SELECTED_LANGUAGE" ]; then
+        check_language
+    fi
 
-    case "${SELECTED_LANGUAGE}" in
-        en)
-            case "$message_key" in
-                "download_success") message="Download successful." ;;
-                "download_failure") message="Download failed." ;;
-                "exit_cancelled") message="Exit operation cancelled." ;;
-                "delete_cancelled") message="Delete operation cancelled." ;;
-                "delete_success") message="Script and configuration deleted." ;;
-                "download_cancelled") message="Download operation cancelled." ;;
-                "exit") message="Exit operation completed." ;;
-                "delete") message="Delete operation completed." ;;
-                *) message="Operation completed." ;;
-            esac
-            ;;
-        ja)
-            case "$message_key" in
-                "download_success") message="ダウンロードが成功しました。" ;;
-                "download_failure") message="ダウンロードに失敗しました。" ;;
-                "exit_cancelled") message="終了操作がキャンセルされました。" ;;
-                "delete_cancelled") message="削除操作がキャンセルされました。" ;;
-                "delete_success") message="スクリプトと設定が削除されました。" ;;
-                "download_cancelled") message="ダウンロード操作がキャンセルされました。" ;;
-                "exit") message="終了操作が完了しました。" ;;
-                "delete") message="削除操作が完了しました。" ;;
-                *) message="操作が完了しました。" ;;
-            esac
-            ;;
-        zh-cn)
-            case "$message_key" in
-                "download_success") message="下载成功。" ;;
-                "download_failure") message="下载失败。" ;;
-                "exit_cancelled") message="退出操作已取消。" ;;
-                "delete_cancelled") message="删除操作已取消。" ;;
-                "delete_success") message="脚本和配置已删除。" ;;
-                "download_cancelled") message="下载操作已取消。" ;;
-                "exit") message="退出操作已完成。" ;;
-                "delete") message="删除操作已完成。" ;;
-                *) message="操作已完成。" ;;
-            esac
-            ;;
-        zh-tw)
-            case "$message_key" in
-                "download_success") message="下載成功。" ;;
-                "download_failure") message="下載失敗。" ;;
-                "exit_cancelled") message="退出操作已取消。" ;;
-                "delete_cancelled") message="刪除操作已取消。" ;;
-                "delete_success") message="腳本和配置已刪除。" ;;
-                "download_cancelled") message="下載操作已取消。" ;;
-                "exit") message="退出操作已完成。" ;;
-                "delete") message="刪除操作已完成。" ;;
-                *) message="操作已完成。" ;;
-            esac
-            ;;
-        *)
-            case "$message_key" in
-                "download_success") message="Download successful." ;;
-                "download_failure") message="Download failed." ;;
-                "exit_cancelled") message="Exit operation cancelled." ;;
-                "delete_cancelled") message="Delete operation cancelled." ;;
-                "delete_success") message="Script and configuration deleted." ;;
-                "download_cancelled") message="Download operation cancelled." ;;
-                "exit") message="Exit operation completed." ;;
-                "delete") message="Delete operation completed." ;;
-                *) message="Operation completed." ;;
-            esac
-            ;;
-    esac
-
-    echo -e "$(color "white" "${message}")"
+    normalize_language  # 言語の正規化（最後に実行）
 }
 
 menu_option() {
@@ -463,6 +237,228 @@ menu_option() {
             echo -e "$(color "red" "Unknown action.")"
             ;;
     esac
+}
+
+#############################
+# 共通のメッセージ取得関数 #
+#############################
+get_message() {
+    # 引数：$1 ... メッセージキー
+    local key="$1"
+    local lang="${SELECTED_LANGUAGE:-en}"  # $SELECTED_LANGUAGE がなければ英語をデフォルトとする
+    case "$lang" in
+        en)
+            case "$key" in
+                confirm_default) echo "Are you sure?" ;;
+                reenter_prompt)  echo "Do you want to re-enter?" ;;
+                download_success) echo "Download successful." ;;
+                download_failure) echo "Download failed." ;;
+                exit_cancelled) echo "Exit operation cancelled." ;;
+                delete_cancelled) echo "Delete operation cancelled." ;;
+                delete_success) echo "Script and configuration deleted." ;;
+                download_cancelled) echo "Download operation cancelled." ;;
+                exit_complete) echo "Exit operation completed." ;;
+                delete_complete) echo "Delete operation completed." ;;
+                *) echo "Operation completed." ;;
+            esac
+            ;;
+        ja)
+            case "$key" in
+                confirm_default) echo "本当に実行しますか？" ;;
+                reenter_prompt)  echo "再入力しますか？" ;;
+                download_success) echo "ダウンロードが成功しました。" ;;
+                download_failure) echo "ダウンロードに失敗しました。" ;;
+                exit_cancelled) echo "終了操作がキャンセルされました。" ;;
+                delete_cancelled) echo "削除操作がキャンセルされました。" ;;
+                delete_success) echo "スクリプトと設定が削除されました。" ;;
+                download_cancelled) echo "ダウンロード操作がキャンセルされました。" ;;
+                exit_complete) echo "終了操作が完了しました。" ;;
+                delete_complete) echo "削除操作が完了しました。" ;;
+                *) echo "操作が完了しました。" ;;
+            esac
+            ;;
+        zh-cn)
+            case "$key" in
+                confirm_default) echo "您确定吗？" ;;
+                reenter_prompt)  echo "您要重新输入吗？" ;;
+                download_success) echo "下载成功。" ;;
+                download_failure) echo "下载失败。" ;;
+                exit_cancelled) echo "退出操作已取消。" ;;
+                delete_cancelled) echo "删除操作已取消。" ;;
+                delete_success) echo "脚本和配置已删除。" ;;
+                download_cancelled) echo "下载操作已取消。" ;;
+                exit_complete) echo "退出操作已完成。" ;;
+                delete_complete) echo "删除操作已完成。" ;;
+                *) echo "操作已完成。" ;;
+            esac
+            ;;
+        zh-tw)
+            case "$key" in
+                confirm_default) echo "您確定嗎？" ;;
+                reenter_prompt)  echo "您要重新輸入嗎？" ;;
+                download_success) echo "下載成功。" ;;
+                download_failure) echo "下載失敗。" ;;
+                exit_cancelled) echo "退出操作已取消。" ;;
+                delete_cancelled) echo "刪除操作已取消。" ;;
+                delete_success) echo "腳本和配置已刪除。" ;;
+                download_cancelled) echo "下載操作已取消。" ;;
+                exit_complete) echo "退出操作已完成。" ;;
+                delete_complete) echo "刪除操作已完成。" ;;
+                *) echo "操作已完成。" ;;
+            esac
+            ;;
+        *)
+            # デフォルトは英語
+            case "$key" in
+                confirm_default) echo "Are you sure?" ;;
+                reenter_prompt)  echo "Do you want to re-enter?" ;;
+                download_success) echo "Download successful." ;;
+                download_failure) echo "Download failed." ;;
+                exit_cancelled) echo "Exit operation cancelled." ;;
+                delete_cancelled) echo "Delete operation cancelled." ;;
+                delete_success) echo "Script and configuration deleted." ;;
+                download_cancelled) echo "Download operation cancelled." ;;
+                exit_complete) echo "Exit operation completed." ;;
+                delete_complete) echo "Delete operation completed." ;;
+                *) echo "Operation completed." ;;
+            esac
+            ;;
+    esac
+}
+
+###########################
+# 確認プロンプト関数 (共通) #
+###########################
+ask_confirmation() {
+    local prompt="$(get_message confirm_default)"
+    while true; do
+        read -p "$(color white "$prompt [y/n]: ")" choice
+        case "$choice" in
+            [Yy]*) return 0 ;;
+            [Nn]*) return 1 ;;
+            *) echo -e "$(color white "Invalid choice, please enter 'y' or 'n'.")" ;;
+        esac
+    done
+}
+
+###########################
+# 通知表示関数 (共通)     #
+###########################
+show_notification() {
+    local key="$1"
+    local message="$(get_message "$key")"
+    echo -e "$(color white "$message")"
+}
+
+############################################
+# 言語選択処理（再入力なども含む）         #
+############################################
+process_language_selection() {
+    while true; do
+        # 入力値の前後の空白を除去
+        INPUT_LANG=$(echo "$1" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
+        echo "Input Language: $INPUT_LANG"
+
+        # country-zonename.sh を実行して該当エントリを取得
+        found_entries=$(sh "${BASE_DIR}/country-zonename.sh" "$INPUT_LANG")
+
+        # 該当エントリが空またはエラーを含む場合、再入力を促す
+        if [ -z "$found_entries" ] || echo "$found_entries" | grep -qi "not found"; then
+            echo "No matching entry found."
+            read -p "$(color white "$(get_message reenter_prompt) [y/n]: ")" answer
+            case "$answer" in
+                [Yy])
+                    read -p "$(color white "Please re-enter language: ")" new_input
+                    set -- "$new_input"
+                    continue
+                    ;;
+                *)
+                    echo "Defaulting to English (en)."
+                    found_entries=$(sh "${BASE_DIR}/country-zonename.sh" "en")
+                    # 続行して候補採用へ
+            esac
+        fi
+
+        # 複数候補があれば、番号付きで選択させる
+        num_matches=$(echo "$found_entries" | grep -c '^')
+        if [ "$num_matches" -gt 1 ]; then
+            echo "Multiple matches found. Please select:"
+            i=1
+            echo "$found_entries" | while IFS= read -r line; do
+                echo "[$i] $line"
+                i=$((i+1))
+            done
+            echo "[0] Re-enter language"
+            read -p "$(color white "Enter the number of your choice: ")" choice
+            if [ "$choice" = "0" ]; then
+                read -p "$(color white "Please re-enter language: ")" new_input
+                set -- "$new_input"
+                continue
+            fi
+            found_entry=$(echo "$found_entries" | sed -n "${choice}p")
+            if [ -z "$found_entry" ]; then
+                echo "Invalid selection. Please re-enter."
+                read -p "$(color white "Please re-enter language: ")" new_input
+                set -- "$new_input"
+                continue
+            fi
+        else
+            found_entry="$found_entries"
+        fi
+
+        # 最終チェック（万一エラーが含まれていたら再入力）
+        if echo "$found_entry" | grep -qi "not found"; then
+            echo "No valid entry selected."
+            read -p "$(color white "$(get_message reenter_prompt) [y/n]: ")" answer
+            case "$answer" in
+                [Yy])
+                    read -p "$(color white "Please re-enter language: ")" new_input
+                    set -- "$new_input"
+                    continue
+                    ;;
+                *)
+                    echo "Defaulting to English (en)."
+                    found_entry=$(sh "${BASE_DIR}/country-zonename.sh" "en")
+            esac
+        fi
+
+        break  # 有効な候補が取得できたのでループを抜ける
+    done
+
+    # 取得した行から各フィールドを抽出（データ形式例: <国名> <言語コード> <国コード> ... <母国語>）
+    SELECTED_LANGUAGE=$(echo "$found_entry" | awk '{print $2}')
+    SELECTED_COUNTRY=$(echo "$found_entry" | awk '{print $3}')
+
+    # キャッシュに保存
+    echo "$SELECTED_LANGUAGE" > "${BASE_DIR}/check_language"
+    echo "$SELECTED_COUNTRY" > "${BASE_DIR}/check_country"
+
+    echo "Selected Language: $SELECTED_LANGUAGE"
+    echo "Selected Country (after script): $SELECTED_COUNTRY"
+}
+
+############################################
+# normalize_language の処理（主にメニュー用） #
+############################################
+normalize_language() {
+    CHECK_LANGUAGE="${BASE_DIR}/check_language"
+    if [ -f "$CHECK_LANGUAGE" ]; then
+        READ_LANGUAGE=$(cat "$CHECK_LANGUAGE")
+    fi
+
+    SELECTED_LANGUAGE=""
+    for lang in $SUPPORTED_LANGUAGES; do
+        if [ "$READ_LANGUAGE" = "$lang" ]; then
+            SELECTED_LANGUAGE="$READ_LANGUAGE"
+            break
+        fi
+    done
+
+    if [ -z "$SELECTED_LANGUAGE" ]; then
+        SELECTED_LANGUAGE="en"
+        echo "Language not supported. Defaulting to English (en)."
+        echo "$SELECTED_LANGUAGE" > "${BASE_DIR}/check_language"
+    fi
 }
 
 country_zone() {

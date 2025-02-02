@@ -12,7 +12,7 @@
 #  4. デバイス名・パスワードの設定 (set_device_name_password)
 #  5. Wi-Fi SSID・パスワードの設定 (set_wifi_ssid_password)
 #  6. システム全体の設定 (set_device)
-echo 202520202319-34
+echo 202520202319-35
 
 # 定数の設定
 BASE_URL="https://raw.githubusercontent.com/site-u2023/aios/main"
@@ -51,8 +51,8 @@ select_timezone() {
     local available_zonename available_timezones selected_timezone selected_zone
 
     # 都市名とタイムゾーンの情報を取得
-    available_zonename=$(sh ${BASE_DIR}/country-zone.sh "$SELECTED_COUNTRY" "cities")
-    available_timezones=$(sh ${BASE_DIR}/country-zone.sh "$SELECTED_COUNTRY" "offsets")
+    available_zonename=$(sh "${BASE_DIR}/country-zone.sh" "$SELECTED_COUNTRY" "cities")
+    available_timezones=$(sh "${BASE_DIR}/country-zone.sh" "$SELECTED_COUNTRY" "offsets")
 
     # 一時ファイルに保存
     echo "$available_zonename" | tr ',' '\n' > "${BASE_DIR}/zonename_list"
@@ -66,11 +66,11 @@ select_timezone() {
         echo "$(color white "タイムゾーン: $ZONENAME - $TIMEZONE")"
     else
         echo "$(color white "$msg_available_tz")"
-        i=1
-        while read -r zonename && read -r tz <&3; do
-            echo "[$i] $zonename - $tz"
-            i=$((i+1))
-        done < "${BASE_DIR}/zonename_list" 3< "${BASE_DIR}/timezone_list"
+        
+        # ファイルを結合して行ごとに表示
+        paste -d'|' "${BASE_DIR}/zonename_list" "${BASE_DIR}/timezone_list" | nl -w2 -s'. ' | while IFS='|' read -r index line; do
+            echo "[$index] ${line%|*} - ${line#*|}"
+        done
 
         read -p "$(color white "$msg_select_tz")" selected_index
 

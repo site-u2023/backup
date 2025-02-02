@@ -1,7 +1,7 @@
 #!/bin/sh
 # License: CC0
 # OpenWrt >= 19.07
-# 202502022041-9
+# 202502022041-10
 # common-functions.sh
 #
 # 各種共通処理（ヘルプ表示、カラー出力、システム情報確認、言語選択、確認・通知メッセージの多言語対応など）を提供する。
@@ -484,5 +484,7 @@ country_full_info() {
     local country_file="${BASE_DIR}/country-zone.sh"
     local country=$(cat "${BASE_DIR}/check_country")
 
-    sh "$country_file" "$country" "all"
+    # 選択された国の情報を取得し、セミコロンをスペースに置換
+    full_info=$(sh "$country_file" "$(cat "${BASE_DIR}/check_country")" | sed 's/;/ /')
+    echo "$full_info"
 }

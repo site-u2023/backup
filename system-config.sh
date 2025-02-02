@@ -131,13 +131,13 @@ information() {
         *)
             handle_error "Unsupported language: $lang"
             
-            IFS=',' read -ra city_array <<< "$cities"
-            IFS=',' read -ra timezone_array <<< "$timezones"
+            # <<< の代わりに echo とパイプを使用
+            echo "$cities" | IFS=',' read -ra city_array
+            echo "$timezones" | IFS=',' read -ra timezone_array
 
             for i in "${!city_array[@]}"; do
                 echo -e "$(color white "${city_array[$i]} - ${timezone_array[$i]}")"
             done
-            
             ;;
     esac
 }

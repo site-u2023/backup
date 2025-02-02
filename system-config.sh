@@ -12,7 +12,7 @@
 #  4. デバイス名・パスワードの設定 (set_device_name_password)
 #  5. Wi-Fi SSID・パスワードの設定 (set_wifi_ssid_password)
 #  6. システム全体の設定 (set_device)
-echo 202520202319-32
+echo 202520202319-34
 
 # 定数の設定
 BASE_URL="https://raw.githubusercontent.com/site-u2023/aios/main"
@@ -48,38 +48,41 @@ download_and_execute_common() {
 # select_timezone: 複数のタイムゾーンから選択
 #########################################################################
 select_timezone() {
-    local available_cities available_timezones selected_timezone selected_zone
+    local available_zonename available_timezones selected_timezone selected_zone
 
     # 都市名とタイムゾーンの情報を取得
-    available_cities=$(sh /tmp/aios/country-zone.sh "$SELECTED_COUNTRY" "cities")
-    available_timezones=$(sh /tmp/aios/country-zone.sh "$SELECTED_COUNTRY" "offsets")
+    available_zonename=$(sh ${BASE_DIR}/country-zone.sh "$SELECTED_COUNTRY" "cities")
+    available_timezones=$(sh ${BASE_DIR}/country-zone.sh "$SELECTED_COUNTRY" "offsets")
 
-    # 都市名とタイムゾーンを行ごとに分割
-    echo "$available_cities" | tr ',' '\n' > /tmp/aios/city_list.txt
-    echo "$available_timezones" | tr ',' '\n' > /tmp/aios/timezone_list.txt
+    # 一時ファイルに保存
+    echo "$available_zonename" | tr ',' '\n' > "${BASE_DIR}/zonename_list"
+    echo "$available_timezones" | tr ',' '\n' > "${BASE_DIR}/timezone_list"
 
-    total_cities=$(wc -l < /tmp/aios/city_list.txt)
+    total_zonename=$(wc -l < "${BASE_DIR}/zonename_list")
 
-    if [ "$total_cities" -eq 1 ]; then
-        ZONENAME=$(head -n 1 /tmp/aios/city_list.txt)
-        TIMEZONE=$(head -n 1 /tmp/aios/timezone_list.txt)
+    if [ "$total_zonename" -eq 1 ]; then
+        ZONENAME=$(head -n 1 "${BASE_DIR}/zonename_list")
+        TIMEZONE=$(head -n 1 "${BASE_DIR}/timezone_list")
+        echo "$(color white "タイムゾーン: $ZONENAME - $TIMEZONE")"
     else
-        echo "$msg_available_tz"
+        echo "$(color white "$msg_available_tz")"
         i=1
-        while read -r city && read -r tz <&3; do
-            echo "[$i] $city - $tz"
+        while read -r zonename && read -r tz <&3; do
+            echo "[$i] $zonename - $tz"
             i=$((i+1))
-        done < /tmp/aios/city_list.txt 3< /tmp/aios/timezone_list.txt
+        done < "${BASE_DIR}/zonename_list" 3< "${BASE_DIR}/timezone_list"
 
-        read -p "$msg_select_tz" selected_index
+        read -p "$(color white "$msg_select_tz")" selected_index
 
-        ZONENAME=$(sed -n "${selected_index}p" /tmp/aios/city_list.txt)
-        TIMEZONE=$(sed -n "${selected_index}p" /tmp/aios/timezone_list.txt)
+        ZONENAME=$(sed -n "${selected_index}p" "${BASE_DIR}/zonename_list")
+        TIMEZONE=$(sed -n "${selected_index}p" "${BASE_DIR}/timezone_list")
 
         if [ -z "$ZONENAME" ] || [ -z "$TIMEZONE" ]; then
-            ZONENAME=$(head -n 1 /tmp/aios/city_list.txt)
-            TIMEZONE=$(head -n 1 /tmp/aios/timezone_list.txt)
+            ZONENAME=$(head -n 1 "${BASE_DIR}/zonename_list")
+            TIMEZONE=$(head -n 1 "${BASE_DIR}/timezone_list")
         fi
+
+        echo "$(color white "Selected Time Zone: $ZONENAME - $TIMEZONE")"
     fi
 }
 

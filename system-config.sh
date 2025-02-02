@@ -12,7 +12,7 @@
 #  4. デバイス名・パスワードの設定 (set_device_name_password)
 #  5. Wi-Fi SSID・パスワードの設定 (set_wifi_ssid_password)
 #  6. システム全体の設定 (set_device)
-echo 202520202319-25
+echo 202520202319-26
 
 # 定数の設定
 BASE_URL="https://raw.githubusercontent.com/site-u2023/aios/main"
@@ -100,8 +100,6 @@ information() {
     display_name=$(echo "$country_data" | awk '{print $2}')
     language_code=$(echo "$country_data" | awk '{print $3}')
     country_code=$(echo "$country_data" | awk '{print $4}')
-    cities=$(echo "$country_data" | awk -F';' '{print $1}' | cut -d' ' -f5-)
-    timezones=$(echo "$country_data" | awk -F';' '{print $2}')
 
     case "$lang" in
         en)
@@ -109,40 +107,29 @@ information() {
             echo -e "$(color white "Display Name: $display_name")"
             echo -e "$(color white "Language Code: $language_code")"
             echo -e "$(color white "Country Code: $country_code")"
-            echo -e "$(color white "Zone Names and Time Zones:")"
             ;;
         ja)
             echo -e "$(color white "国名: $country_name")"
             echo -e "$(color white "表示名: $display_name")"
             echo -e "$(color white "言語コード: $language_code")"
             echo -e "$(color white "国コード: $country_code")"
-            echo -e "$(color white "タイムゾーン: $timezones")"
             ;;
         zh-cn)
             echo -e "$(color white "国家: $country_name")"
             echo -e "$(color white "显示名称: $display_name")"
             echo -e "$(color white "语言代码: $language_code")"
             echo -e "$(color white "国家代码: $country_code")"
-            echo -e "$(color white "时区: $timezones")"
             ;;
         zh-tw)
             echo -e "$(color white "國家: $country_name")"
             echo -e "$(color white "顯示名稱: $display_name")"
             echo -e "$(color white "語言代碼: $language_code")"
             echo -e "$(color white "國家代碼: $country_code")"
-            echo -e "$(color white "時區: $timezones")"
             ;;
         *)
             handle_error "Unsupported language: $lang"
             ;;
     esac
-
-    i=1
-    for city in $city_list; do
-        timezone=$(echo "$timezone_list" | awk -v idx="$i" '{print $idx}')
-        echo -e "$(color white "$city - $timezone")"
-        i=$((i+1))
-    done
 }
 
 #########################################################################

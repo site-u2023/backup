@@ -1,47 +1,68 @@
 #!/bin/sh
 # License: CC0
 # OpenWrt >= 19.07
+#
+# openwrt-config.sh
+#
+# このスクリプトは、OpenWrt 用のメインメニューおよびシステム情報表示、
+# 各種設定スクリプトの起動などを行うためのメインスクリプトです。
+#
+# ・国・ゾーン情報スクリプト (country-timezone.sh, country-zonename.sh) のダウンロード
+# ・共通関数 (common-functions.sh) のダウンロードと読み込み
+# ・システム情報の取得と表示
+# ・メインメニューの表示とユーザーによる各種オプションの選択
+#
 
+# 定数の設定
 BASE_URL="https://raw.githubusercontent.com/site-u2023/aios/main"
 BASE_DIR="/tmp/aios"
 SUPPORTED_VERSIONS="19 21 22 23 24 SN"
 SUPPORTED_LANGUAGES="en ja zh-cn zh-tw"
 INPUT_LANG="$1"
 
+#########################################################################
+# download_country_zone
+#  国・ゾーン情報スクリプト (country-timezone.sh と country-zonename.sh)
+#  を BASE_URL からダウンロードする。ダウンロードに失敗した場合は
+#  handle_error を呼び出して終了する。
+#########################################################################
 download_country_zone() {
     if [ ! -f "${BASE_DIR%/}/country-timezone.sh" ]; then
-        wget --quiet -O "${BASE_DIR%/}/country-timezone.sh" "${BASE_URL}/country-timezone.sh" || {
-            echo "Failed to download country-timezone.sh"
-            exit 1
-        }
+        wget --quiet -O "${BASE_DIR%/}/country-timezone.sh" "${BASE_URL}/country-timezone.sh" || \
+            handle_error "Failed to download country-timezone.sh"
     fi
 
     if [ ! -f "${BASE_DIR%/}/country-zonename.sh" ]; then
-        wget --quiet -O "${BASE_DIR%/}/country-zonename.sh" "${BASE_URL}/country-zonename.sh" || {
-            echo "Failed to download country-zonename.sh"
-            exit 1
-        }
+        wget --quiet -O "${BASE_DIR%/}/country-zonename.sh" "${BASE_URL}/country-zonename.sh" || \
+            handle_error "Failed to download country-zonename.sh"
     fi
 }
 
+#########################################################################
+# download_and_execute_common
+#  common-functions.sh を BASE_URL からダウンロードし、読み込む。
+#  失敗した場合は handle_error で終了する。
+#########################################################################
 download_and_execute_common() {
     if [ ! -f "${BASE_DIR%/}/common-functions.sh" ]; then
-        wget --quiet -O "${BASE_DIR%/}/common-functions.sh" "${BASE_URL}/common-functions.sh" || {
-            echo "Failed to download common-functions.sh"
-            exit 1
-        }
+        wget --quiet -O "${BASE_DIR%/}/common-functions.sh" "${BASE_URL}/common-functions.sh" || \
+            handle_error "Failed to download common-functions.sh"
     fi
 
-    source "${BASE_DIR%/}/common-functions.sh" || {
-        echo "Failed to source common-functions.sh"
-        exit 1
-    }
+    source "${BASE_DIR%/}/common-functions.sh" || \
+        handle_error "Failed to source common-functions.sh"
 }
 
+#########################################################################
+# get_system_info
+#  システムのメモリ、フラッシュ、USB 状態などの情報を取得し、
+#  グローバル変数 MEM_USAGE、FLASH_INFO、USB_STATUS_XXX に設定する。
+#########################################################################
 get_system_info() {
-    MEM_TOTAL=$(grep MemTotal /proc/meminfo | awk '{print $2 / 1024 " MB"}')
-    MEM_FREE=$(grep MemAvailable /proc/meminfo | awk '{print $2 / 1024 " MB"}')
-    MEM_USAGE="${MEM_FREE} / ${MEM_TOTAL}"
+    local _mem_total _mem_free
+    _mem_total=$(grep MemTotal /proc/meminfo | awk '{print $2 / 1024 " MB"}')
+    _mem_free=$(grep MemAvailable /proc/meminfo | awk '{print $2 / 1024 " MB"}')
+    MEM_USAGE="${_mem_free} / ${_mem_total}"
 
     FLASH_INFO=$(df -h | grep '/overlay' | head -n 1 | awk '{print $4 " / " $2}')
 
@@ -58,8 +79,13 @@ get_system_info() {
     fi
 }
 
+#########################################################################
+# display_info
+#  システム情報 (メモリ、フラッシュ、USB 状態、ディレクトリ、OpenWrt バージョン、ゾーン名、ダウンローダー) を
+#  言語に応じて表示する。
+#########################################################################
 display_info() {
-    local lang="$SELECTED_LANGUAGE" 
+    local lang="$SELECTED_LANGUAGE"
     
     case "$lang" in
         en)
@@ -110,13 +136,18 @@ display_info() {
     esac
 }
 
+#########################################################################
+# main_menu
+#  メインメニューを表示し、ユーザーの選択を受け付ける。
+#  各メニュー項目の選択に応じて、対応する処理 (menu_option) を呼び出す。
+#########################################################################
 main_menu() {
-    local lang="$SELECTED_LANGUAGE" 
+    local lang="$SELECTED_LANGUAGE"
     local MENU1 MENU2 MENU3 MENU4 MENU5 MENU6 MENU00 MENU01 MENU02 SELECT1
     local ACTION1 ACTION2 ACTION3 ACTION4 ACTION5 ACTION6 ACTION00 ACTION01 ACTION02
     local TARGET1 TARGET2 TARGET3 TARGET4 TARGET5 TARGET6 TARGET00 TARGET01 TARGET02
     local option
-    
+
     case "$lang" in
         en)
             MENU1="Internet settings (Japan Only)"
@@ -205,6 +236,10 @@ main_menu() {
     done
 }
 
+#########################################################################
+# メイン処理の開始
+#  以下の処理を順次実行して、システム情報表示およびメインメニューを起動する。
+#########################################################################
 download_country_zone
 download_and_execute_common
 check_common "$INPUT_LANG"

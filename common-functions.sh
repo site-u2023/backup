@@ -172,8 +172,7 @@ check_language() {
 
     echo -e "$(color white "------------------------------------------------------")"
 
-    # ユーザーに選択させる
-    read -p "Choose an option: " INPUT_LANG
+    read -p "$(color white 'Please choose: ')" INPUT_LANG
     process_language_selection "$INPUT_LANG"
     normalize_language
 }

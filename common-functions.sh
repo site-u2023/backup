@@ -116,30 +116,52 @@ process_language_selection() {
     # country-zonename.sh を使って該当するエントリを検索
     found_entries=$(sh "${BASE_DIR}/country-zonename.sh" "$INPUT_LANG")
 
-    # 該当エントリが全くなければ、デフォルトとして英語 (en) を取得
+    # 該当エントリが全くなければ、再入力を促す
     if [ -z "$found_entries" ]; then
-        echo "No matching entry found. Defaulting to English (en)."
-        found_entry=$(sh "${BASE_DIR}/country-zonename.sh" "en")
+        echo "No matching entry found."
+        read -p "Do you want to re-enter? [y/N]: " answer
+        case "$answer" in
+            [yY])
+                read -p "Please re-enter language: " new_input
+                process_language_selection "$new_input"
+                return
+                ;;
+            *)
+                echo "Defaulting to English (en)."
+                found_entry=$(sh "${BASE_DIR}/country-zonename.sh" "en")
+                ;;
+        esac
     else
         # 複数件ヒットしているかを確認
         num_matches=$(echo "$found_entries" | grep -c '^')
         if [ "$num_matches" -gt 1 ]; then
             echo "Multiple matches found. Please select:"
             i=1
-            # [1] [2] の形式で番号付きリストを表示
+            # 番号付きリストを [1] [2] … の形式で表示
             echo "$found_entries" | while IFS= read -r line; do
                 echo "[$i] $line"
                 i=$((i+1))
             done
+            echo "[0] Re-enter language"
             read -p "Enter the number of your choice: " choice
+            if [ "$choice" = "0" ]; then
+                read -p "Please re-enter language: " new_input
+                process_language_selection "$new_input"
+                return
+            fi
             found_entry=$(echo "$found_entries" | sed -n "${choice}p")
+            # 万一選択が無効だった場合はデフォルトへ
+            if [ -z "$found_entry" ]; then
+                echo "Invalid selection. Defaulting to English (en)."
+                found_entry=$(sh "${BASE_DIR}/country-zonename.sh" "en")
+            fi
         else
             found_entry="$found_entries"
         fi
     fi
 
     # 取得した行から各フィールドを抽出
-    # データ形式例：<国名> <言語コード> <国コード> ... <母国語>
+    # データ形式例：<国名> <言語コード> <国コード> … <母国語>
     SELECTED_LANGUAGE=$(echo "$found_entry" | awk '{print $2}')
     SELECTED_COUNTRY=$(echo "$found_entry" | awk '{print $3}')
 
@@ -152,6 +174,7 @@ process_language_selection() {
 
     return
 }
+
 
 check_language() {
     echo -e "$(color white "------------------------------------------------------")"

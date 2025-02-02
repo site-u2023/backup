@@ -12,7 +12,7 @@
 #  4. デバイス名・パスワードの設定 (set_device_name_password)
 #  5. Wi-Fi SSID・パスワードの設定 (set_wifi_ssid_password)
 #  6. システム全体の設定 (set_device)
-echo 202520202319-37
+echo 202520202319-38
 
 # 定数の設定
 BASE_URL="https://raw.githubusercontent.com/site-u2023/aios/main"
@@ -49,6 +49,36 @@ download_and_execute_common() {
 #########################################################################
 select_timezone() {
     local available_zonename available_timezones selected_timezone selected_zone
+    local msg_timezone_single msg_timezone_list msg_select_tz
+
+    # 言語に応じたメッセージ設定
+    case "$SELECTED_LANGUAGE" in
+        ja)
+            msg_timezone_single="タイムゾーン: "
+            msg_timezone_list="利用可能なタイムゾーン:"
+            msg_select_tz="タイムゾーンの番号を選択してください: "
+            ;;
+        en)
+            msg_timezone_single="Time Zone: "
+            msg_timezone_list="Available Time Zones:"
+            msg_select_tz="Select the time zone by number: "
+            ;;
+        zh-cn)
+            msg_timezone_single="时区: "
+            msg_timezone_list="可用时区:"
+            msg_select_tz="请选择时区编号: "
+            ;;
+        zh-tw)
+            msg_timezone_single="時區: "
+            msg_timezone_list="可用時區:"
+            msg_select_tz="請選擇時區編號: "
+            ;;
+        *)
+            msg_timezone_single="Time Zone: "
+            msg_timezone_list="Available Time Zones:"
+            msg_select_tz="Select the time zone by number: "
+            ;;
+    esac
 
     # 都市名とタイムゾーンの情報を取得
     available_zonename=$(sh "${BASE_DIR}/country-zone.sh" "$SELECTED_COUNTRY" "cities")
@@ -61,30 +91,30 @@ select_timezone() {
     total_zonename=$(wc -l < "${BASE_DIR}/zonename_list")
 
     if [ "$total_zonename" -eq 1 ]; then
+        # 1つしかない場合はそのまま表示
         ZONENAME=$(head -n 1 "${BASE_DIR}/zonename_list")
         TIMEZONE=$(head -n 1 "${BASE_DIR}/timezone_list")
-        echo "$(color white "タイムゾーン: $ZONENAME - $TIMEZONE")"
+        echo "$(color white "${msg_timezone_single}${ZONENAME} - ${TIMEZONE}")"
     else
-        # ここで明示的にタイトルを表示
-        echo "$(color white "Available Time Zones:")"
+        # 複数ある場合はリスト表示して選択
+        echo "$(color white "$msg_timezone_list")"
 
-        i=1
-        while IFS= read -r zonename_line && IFS= read -r timezone_line <&3; do
-            echo "[$i] $zonename_line - $timezone_line"
-            i=$((i + 1))
-        done < "${BASE_DIR}/zonename_list" 3< "${BASE_DIR}/timezone_list"
+        paste -d'|' "${BASE_DIR}/zonename_list" "${BASE_DIR}/timezone_list" | nl -w2 -s' ' | while IFS='|' read -r index line; do
+            echo "$line"
+        done
 
-        read -p "$(color white "Select the time zone by number: ")" selected_index
+        read -p "$(color white "$msg_select_tz")" selected_index
 
         ZONENAME=$(sed -n "${selected_index}p" "${BASE_DIR}/zonename_list")
         TIMEZONE=$(sed -n "${selected_index}p" "${BASE_DIR}/timezone_list")
 
         if [ -z "$ZONENAME" ] || [ -z "$TIMEZONE" ]; then
+            # 無効な選択ならデフォルトで1番目を選択
             ZONENAME=$(head -n 1 "${BASE_DIR}/zonename_list")
             TIMEZONE=$(head -n 1 "${BASE_DIR}/timezone_list")
         fi
 
-        echo "$(color white "Selected Time Zone: $ZONENAME - $TIMEZONE")"
+        echo "$(color white "${msg_timezone_single}${ZONENAME} - ${TIMEZONE}")"
     fi
 }
 

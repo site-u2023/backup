@@ -87,7 +87,7 @@ display_info() {
             echo -e "$(color "white" "USB: ${USB_STATUS_EN}")"
             echo -e "$(color "white" "Directory: ${BASE_DIR}")"
             echo -e "$(color "white" "OpenWrt Version: ${RELEASE_VERSION}")"
-            echo -e "$(color "white" "Zonename: $full_info")"
+            echo -e "$(color "white" "Zone: $full_info")"
             echo -e "$(color "white" "Downloader: ${PACKAGE_MANAGER}")"
             ;;
         ja)
@@ -105,7 +105,7 @@ display_info() {
             echo -e "$(color "white" "USB: ${USB_STATUS_ZH_CN}")"
             echo -e "$(color "white" "目录: ${BASE_DIR}")"
             echo -e "$(color "white" "OpenWrt版本: ${RELEASE_VERSION}")"
-            echo -e "$(color "white" "区域名称: $full_info")"
+            echo -e "$(color "white" "区域: $full_info")"
             echo -e "$(color "white" "下载器: ${PACKAGE_MANAGER}")"
             ;;
         zh-tw)
@@ -114,7 +114,7 @@ display_info() {
             echo -e "$(color "white" "USB: ${USB_STATUS_ZH_TW}")"
             echo -e "$(color "white" "目錄: ${BASE_DIR}")"
             echo -e "$(color "white" "OpenWrt版本: ${RELEASE_VERSION}")"
-            echo -e "$(color "white" "區域名稱: $full_info")"
+            echo -e "$(color "white" "區域: $full_info")"
             echo -e "$(color "white" "下載器: ${PACKAGE_MANAGER}")"
             ;;
         *)
@@ -123,7 +123,7 @@ display_info() {
             echo -e "$(color "white" "USB: ${USB_STATUS_EN}")"
             echo -e "$(color "white" "Directory: ${BASE_DIR}")"
             echo -e "$(color "white" "OpenWrt Version: ${RELEASE_VERSION}")"
-            echo -e "$(color "white" "Zonename: $full_info")"
+            echo -e "$(color "white" "Zone: $full_info")"
             echo -e "$(color "white" "Downloader: ${PACKAGE_MANAGER}")"
             ;;
     esac

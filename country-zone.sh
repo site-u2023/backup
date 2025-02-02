@@ -109,23 +109,33 @@ Qatar Arabic xx QA Asia/Qatar;AST-3
 Algeria Arabic xx DZ Africa/Algiers;CET-1
 EOF
 
+# 引数に応じて情報を取得
 get_country_info() {
     local query="$1"
+    local field="$2"
     local country_info
 
-    country_info=$(echo "$country_list" | grep -iw "$query")
+    country_info=$(country_data | grep -iw "$query")
 
     if [ -n "$country_info" ]; then
-        echo "$country_info"
+        case "$field" in
+            "name") echo "$country_info" | awk '{print $1}' ;;
+            "display") echo "$country_info" | awk '{print $2}' ;;
+            "lang") echo "$country_info" | awk '{print $3}' ;;
+            "code") echo "$country_info" | awk '{print $4}' ;;
+            "cities") echo "$country_info" | awk -F';' '{print $1}' | awk '{$1=$2=$3=$4=""; print $0}' | sed 's/^ *//' ;;
+            "offsets") echo "$country_info" | awk -F';' '{print $2}' ;;
+            "all" | *) echo "$country_info" ;;
+        esac
     else
         echo "Country code or country name not found."
         exit 1
     fi
 }
 
-# コマンドライン引数が指定されている場合、その国の情報を取得
+# コマンドライン引数で処理を分岐
 if [ -n "$1" ]; then
-    get_country_info "$1"
+    get_country_info "$1" "$2"
 else
-    echo "$country_list"
+    country_data
 fi

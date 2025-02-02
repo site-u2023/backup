@@ -116,8 +116,8 @@ process_language_selection() {
     # country-zonename.sh を使って該当するエントリを検索
     found_entries=$(sh "${BASE_DIR}/country-zonename.sh" "$INPUT_LANG")
 
-    # 該当エントリが全くなければ、再入力を促す
-    if [ -z "$found_entries" ]; then
+    # 検索結果に "not found" という文字列が含まれていれば、該当エントリなしとみなす
+    if echo "$found_entries" | grep -qi "not found"; then
         echo "No matching entry found."
         read -p "Do you want to re-enter? [y/N]: " answer
         case "$answer" in
@@ -129,7 +129,6 @@ process_language_selection() {
             *)
                 echo "Defaulting to English (en)."
                 found_entry=$(sh "${BASE_DIR}/country-zonename.sh" "en")
-                ;;
         esac
     else
         # 複数件ヒットしているかを確認
@@ -137,7 +136,7 @@ process_language_selection() {
         if [ "$num_matches" -gt 1 ]; then
             echo "Multiple matches found. Please select:"
             i=1
-            # 番号付きリストを [1] [2] … の形式で表示
+            # 番号付きリスト（[1] [2] ...）で候補を表示
             echo "$found_entries" | while IFS= read -r line; do
                 echo "[$i] $line"
                 i=$((i+1))
@@ -150,7 +149,6 @@ process_language_selection() {
                 return
             fi
             found_entry=$(echo "$found_entries" | sed -n "${choice}p")
-            # 万一選択が無効だった場合はデフォルトへ
             if [ -z "$found_entry" ]; then
                 echo "Invalid selection. Defaulting to English (en)."
                 found_entry=$(sh "${BASE_DIR}/country-zonename.sh" "en")
@@ -161,11 +159,11 @@ process_language_selection() {
     fi
 
     # 取得した行から各フィールドを抽出
-    # データ形式例：<国名> <言語コード> <国コード> … <母国語>
+    # ※ データ形式例：<国名> <言語コード> <国コード> ... <母国語>
     SELECTED_LANGUAGE=$(echo "$found_entry" | awk '{print $2}')
     SELECTED_COUNTRY=$(echo "$found_entry" | awk '{print $3}')
 
-    # 選択結果をキャッシュファイルに保存
+    # キャッシュファイルに選択結果を保存
     echo "$SELECTED_LANGUAGE" > "${BASE_DIR}/check_language"
     echo "$SELECTED_COUNTRY" > "${BASE_DIR}/check_country"
 
@@ -174,7 +172,6 @@ process_language_selection() {
 
     return
 }
-
 
 check_language() {
     echo -e "$(color white "------------------------------------------------------")"

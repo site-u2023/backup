@@ -1,7 +1,7 @@
 #!/bin/sh
 # License: CC0
 # OpenWrt >= 19.07
-# 202520202319-1
+# 202520202319-2
 # system-config.sh
 #
 # 本スクリプトは、デバイスの初期設定を行うためのスクリプトです。
@@ -315,9 +315,9 @@ set_device() {
     local DESCRIPTION NOTES _zonename _timezone
     DESCRIPTION=$(cat /etc/openwrt_version) || DESCRIPTION="Unknown"
     NOTES=$(date) || NOTES="No date"
-    # ZONENAME, TIMEZONE は country_zone で取得済みとするが、ここで再利用する場合は整形
-    _zonename=$(echo "$ZONENAME" | awk '{print $1}' 2>/dev/null || echo "Unknown")  # 国名をゾーン名として使用
-    _timezone=$(echo "$ZONENAME" | awk -F';' '{print $2}' | cut -d',' -f1 2>/dev/null || echo "UTC")  # タイムゾーンの最初のエントリを取得
+    # ZONENAME, TIMEZONE は country_zone で取得済み、TIMEZONE は select_timezone で選択
+    _zonename=$(echo "$ZONENAME" | awk '{print $1}' 2>/dev/null || echo "Unknown")
+    _timezone="${TIMEZONE:-UTC}"
 
 
 

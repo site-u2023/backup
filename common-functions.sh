@@ -117,8 +117,8 @@ process_language_selection() {
         # country-zonename.sh を使って該当するエントリを検索
         found_entries=$(sh "${BASE_DIR}/country-zonename.sh" "$INPUT_LANG")
 
-        # 該当エントリが全くなければ、再入力を促す
-        if [ -z "$found_entries" ]; then
+        # 該当エントリが空またはエラーメッセージ（例："not found" を含む）なら再入力を促す
+        if [ -z "$found_entries" ] || echo "$found_entries" | grep -qi "not found"; then
             echo "No matching entry found."
             read -p "Do you want to re-enter? [y/N]: " answer
             case "$answer" in
@@ -130,6 +130,7 @@ process_language_selection() {
                 *)
                     echo "Defaulting to English (en)."
                     found_entries=$(sh "${BASE_DIR}/country-zonename.sh" "en")
+                    # その後、found_entries から有効な候補を採用する
             esac
         fi
 
@@ -138,7 +139,7 @@ process_language_selection() {
         if [ "$num_matches" -gt 1 ]; then
             echo "Multiple matches found. Please select:"
             i=1
-            # 番号付きリストを [1] [2] … の形式で表示
+            # 番号付きリスト（[1] [2] ...）で表示
             echo "$found_entries" | while IFS= read -r line; do
                 echo "[$i] $line"
                 i=$((i+1))
@@ -161,19 +162,37 @@ process_language_selection() {
             found_entry="$found_entries"
         fi
 
-        # 取得した行から各フィールドを抽出
-        # ※ データ形式例：<国名> <言語コード> <国コード> ... <母国語>
-        SELECTED_LANGUAGE=$(echo "$found_entry" | awk '{print $2}')
-        SELECTED_COUNTRY=$(echo "$found_entry" | awk '{print $3}')
+        # ここで見つかった候補がエラーメッセージになっていないか最終チェック
+        if echo "$found_entry" | grep -qi "not found"; then
+            echo "No valid entry selected."
+            read -p "Do you want to re-enter? [y/N]: " answer
+            case "$answer" in
+                [yY])
+                    read -p "Please re-enter language: " new_input
+                    set -- "$new_input"
+                    continue
+                    ;;
+                *)
+                    echo "Defaulting to English (en)."
+                    found_entry=$(sh "${BASE_DIR}/country-zonename.sh" "en")
+            esac
+        fi
 
-        # キャッシュファイルに選択結果を保存
-        echo "$SELECTED_LANGUAGE" > "${BASE_DIR}/check_language"
-        echo "$SELECTED_COUNTRY" > "${BASE_DIR}/check_country"
-
-        echo "Selected Language: $SELECTED_LANGUAGE"
-        echo "Selected Country (after script): $SELECTED_COUNTRY"
+        # 有効な候補が取得できたのでループを抜ける
         break
     done
+
+    # 取得した行から各フィールドを抽出
+    # ※ データ形式例：<国名> <言語コード> <国コード> ... <母国語>
+    SELECTED_LANGUAGE=$(echo "$found_entry" | awk '{print $2}')
+    SELECTED_COUNTRY=$(echo "$found_entry" | awk '{print $3}')
+
+    # キャッシュファイルに選択結果を保存
+    echo "$SELECTED_LANGUAGE" > "${BASE_DIR}/check_language"
+    echo "$SELECTED_COUNTRY" > "${BASE_DIR}/check_country"
+
+    echo "Selected Language: $SELECTED_LANGUAGE"
+    echo "Selected Country (after script): $SELECTED_COUNTRY"
 }
 
 check_language() {

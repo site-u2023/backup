@@ -45,31 +45,30 @@ check_ttyd_installed() {
 #########################################################################
 install_ttyd() {
     local INSTALL_LANGUAGE
-    if [ -n "$INPUT_LANG" ]; then
-        INSTALL_LANGUAGE="$INPUT_LANG"
-    elif [ -f "${BASE_DIR}/check_language" ]; then
-        INSTALL_LANGUAGE=$(cat "${BASE_DIR}/check_language")
-    else
-        INSTALL_LANGUAGE="en"  # デフォルトは英語
-    fi
-
-    echo "Selected language for installation: $INSTALL_LANGUAGE"
-
+    INSTALL_LANGUAGE=$(cat "${BASE_DIR}/check_language")
+    
     case "$PACKAGE_MANAGER" in
-        "APK")
+        "apk")
             echo "Installing ttyd using APK..."
-            apk update || handle_error "APK update failed."
-            apk add luci-app-ttyd || handle_error "Failed to install luci-app-ttyd using APK."
+            apk update
+            apk add luci-app-ttyd-"$INSTALL_LANGUAGE" || { 
+                echo "Failed to install luci-app-ttyd using APK"; 
+                exit 1; 
+            }
             ttyd_setting
             ;;
-        "OPKG")
+        "opkg")
             echo "Installing ttyd using OPKG..."
-            opkg update || handle_error "OPKG update failed."
-            opkg install luci-app-ttyd || handle_error "Failed to install luci-app-ttyd using OPKG."
+            opkg update
+            opkg install luci-app-ttyd-"$INSTALL_LANGUAGE" || { 
+                echo "Failed to install luci-app-ttyd using OPKG"; 
+                exit 1; 
+            }
             ttyd_setting
             ;;
         *)
-            handle_error "Unsupported package manager. Cannot install ttyd."
+            echo "Unsupported package manager. Cannot install ttyd."
+            exit 1
             ;;
     esac
 }

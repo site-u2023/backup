@@ -70,6 +70,20 @@ color_code_map() {
         "magenta") echo "\033[1;35m" ;;
         "cyan") echo "\033[1;36m" ;;
         "white") echo "\033[1;37m" ;;
+        "red_underline") echo "\033[4;31m" ;;
+        "green_underline") echo "\033[4;32m" ;;
+        "yellow_underline") echo "\033[4;33m" ;;
+        "blue_underline") echo "\033[4;34m" ;;
+        "magenta_underline") echo "\033[4;35m" ;;
+        "cyan_underline") echo "\033[4;36m" ;;
+        "white_underline") echo "\033[4;37m" ;;
+        "red_white") echo "\033[1;41m" ;;
+        "green_white") echo "\033[1;42m" ;;
+        "yellow_white") echo "\033[1;43m" ;;
+        "blue_white") echo "\033[1;44m" ;;
+        "magenta_white") echo "\033[1;45m" ;;
+        "cyan_white") echo "\033[1;46m" ;;
+        "white_black") echo "\033[7;40m" ;;
         "reset") echo "\033[0;39m" ;;
         *) echo "\033[0;39m" ;;
     esac
@@ -331,6 +345,97 @@ menu_option() {
 }
 
 #########################################################################
+# get_message: 多言語対応のメッセージを一元管理する関数
+# 引数: メッセージキー
+#########################################################################
+get_message() {
+    local key="$1"
+    local lang="${SELECTED_LANGUAGE:-en}"
+    case "$lang" in
+        en)
+            case "$key" in
+                confirm_default) echo "Are you sure?" ;;
+                reenter_prompt)  echo "Do you want to re-enter?" ;;
+                choose_prompt)   echo "Please choose: " ;;
+                download_success) echo "Download successful." ;;
+                download_failure) echo "Download failed." ;;
+                exit_cancelled) echo "Exit operation cancelled." ;;
+                delete_cancelled) echo "Delete operation cancelled." ;;
+                delete_success) echo "Script and configuration deleted." ;;
+                download_cancelled) echo "Download operation cancelled." ;;
+                exit_complete) echo "Exit operation completed." ;;
+                delete_complete) echo "Delete operation completed." ;;
+                *) echo "Operation completed." ;;
+            esac
+            ;;
+        ja)
+            case "$key" in
+                confirm_default) echo "本当に実行しますか？" ;;
+                reenter_prompt)  echo "再入力しますか？" ;;
+                choose_prompt)   echo "選択してください: " ;;
+                download_success) echo "ダウンロードが成功しました。" ;;
+                download_failure) echo "ダウンロードに失敗しました。" ;;
+                exit_cancelled) echo "終了操作がキャンセルされました。" ;;
+                delete_cancelled) echo "削除操作がキャンセルされました。" ;;
+                delete_success) echo "スクリプトと設定が削除されました。" ;;
+                download_cancelled) echo "ダウンロード操作がキャンセルされました。" ;;
+                exit_complete) echo "終了操作が完了しました。" ;;
+                delete_complete) echo "削除操作が完了しました。" ;;
+                *) echo "操作が完了しました。" ;;
+            esac
+            ;;
+        zh-cn)
+            case "$key" in
+                confirm_default) echo "您确定吗？" ;;
+                reenter_prompt)  echo "您要重新输入吗？" ;;
+                choose_prompt)   echo "请选择: " ;;
+                download_success) echo "下载成功。" ;;
+                download_failure) echo "下载失败。" ;;
+                exit_cancelled) echo "退出操作已取消。" ;;
+                delete_cancelled) echo "删除操作已取消。" ;;
+                delete_success) echo "脚本和配置已删除。" ;;
+                download_cancelled) echo "下载操作已取消。" ;;
+                exit_complete) echo "退出操作已完成。" ;;
+                delete_complete) echo "删除操作已完成。" ;;
+                *) echo "操作已完成。" ;;
+            esac
+            ;;
+        zh-tw)
+            case "$key" in
+                confirm_default) echo "您確定嗎？" ;;
+                reenter_prompt)  echo "您要重新輸入嗎？" ;;
+                choose_prompt)   echo "請選擇: " ;;
+                download_success) echo "下載成功。" ;;
+                download_failure) echo "下載失敗。" ;;
+                exit_cancelled) echo "退出操作已取消。" ;;
+                delete_cancelled) echo "刪除操作已取消。" ;;
+                delete_success) echo "腳本和配置已刪除。" ;;
+                download_cancelled) echo "下載操作已取消。" ;;
+                exit_complete) echo "退出操作已完成。" ;;
+                delete_complete) echo "刪除操作已完成。" ;;
+                *) echo "操作已完成。" ;;
+            esac
+            ;;
+        *)
+            case "$key" in
+                confirm_default) echo "Are you sure?" ;;
+                reenter_prompt)  echo "Do you want to re-enter?" ;;
+                choose_prompt)   echo "Please choose: " ;;
+                download_success) echo "Download successful." ;;
+                download_failure) echo "Download failed." ;;
+                exit_cancelled) echo "Exit operation cancelled." ;;
+                delete_cancelled) echo "Delete operation cancelled." ;;
+                delete_success) echo "Script and configuration deleted." ;;
+                download_cancelled) echo "Download operation cancelled." ;;
+                exit_complete) echo "Exit operation completed." ;;
+                delete_complete) echo "Delete operation completed." ;;
+                *) echo "Operation completed." ;;
+            esac
+            ;;
+    esac
+}
+
+#########################################################################
 # ask_confirmation: 確認プロンプトを表示し、ユーザーの入力 (y/n) を待つ
 #########################################################################
 ask_confirmation() {
@@ -355,4 +460,18 @@ show_notification() {
     local message
     message=$(get_message "$key")
     echo -e "$(color white "$message")"
+}
+
+#########################################################################
+# country_zone: 国・ゾーン情報を取得する関数
+# country-zonename.sh および country-timezone.sh を利用してゾーン名、タイムゾーン、言語情報を取得する
+#########################################################################
+country_zone() {
+    local country_file timezone_file lang_out
+    country_file="${BASE_DIR}/country-zonename.sh"
+    timezone_file="${BASE_DIR}/country-timezone.sh"
+    ZONENAME="$(sh "$country_file" "$(cat "${BASE_DIR}/check_country")")"
+    TIMEZONE="$(sh "$timezone_file" "$(cat "${BASE_DIR}/check_country")")"
+    lang_out=$(echo "$ZONENAME" | awk '{print $NF}')
+    LANGUAGE="$lang_out"
 }

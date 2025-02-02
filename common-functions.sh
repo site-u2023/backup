@@ -113,16 +113,16 @@ process_language_selection() {
     INPUT_LANG=$(echo "$1" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//' | tr -d '\n')
     echo "Input Language: $INPUT_LANG"
 
-    # country-timezone.sh を使って該当するエントリを検索
-    found_entries=$(sh /tmp/aios/country-timezone.sh "$INPUT_LANG")
+    # country-zonename.sh を使って該当するエントリを検索
+    found_entries=$(sh "${BASE_DIR}/country-zonename.sh" "$INPUT_LANG")
 
     # 該当エントリが全くなければ、デフォルトとして英語 (en) を取得
     if [ -z "$found_entries" ]; then
         echo "No matching entry found. Defaulting to English (en)."
-        found_entry=$(sh /tmp/aios/country-timezone.sh "en")
+        found_entry=$(sh "${BASE_DIR}/country-zonename.sh" "en")
     else
         # 複数件ヒットしているかを確認
-        num_matches=$(echo "$found_entries" | wc -l)
+        num_matches=$(echo "$found_entries" | grep -c '^')
         if [ "$num_matches" -gt 1 ]; then
             echo "Multiple matches found. Please select:"
             i=1
@@ -138,8 +138,8 @@ process_language_selection() {
         fi
     fi
 
-    # 取得した行から、各フィールドを抽出
-    # ※ country-timezone.sh の出力は、[国名] [言語コード] [国コード] … の形式になっている前提です。
+    # 取得した行から各フィールドを抽出
+    # データ形式：<国名> <言語コード> <国コード> ... <母国語>
     SELECTED_LANGUAGE=$(echo "$found_entry" | awk '{print $2}')
     SELECTED_COUNTRY=$(echo "$found_entry" | awk '{print $3}')
 
@@ -160,7 +160,7 @@ check_language() {
     # country-zonename.sh を実行して全データを取得（引数は空文字）
     country_data=$(sh "${BASE_DIR}/country-zonename.sh" "")
 
-    # 取得したデータを1行ずつ処理
+    # 取得したデータを1行ずつ処理して表示
     echo "$country_data" | while IFS= read -r line; do
         # 空行はスキップ
         [ -z "$line" ] && continue
@@ -169,7 +169,7 @@ check_language() {
         lang_field=$(echo "$line" | awk '{print $2}')
         # "xx" でない行のみ表示する
         if [ "$lang_field" != "xx" ]; then
-            # 最後のフィールド（母国語）、$1（国名）、$2（言語コード）、$3（国コード）を出力
+            # 表示形式：<母国語> <国名> <言語コード> <国コード>
             output=$(echo "$line" | awk '{print $NF, $1, $2, $3}')
             echo -e "$(color white "$output")"
         fi
@@ -187,13 +187,16 @@ normalize_language() {
         READ_LANGUAGE=$(cat "$CHECK_LANGUAGE")
     fi
 
+    # SUPPORTED_LANGUAGES 例： "en ja"（LuCiパッケージで対応している言語）
     for lang in $SUPPORTED_LANGUAGES; do
         if [ "$READ_LANGUAGE" = "$lang" ]; then
             SELECTED_LANGUAGE="$READ_LANGUAGE"
             return
         fi
     done
+
     SELECTED_LANGUAGE="en"
+    echo "Language not supported. Defaulting to English (en)."
 }
 
 language_parameter() {

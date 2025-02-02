@@ -58,9 +58,11 @@ select_timezone() {
     done <<< "$available_timezones"
 
     read -p "Select the time zone by number: " selected_index
-    selected_timezone=$(echo "$available_timezones" | sed -n "${selected_index}p")
 
-    if [ -z "$selected_timezone" ]; then
+    total_timezones=$(echo "$available_timezones" | wc -l)
+    if [ "$selected_index" -ge 1 ] && [ "$selected_index" -le "$total_timezones" ]; then
+        selected_timezone=$(echo "$available_timezones" | sed -n "${selected_index}p")
+    else
         echo "Invalid selection. Defaulting to the first time zone."
         selected_timezone=$(echo "$available_timezones" | head -n 1)
     fi

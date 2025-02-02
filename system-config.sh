@@ -1,7 +1,7 @@
 #!/bin/sh
 # License: CC0
 # OpenWrt >= 19.07
-# 202520202319-19
+# 202520202319-20
 # system-config.sh
 #
 # 本スクリプトは、デバイスの初期設定を行うためのスクリプトです。
@@ -48,7 +48,7 @@ download_and_execute_common() {
 #########################################################################
 select_timezone() {
     local available_timezones selected_timezone
-    available_timezones=$(echo "$ZONENAME" | awk '{for(i=5;i<=NF;i++) printf $i" "}' | tr ',' '\n')
+    available_timezones=$(echo "$ZONENAME" | awk '{print $5}' | tr ',' '\n')
 
     echo "Available Time Zones:"
     local i=1

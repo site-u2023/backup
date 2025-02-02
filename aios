@@ -9,7 +9,7 @@ SUPPORTED_LANGUAGES="en ja zh-cn zh-tw"
 INPUT_LANG="$1"
 
 case "$1" in
-    -h|--help)
+    -h|-help|--help)
         print_help
         exit 0
         ;;

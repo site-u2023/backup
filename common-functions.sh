@@ -126,29 +126,6 @@ check_language() {
     normalize_language
 }
 
-normalize_language() {
-    CHECK_LANGUAGE="${BASE_DIR}/check_language"
-    if [ -f "$CHECK_LANGUAGE" ]; then
-        READ_LANGUAGE=$(cat "$CHECK_LANGUAGE")
-    fi
-
-    # SUPPORTED_LANGUAGES に含まれているか確認
-    SELECTED_LANGUAGE=""
-    for lang in $SUPPORTED_LANGUAGES; do
-        if [ "$READ_LANGUAGE" = "$lang" ]; then
-            SELECTED_LANGUAGE="$READ_LANGUAGE"
-            break
-        fi
-    done
-
-    # SUPPORTED_LANGUAGES に含まれていなければ、強制的に "en" を設定
-    if [ -z "$SELECTED_LANGUAGE" ]; then
-        SELECTED_LANGUAGE="en"
-        echo "Language not supported. Defaulting to English (en)."
-        echo "$SELECTED_LANGUAGE" > "${BASE_DIR}/check_language"
-    fi
-}
-
 check_common() {
     case "$1" in
         -h|-help|--help)

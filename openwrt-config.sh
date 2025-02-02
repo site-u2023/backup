@@ -1,7 +1,7 @@
 #!/bin/sh
 # License: CC0
 # OpenWrt >= 19.07
-# 202502022215-1
+# 202502022215-2
 # openwrt-config.sh
 #
 # このスクリプトは、OpenWrt 用のメインメニューおよびシステム情報表示、
@@ -96,7 +96,7 @@ display_info() {
             echo -e "$(color "white" "USB: ${USB_STATUS_JA}")"
             echo -e "$(color "white" "ディレクトリ: ${BASE_DIR}")"
             echo -e "$(color "white" "OpenWrtバージョン: ${RELEASE_VERSION}")"
-            echo -e "$(color "white" "ゾーン名: $full_info")"
+            echo -e "$(color "white" "ゾーン: $full_info")"
             echo -e "$(color "white" "ダウンローダー: ${PACKAGE_MANAGER}")"
             ;;
         zh-cn)

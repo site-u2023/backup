@@ -129,3 +129,5 @@ if [ -n "$1" ]; then
 else
     country_data
 fi
+
+get_country_info

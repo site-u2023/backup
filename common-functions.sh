@@ -166,7 +166,7 @@ check_language() {
     done
 
     echo -e "$(color white "------------------------------------------------------")"
-    read -p "$(color green 'Please choose: ')" INPUT_LANG
+    read -p "$(color white_black 'Please choose: ')" INPUT_LANG
     process_language_selection "$INPUT_LANG"
     normalize_language
 }

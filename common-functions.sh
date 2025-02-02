@@ -455,7 +455,7 @@ process_language_selection() {
     # フィールド抽出の修正
     SELECTED_LANGUAGE=$(echo "$found_entry" | awk '{print $3}')  # 言語コード
     SELECTED_COUNTRY=$(echo "$found_entry" | awk '{print $4}')   # 国コード
-
+        
     echo "$SELECTED_LANGUAGE" > "${BASE_DIR}/check_language"
     echo "$SELECTED_COUNTRY" > "${BASE_DIR}/check_country"
 

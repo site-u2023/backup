@@ -323,7 +323,8 @@ set_device() {
     _zonename=$(echo "$ZONENAME" | awk '{print $1}' 2>/dev/null || echo "Unknown")
     _timezone="${TIMEZONE:-UTC}"
 
-
+    echo "Applying zonename settings: $_zonename"
+    echo "Applying timezone settings: $_timezone"
 
     uci set system.@system[0]=system
     #uсi set system.@system[0].hostname=${HOSTNAME}  # 必要に応じてコメント解除

@@ -68,12 +68,14 @@ check_package_manager() {
 }
 
 check_common() {
-    # --reset オプションが渡された場合、キャッシュをクリア
-    if [ "$1" = "--reset" ]; then
-        rm -f "${BASE_DIR}/check_language" "${BASE_DIR}/check_country"
-        echo "Language and country cache cleared."
-        shift  # 次の引数（言語コード）を処理するためにシフト
-    fi
+    # キャッシュクリアのオプション（--reset, -reset, -r）を受け付ける
+    case "$1" in
+        --reset|-reset|-r)
+            rm -f "${BASE_DIR}/check_language" "${BASE_DIR}/check_country"
+            echo "Language and country cache cleared."
+            shift  # 次の引数（言語コード）を処理するためにシフト
+            ;;
+    esac
 
     # バージョン情報の取得
     if [ -f "${BASE_DIR}/check_version" ]; then

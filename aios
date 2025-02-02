@@ -1,27 +1,17 @@
-#!/bin/sh
+#!/bin/sh 
 # License: CC0
 # OpenWrt >= 19.07
 #
 # aios メインスクリプト
 #
 # 本スクリプトは、初期設定および全体のセットアップ処理を実行するためのスクリプトです。
-# ・既存の aios 関連ファイル・キャッシュの削除
-# ・必要ディレクトリの作成
-# ・OpenWrt バージョンのチェック、ttyd のインストール確認
-# ・各種設定スクリプト (country-zone, common-functions, openwrt-config) のダウンロードおよび実行
-#
 
-# 定数の設定
 BASE_URL="https://raw.githubusercontent.com/site-u2023/aios/main/"
 BASE_DIR="/tmp/aios"
 SUPPORTED_VERSIONS="19 21 22 23 24 SN"
 SUPPORTED_LANGUAGES="en ja zh-cn zh-tw"
 INPUT_LANG="$1"
 
-#########################################################################
-# banner: バナーを表示する関数
-# ※ 共通関数内の normalize_language を利用して、言語に応じたメッセージを表示する。
-#########################################################################
 banner() {
     normalize_language
     local lang="${SELECTED_LANGUAGE:-en}"
@@ -69,9 +59,6 @@ banner() {
     echo -e "$(color "red_white" "$disclaimer")"
 }
 
-#########################################################################
-# delete_language: キャッシュとなっている言語および国情報を削除して初期化する
-#########################################################################
 delete_language() {
     rm -rf "${BASE_DIR}/check_language"
     rm -rf "${BASE_DIR}/check_country"
@@ -79,46 +66,28 @@ delete_language() {
     echo "Initialized check_country."
 }
 
-#########################################################################
-# make_directory: 必要なディレクトリ (BASE_DIR) を作成する
-#########################################################################
 make_directory() {
     mkdir -p "$BASE_DIR"
 }
 
-#########################################################################
-# download_country_zone: 国・ゾーン情報のスクリプト (country-timezone.sh, country-zonename.sh)
-#                        を BASE_URL からダウンロードする
-#########################################################################
 download_country_zone() {
-    wget --quiet -O "${BASE_DIR%/}/country-timezone.sh" "${BASE_URL}/country-timezone.sh" || {
-        echo "Failed to download country-timezone.sh"
-        exit 1
-    }
-    wget --quiet -O "${BASE_DIR%/}/country-zonename.sh" "${BASE_URL}/country-zonename.sh" || {
-        echo "Failed to download country-zonename.sh"
+    wget --quiet -O "${BASE_DIR%/}/country-zone.sh" "${BASE_URL}/country-zone.sh" || {
+        echo "Failed to download country-zone.sh"
         exit 1
     }
 }
 
-#########################################################################
-# download_and_execute_common: common-functions.sh をダウンロードし、読み込む
-#########################################################################
 download_and_execute_common() {
     wget --quiet -O "${BASE_DIR%/}/common-functions.sh" "${BASE_URL}/common-functions.sh" || {
         echo "Failed to download common-functions.sh"
         exit 1
     }
-    # common-functions.sh 内のエラー関数等を利用可能になる
     source "${BASE_DIR%/}/common-functions.sh" || {
         echo "Failed to source common-functions.sh"
         exit 1
     }
 }
 
-#########################################################################
-# download_openwrt_config: openwrt-config.sh をダウンロードする
-#########################################################################
 download_openwrt_config() {
     wget --quiet -O "${BASE_DIR%/}/openwrt-config.sh" "${BASE_URL}/openwrt-config.sh" || {
         echo "Failed to download openwrt-config.sh"
@@ -126,9 +95,6 @@ download_openwrt_config() {
     }
 }
 
-#########################################################################
-# execute_openwrt_config: ダウンロードした openwrt-config.sh を実行する
-#########################################################################
 execute_openwrt_config() {
     sh "${BASE_DIR%/}/openwrt-config.sh" || {
         echo "Failed to execute openwrt-config.sh"
@@ -136,19 +102,6 @@ execute_openwrt_config() {
     }
 }
 
-#########################################################################
-# メイン処理
-#########################################################################
-# ※ 以下の処理は、順次各処理を実行し、セットアップを完了する
-#
-# 1. 必要なディレクトリの作成
-# 2. 国・ゾーン情報スクリプトのダウンロード
-# 3. common-functions.sh のダウンロードと読み込み (handle_error 等利用可能)
-# 4. check_common による初期化処理（言語選択など）
-# 5. バナー表示
-# 6. openwrt-config.sh のダウンロードおよび実行
-#########################################################################
-# delete_language  は必要に応じて使用（現状コメントアウト）
 # delete_language
 make_directory
 download_country_zone

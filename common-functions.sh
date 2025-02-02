@@ -329,3 +329,30 @@ menu_option() {
             ;;
     esac
 }
+
+#########################################################################
+# ask_confirmation: 確認プロンプトを表示し、ユーザーの入力 (y/n) を待つ
+#########################################################################
+ask_confirmation() {
+    local prompt
+    prompt=$(get_message confirm_default)
+    local choice
+    while true; do
+        read -p "$(color white "$prompt [y/n]: ")" choice
+        case "$choice" in
+            [Yy]*) return 0 ;;
+            [Nn]*) return 1 ;;
+            *) echo -e "$(color white "Invalid choice, please enter 'y' or 'n'.")" ;;
+        esac
+    done
+}
+
+#########################################################################
+# show_notification: 通知メッセージを表示する関数
+#########################################################################
+show_notification() {
+    local key="$1"
+    local message
+    message=$(get_message "$key")
+    echo -e "$(color white "$message")"
+}

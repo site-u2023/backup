@@ -12,7 +12,7 @@
 #  4. デバイス名・パスワードの設定 (set_device_name_password)
 #  5. Wi-Fi SSID・パスワードの設定 (set_wifi_ssid_password)
 #  6. システム全体の設定 (set_device)
-echo 202520202319-38
+echo 202520202319-39
 
 # 定数の設定
 BASE_URL="https://raw.githubusercontent.com/site-u2023/aios/main"
@@ -99,10 +99,14 @@ select_timezone() {
         # 複数ある場合はリスト表示して選択
         echo "$(color white "$msg_timezone_list")"
 
-        paste -d'|' "${BASE_DIR}/zonename_list" "${BASE_DIR}/timezone_list" | nl -w2 -s' ' | while IFS='|' read -r index line; do
-            echo "$line"
-        done
+        # 並列して都市名とタイムゾーンを表示
+        i=1
+        while read -r zonename && read -r timezone <&3; do
+            echo "[$i] $zonename - $timezone"
+            i=$((i+1))
+        done < "${BASE_DIR}/zonename_list" 3< "${BASE_DIR}/timezone_list"
 
+        # ユーザーに選択させる
         read -p "$(color white "$msg_select_tz")" selected_index
 
         ZONENAME=$(sed -n "${selected_index}p" "${BASE_DIR}/zonename_list")

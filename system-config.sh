@@ -12,7 +12,7 @@
 #  4. デバイス名・パスワードの設定 (set_device_name_password)
 #  5. Wi-Fi SSID・パスワードの設定 (set_wifi_ssid_password)
 #  6. システム全体の設定 (set_device)
-echo 202520202319-28
+echo 202520202319-30
 
 # 定数の設定
 BASE_URL="https://raw.githubusercontent.com/site-u2023/aios/main"
@@ -55,35 +55,33 @@ select_timezone() {
     available_timezones=$(sh /tmp/aios/country-zone.sh "$SELECTED_COUNTRY" "offsets")
 
     # 配列に変換
-    city_list=$(echo "$available_cities" | tr ',' ' ')
-    timezone_list=$(echo "$available_timezones" | tr ',' ' ')
+    IFS=',' read -r -a city_array <<< "$available_cities"
+    IFS=',' read -r -a timezone_array <<< "$available_timezones"
 
-    # 翻訳された「利用可能なタイムゾーン」メッセージを表示
-    echo "$msg_available_tz"
-    
-    i=1
-    for city in $city_list; do
-        timezone=$(echo "$timezone_list" | awk -v idx="$i" '{print $idx}')
-        echo "[$i] $city - $timezone"
-        i=$((i+1))
-    done
+    # タイムゾーンが1つだけの場合、表示も選択もスキップ
+    if [ "${#city_array[@]}" -eq 1 ]; then
+        TIMEZONE="${timezone_array[0]}"
+        ZONENAME="${city_array[0]}"
+    else
+        # 複数のタイムゾーンがある場合のみ表示と選択
+        echo "$msg_available_tz"
+        for i in "${!city_array[@]}"; do
+            echo "[$((i+1))] ${city_array[$i]} - ${timezone_array[$i]}"
+        done
 
-    # 翻訳された「タイムゾーン選択」メッセージを使用
-    read -p "$msg_select_tz" selected_index
+        read -p "$msg_select_tz" selected_index
 
-    # 選択されたゾーンネームとタイムゾーンを取得
-    selected_zone=$(echo "$city_list" | awk -v idx="$selected_index" '{print $idx}')
-    selected_timezone=$(echo "$timezone_list" | awk -v idx="$selected_index" '{print $idx}')
+        selected_zone="${city_array[$((selected_index-1))]}"
+        selected_timezone="${timezone_array[$((selected_index-1))]}"
 
-    if [ -z "$selected_zone" ] || [ -z "$selected_timezone" ]; then
-        echo "Invalid selection. Defaulting to the first time zone."
-        selected_zone=$(echo "$city_list" | awk '{print $1}')
-        selected_timezone=$(echo "$timezone_list" | awk '{print $1}')
+        if [ -z "$selected_zone" ] || [ -z "$selected_timezone" ]; then
+            selected_zone="${city_array[0]}"
+            selected_timezone="${timezone_array[0]}"
+        fi
+
+        TIMEZONE="$selected_timezone"
+        ZONENAME="$selected_zone"
     fi
-
-    echo "Selected Time Zone: $selected_zone - $selected_timezone"
-    TIMEZONE="$selected_timezone"
-    ZONENAME="$selected_zone"
 }
 
 #########################################################################
@@ -93,7 +91,7 @@ information() {
     local lang="$SELECTED_LANGUAGE"
     local country_data
 
-    # 選択された言語に基づいて国情報を取得
+    # 国情報の取得
     country_data=$(sh /tmp/aios/country-zone.sh "$SELECTED_COUNTRY" "all")
 
     # データの分割と抽出
@@ -102,52 +100,37 @@ information() {
     language_code=$(echo "$country_data" | awk '{print $3}')
     country_code=$(echo "$country_data" | awk '{print $4}')
 
-    # 各言語ごとのメッセージ設定
     case "$lang" in
         en)
-            msg_country="Country: $country_name"
-            msg_display="Display Name: $display_name"
-            msg_lang_code="Language Code: $language_code"
-            msg_country_code="Country Code: $country_code"
-            msg_available_tz="Available Time Zones:"
-            msg_select_tz="Select the time zone by number: "
+            echo -e "$(color white "Country: $country_name")"
+            echo -e "$(color white "Display Name: $display_name")"
+            echo -e "$(color white "Language Code: $language_code")"
+            echo -e "$(color white "Country Code: $country_code")"
             ;;
         ja)
-            msg_country="国名: $country_name"
-            msg_display="表示名: $display_name"
-            msg_lang_code="言語コード: $language_code"
-            msg_country_code="国コード: $country_code"
-            msg_available_tz="利用可能なタイムゾーン:"
-            msg_select_tz="タイムゾーンの番号を選択してください: "
+            echo -e "$(color white "国名: $country_name")"
+            echo -e "$(color white "表示名: $display_name")"
+            echo -e "$(color white "言語コード: $language_code")"
+            echo -e "$(color white "国コード: $country_code")"
             ;;
         zh-cn)
-            msg_country="国家: $country_name"
-            msg_display="显示名称: $display_name"
-            msg_lang_code="语言代码: $language_code"
-            msg_country_code="国家代码: $country_code"
-            msg_available_tz="可用时区:"
-            msg_select_tz="请选择时区编号: "
+            echo -e "$(color white "国家: $country_name")"
+            echo -e "$(color white "显示名称: $display_name")"
+            echo -e "$(color white "语言代码: $language_code")"
+            echo -e "$(color white "国家代码: $country_code")"
             ;;
         zh-tw)
-            msg_country="國家: $country_name"
-            msg_display="顯示名稱: $display_name"
-            msg_lang_code="語言代碼: $language_code"
-            msg_country_code="國家代碼: $country_code"
-            msg_available_tz="可用時區:"
-            msg_select_tz="請選擇時區編號: "
-            ;;
-        *)
-            handle_error "Unsupported language: $lang"
-            msg_available_tz="Available Time Zones:"
-            msg_select_tz="Select the time zone by number: "
+            echo -e "$(color white "國家: $country_name")"
+            echo -e "$(color white "顯示名稱: $display_name")"
+            echo -e "$(color white "語言代碼: $language_code")"
+            echo -e "$(color white "國家代碼: $country_code")"
             ;;
     esac
 
-    # 情報表示
-    echo -e "$(color white "$msg_country")"
-    echo -e "$(color white "$msg_display")"
-    echo -e "$(color white "$msg_lang_code")"
-    echo -e "$(color white "$msg_country_code")"
+    # タイムゾーンの表示（1つの場合は簡潔に）
+    if [ -n "$TIMEZONE" ] && [ -n "$ZONENAME" ]; then
+        echo -e "$(color white "$msg_timezone: $ZONENAME - $TIMEZONE")"
+    fi
 }
 
 #########################################################################

@@ -1,7 +1,7 @@
 #!/bin/sh
 # License: CC0
 # OpenWrt >= 19.07
-#
+# 202502022341-1
 # ttyd.sh
 #
 # 本スクリプトは、aios のインストールが完了した後に、ttyd のインストールおよび設定を行うためのスクリプトです。
@@ -45,7 +45,15 @@ check_ttyd_installed() {
 #########################################################################
 install_ttyd() {
     local INSTALL_LANGUAGE
-    INSTALL_LANGUAGE=$(cat "${BASE_DIR}/check_language")
+    if [ -n "$INPUT_LANG" ]; then
+        INSTALL_LANGUAGE="$INPUT_LANG"
+    elif [ -f "${BASE_DIR}/check_language" ]; then
+        INSTALL_LANGUAGE=$(cat "${BASE_DIR}/check_language")
+    else
+        INSTALL_LANGUAGE="en"  # デフォルトは英語
+    fi
+
+    echo "Selected language for installation: $INSTALL_LANGUAGE"
 
     case "$PACKAGE_MANAGER" in
         "APK")

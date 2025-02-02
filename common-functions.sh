@@ -288,3 +288,50 @@ normalize_language() {
         echo "$SELECTED_LANGUAGE" > "${BASE_DIR}/check_language"
     fi
 }
+
+#########################################################################
+# menu_option: メインメニューの各オプションに対応する処理を行う
+#########################################################################
+menu_option() {
+    local action="$1"
+    local description="$2"
+    local script_name="$3"
+    local input_lang="$4"
+    
+    echo -e "$(color white "$description")"
+
+    case "$action" in
+        "exit")
+            if ask_confirmation "exit"; then
+                show_notification "exit"
+                exit 0
+            else
+                show_notification "exit_cancelled"
+            fi
+            ;;
+        "delete")
+            if ask_confirmation "delete"; then
+                rm -rf "${BASE_DIR}" /usr/bin/aios /tmp/aios.sh || handle_error "削除に失敗しました。"
+                show_notification "delete_success"
+                exit 0
+            else
+                show_notification "delete_cancelled"
+            fi
+            ;;
+        "download")
+            if ask_confirmation "download"; then
+                if wget --quiet -O "${BASE_DIR}/${script_name}" "${BASE_URL}/${script_name}"; then
+                    show_notification "download_success"
+                    . "${BASE_DIR}/${script_name}" "$input_lang" || handle_error "スクリプトの実行に失敗しました。"
+                else
+                    show_notification "download_failure"
+                fi
+            else
+                show_notification "download_cancelled"
+            fi
+            ;;
+        *)
+            echo -e "$(color red "Unknown action.")"
+            ;;
+    esac
+}

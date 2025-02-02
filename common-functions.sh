@@ -109,34 +109,37 @@ check_common() {
 }
 
 process_language_selection() {
-    # 入力値の前後の空白を除去
-    INPUT_LANG=$(echo "$1" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//' | tr -d '\n')
-    echo "Input Language: $INPUT_LANG"
+    while true; do
+        # 入力値の前後の空白を除去
+        INPUT_LANG=$(echo "$1" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
+        echo "Input Language: $INPUT_LANG"
 
-    # country-zonename.sh を使って該当するエントリを検索
-    found_entries=$(sh "${BASE_DIR}/country-zonename.sh" "$INPUT_LANG")
+        # country-zonename.sh を使って該当するエントリを検索
+        found_entries=$(sh "${BASE_DIR}/country-zonename.sh" "$INPUT_LANG")
 
-    # 検索結果に "not found" という文字列が含まれていれば、該当エントリなしとみなす
-    if echo "$found_entries" | grep -qi "not found"; then
-        echo "No matching entry found."
-        read -p "Do you want to re-enter? [y/N]: " answer
-        case "$answer" in
-            [yY])
-                read -p "Please re-enter language: " new_input
-                process_language_selection "$new_input"
-                return
-                ;;
-            *)
-                echo "Defaulting to English (en)."
-                found_entry=$(sh "${BASE_DIR}/country-zonename.sh" "en")
-        esac
-    else
-        # 複数件ヒットしているかを確認
+        # 該当エントリが全くなければ、再入力を促す
+        if [ -z "$found_entries" ]; then
+            echo "No matching entry found."
+            read -p "Do you want to re-enter? [y/N]: " answer
+            case "$answer" in
+                [yY])
+                    read -p "Please re-enter language: " new_input
+                    set -- "$new_input"
+                    continue
+                    ;;
+                *)
+                    echo "Defaulting to English (en)."
+                    found_entries=$(sh "${BASE_DIR}/country-zonename.sh" "en")
+                    # ※ ここは break せず、下記で採用候補として処理する
+            esac
+        fi
+
+        # 複数候補がヒットしている場合
         num_matches=$(echo "$found_entries" | grep -c '^')
         if [ "$num_matches" -gt 1 ]; then
             echo "Multiple matches found. Please select:"
             i=1
-            # 番号付きリスト（[1] [2] ...）で候補を表示
+            # 番号付きリストを [1] [2] … の形式で表示
             echo "$found_entries" | while IFS= read -r line; do
                 echo "[$i] $line"
                 i=$((i+1))
@@ -145,32 +148,60 @@ process_language_selection() {
             read -p "Enter the number of your choice: " choice
             if [ "$choice" = "0" ]; then
                 read -p "Please re-enter language: " new_input
-                process_language_selection "$new_input"
-                return
+                set -- "$new_input"
+                continue
             fi
             found_entry=$(echo "$found_entries" | sed -n "${choice}p")
             if [ -z "$found_entry" ]; then
-                echo "Invalid selection. Defaulting to English (en)."
-                found_entry=$(sh "${BASE_DIR}/country-zonename.sh" "en")
+                echo "Invalid selection. Please re-enter."
+                read -p "Please re-enter language: " new_input
+                set -- "$new_input"
+                continue
             fi
         else
             found_entry="$found_entries"
         fi
-    fi
 
-    # 取得した行から各フィールドを抽出
-    # ※ データ形式例：<国名> <言語コード> <国コード> ... <母国語>
-    SELECTED_LANGUAGE=$(echo "$found_entry" | awk '{print $2}')
-    SELECTED_COUNTRY=$(echo "$found_entry" | awk '{print $3}')
+        # 取得した行から各フィールドを抽出
+        # ※ データ形式例：<国名> <言語コード> <国コード> ... <母国語>
+        candidate_lang=$(echo "$found_entry" | awk '{print $2}')
+        candidate_country=$(echo "$found_entry" | awk '{print $3}')
 
-    # キャッシュファイルに選択結果を保存
-    echo "$SELECTED_LANGUAGE" > "${BASE_DIR}/check_language"
-    echo "$SELECTED_COUNTRY" > "${BASE_DIR}/check_country"
+        # SUPPORTED_LANGUAGES に含まれるか確認（例："en ja"）
+        supported=false
+        for lang in $SUPPORTED_LANGUAGES; do
+            if [ "$candidate_lang" = "$lang" ]; then
+                supported=true
+                break
+            fi
+        done
 
-    echo "Selected Language: $SELECTED_LANGUAGE"
-    echo "Selected Country (after script): $SELECTED_COUNTRY"
+        if [ "$supported" != "true" ]; then
+            echo "Selected language ($candidate_lang) is not supported."
+            read -p "Do you want to re-enter? [y/N]: " answer
+            case "$answer" in
+                [yY])
+                    read -p "Please re-enter language: " new_input
+                    set -- "$new_input"
+                    continue
+                    ;;
+                *)
+                    echo "Defaulting to English (en)."
+                    candidate_lang="en"
+                    candidate_country="US"
+            esac
+        fi
 
-    return
+        # 採用決定：グローバル変数およびキャッシュに保存
+        SELECTED_LANGUAGE="$candidate_lang"
+        SELECTED_COUNTRY="$candidate_country"
+        echo "$SELECTED_LANGUAGE" > "${BASE_DIR}/check_language"
+        echo "$SELECTED_COUNTRY" > "${BASE_DIR}/check_country"
+
+        echo "Selected Language: $SELECTED_LANGUAGE"
+        echo "Selected Country (after script): $SELECTED_COUNTRY"
+        break
+    done
 }
 
 check_language() {

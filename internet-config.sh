@@ -2,15 +2,15 @@
 # License: CC0
 # OpenWrt >= 19.07
 #
-# internet‑config.sh
+# internet-config.sh
 #
-# このスクリプトは、MAP‑E、DS‑Lite、PPPoE などの各種インターネット接続設定メニューを
+# このスクリプトは、MAP-E、DS-Lite、PPPoE などの各種インターネット接続設定メニューを
 # 単一ファイル内で完結させる例です。
 #
-# ※ 外部の common‑functions.sh からは、color、ask_confirmation、show_notification、check_common
-#    などの関数および共通メッセージ管理関数 get_message、そして menu_option を利用します。
+# ※ 外部の common-functions.sh からは、color、ask_confirmation、show_notification、check_common
+#    などの関数および共通メッセージ管理関数 get_message、menu_option を利用します。
 #
-echo "internet‑config.sh Last update 202502032202‑13"
+echo "internet-config.sh Last update 202502032202-14"
 
 #-----------------------------------------------------------------
 # 基本設定
@@ -23,44 +23,52 @@ INPUT_LANG="$1"
 
 #########################################################################
 # download_country_zone
-#  国・ゾーン情報スクリプト (country‑zone.sh) を BASE_URL からダウンロードする。
+#  国・ゾーン情報スクリプト (country-zone.sh) を BASE_URL からダウンロードする。
 #  ダウンロードに失敗した場合は handle_error を呼び出して終了する。
 #########################################################################
 download_country_zone() {
-    if [ ! -f "${BASE_DIR%/}/country‑zone.sh" ]; then
-        wget --quiet -O "${BASE_DIR%/}/country‑zone.sh" "${BASE_URL}/country‑zone.sh" || \
-            handle_error "Failed to download country‑zone.sh"
+    if [ ! -f "${BASE_DIR%/}/country-zone.sh" ]; then
+        wget --quiet -O "${BASE_DIR%/}/country-zone.sh" "${BASE_URL}/country-zone.sh" || \
+            handle_error "Failed to download country-zone.sh"
     fi
 }
 
 #########################################################################
 # download_and_execute_common
-#  common‑functions.sh を BASE_URL からダウンロードし、読み込む。
+#  common-functions.sh を BASE_URL からダウンロードし、読み込む。
 #  失敗した場合は handle_error で終了する。
 #########################################################################
 download_and_execute_common() {
-    if [ ! -f "${BASE_DIR%/}/common‑functions.sh" ]; then
-        wget --quiet -O "${BASE_DIR%/}/common‑functions.sh" "${BASE_URL}/common‑functions.sh" || \
-            handle_error "Failed to download common‑functions.sh"
+    if [ ! -f "${BASE_DIR%/}/common-functions.sh" ]; then
+        wget --quiet -O "${BASE_DIR%/}/common-functions.sh" "${BASE_URL}/common-functions.sh" || \
+            handle_error "Failed to download common-functions.sh"
     fi
 
     # shellcheck source=/dev/null
-    source "${BASE_DIR%/}/common‑functions.sh" || \
-        handle_error "Failed to source common‑functions.sh"
+    source "${BASE_DIR%/}/common-functions.sh" || \
+        handle_error "Failed to source common-functions.sh"
 }
+
+#-----------------------------------------------------------------
+# 外部ファイルの読み込みと初期化
+#-----------------------------------------------------------------
+download_and_execute_common
+check_common "$INPUT_LANG"
+download_country_zone
+country_zone
 
 #########################################################################
 # main_menu_internet
 #  メインメニューを表示し、ユーザーの選択を受け付ける。（多言語対応）
 #########################################################################
 main_menu_internet() {
-    # 共通メッセージは get_message 関数から取得
-    title="$(get_message internet_title)"          # 「インターネット設定」
-    prompt="$(get_message select_prompt)"            # 「選択してください:」
-    invalid="$(get_message invalid_option)"          # 「無効なオプションです」
-    exit_msg="$(get_message menu_exit)"              # 「終了」
+    # 共通文言は get_message から取得
+    title="$(get_message internet_title)"          # 例："インターネット設定"
+    prompt="$(get_message select_prompt)"            # 例："選択してください:"
+    invalid="$(get_message invalid_option)"          # 例："無効なオプションです"
+    exit_msg="$(get_message menu_exit)"              # 例："スクリプト終了"
 
-    # 固有のメニュー項目は、get_message を利用して取得
+    # 固有のメニュー項目は get_message のキーを利用（ここではそれぞれ固定）
     menu_m="[m]: $(get_message menu_map_e)"
     menu_n="[n]: $(get_message menu_nuro)"
     menu_t="[t]: $(get_message menu_transix)"
@@ -124,11 +132,6 @@ main_menu_internet() {
 #########################################################################
 # エントリーポイント
 #########################################################################
-#-----------------------------------------------------------------
-# 外部ファイルの読み込みと初期化
-#-----------------------------------------------------------------
-download_and_execute_common
-check_common "$INPUT_LANG"
-download_country_zone
-country_zone
+get_system_info
+display_info
 main_menu_internet

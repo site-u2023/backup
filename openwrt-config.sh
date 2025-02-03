@@ -350,7 +350,7 @@ main_menu() {
         echo -e "$(color "white_black" "[d]: ${MENU01}")"
         echo -e "$(color "white" "------------------------------------------------------")"
         read -p "$(color "white" "${SELECT1}")" option
-        option=$(echo "$option" | awk '{gsub(/Ａ/, "A"); gsub(/ａ/, "a"); gsub(/Ｓ/, "S"); gsub(/ｓ/, "s"); print}') # 入力を半角に変換
+        #option=$(echo "$option" | awk '{gsub(/Ａ/, "A"); gsub(/ａ/, "a"); gsub(/Ｓ/, "S"); gsub(/ｓ/, "s"); print}') # 入力を半角に変換
         #option=$(echo "$option" | iconv -f UTF-8 -t ASCII//TRANSLIT)
         #option=$(echo "$option" | tr 'Ａ-Ｚａ-ｚ０-９' 'A-Za-z0-9')
         case "${option}" in

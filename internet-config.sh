@@ -49,14 +49,6 @@ download_and_execute_common() {
         handle_error "Failed to source common‑functions.sh"
 }
 
-#-----------------------------------------------------------------
-# 外部ファイルの読み込みと初期化
-#-----------------------------------------------------------------
-download_and_execute_common
-check_common "$INPUT_LANG"
-download_country_zone
-country_zone
-
 #########################################################################
 # メインメニュー表示関数 (多言語対応)
 #########################################################################
@@ -137,4 +129,8 @@ main_menu_internet() {
 #########################################################################
 # エントリーポイント
 #########################################################################
+download_and_execute_common
+check_common "$INPUT_LANG"
+download_country_zone
+country_zone
 main_menu_internet

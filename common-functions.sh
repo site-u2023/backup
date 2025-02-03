@@ -584,7 +584,7 @@ get_message() {
                 execute_message)      echo "Executing." ;;
                 complete_message)     echo "Completed." ;;
                 cancelled_message)    echo "Cancelled." ;;
-                download_success)     echo "ダウンロードが成功しました。" ;;
+                download_success)     echo "Download successful." ;;
                 *)                    echo "Undefined message: $key" ;;
             esac
             ;;

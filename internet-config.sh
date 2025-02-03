@@ -88,7 +88,8 @@ main_menu_internet() {
     TARGET_DSLITE="https://raw.githubusercontent.com/site-u2023/aios/main/ds-lite.sh"
     ACTION_PPPOE="download"
     TARGET_PPPOE="pppoe-config.sh"  # ※ PPPoE はローカルまたは別途管理
-
+    ACTION_RETURN="return"
+    
     while :; do
         echo -e "$(color "white" "------------------------------------------------------")"
         echo -e "$(color "blue" "$menu_m")"
@@ -122,8 +123,7 @@ main_menu_internet() {
                 ;;
             "e")
                 # ここでは、menu_option 内で exit アクションを処理する（共通の menu_option の exit 処理を利用）
-                menu_option "exit" "$exit_msg"
-                return 0 2>/dev/null || exit 0
+                menu_option "${ACTION_RETURN}" "$exit_msg"
                 ;;
             *)
                 echo -e "$(color "red" "$(get_message invalid_option)")"

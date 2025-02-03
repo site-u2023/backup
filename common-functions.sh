@@ -260,7 +260,7 @@ get_message() {
     local key="$1"
     local lang="${SELECTED_LANGUAGE:-en}"
     case "$lang" in
-        en)
+        en|*) # 英語とその他すべての未定義言語の処理
             case "$key" in
                 confirm_default) echo "Are you sure?" ;;
                 reenter_prompt)  echo "Do you want to re-enter?" ;;
@@ -322,22 +322,6 @@ get_message() {
                 exit_complete) echo "退出操作已完成。" ;;
                 delete_complete) echo "刪除操作已完成。" ;;
                 *) echo "操作已完成。" ;;
-            esac
-            ;;
-        *)
-            case "$key" in
-                confirm_default) echo "Are you sure?" ;;
-                reenter_prompt)  echo "Do you want to re-enter?" ;;
-                choose_prompt)   echo "Please choose: " ;;
-                download_success) echo "Download successful." ;;
-                download_failure) echo "Download failed." ;;
-                exit_cancelled) echo "Exit operation cancelled." ;;
-                delete_cancelled) echo "Delete operation cancelled." ;;
-                delete_success) echo "Script and configuration deleted." ;;
-                download_cancelled) echo "Download operation cancelled." ;;
-                exit_complete) echo "Exit operation completed." ;;
-                delete_complete) echo "Delete operation completed." ;;
-                *) echo "Operation completed." ;;
             esac
             ;;
     esac

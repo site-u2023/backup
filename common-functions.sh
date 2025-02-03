@@ -6,7 +6,7 @@
 #
 # 各種共通処理（ヘルプ表示、カラー出力、システム情報確認、言語選択、確認・通知メッセージの多言語対応など）を提供する。
 #
-echo common-functions.sh Last update 202502031310-5
+echo common-functions.sh Last update 202502031310-6
 
 # 基本定数の設定
 BASE_URL="${BASE_URL:-https://raw.githubusercontent.com/site-u2023/aios/main}"
@@ -30,32 +30,142 @@ handle_error() {
 #########################################################################
 print_help() {
     cat << 'EOF'
-aios - Dedicated configuration software for OpenWrt
+aios - {DESCRIPTION}
 
 Usage:
   aios [OPTION] [LANGUAGE]
 
 Options:
-  -h, -help, --help       Display this help message and exit.
-  -r, -reset, --reset     Clear cached language and country settings.
+  -h, -help, --help       {HELP_OPTION}
+  -r, -reset, --reset     {RESET_OPTION}
 
 Arguments:
-  LANGUAGE         Language code to be used immediately.
-                   If not provided, an interactive language selection menu will be displayed.
+  LANGUAGE         {LANGUAGE_ARG}
+                   {LANGUAGE_NOTE}
 
 Supported Languages:
-  en, ja, zh-cn, zh-tw
+  en, ja, zh-cn, zh-tw, id, ko, de, ru
 
 Examples:
   aios
-    -> Launches the interactive language selection menu.
+    -> {EXAMPLE1}
 
   aios en
-    -> Runs the script with English language.
+    -> {EXAMPLE2}
 
-  aios -r ja
-    -> Clears cache and runs the script with Japanese language.
+  aios -r en
+    -> {EXAMPLE3}
+
 EOF
+}
+
+    local lang="${SELECTED_LANGUAGE}"
+
+    case "$lang" in
+        ja)
+            sed \
+                -e "s/{DESCRIPTION}/オープンダブルアールティー専用設定ソフトウェア/" \
+                -e "s/{HELP_OPTION}/このヘルプメッセージを表示して終了します。/" \
+                -e "s/{RESET_OPTION}/言語と国の設定キャッシュをクリアします。/" \
+                -e "s/{LANGUAGE_ARG}/使用する言語コードを指定します。/" \
+                -e "s/{LANGUAGE_NOTE}/指定しない場合は、言語選択メニューが表示されます。/" \
+                -e "s/{EXAMPLE1}/言語選択メニューを起動します。/" \
+                -e "s/{EXAMPLE2}/日本語でスクリプトを実行します。/" \
+                -e "s/{EXAMPLE3}/キャッシュをクリアして日本語でスクリプトを実行します。/" \
+                help_template.txt
+            ;;
+        
+        zh-cn)
+            sed \
+                -e "s/{DESCRIPTION}/欧鹏达布里阿尔提封装配置软件/" \
+                -e "s/{HELP_OPTION}/显示此帮助信息并退出。/" \
+                -e "s/{RESET_OPTION}/清除语言和国家设置缓存。/" \
+                -e "s/{LANGUAGE_ARG}/立即使用的语言代码。/" \
+                -e "s/{LANGUAGE_NOTE}/如果未提供，将显示语言选择菜单。/" \
+                -e "s/{EXAMPLE1}/启动语言选择菜单。/" \
+                -e "s/{EXAMPLE2}/使用中文（简体）运行脚本。/" \
+                -e "s/{EXAMPLE3}/清除缓存并使用中文（简体）运行脚本。/" \
+                help_template.txt
+            ;;
+
+        zh-tw)
+            sed \
+                -e "s/{DESCRIPTION}/歐彭達布里阿爾提專用設定軟體/" \
+                -e "s/{HELP_OPTION}/顯示此幫助訊息並退出。/" \
+                -e "s/{RESET_OPTION}/清除語言和國家設定快取。/" \
+                -e "s/{LANGUAGE_ARG}/立即使用的語言代碼。/" \
+                -e "s/{LANGUAGE_NOTE}/如果未提供，將顯示語言選擇選單。/" \
+                -e "s/{EXAMPLE1}/啟動語言選擇選單。/" \
+                -e "s/{EXAMPLE2}/使用中文（繁體）執行腳本。/" \
+                -e "s/{EXAMPLE3}/清除快取並使用中文（繁體）執行腳本。/" \
+                help_template.txt
+            ;;
+
+        id)
+            sed \
+                -e "s/{DESCRIPTION}/Perangkat lunak konfigurasi khusus untuk OpenWrt/" \
+                -e "s/{HELP_OPTION}/Tampilkan pesan bantuan ini dan keluar./" \
+                -e "s/{RESET_OPTION}/Hapus cache pengaturan bahasa dan negara./" \
+                -e "s/{LANGUAGE_ARG}/Kode bahasa yang akan digunakan segera./" \
+                -e "s/{LANGUAGE_NOTE}/Jika tidak diberikan, menu pemilihan bahasa akan ditampilkan./" \
+                -e "s/{EXAMPLE1}/Menjalankan menu pemilihan bahasa./" \
+                -e "s/{EXAMPLE2}/Menjalankan skrip dalam bahasa Indonesia./" \
+                -e "s/{EXAMPLE3}/Menghapus cache dan menjalankan skrip dalam bahasa Indonesia./" \
+                help_template.txt
+            ;;
+
+        ko)
+            sed \
+                -e "s/{DESCRIPTION}/OpenWrt 전용 설정 소프트웨어/" \
+                -e "s/{HELP_OPTION}/이 도움말 메시지를 표시하고 종료합니다./" \
+                -e "s/{RESET_OPTION}/언어 및 국가 설정 캐시를 삭제합니다./" \
+                -e "s/{LANGUAGE_ARG}/즉시 사용할 언어 코드./" \
+                -e "s/{LANGUAGE_NOTE}/지정하지 않으면 언어 선택 메뉴가 표시됩니다./" \
+                -e "s/{EXAMPLE1}/언어 선택 메뉴를 실행합니다./" \
+                -e "s/{EXAMPLE2}/한국어로 스크립트를 실행합니다./" \
+                -e "s/{EXAMPLE3}/캐시를 삭제하고 한국어로 스크립트를 실행합니다./" \
+                help_template.txt
+            ;;
+
+        de)
+            sed \
+                -e "s/{DESCRIPTION}/Spezielle Konfigurationssoftware für OpenWrt/" \
+                -e "s/{HELP_OPTION}/Diese Hilfemeldung anzeigen und beenden./" \
+                -e "s/{RESET_OPTION}/Zwischengespeicherte Sprach- und Ländereinstellungen löschen./" \
+                -e "s/{LANGUAGE_ARG}/Sprachcode, der sofort verwendet wird./" \
+                -e "s/{LANGUAGE_NOTE}/Falls nicht angegeben, wird ein Sprachwahlmenü angezeigt./" \
+                -e "s/{EXAMPLE1}/Startet das Sprachwahlmenü./" \
+                -e "s/{EXAMPLE2}/Führt das Skript in deutscher Sprache aus./" \
+                -e "s/{EXAMPLE3}/Löscht den Cache und führt das Skript in deutscher Sprache aus./" \
+                help_template.txt
+            ;;
+
+        ru)
+            sed \
+                -e "s/{DESCRIPTION}/Специализированное программное обеспечение для настройки OpenWrt/" \
+                -e "s/{HELP_OPTION}/Показать это справочное сообщение и выйти./" \
+                -e "s/{RESET_OPTION}/Очистить кэш настроек языка и страны./" \
+                -e "s/{LANGUAGE_ARG}/Код языка для немедленного использования./" \
+                -e "s/{LANGUAGE_NOTE}/Если не указано, будет отображено меню выбора языка./" \
+                -e "s/{EXAMPLE1}/Запуск меню выбора языка./" \
+                -e "s/{EXAMPLE2}/Запуск скрипта на русском языке./" \
+                -e "s/{EXAMPLE3}/Очистка кэша и запуск скрипта на русском языке./" \
+                help_template.txt
+            ;;
+
+        en|*)
+            sed \
+                -e "s/{DESCRIPTION}/Dedicated configuration software for OpenWrt/" \
+                -e "s/{HELP_OPTION}/Display this help message and exit./" \
+                -e "s/{RESET_OPTION}/Clear cached language and country settings./" \
+                -e "s/{LANGUAGE_ARG}/Language code to be used immediately./" \
+                -e "s/{LANGUAGE_NOTE}/If not provided, an interactive language selection menu will be displayed./" \
+                -e "s/{EXAMPLE1}/Launches the interactive language selection menu./" \
+                -e "s/{EXAMPLE2}/Runs the script with English language./" \
+                -e "s/{EXAMPLE3}/Clears cache and runs the script with English language./" \
+                help_template.txt
+            ;;
+    esac
 }
 
 #########################################################################

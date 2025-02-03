@@ -50,71 +50,34 @@ download_and_execute_common() {
 }
 
 #########################################################################
-# 内部定義: get_message_Internet_config (多言語対応メッセージ)
-# ※ 外部の get_message_Internet_config があっても、ここで再定義することで内部実装を優先させる
+# 外部ファイルの読み込みと初期化
 #########################################################################
-get_message_Internet_config() {
-    local lang="$SELECTED_LANGUAGE"
-    local key="$1"
-    case "$lang" in
-        en)
-            case "$key" in
-                internet_config_title)         echo "Internet Configuration" ;;
-                menu_map_e)                    echo "MAP-E Configuration" ;;
-                menu_nuro)                     echo "NURO MAP-E Configuration" ;;
-                menu_transix)                  echo "DS-Lite (transix) Configuration" ;;
-                menu_xpass)                    echo "DS-Lite (xpass) Configuration" ;;
-                menu_v6connect)                echo "DS-Lite (v6connect) Configuration" ;;
-                menu_pppoe)                    echo "PPPoE Configuration" ;;
-                menu_exit)                     echo "Exit" ;;
-                menu_select_prompt)            echo "Please select: " ;;
-                invalid_option)                echo "Invalid option" ;;
-                # IPv4 と IPv6 のユーザー名・パスワード入力は統一
-                pppoe_ipv4_username_prompt|pppoe_ipv6_username_prompt) echo "Please enter your username:" ;;
-                pppoe_ipv4_password_prompt|pppoe_ipv6_password_prompt) echo "Please enter your password:" ;;
-                *)                             echo "Undefined message: $key" ;;
-            esac
-            ;;
-        *)
-            case "$key" in
-                internet_config_title)         echo "インターネット設定" ;;
-                menu_map_e)                    echo "MAP-E設定" ;;
-                menu_nuro)                     echo "NURO光 MAP-E設定" ;;
-                menu_transix)                  echo "DS-Lite (transix) 設定" ;;
-                menu_xpass)                    echo "DS-Lite (xpass) 設定" ;;
-                menu_v6connect)                echo "DS-Lite (v6connect) 設定" ;;
-                menu_pppoe)                    echo "PPPoE設定" ;;
-                menu_exit)                     echo "終了" ;;
-                menu_select_prompt)            echo "選択してください: " ;;
-                invalid_option)                echo "無効なオプションです" ;;
-                # IPv4 と IPv6 のユーザー名・パスワード入力は統一
-                pppoe_ipv4_username_prompt|pppoe_ipv6_username_prompt) echo "ユーザー名を入力してください:" ;;
-                pppoe_ipv4_password_prompt|pppoe_ipv6_password_prompt) echo "パスワードを入力してください:" ;;
-                *)                             echo "未定義のメッセージ: $key" ;;
-            esac
-            ;;
-    esac
-}
+download_and_execute_common
+check_common "$INPUT_LANG"
+download_country_zone
+country_zone
 
 #########################################################################
 # main_menu_internet
 #  メインメニューを表示し、ユーザーの選択を受け付ける。（多言語対応）
 #########################################################################
 main_menu_internet() {
-    # 共通文言は get_message から取得
+    # 共通メッセージは get_message から取得
     title="$(get_message internet_title)"          # 例："インターネット設定"
     prompt="$(get_message select_prompt)"            # 例："選択してください:"
     invalid="$(get_message invalid_option)"          # 例："無効なオプションです"
-    exit_msg="$(get_message menu_exit)"              # 例："スクリプト終了"
+    # exit 用のキーは "menu_exit"（共通定義）
+    # ※ ここでは exit_msg はキー名として保持
+    exit_msg="menu_exit"
 
-    # 固有のメニュー項目は get_message のキーを利用（ここではそれぞれ固定）
+    # 固有のメニュー項目は get_message のキーを利用
     menu_m="[m]: $(get_message menu_map_e)"
     menu_n="[n]: $(get_message menu_nuro)"
     menu_t="[t]: $(get_message menu_transix)"
     menu_x="[x]: $(get_message menu_xpass)"
     menu_v="[v]: $(get_message menu_v6connect)"
     menu_p="[p]: $(get_message menu_pppoe)"
-    menu_e="[e]: ${exit_msg}"
+    menu_e="[e]: $(get_message "$exit_msg")"
 
     # 各メニュー項目のアクション・ターゲットの設定
     ACTION_MAPE="download"
@@ -140,25 +103,26 @@ main_menu_internet() {
 
         case "${option}" in
             "m")
-                menu_option "${ACTION_MAPE}" "${menu_m}" "${TARGET_MAPE}"
+                menu_option "${ACTION_MAPE}" "menu_map_e" "${TARGET_MAPE}"
                 ;;
             "n")
-                menu_option "${ACTION_NURO}" "${menu_n}" "${TARGET_NURO}"
+                menu_option "${ACTION_NURO}" "menu_nuro" "${TARGET_NURO}"
                 ;;
             "t")
-                menu_option "${ACTION_DSLITE}" "${menu_t}" "${TARGET_DSLITE}"
+                menu_option "${ACTION_DSLITE}" "menu_transix" "${TARGET_DSLITE}"
                 ;;
             "x")
-                menu_option "${ACTION_DSLITE}" "${menu_x}" "${TARGET_DSLITE}"
+                menu_option "${ACTION_DSLITE}" "menu_xpass" "${TARGET_DSLITE}"
                 ;;
             "v")
-                menu_option "${ACTION_DSLITE}" "${menu_v}" "${TARGET_DSLITE}"
+                menu_option "${ACTION_DSLITE}" "menu_v6connect" "${TARGET_DSLITE}"
                 ;;
             "p")
-                menu_option "${ACTION_PPPOE}" "${menu_p}" "${TARGET_PPPOE}"
+                menu_option "${ACTION_PPPOE}" "menu_pppoe" "${TARGET_PPPOE}"
                 ;;
             "e")
-                menu_option "exit" "${exit_msg}"
+                # ここでは、menu_option 内で exit アクションを処理する（共通の menu_option の exit 処理を利用）
+                menu_option "exit" "$exit_msg"
                 return 0 2>/dev/null || exit 0
                 ;;
             *)
@@ -168,13 +132,6 @@ main_menu_internet() {
     done
 }
 
-#-----------------------------------------------------------------
-# 外部ファイルの読み込みと初期化
-#-----------------------------------------------------------------
-download_and_execute_common
-check_common "$INPUT_LANG"
-download_country_zone
-country_zone
 #########################################################################
 # エントリーポイント
 #########################################################################

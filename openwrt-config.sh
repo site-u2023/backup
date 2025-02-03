@@ -11,7 +11,7 @@
 # ・共通関数 (common-functions.sh) のダウンロードと読み込み
 # ・システム情報の取得と表示
 # ・メインメニューの表示とユーザーによる各種オプションの選択
-echo openwrt-config.sh Last update 202502031417-3
+echo openwrt-config.sh Last update 202502031417-5
 
 # 定数の設定
 BASE_URL="https://raw.githubusercontent.com/site-u2023/aios/main"
@@ -82,7 +82,7 @@ display_info() {
     local lang="$SELECTED_LANGUAGE"
     
     case "$lang" in
-        en)
+        en|*) # 英語とその他すべての未定義言語の処理
             echo -e "$(color "white" "Volatile Primary Memory (Free/Total): ${MEM_USAGE}")"
             echo -e "$(color "white" "Non-Volatile Semiconductor Storage (Free/Total): ${FLASH_INFO}")"
             echo -e "$(color "white" "Universal Serial Bus: ${USB_STATUS_EN}")"
@@ -149,7 +149,7 @@ main_menu() {
     local option
 
     case "$lang" in
-        en)
+        en|*) # 英語とその他すべての未定義言語の処理
             MENU1="Internet settings (Japan Only)"
             MENU2="Initial System Settings"
             MENU3="Recommended Package Installation"

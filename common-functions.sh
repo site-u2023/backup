@@ -310,11 +310,18 @@ menu_option() {
     echo -e "$(color white "$description")"
 
     case "$action" in
+        "return")
+            if ask_confirmation "return"; then
+                show_notification "return"
+                unset -f get_message_Internet_config
+                return 0 2>/dev/null || exit 0
+            else
+                show_notification "exit_cancelled"
+            fi
         "exit")
             if ask_confirmation "exit"; then
                 show_notification "exit"
-                unset -f get_message_Internet_config
-                return 0 2>/dev/null || exit 0
+                exit 0
             else
                 show_notification "exit_cancelled"
             fi

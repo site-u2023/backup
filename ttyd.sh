@@ -8,6 +8,7 @@
 # ・common-functions.sh をダウンロードして読み込み、共通関数を利用可能にする。
 # ・ttyd のインストール状況を確認し、未インストールの場合はインストールを実施する。
 # ・ttyd の各種設定 (uci による設定) を行い、ttyd サービスを有効化する。
+echo ttyd.sh Last update 202502031437-1
 
 # 定数の設定
 BASE_URL="https://raw.githubusercontent.com/site-u2023/aios/main"

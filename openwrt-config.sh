@@ -150,7 +150,6 @@ main_menu() {
     MENU03="$(get_message reset)"
     SELECT1="$(get_message select_prompt)"
 
-
     local ACTION1 ACTION2 ACTION3 ACTION4 ACTION5 ACTION6 ACTION00 ACTION01 ACTION02 ACTION03
     local TARGET1 TARGET2 TARGET3 TARGET4 TARGET5 TARGET6 TARGET02 TARGET03
     local option

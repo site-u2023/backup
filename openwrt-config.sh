@@ -11,7 +11,7 @@
 # ・共通関数 (common-functions.sh) のダウンロードと読み込み
 # ・システム情報の取得と表示
 # ・メインメニューの表示とユーザーによる各種オプションの選択
-echo openwrt-config.sh Last update 202502031417-5
+echo openwrt-config.sh Last update 202502031417-6
 
 # 定数の設定
 BASE_URL="https://raw.githubusercontent.com/site-u2023/aios/main"
@@ -82,16 +82,6 @@ display_info() {
     local lang="$SELECTED_LANGUAGE"
     
     case "$lang" in
-        en|*) # 英語とその他すべての未定義言語の処理
-            echo -e "$(color "white" "Volatile Primary Memory (Free/Total): ${MEM_USAGE}")"
-            echo -e "$(color "white" "Non-Volatile Semiconductor Storage (Free/Total): ${FLASH_INFO}")"
-            echo -e "$(color "white" "Universal Serial Bus: ${USB_STATUS_EN}")"
-            echo -e "$(color "white" "Uniform Resource Locator: ${BASE_URL}")"
-            echo -e "$(color "white" "Hierarchical File Structure: ${BASE_DIR}")"
-            echo -e "$(color "white" "Open Double R T Version: ${RELEASE_VERSION}")"
-            echo -e "$(color "white" "Nation-Language-Regional Standard Time Settings: $full_info")"
-            echo -e "$(color "white" "Automated Retrieval Utility: ${PACKAGE_MANAGER}")"
-            ;;
         ja)
             echo -e "$(color "white" "揮発性主記憶装置 (残量/総容量): ${MEM_USAGE}")"
             echo -e "$(color "white" "不揮発性半導体記憶装置 (残量/総容量): ${FLASH_INFO}")"
@@ -111,7 +101,6 @@ display_info() {
             echo -e "$(color "white" "欧鹏达布里阿尔提版本: ${RELEASE_VERSION}")"
             echo -e "$(color "white" "国家・语言・地区标准时间设定: $full_info")"
             echo -e "$(color "white" "自动下载管理器: ${PACKAGE_MANAGER}")"
-
             ;;
         zh-tw)
             echo -e "$(color "white" "揮發性主記憶體 (剩餘/總計): ${MEM_USAGE}")"
@@ -122,6 +111,16 @@ display_info() {
             echo -e "$(color "white" "歐彭達布里阿爾提版本: ${RELEASE_VERSION}")"
             echo -e "$(color "white" "國家・語言・地區標準時間設定: $full_info")"
             echo -e "$(color "white" "自動下載管理器: ${PACKAGE_MANAGER}")"
+            ;;
+        en|*) # 英語とその他すべての未定義言語の処理
+            echo -e "$(color "white" "Volatile Primary Memory (Free/Total): ${MEM_USAGE}")"
+            echo -e "$(color "white" "Non-Volatile Semiconductor Storage (Free/Total): ${FLASH_INFO}")"
+            echo -e "$(color "white" "Universal Serial Bus: ${USB_STATUS_EN}")"
+            echo -e "$(color "white" "Uniform Resource Locator: ${BASE_URL}")"
+            echo -e "$(color "white" "Hierarchical File Structure: ${BASE_DIR}")"
+            echo -e "$(color "white" "Open Double R T Version: ${RELEASE_VERSION}")"
+            echo -e "$(color "white" "Nation-Language-Regional Standard Time Settings: $full_info")"
+            echo -e "$(color "white" "Automated Retrieval Utility: ${PACKAGE_MANAGER}")"
             ;;
     esac
 }
@@ -139,19 +138,6 @@ main_menu() {
     local option
 
     case "$lang" in
-        en|*) # 英語とその他すべての未定義言語の処理
-            MENU1="Internet settings (Japan Only)"
-            MENU2="Initial System Settings"
-            MENU3="Recommended Package Installation"
-            MENU4="Ad blocker installation settings"
-            MENU5="Access Point Settings"
-            MENU6="Other Script Settings"
-            MENU00="Exit Script"
-            MENU01="Remove script and exit"
-            MENU02="country code"
-            MENU03="reset"
-            SELECT1="Select an option: "
-            ;;
         ja)
             MENU1="インターネット設定"
             MENU2="システム初期設定"
@@ -190,6 +176,19 @@ main_menu() {
             MENU02="國碼"
             MENU03="重設"
             SELECT1="選擇一個選項: "
+            ;;
+         en|*) # 英語とその他すべての未定義言語の処理
+            MENU1="Internet settings (Japan Only)"
+            MENU2="Initial System Settings"
+            MENU3="Recommended Package Installation"
+            MENU4="Ad blocker installation settings"
+            MENU5="Access Point Settings"
+            MENU6="Other Script Settings"
+            MENU00="Exit Script"
+            MENU01="Remove script and exit"
+            MENU02="country code"
+            MENU03="reset"
+            SELECT1="Select an option: "
             ;;
     esac
 

@@ -205,6 +205,16 @@ display_info() {
             echo -e "$(color "white" "Национальные-Языковые-Региональные настройки времени: $full_info")"
             echo -e "$(color "white" "Автоматизированное устройство получения данных: ${PACKAGE_MANAGER}")"
             ;;
+        en|*)
+            echo -e "$(color "white" "Volatile Primary Memory (Free/Total): ${MEM_USAGE}")"
+            echo -e "$(color "white" "Non-Volatile Semiconductor Storage (Free/Total): ${FLASH_INFO}")"
+            echo -e "$(color "white" "Universal Serial Bus: ${USB_STATUS_EN}")"
+            echo -e "$(color "white" "Uniform Resource Locator: ${BASE_URL}")"
+            echo -e "$(color "white" "Hierarchical File Structure: ${BASE_DIR}")"
+            echo -e "$(color "white" "OpenWrt Generation: ${RELEASE_VERSION}")"
+            echo -e "$(color "white" "Nation-Language-Regional Standard Time: $full_info")"
+            echo -e "$(color "white" "Automated Retrieval Utility: ${PACKAGE_MANAGER}")"
+            ;;
     esac
 }
 

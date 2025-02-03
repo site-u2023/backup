@@ -1,7 +1,7 @@
 #!/bin/sh
 # License: CC0
 # OpenWrt >= 19.07
-# 202502022215-2
+# 202502022215-3
 # openwrt-config.sh
 #
 # このスクリプトは、OpenWrt 用のメインメニューおよびシステム情報表示、
@@ -11,13 +11,13 @@
 # ・共通関数 (common-functions.sh) のダウンロードと読み込み
 # ・システム情報の取得と表示
 # ・メインメニューの表示とユーザーによる各種オプションの選択
-echo openwrt-config.sh Last update 202502031417-6
+echo openwrt-config.sh Last update 202502031417-7
 
 # 定数の設定
 BASE_URL="https://raw.githubusercontent.com/site-u2023/aios/main"
 BASE_DIR="/tmp/aios"
 SUPPORTED_VERSIONS="19 21 22 23 24 SN"
-SUPPORTED_LANGUAGES="en ja zh-cn zh-tw"
+SUPPORTED_LANGUAGES="en ja zh-cn zh-tw id ko de ru"
 INPUT_LANG="$1"
 
 #########################################################################
@@ -59,6 +59,58 @@ get_system_info() {
     _mem_free=$(grep MemAvailable /proc/meminfo | awk '{print $2 / 1024 " MB"}')
     MEM_USAGE="${_mem_free} / ${_mem_total}"
     FLASH_INFO=$(df -h | grep '/overlay' | head -n 1 | awk '{print $4 " / " $2}')
+
+    case "$SELECTED_LANGUAGE" in
+        ja)
+            USB_STATUS="検出済み"
+            USB_STATUS_NOT="未検出"
+            ;;
+        zh-cn)
+            USB_STATUS="已检测"
+            USB_STATUS_NOT="未检测"
+            ;;
+        zh-tw)
+            USB_STATUS="已檢測"
+            USB_STATUS_NOT="未檢測"
+            ;;
+        id)
+            USB_STATUS="Terdeteksi"
+            USB_STATUS_NOT="Tidak Terdeteksi"
+            ;;
+        ko)
+            USB_STATUS="감지됨"
+            USB_STATUS_NOT="감지되지 않음"
+            ;;
+        de)
+            USB_STATUS="Erkannt"
+            USB_STATUS_NOT="Nicht erkannt"
+            ;;
+        ru)
+            USB_STATUS="Обнаружено"
+            USB_STATUS_NOT="Не обнаружено"
+            ;;
+        en|*)
+            USB_STATUS="Detected"
+            USB_STATUS_NOT="Not Detected"
+            ;;
+    esac
+
+    # USB接続状況に応じて表示
+    if lsusb >/dev/null 2>&1; then
+        USB_STATUS_RESULT="$USB_STATUS"
+    else
+        USB_STATUS_RESULT="$USB_STATUS_NOT"
+    fi
+
+    full_info=$(country_full_info)
+}
+
+XXXXX_get_system_info() {
+    local _mem_total _mem_free
+    _mem_total=$(grep MemTotal /proc/meminfo | awk '{print $2 / 1024 " MB"}')
+    _mem_free=$(grep MemAvailable /proc/meminfo | awk '{print $2 / 1024 " MB"}')
+    MEM_USAGE="${_mem_free} / ${_mem_total}"
+    FLASH_INFO=$(df -h | grep '/overlay' | head -n 1 | awk '{print $4 " / " $2}')
     if lsusb >/dev/null 2>&1; then
         USB_STATUS_EN="Detected"
         USB_STATUS_JA="検出済み"
@@ -85,42 +137,72 @@ display_info() {
         ja)
             echo -e "$(color "white" "揮発性主記憶装置 (残量/総容量): ${MEM_USAGE}")"
             echo -e "$(color "white" "不揮発性半導体記憶装置 (残量/総容量): ${FLASH_INFO}")"
-            echo -e "$(color "white" "汎用直列バス: ${USB_STATUS_JA}")"
+            echo -e "$(color "white" "汎用直列伝送路: ${USB_STATUS_JA}")"
             echo -e "$(color "white" "統一資源位置指定子: ${BASE_URL}")"
-            echo -e "$(color "white" "階層型ファイル構造一覧: ${BASE_DIR}")"
-            echo -e "$(color "white" "オープンダブルアールティーバージョン: ${RELEASE_VERSION}")"
-            echo -e "$(color "white" "国家・言語・地域標準時設定: $full_info")"
-            echo -e "$(color "white" "自動取得処理装置: ${PACKAGE_MANAGER}")"
+            echo -e "$(color "white" "階層式記録素子構造: ${BASE_DIR}")"
+            echo -e "$(color "white" "オープンダブルアールティー世代: ${RELEASE_VERSION}")"
+            echo -e "$(color "white" "国家・言語・地域標準時: $full_info")"
+            echo -e "$(color "white" "自動取得処理装置名: ${PACKAGE_MANAGER}")"
             ;;
         zh-cn)
-            echo -e "$(color "white" "易失性主存储器 (剩余/总计): ${MEM_USAGE}")"
-            echo -e "$(color "white" "非易失性半导体存储器 (剩余/总计): ${FLASH_INFO}")"
-            echo -e "$(color "white" "通用串行总线: ${USB_STATUS_ZH_CN}")"
+            echo -e "$(color "white" "易失性主存储装置 (剩余/总容量): ${MEM_USAGE}")"
+            echo -e "$(color "white" "非易失性半导体存储装置 (剩余/总容量): ${FLASH_INFO}")"
+            echo -e "$(color "white" "通用串行传输路径: ${USB_STATUS_ZH_CN}")"
             echo -e "$(color "white" "统一资源定位符: ${BASE_URL}")"
-            echo -e "$(color "white" "分层文件结构列表: ${BASE_DIR}")"
+            echo -e "$(color "white" "分层式记录单元结构: ${BASE_DIR}")"
             echo -e "$(color "white" "欧鹏达布里阿尔提版本: ${RELEASE_VERSION}")"
-            echo -e "$(color "white" "国家・语言・地区标准时间设定: $full_info")"
-            echo -e "$(color "white" "自动下载管理器: ${PACKAGE_MANAGER}")"
+            echo -e "$(color "white" "国家・语言・区域标准时间: $full_info")"
+            echo -e "$(color "white" "自动检索处理装置名称: ${PACKAGE_MANAGER}")"
             ;;
         zh-tw)
-            echo -e "$(color "white" "揮發性主記憶體 (剩餘/總計): ${MEM_USAGE}")"
-            echo -e "$(color "white" "非揮發性半導體記憶體 (剩餘/總計): ${FLASH_INFO}")"
-            echo -e "$(color "white" "通用串列匯流排: ${USB_STATUS_ZH_TW}")"
+            echo -e "$(color "white" "揮發性主記憶體裝置 (剩餘/總容量): ${MEM_USAGE}")"
+            echo -e "$(color "white" "非揮發性半導體記憶體裝置 (剩餘/總容量): ${FLASH_INFO}")"
+            echo -e "$(color "white" "通用串列傳輸路徑: ${USB_STATUS_ZH_TW}")"
             echo -e "$(color "white" "統一資源定位符: ${BASE_URL}")"
-            echo -e "$(color "white" "階層式檔案結構清單: ${BASE_DIR}")"
+            echo -e "$(color "white" "階層式記錄元件結構: ${BASE_DIR}")"
             echo -e "$(color "white" "歐彭達布里阿爾提版本: ${RELEASE_VERSION}")"
-            echo -e "$(color "white" "國家・語言・地區標準時間設定: $full_info")"
-            echo -e "$(color "white" "自動下載管理器: ${PACKAGE_MANAGER}")"
+            echo -e "$(color "white" "國家・語言・區域標準時間: $full_info")"
+            echo -e "$(color "white" "自動取得處理裝置名稱: ${PACKAGE_MANAGER}")"
             ;;
-        en|*) # 英語とその他すべての未定義言語の処理
-            echo -e "$(color "white" "Volatile Primary Memory (Free/Total): ${MEM_USAGE}")"
-            echo -e "$(color "white" "Non-Volatile Semiconductor Storage (Free/Total): ${FLASH_INFO}")"
-            echo -e "$(color "white" "Universal Serial Bus: ${USB_STATUS_EN}")"
-            echo -e "$(color "white" "Uniform Resource Locator: ${BASE_URL}")"
-            echo -e "$(color "white" "Hierarchical File Structure: ${BASE_DIR}")"
+        id)
+            echo -e "$(color "white" "Memori Utama Volatil (Sisa/Total): ${MEM_USAGE}")"
+            echo -e "$(color "white" "Penyimpanan Semikonduktor Non-Volatil (Sisa/Total): ${FLASH_INFO}")"
+            echo -e "$(color "white" "Jalur Transmisi Serial Universal: ${USB_STATUS_ID}")"
+            echo -e "$(color "white" "Penentu Lokasi Sumber Daya Seragam: ${BASE_URL}")"
+            echo -e "$(color "white" "Struktur Unit Perekaman Berjenjang: ${BASE_DIR}")"
+            echo -e "$(color "white" "Versi Open Double R T: ${RELEASE_VERSION}")"
+            echo -e "$(color "white" "Pengaturan Standar Waktu Negara-Bahasa-Wilayah: $full_info")"
+            echo -e "$(color "white" "Nama Perangkat Pengambil Otomatis: ${PACKAGE_MANAGER}")"
+            ;;
+        ko)
+            echo -e "$(color "white" "휘발성 주기억 장치 (남은 용량/총 용량): ${MEM_USAGE}")"
+            echo -e "$(color "white" "비휘발성 반도체 저장 장치 (남은 용량/총 용량): ${FLASH_INFO}")"
+            echo -e "$(color "white" "범용 직렬 전송 경로: ${USB_STATUS_KO}")"
+            echo -e "$(color "white" "통합 자원 위치 지정자: ${BASE_URL}")"
+            echo -e "$(color "white" "계층형 기록 장치 구조: ${BASE_DIR}")"
+            echo -e "$(color "white" "오픈더블알티 버전: ${RELEASE_VERSION}")"
+            echo -e "$(color "white" "국가・언어・지역 표준시: $full_info")"
+            echo -e "$(color "white" "자동 취득 처리 장치: ${PACKAGE_MANAGER}")"
+            ;;
+        de)
+            echo -e "$(color "white" "Flüchtiger Hauptspeicher (Frei/Gesamt): ${MEM_USAGE}")"
+            echo -e "$(color "white" "Nichtflüchtiger Halbleiterspeicher (Frei/Gesamt): ${FLASH_INFO}")"
+            echo -e "$(color "white" "Universelle Serielle Übertragungsstrecke: ${USB_STATUS_DE}")"
+            echo -e "$(color "white" "Einheitlicher Ressourcen-Lokalisierer: ${BASE_URL}")"
+            echo -e "$(color "white" "Hierarchische Aufzeichnungsstruktur: ${BASE_DIR}")"
             echo -e "$(color "white" "Open Double R T Version: ${RELEASE_VERSION}")"
-            echo -e "$(color "white" "Nation-Language-Regional Standard Time Settings: $full_info")"
-            echo -e "$(color "white" "Automated Retrieval Utility: ${PACKAGE_MANAGER}")"
+            echo -e "$(color "white" "Nationale-Sprachliche-Regionale Zeiteinstellungen: $full_info")"
+            echo -e "$(color "white" "Automatische Abrufverarbeitungseinheit: ${PACKAGE_MANAGER}")"
+            ;;
+        ru)
+            echo -e "$(color "white" "Оперативное запоминающее устройство (Свободно/Всего): ${MEM_USAGE}")"
+            echo -e "$(color "white" "Неволатильное полупроводниковое хранилище (Свободно/Всего): ${FLASH_INFO}")"
+            echo -e "$(color "white" "Универсальная последовательная передача: ${USB_STATUS_RU}")"
+            echo -e "$(color "white" "Унифицированный указатель ресурса: ${BASE_URL}")"
+            echo -e "$(color "white" "Иерархическая структура записей: ${BASE_DIR}")"
+            echo -e "$(color "white" "Версия Оупен Дабл Ар Ти: ${RELEASE_VERSION}")"
+            echo -e "$(color "white" "Национальные-Языковые-Региональные настройки времени: $full_info")"
+            echo -e "$(color "white" "Автоматизированное устройство получения данных: ${PACKAGE_MANAGER}")"
             ;;
     esac
 }
@@ -176,6 +258,58 @@ main_menu() {
             MENU02="國碼"
             MENU03="重設"
             SELECT1="選擇一個選項: "
+            ;;
+        id)
+            MENU1="Pengaturan Internet"
+            MENU2="Pengaturan Sistem Awal"
+            MENU3="Instalasi Paket yang Direkomendasikan"
+            MENU4="Pengaturan Instalasi Pemblokir Iklan"
+            MENU5="Pengaturan Titik Akses"
+            MENU6="Pengaturan Skrip Lainnya"
+            MENU00="Keluar dari Skrip"
+            MENU01="Hapus skrip dan keluar"
+            MENU02="Kode Negara"
+            MENU03="Reset"
+            SELECT1="Silakan pilih: "
+            ;;
+        ko)
+            MENU1="인터넷 설정"
+            MENU2="시스템 초기 설정"
+            MENU3="추천 패키지 설치"
+            MENU4="광고 차단기 설치 설정"
+            MENU5="액세스 포인트 설정"
+            MENU6="기타 스크립트 설정"
+            MENU00="스크립트 종료"
+            MENU01="스크립트 삭제 및 종료"
+            MENU02="국가 코드"
+            MENU03="리셋"
+            SELECT1="옵션을 선택하세요: "
+            ;;
+        de)
+            MENU1="Interneteinstellungen"
+            MENU2="Erste Systemeinstellungen"
+            MENU3="Empfohlene Paketinstallation"
+            MENU4="Einstellungen für Werbeblocker-Installation"
+            MENU5="Zugangspunkt-Einstellungen"
+            MENU6="Andere Skripteinstellungen"
+            MENU00="Skript beenden"
+            MENU01="Skript löschen und beenden"
+            MENU02="Ländercode"
+            MENU03="Zurücksetzen"
+            SELECT1="Bitte wählen Sie eine Option: "
+            ;;
+        ru)
+            MENU1="Настройки Интернета"
+            MENU2="Первоначальные настройки системы"
+            MENU3="Рекомендуемая установка пакетов"
+            MENU4="Настройки установки блокировщика рекламы"
+            MENU5="Настройки точки доступа"
+            MENU6="Другие настройки скриптов"
+            MENU00="Выход из скрипта"
+            MENU01="Удалить скрипт и выйти"
+            MENU02="Код страны"
+            MENU03="Сброс"
+            SELECT1="Пожалуйста, выберите опцию: "
             ;;
          en|*) # 英語とその他すべての未定義言語の処理
             MENU1="Internet settings (Japan Only)"

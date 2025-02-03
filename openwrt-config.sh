@@ -218,6 +218,117 @@ display_info() {
     esac
 }
 
+get_message_openwrt_config() {
+    local lang="$SELECTED_LANGUAGE"
+    local key="$1"
+    case "$lang" in
+        ja)
+            case "$key" in
+                menu_internet) echo "インターネット設定" ;;
+                menu_system)   echo "システム初期設定" ;;
+                menu_package)  echo "推奨パッケージインストール" ;;
+                menu_adblock)  echo "広告ブロッカーインストール設定" ;;
+                menu_ap)       echo "アクセスポイント設定" ;;
+                menu_other)    echo "その他のスクリプト設定" ;;
+                menu_exit)     echo "スクリプト終了" ;;
+                menu_delete)   echo "スクリプト削除終了" ;;
+                *)             echo "未定義のメッセージ: $key" ;;
+            esac
+            ;;
+        zh-cn)
+            case "$key" in
+                menu_internet) echo "互联网设置" ;;
+                menu_system)   echo "系统初始设置" ;;
+                menu_package)  echo "推荐安装包" ;;
+                menu_adblock)  echo "广告拦截器设置" ;;
+                menu_ap)       echo "访问点设置" ;;
+                menu_other)    echo "其他脚本设置" ;;
+                menu_exit)     echo "退出脚本" ;;
+                menu_delete)   echo "删除脚本并退出" ;;
+                *)             echo "Undefined message: $key" ;;
+            esac
+            ;;
+        zh-tw)
+            case "$key" in
+                menu_internet) echo "網路設定" ;;
+                menu_system)   echo "系統初始設定" ;;
+                menu_package)  echo "推薦安裝包" ;;
+                menu_adblock)  echo "廣告攔截器設定" ;;
+                menu_ap)       echo "連接點設定" ;;
+                menu_other)    echo "其他腳本設定" ;;
+                menu_exit)     echo "退出腳本" ;;
+                menu_delete)   echo "移除腳本並退出" ;;
+                *)             echo "Undefined message: $key" ;;
+            esac
+            ;;
+        id)
+            case "$key" in
+                menu_internet) echo "Pengaturan Internet" ;;
+                menu_system)   echo "Pengaturan Sistem Awal" ;;
+                menu_package)  echo "Instalasi Paket yang Direkomendasikan" ;;
+                menu_adblock)  echo "Pengaturan Pemblokir Iklan" ;;
+                menu_ap)       echo "Pengaturan Titik Akses" ;;
+                menu_other)    echo "Pengaturan Skrip Lainnya" ;;
+                menu_exit)     echo "Keluar dari Skrip" ;;
+                menu_delete)   echo "Hapus skrip dan keluar" ;;
+                *)             echo "Undefined message: $key" ;;
+            esac
+            ;;
+        ko)
+            case "$key" in
+                menu_internet) echo "인터넷 설정" ;;
+                menu_system)   echo "시스템 초기 설정" ;;
+                menu_package)  echo "추천 패키지 설치" ;;
+                menu_adblock)  echo "광고 차단기 설치 설정" ;;
+                menu_ap)       echo "액세스 포인트 설정" ;;
+                menu_other)    echo "기타 스크립트 설정" ;;
+                menu_exit)     echo "스크립트 종료" ;;
+                menu_delete)   echo "스크립트 삭제 및 종료" ;;
+                *)             echo "Undefined message: $key" ;;
+            esac
+            ;;
+        de)
+            case "$key" in
+                menu_internet) echo "Interneteinstellungen" ;;
+                menu_system)   echo "Erste Systemeinstellungen" ;;
+                menu_package)  echo "Empfohlene Paketinstallation" ;;
+                menu_adblock)  echo "Werbeblocker-Einstellungen" ;;
+                menu_ap)       echo "Zugangspunkt-Einstellungen" ;;
+                menu_other)    echo "Andere Skripteinstellungen" ;;
+                menu_exit)     echo "Skript beenden" ;;
+                menu_delete)   echo "Skript löschen und beenden" ;;
+                *)             echo "Undefined message: $key" ;;
+            esac
+            ;;
+        ru)
+            case "$key" in
+                menu_internet) echo "Настройки интернета" ;;
+                menu_system)   echo "Начальные настройки системы" ;;
+                menu_package)  echo "Рекомендуемая установка пакетов" ;;
+                menu_adblock)  echo "Настройки блокировки рекламы" ;;
+                menu_ap)       echo "Настройки точки доступа" ;;
+                menu_other)    echo "Другие настройки скриптов" ;;
+                menu_exit)     echo "Выход из скрипта" ;;
+                menu_delete)   echo "Удалить скрипт и выйти" ;;
+                *)             echo "Undefined message: $key" ;;
+            esac
+            ;;
+        en|*)
+            case "$key" in
+                menu_internet) echo "Internet Configuration" ;;
+                menu_system)   echo "Initial System Settings" ;;
+                menu_package)  echo "Recommended Package Installation" ;;
+                menu_adblock)  echo "Ad blocker installation settings" ;;
+                menu_ap)       echo "Access Point Settings" ;;
+                menu_other)    echo "Other Script Settings" ;;
+                menu_exit)     echo "Exit Script" ;;
+                menu_delete)   echo "Remove script and exit" ;;
+                *)             echo "Undefined message: $key" ;;
+            esac
+            ;;
+    esac
+}
+
 #########################################################################
 # main_menu
 #  メインメニューを表示し、ユーザーの選択を受け付ける。
@@ -387,4 +498,5 @@ check_common "$INPUT_LANG"
 country_zone
 get_system_info
 display_info
+get_message_openwrt_config
 main_menu

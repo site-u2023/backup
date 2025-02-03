@@ -12,7 +12,7 @@
 #  4. デバイス名・パスワードの設定 (set_device_name_password)
 #  5. Wi-Fi SSID・パスワードの設定 (set_wifi_ssid_password)
 #  6. システム全体の設定 (set_device)
-echo system-config.sh Last update 202502031310-2
+echo system-config.sh Last update 202502031310-3
 
 # 定数の設定
 BASE_URL="https://raw.githubusercontent.com/site-u2023/aios/main"
@@ -53,7 +53,7 @@ select_timezone() {
 
     # 言語に応じたメッセージ設定
     case "$SELECTED_LANGUAGE" in
-        ja)
+        en|*) # 英語とその他すべての未定義言語の処理
             msg_timezone_single="タイムゾーン: "
             msg_timezone_list="利用可能なタイムゾーン:"
             msg_select_tz="タイムゾーンの番号を選択してください: "
@@ -72,11 +72,6 @@ select_timezone() {
             msg_timezone_single="時區: "
             msg_timezone_list="可用時區:"
             msg_select_tz="請選擇時區編號: "
-            ;;
-        *)
-            msg_timezone_single="Time Zone: "
-            msg_timezone_list="Available Time Zones:"
-            msg_select_tz="Select the time zone by number: "
             ;;
     esac
 
@@ -132,7 +127,7 @@ information() {
     local country_code="$COUNTRYCODE"
 
     case "$SELECTED_LANGUAGE" in
-        en)
+        en|*) # 英語とその他すべての未定義言語の処理
             echo -e "$(color white "Country: $country_name")"
             echo -e "$(color white "Display Name: $display_name")"
             echo -e "$(color white "Language Code: $language_code")"
@@ -156,9 +151,6 @@ information() {
             echo -e "$(color white "語言代碼: $language_code")"
             echo -e "$(color white "國家代碼: $country_code")"
             ;;
-        *)
-            handle_error "Unsupported language: $SELECTED_LANGUAGE"
-            ;;
     esac
 }
 
@@ -176,7 +168,7 @@ XXXXXinformation() {
     country_code=$(echo "$country_data" | awk '{print $4}')
 
     case "$lang" in
-        en)
+        en|*) # 英語とその他すべての未定義言語の処理
             echo -e "$(color white "Country: $country_name")"
             echo -e "$(color white "Display Name: $display_name")"
             echo -e "$(color white "Language Code: $language_code")"
@@ -218,7 +210,7 @@ set_device_name_password() {
 
     lang="$SELECTED_LANGUAGE"
     case "$lang" in
-        en)
+        en|*) # 英語とその他すべての未定義言語の処理
             msg_device="Enter the new device name: "
             msg_password="Enter the new password: "
             msg_confirm="Are you sure with the following settings? (y/n): "
@@ -231,13 +223,6 @@ set_device_name_password() {
             msg_confirm="以下の内容でよろしいですか？ (y/n): "
             msg_success="パスワードとデバイス名が正常に更新されました。"
             msg_cancel="設定がキャンセルされました。"
-            ;;
-        *)
-            msg_device="Enter the new device name: "
-            msg_password="Enter the new password: "
-            msg_confirm="Are you sure with the following settings? (y/n): "
-            msg_success="Password and device name have been successfully updated."
-            msg_cancel="Operation has been canceled."
             ;;
     esac
 
@@ -285,7 +270,7 @@ set_wifi_ssid_password() {
     
     lang="$SELECTED_LANGUAGE"
     case "$lang" in
-        ja)
+        en|*) # 英語とその他すべての未定義言語の処理
             msg_no_devices="Wi-Fiデバイスが見つかりません。終了します。"
             msg_band="デバイス %s (帯域: %s)"
             msg_enter_ssid="SSIDを入力してください: "
@@ -298,18 +283,6 @@ set_wifi_ssid_password() {
             msg_invalid="無効な入力です。y または n を入力してください。"
             ;;
         en)
-            msg_no_devices="No Wi-Fi devices found. Exiting."
-            msg_band="Device %s (Band: %s)"
-            msg_enter_ssid="Enter SSID: "
-            msg_enter_password="Enter password (8 or more characters): "
-            msg_password_invalid="Password must be at least 8 characters long."
-            msg_updated="Device %s settings have been updated."
-            msg_select_band="Enable band %s on device %s? (y/n): "
-            msg_confirm="Configuration: SSID = %s, Password = %s. Is this correct? (y/n): "
-            msg_reenter="Please re-enter the information."
-            msg_invalid="Invalid input. Please enter 'y' or 'n'."
-            ;;
-        *)
             msg_no_devices="No Wi-Fi devices found. Exiting."
             msg_band="Device %s (Band: %s)"
             msg_enter_ssid="Enter SSID: "

@@ -1,7 +1,7 @@
 #!/bin/sh
 # License: CC0
 # OpenWrt >= 19.07
-# 202502022215-3
+# 202502031417-10
 # openwrt-config.sh
 #
 # このスクリプトは、OpenWrt 用のメインメニューおよびシステム情報表示、
@@ -50,8 +50,7 @@ download_and_execute_common() {
 
 #########################################################################
 # get_system_info
-#  システムのメモリ、フラッシュ、USB 状態などの情報を取得し、
-#  グローバル変数 MEM_USAGE、FLASH_INFO、USB_STATUS_XXX に設定する。
+#  システム情報 (メモリ、フラッシュ、USB 状態等) を取得し、グローバル変数に設定する。
 #########################################################################
 get_system_info() {
     local _mem_total _mem_free
@@ -59,8 +58,8 @@ get_system_info() {
     _mem_free=$(grep MemAvailable /proc/meminfo | awk '{print $2 / 1024 " MB"}')
     MEM_USAGE="${_mem_free} / ${_mem_total}"
     FLASH_INFO=$(df -h | grep '/overlay' | head -n 1 | awk '{print $4 " / " $2}')
+
     local lang="$SELECTED_LANGUAGE"
-    
     case "$lang" in
         ja)
             USB_STATUS="検出済み"
@@ -96,7 +95,6 @@ get_system_info() {
             ;;
     esac
 
-    # USB接続状況に応じて表示
     if lsusb >/dev/null 2>&1; then
         USB_STATUS_RESULT="$USB_STATUS"
     else
@@ -106,30 +104,9 @@ get_system_info() {
     full_info=$(country_full_info)
 }
 
-XXXXX_get_system_info() {
-    local _mem_total _mem_free
-    _mem_total=$(grep MemTotal /proc/meminfo | awk '{print $2 / 1024 " MB"}')
-    _mem_free=$(grep MemAvailable /proc/meminfo | awk '{print $2 / 1024 " MB"}')
-    MEM_USAGE="${_mem_free} / ${_mem_total}"
-    FLASH_INFO=$(df -h | grep '/overlay' | head -n 1 | awk '{print $4 " / " $2}')
-    if lsusb >/dev/null 2>&1; then
-        USB_STATUS_EN="Detected"
-        USB_STATUS_JA="検出済み"
-        USB_STATUS_ZH_CN="已检测"
-        USB_STATUS_ZH_TW="已檢測"
-    else
-        USB_STATUS_EN="Not Detected"
-        USB_STATUS_JA="未検出"
-        USB_STATUS_ZH_CN="未检测"
-        USB_STATUS_ZH_TW="未檢測"
-    fi
-    full_info=$(country_full_info)
-}
-
 #########################################################################
 # display_info
-#  システム情報 (メモリ、フラッシュ、USB 状態、ディレクトリ、OpenWrt バージョン、ゾーン名、ダウンローダー) を
-#  言語に応じて表示する。
+#  システム情報を各言語に応じて表示する。
 #########################################################################
 display_info() {
     local lang="$SELECTED_LANGUAGE"
@@ -138,7 +115,7 @@ display_info() {
         ja)
             echo -e "$(color "white" "揮発性主記憶装置 (残量/総容量): ${MEM_USAGE}")"
             echo -e "$(color "white" "不揮発性半導体記憶装置 (残量/総容量): ${FLASH_INFO}")"
-            echo -e "$(color "white" "汎用直列伝送路: ${USB_STATUS_JA}")"
+            echo -e "$(color "white" "汎用直列伝送路: ${USB_STATUS}")"
             echo -e "$(color "white" "統一資源位置指定子: ${BASE_URL}")"
             echo -e "$(color "white" "階層式記録素子構造: ${BASE_DIR}")"
             echo -e "$(color "white" "オープンダブルアールティー世代: ${RELEASE_VERSION}")"
@@ -148,7 +125,7 @@ display_info() {
         zh-cn)
             echo -e "$(color "white" "易失性主存储装置 (剩余/总容量): ${MEM_USAGE}")"
             echo -e "$(color "white" "非易失性半导体存储装置 (剩余/总容量): ${FLASH_INFO}")"
-            echo -e "$(color "white" "通用串行传输路径: ${USB_STATUS_ZH_CN}")"
+            echo -e "$(color "white" "通用串行传输路径: ${USB_STATUS}")"
             echo -e "$(color "white" "统一资源定位符: ${BASE_URL}")"
             echo -e "$(color "white" "分层式记录单元结构: ${BASE_DIR}")"
             echo -e "$(color "white" "欧鹏达布里阿尔提版本: ${RELEASE_VERSION}")"
@@ -158,7 +135,7 @@ display_info() {
         zh-tw)
             echo -e "$(color "white" "揮發性主記憶體裝置 (剩餘/總容量): ${MEM_USAGE}")"
             echo -e "$(color "white" "非揮發性半導體記憶體裝置 (剩餘/總容量): ${FLASH_INFO}")"
-            echo -e "$(color "white" "通用串列傳輸路徑: ${USB_STATUS_ZH_TW}")"
+            echo -e "$(color "white" "通用串列傳輸路徑: ${USB_STATUS}")"
             echo -e "$(color "white" "統一資源定位符: ${BASE_URL}")"
             echo -e "$(color "white" "階層式記錄元件結構: ${BASE_DIR}")"
             echo -e "$(color "white" "歐彭達布里阿爾提版本: ${RELEASE_VERSION}")"
@@ -168,7 +145,7 @@ display_info() {
         id)
             echo -e "$(color "white" "Memori Utama Volatil (Sisa/Total): ${MEM_USAGE}")"
             echo -e "$(color "white" "Penyimpanan Semikonduktor Non-Volatil (Sisa/Total): ${FLASH_INFO}")"
-            echo -e "$(color "white" "Jalur Transmisi Serial Universal: ${USB_STATUS_ID}")"
+            echo -e "$(color "white" "Jalur Transmisi Serial Universal: ${USB_STATUS}")"
             echo -e "$(color "white" "Penentu Lokasi Sumber Daya Seragam: ${BASE_URL}")"
             echo -e "$(color "white" "Struktur Unit Perekaman Berjenjang: ${BASE_DIR}")"
             echo -e "$(color "white" "Versi Open Double R T: ${RELEASE_VERSION}")"
@@ -178,7 +155,7 @@ display_info() {
         ko)
             echo -e "$(color "white" "휘발성 주기억 장치 (남은 용량/총 용량): ${MEM_USAGE}")"
             echo -e "$(color "white" "비휘발성 반도체 저장 장치 (남은 용량/총 용량): ${FLASH_INFO}")"
-            echo -e "$(color "white" "범용 직렬 전송 경로: ${USB_STATUS_KO}")"
+            echo -e "$(color "white" "범용 직렬 전송 경로: ${USB_STATUS}")"
             echo -e "$(color "white" "통합 자원 위치 지정자: ${BASE_URL}")"
             echo -e "$(color "white" "계층형 기록 장치 구조: ${BASE_DIR}")"
             echo -e "$(color "white" "오픈더블알티 버전: ${RELEASE_VERSION}")"
@@ -188,7 +165,7 @@ display_info() {
         de)
             echo -e "$(color "white" "Flüchtiger Hauptspeicher (Frei/Gesamt): ${MEM_USAGE}")"
             echo -e "$(color "white" "Nichtflüchtiger Halbleiterspeicher (Frei/Gesamt): ${FLASH_INFO}")"
-            echo -e "$(color "white" "Universelle Serielle Übertragungsstrecke: ${USB_STATUS_DE}")"
+            echo -e "$(color "white" "Universelle Serielle Übertragungsstrecke: ${USB_STATUS}")"
             echo -e "$(color "white" "Einheitlicher Ressourcen-Lokalisierer: ${BASE_URL}")"
             echo -e "$(color "white" "Hierarchische Aufzeichnungsstruktur: ${BASE_DIR}")"
             echo -e "$(color "white" "Open Double R T Version: ${RELEASE_VERSION}")"
@@ -198,7 +175,7 @@ display_info() {
         ru)
             echo -e "$(color "white" "Оперативное запоминающее устройство (Свободно/Всего): ${MEM_USAGE}")"
             echo -e "$(color "white" "Неволатильное полупроводниковое хранилище (Свободно/Всего): ${FLASH_INFO}")"
-            echo -e "$(color "white" "Универсальная последовательная передача: ${USB_STATUS_RU}")"
+            echo -e "$(color "white" "Универсальная последовательная передача: ${USB_STATUS}")"
             echo -e "$(color "white" "Унифицированный указатель ресурса: ${BASE_URL}")"
             echo -e "$(color "white" "Иерархическая структура записей: ${BASE_DIR}")"
             echo -e "$(color "white" "Версия Оупен Дабл Ар Ти: ${RELEASE_VERSION}")"
@@ -208,7 +185,7 @@ display_info() {
         en|*)
             echo -e "$(color "white" "Volatile Primary Memory (Free/Total): ${MEM_USAGE}")"
             echo -e "$(color "white" "Non-Volatile Semiconductor Storage (Free/Total): ${FLASH_INFO}")"
-            echo -e "$(color "white" "Universal Serial Bus: ${USB_STATUS_EN}")"
+            echo -e "$(color "white" "Universal Serial Bus: ${USB_STATUS}")"
             echo -e "$(color "white" "Uniform Resource Locator: ${BASE_URL}")"
             echo -e "$(color "white" "Hierarchical File Structure: ${BASE_DIR}")"
             echo -e "$(color "white" "OpenWrt Generation: ${RELEASE_VERSION}")"
@@ -218,127 +195,23 @@ display_info() {
     esac
 }
 
-get_message_openwrt_config() {
-    local lang="$SELECTED_LANGUAGE"
-    local key="$1"
-    case "$lang" in
-        ja)
-            case "$key" in
-                menu_internet) echo "インターネット設定" ;;
-                menu_system)   echo "システム初期設定" ;;
-                menu_package)  echo "推奨パッケージインストール" ;;
-                menu_adblock)  echo "広告ブロッカーインストール設定" ;;
-                menu_ap)       echo "アクセスポイント設定" ;;
-                menu_other)    echo "その他のスクリプト設定" ;;
-                menu_exit)     echo "スクリプト終了" ;;
-                menu_delete)   echo "スクリプト削除終了" ;;
-                *)             echo "未定義のメッセージ: $key" ;;
-            esac
-            ;;
-        zh-cn)
-            case "$key" in
-                menu_internet) echo "互联网设置" ;;
-                menu_system)   echo "系统初始设置" ;;
-                menu_package)  echo "推荐安装包" ;;
-                menu_adblock)  echo "广告拦截器设置" ;;
-                menu_ap)       echo "访问点设置" ;;
-                menu_other)    echo "其他脚本设置" ;;
-                menu_exit)     echo "退出脚本" ;;
-                menu_delete)   echo "删除脚本并退出" ;;
-                *)             echo "Undefined message: $key" ;;
-            esac
-            ;;
-        zh-tw)
-            case "$key" in
-                menu_internet) echo "網路設定" ;;
-                menu_system)   echo "系統初始設定" ;;
-                menu_package)  echo "推薦安裝包" ;;
-                menu_adblock)  echo "廣告攔截器設定" ;;
-                menu_ap)       echo "連接點設定" ;;
-                menu_other)    echo "其他腳本設定" ;;
-                menu_exit)     echo "退出腳本" ;;
-                menu_delete)   echo "移除腳本並退出" ;;
-                *)             echo "Undefined message: $key" ;;
-            esac
-            ;;
-        id)
-            case "$key" in
-                menu_internet) echo "Pengaturan Internet" ;;
-                menu_system)   echo "Pengaturan Sistem Awal" ;;
-                menu_package)  echo "Instalasi Paket yang Direkomendasikan" ;;
-                menu_adblock)  echo "Pengaturan Pemblokir Iklan" ;;
-                menu_ap)       echo "Pengaturan Titik Akses" ;;
-                menu_other)    echo "Pengaturan Skrip Lainnya" ;;
-                menu_exit)     echo "Keluar dari Skrip" ;;
-                menu_delete)   echo "Hapus skrip dan keluar" ;;
-                *)             echo "Undefined message: $key" ;;
-            esac
-            ;;
-        ko)
-            case "$key" in
-                menu_internet) echo "인터넷 설정" ;;
-                menu_system)   echo "시스템 초기 설정" ;;
-                menu_package)  echo "추천 패키지 설치" ;;
-                menu_adblock)  echo "광고 차단기 설치 설정" ;;
-                menu_ap)       echo "액세스 포인트 설정" ;;
-                menu_other)    echo "기타 스크립트 설정" ;;
-                menu_exit)     echo "스크립트 종료" ;;
-                menu_delete)   echo "스크립트 삭제 및 종료" ;;
-                *)             echo "Undefined message: $key" ;;
-            esac
-            ;;
-        de)
-            case "$key" in
-                menu_internet) echo "Interneteinstellungen" ;;
-                menu_system)   echo "Erste Systemeinstellungen" ;;
-                menu_package)  echo "Empfohlene Paketinstallation" ;;
-                menu_adblock)  echo "Werbeblocker-Einstellungen" ;;
-                menu_ap)       echo "Zugangspunkt-Einstellungen" ;;
-                menu_other)    echo "Andere Skripteinstellungen" ;;
-                menu_exit)     echo "Skript beenden" ;;
-                menu_delete)   echo "Skript löschen und beenden" ;;
-                *)             echo "Undefined message: $key" ;;
-            esac
-            ;;
-        ru)
-            case "$key" in
-                menu_internet) echo "Настройки интернета" ;;
-                menu_system)   echo "Начальные настройки системы" ;;
-                menu_package)  echo "Рекомендуемая установка пакетов" ;;
-                menu_adblock)  echo "Настройки блокировки рекламы" ;;
-                menu_ap)       echo "Настройки точки доступа" ;;
-                menu_other)    echo "Другие настройки скриптов" ;;
-                menu_exit)     echo "Выход из скрипта" ;;
-                menu_delete)   echo "Удалить скрипт и выйти" ;;
-                *)             echo "Undefined message: $key" ;;
-            esac
-            ;;
-        en|*)
-            case "$key" in
-                menu_internet) echo "Internet Configuration" ;;
-                menu_system)   echo "Initial System Settings" ;;
-                menu_package)  echo "Recommended Package Installation" ;;
-                menu_adblock)  echo "Ad blocker installation settings" ;;
-                menu_ap)       echo "Access Point Settings" ;;
-                menu_other)    echo "Other Script Settings" ;;
-                menu_exit)     echo "Exit Script" ;;
-                menu_delete)   echo "Remove script and exit" ;;
-                *)             echo "Undefined message: $key" ;;
-            esac
-            ;;
-    esac
-}
+#########################################################################
+# get_message_openwrt_config
+#  openwrt-config.sh 固有のメインメニュー用文言を返す関数
+#  → ここでは各メニュー項目は main_menu 内で直接定義しているので、
+#     この関数自体は不要となり、削除しています。
+#########################################################################
+# (本来の共通メッセージは common-functions.sh の get_message で管理)
 
 #########################################################################
 # main_menu
 #  メインメニューを表示し、ユーザーの選択を受け付ける。
-#  各メニュー項目の選択に応じて、対応する処理 (menu_option) を呼び出す。
 #########################################################################
 main_menu() {
     local lang="$SELECTED_LANGUAGE"
-    local MENU1 MENU2 MENU3 MENU4 MENU5 MENU6 MENU00 MENU01 MENU02 SELECT1
-    local ACTION1 ACTION2 ACTION3 ACTION4 ACTION5 ACTION6 ACTION00 ACTION01 ACTION02
-    local TARGET1 TARGET2 TARGET3 TARGET4 TARGET5 TARGET6 TARGET00 TARGET01 TARGET02
+    local MENU1 MENU2 MENU3 MENU4 MENU5 MENU6 MENU00 MENU01 MENU02 MENU03 SELECT1
+    local ACTION1 ACTION2 ACTION3 ACTION4 ACTION5 ACTION6 ACTION00 ACTION01 ACTION02 ACTION03
+    local TARGET1 TARGET2 TARGET3 TARGET4 TARGET5 TARGET6 TARGET02 TARGET03
     local option
 
     case "$lang" in
@@ -433,7 +306,7 @@ main_menu() {
             MENU03="Сброс"
             SELECT1="Пожалуйста, выберите опцию: "
             ;;
-         en|*) # 英語とその他すべての未定義言語の処理
+        en|*)
             MENU1="Internet settings (Japan Only)"
             MENU2="Initial System Settings"
             MENU3="Recommended Package Installation"
@@ -458,7 +331,7 @@ main_menu() {
     ACTION01="delete"
     ACTION02="download" ; TARGET02="country-zone.sh"
     ACTION03="download" ; TARGET03="aios --reset"
-    
+
     while :; do
         echo -e "$(color "white" "------------------------------------------------------")"
         echo -e "$(color "blue" "[i]: ${MENU1}")"
@@ -490,7 +363,6 @@ main_menu() {
 
 #########################################################################
 # メイン処理の開始
-#  以下の処理を順次実行して、システム情報表示およびメインメニューを起動する。
 #########################################################################
 download_country_zone
 download_and_execute_common
@@ -498,5 +370,4 @@ check_common "$INPUT_LANG"
 country_zone
 get_system_info
 display_info
-get_message_openwrt_config
 main_menu

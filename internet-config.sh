@@ -49,13 +49,52 @@ download_and_execute_common() {
         handle_error "Failed to source common-functions.sh"
 }
 
-#-----------------------------------------------------------------
-# 外部ファイルの読み込みと初期化
-#-----------------------------------------------------------------
-download_and_execute_common
-check_common "$INPUT_LANG"
-download_country_zone
-country_zone
+#########################################################################
+# 内部定義: get_message_Internet_config (多言語対応メッセージ)
+# ※ 外部の get_message_Internet_config があっても、ここで再定義することで内部実装を優先させる
+#########################################################################
+get_message_Internet_config() {
+    local lang="$SELECTED_LANGUAGE"
+    local key="$1"
+    case "$lang" in
+        en)
+            case "$key" in
+                internet_config_title)         echo "Internet Configuration" ;;
+                menu_map_e)                    echo "MAP-E Configuration" ;;
+                menu_nuro)                     echo "NURO MAP-E Configuration" ;;
+                menu_transix)                  echo "DS-Lite (transix) Configuration" ;;
+                menu_xpass)                    echo "DS-Lite (xpass) Configuration" ;;
+                menu_v6connect)                echo "DS-Lite (v6connect) Configuration" ;;
+                menu_pppoe)                    echo "PPPoE Configuration" ;;
+                menu_exit)                     echo "Exit" ;;
+                menu_select_prompt)            echo "Please select: " ;;
+                invalid_option)                echo "Invalid option" ;;
+                # IPv4 と IPv6 のユーザー名・パスワード入力は統一
+                pppoe_ipv4_username_prompt|pppoe_ipv6_username_prompt) echo "Please enter your username:" ;;
+                pppoe_ipv4_password_prompt|pppoe_ipv6_password_prompt) echo "Please enter your password:" ;;
+                *)                             echo "Undefined message: $key" ;;
+            esac
+            ;;
+        *)
+            case "$key" in
+                internet_config_title)         echo "インターネット設定" ;;
+                menu_map_e)                    echo "MAP-E設定" ;;
+                menu_nuro)                     echo "NURO光 MAP-E設定" ;;
+                menu_transix)                  echo "DS-Lite (transix) 設定" ;;
+                menu_xpass)                    echo "DS-Lite (xpass) 設定" ;;
+                menu_v6connect)                echo "DS-Lite (v6connect) 設定" ;;
+                menu_pppoe)                    echo "PPPoE設定" ;;
+                menu_exit)                     echo "終了" ;;
+                menu_select_prompt)            echo "選択してください: " ;;
+                invalid_option)                echo "無効なオプションです" ;;
+                # IPv4 と IPv6 のユーザー名・パスワード入力は統一
+                pppoe_ipv4_username_prompt|pppoe_ipv6_username_prompt) echo "ユーザー名を入力してください:" ;;
+                pppoe_ipv4_password_prompt|pppoe_ipv6_password_prompt) echo "パスワードを入力してください:" ;;
+                *)                             echo "未定義のメッセージ: $key" ;;
+            esac
+            ;;
+    esac
+}
 
 #########################################################################
 # main_menu_internet
@@ -129,6 +168,13 @@ main_menu_internet() {
     done
 }
 
+#-----------------------------------------------------------------
+# 外部ファイルの読み込みと初期化
+#-----------------------------------------------------------------
+download_and_execute_common
+check_common "$INPUT_LANG"
+download_country_zone
+country_zone
 #########################################################################
 # エントリーポイント
 #########################################################################

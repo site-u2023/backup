@@ -12,7 +12,7 @@
 #  4. デバイス名・パスワードの設定 (set_device_name_password)
 #  5. Wi-Fi SSID・パスワードの設定 (set_wifi_ssid_password)
 #  6. システム全体の設定 (set_device)
-echo 202520202319-39
+echo system-config.sh Last update 202502031310-1
 
 # 定数の設定
 BASE_URL="https://raw.githubusercontent.com/site-u2023/aios/main"
@@ -126,6 +126,41 @@ select_timezone() {
 # information: country_zone で取得済みのゾーン情報を元にシステム情報を表示する
 #########################################################################
 information() {
+    local lang="$SELECTED_LANGUAGE"
+    local country_data
+
+    # 選択された国の情報を取得、最初の一行だけを使用
+    country_data=$(sh /tmp/aios/country-zone.sh "$SELECTED_COUNTRY" "all" | head -n 1)
+
+    # データの分割と抽出
+    country_name=$(echo "$country_data" | awk '{print $1}')
+    display_name=$(echo "$country_data" | awk '{print $2}')
+    language_code=$(echo "$country_data" | awk '{print $3}')
+    country_code=$(echo "$country_data" | awk '{print $4}')
+    timezones=$(echo "$country_data" | sed 's/.*;//' | tr ',' ' ')
+
+    case "$lang" in
+        en)
+            echo -e "$(color white "Country: $country_name")"
+            echo -e "$(color white "Display Name: $display_name")"
+            echo -e "$(color white "Language Code: $language_code")"
+            echo -e "$(color white "Country Code: $country_code")"
+            echo -e "$(color white "Available Time Zones:")"
+            ;;
+        ja)
+            echo -e "$(color white "国名: $country_name")"
+            echo -e "$(color white "表示名: $display_name")"
+            echo -e "$(color white "言語コード: $language_code")"
+            echo -e "$(color white "国コード: $country_code")"
+            echo -e "$(color white "利用可能なタイムゾーン:")"
+            ;;
+        *)
+            handle_error "Unsupported language: $lang"
+            ;;
+    esac
+}
+
+XXXXXinformation() {
     local lang="$SELECTED_LANGUAGE"
     local country_data
 

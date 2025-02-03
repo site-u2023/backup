@@ -9,9 +9,7 @@
 #
 # Multi-language support (ja / en) is now included in this file.
 #
-# Last update: 202502032202-1
-
-echo "openwrt-config.sh Last update 202502032202-2"
+echo "internet-config.sh Last update 202502032202-2"
 
 #-----------------------------------------------------------------
 # 多言語対応メッセージ定義 (common-functions.sh からの抜粋・統合)

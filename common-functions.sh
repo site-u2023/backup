@@ -319,7 +319,7 @@ menu_option() {
             fi
             ;;
         "exit")
-            if ask_confirmation "exit"; then
+            if ask_confirmation "menu_exit"; then
                 show_notification "exit"
                 exit 0
             else

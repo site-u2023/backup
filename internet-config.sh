@@ -2,20 +2,20 @@
 # License: CC0
 # OpenWrt >= 19.07
 #
-# internet-config.sh
+# internet‑config.sh
 #
 # このスクリプトは、MAP‑E、DS‑Lite、PPPoE などの各種インターネット接続設定メニューを
 # 単一ファイル内で完結させる例です。
 #
 # ※ 外部の common‑functions.sh からは、color、ask_confirmation、show_notification、check_common
-#    などの関数および get_message（共通メッセージ管理）を利用します。
+#    などの関数および共通メッセージ管理関数 get_message を利用します。
 #
 echo "internet‑config.sh Last update 202502032202‑11"
 
 #-----------------------------------------------------------------
 # 基本設定
 #-----------------------------------------------------------------
-BASE_URL="https://raw.githubusercontent.com/site‑u2023/aios/main"
+BASE_URL="https://raw.githubusercontent.com/site-u2023/aios/main"
 BASE_DIR="/tmp/aios"
 SUPPORTED_VERSIONS="19 21 22 23 24 SN"
 SUPPORTED_LANGUAGES="en ja zh-cn zh-tw id ko de ru"
@@ -59,8 +59,8 @@ download_country_zone
 country_zone
 
 #########################################################################
-# ※ 以前は get_message_Internet_config を定義していましたが、
-#     今回は共通の get_message を利用するため、削除します。
+# ※ 以前は独自の get_message_Internet_config を定義していましたが、
+#     共通の get_message を利用するため、削除しています。
 #########################################################################
 
 #########################################################################
@@ -68,18 +68,19 @@ country_zone
 #########################################################################
 main_menu_internet() {
     # 共通文言は get_message 関数から取得
-    title="$(get_message internet_title)"      # 共通キー：例 "インターネット設定" / "Internet Configuration"
-    prompt="$(get_message select_prompt)"        # 例 "選択してください:" / "Please select:"
-    invalid="$(get_message invalid_option)"      # 例 "無効なオプションです" / "Invalid option"
+    title="$(get_message internet_title)"      # 例："インターネット設定" / "Internet Configuration"
+    prompt="$(get_message select_prompt)"        # 例："選択してください:" / "Please select:"
+    invalid="$(get_message invalid_option)"      # 例："無効なオプションです" / "Invalid option"
+    exit_msg="$(get_message exit_message)"       # 例："終了" / "Exit"
 
-    # 以下は、インターネット接続固有の各メニュー項目（必要に応じて各自修正してください）
+    # インターネット接続固有の各メニュー項目（必要に応じて各自修正）
     menu_m="[m]: MAP‑E設定"
     menu_n="[n]: NURO光 MAP‑E設定"
     menu_t="[t]: DS‑Lite (transix) 設定"
     menu_x="[x]: DS‑Lite (xpass) 設定"
     menu_v="[v]: DS‑Lite (v6connect) 設定"
     menu_p="[p]: PPPoE設定"
-    menu_e="[e]: $(get_message exit_message)"  # 共通キー "exit_message" → "終了" / "Exit"
+    menu_e="[e]: ${exit_msg}"
 
     while :; do
         echo -e "$(color 'white' "-----------------------------------------------")"

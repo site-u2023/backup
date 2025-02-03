@@ -473,7 +473,7 @@ process_language_selection() {
     echo "Selected Country: $SELECTED_COUNTRY"
 }
 
-xxxxx-2-process_language_selection() {
+xxxxx_2_process_language_selection() {
     local INPUT_LANG="$1" found_entries found_entry new_input choice num_matches
 
     while true; do
@@ -544,7 +544,7 @@ xxxxx-2-process_language_selection() {
     echo "Selected Country: $SELECTED_COUNTRY"
 }
 
-XXXXXprocess_language_selection() {
+XXXXX_process_language_selection() {
     local INPUT_LANG="$1" found_entries found_entry new_input choice num_matches
     while true; do
         INPUT_LANG=$(echo "$INPUT_LANG" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')

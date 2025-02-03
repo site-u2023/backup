@@ -6,7 +6,7 @@
 #
 # 各種共通処理（ヘルプ表示、カラー出力、システム情報確認、言語選択、確認・通知メッセージの多言語対応など）を提供する。
 #
-echo common-functions.sh Last update 202502031310-9
+echo common-functions.sh Last update 202502031310-10
 
 # 基本定数の設定
 BASE_URL="${BASE_URL:-https://raw.githubusercontent.com/site-u2023/aios/main}"
@@ -44,8 +44,8 @@ print_help() {
             LANGUAGE_ARG="使用する言語コードを指定します。"
             LANGUAGE_NOTE="指定しない場合は、言語選択メニューが表示されます。"
             EXAMPLE1="言語選択メニューを起動します。"
-            EXAMPLE2="日本語でスクリプトを実行します。"
-            EXAMPLE3="キャッシュをクリアして日本語でスクリプトを実行します。"
+            EXAMPLE2="英語でスクリプトを実行します。"
+            EXAMPLE3="キャッシュをクリアして英語でスクリプトを実行します。"
             ;;
         zh-cn)
             DESCRIPTION="欧鹏达布里阿尔提封装配置软件"
@@ -54,8 +54,8 @@ print_help() {
             LANGUAGE_ARG="立即使用的语言代码。"
             LANGUAGE_NOTE="如果未提供，将显示语言选择菜单。"
             EXAMPLE1="启动语言选择菜单。"
-            EXAMPLE2="使用中文（简体）运行脚本。"
-            EXAMPLE3="清除缓存并使用中文（简体）运行脚本。"
+            EXAMPLE2="使用英语运行脚本。"
+            EXAMPLE3="清除缓存并使用英语运行脚本。"
             ;;
         zh-tw)
             DESCRIPTION="歐彭達布里阿爾提專用設定軟體"
@@ -64,8 +64,8 @@ print_help() {
             LANGUAGE_ARG="立即使用的語言代碼。"
             LANGUAGE_NOTE="如果未提供，將顯示語言選擇選單。"
             EXAMPLE1="啟動語言選擇選單。"
-            EXAMPLE2="使用中文（繁體）執行腳本。"
-            EXAMPLE3="清除快取並使用中文（繁體）執行腳本。"
+            EXAMPLE2="以英文執行腳本。"
+            EXAMPLE3="清除快取並以英文執行腳本。"
             ;;
         id)
             DESCRIPTION="Perangkat lunak konfigurasi khusus untuk OpenWrt"
@@ -74,8 +74,8 @@ print_help() {
             LANGUAGE_ARG="Kode bahasa yang akan digunakan segera."
             LANGUAGE_NOTE="Jika tidak diberikan, menu pemilihan bahasa akan ditampilkan."
             EXAMPLE1="Menjalankan menu pemilihan bahasa."
-            EXAMPLE2="Menjalankan skrip dalam bahasa Indonesia."
-            EXAMPLE3="Menghapus cache dan menjalankan skrip dalam bahasa Indonesia."
+            EXAMPLE2="Menjalankan skrip dalam bahasa Inggris."
+            EXAMPLE3="Menghapus cache dan menjalankan skrip dalam bahasa Inggris."
             ;;
         ko)
             DESCRIPTION="OpenWrt 전용 설정 소프트웨어"
@@ -84,8 +84,8 @@ print_help() {
             LANGUAGE_ARG="즉시 사용할 언어 코드."
             LANGUAGE_NOTE="지정하지 않으면 언어 선택 메뉴가 표시됩니다."
             EXAMPLE1="언어 선택 메뉴를 실행합니다."
-            EXAMPLE2="한국어로 스크립트를 실행합니다."
-            EXAMPLE3="캐시를 삭제하고 한국어로 스크립트를 실행합니다."
+            EXAMPLE2="영어로 스크립트를 실행합니다."
+            EXAMPLE3="캐시를 삭제하고 영어로 스크립트를 실행합니다."
             ;;
         de)
             DESCRIPTION="Spezielle Konfigurationssoftware für OpenWrt"
@@ -94,8 +94,8 @@ print_help() {
             LANGUAGE_ARG="Sprachcode, der sofort verwendet wird."
             LANGUAGE_NOTE="Falls nicht angegeben, wird ein Sprachwahlmenü angezeigt."
             EXAMPLE1="Startet das Sprachwahlmenü."
-            EXAMPLE2="Führt das Skript in deutscher Sprache aus."
-            EXAMPLE3="Löscht den Cache und führt das Skript in deutscher Sprache aus."
+            EXAMPLE2="Führt das Skript in englischer Sprache aus."
+            EXAMPLE3="Löscht den Cache und führt das Skript in englischer Sprache aus."
             ;;
         ru)
             DESCRIPTION="Специализированное программное обеспечение для настройки OpenWrt"
@@ -104,8 +104,8 @@ print_help() {
             LANGUAGE_ARG="Код языка для немедленного использования."
             LANGUAGE_NOTE="Если не указано, будет отображено меню выбора языка."
             EXAMPLE1="Запуск меню выбора языка."
-            EXAMPLE2="Запуск скрипта на русском языке."
-            EXAMPLE3="Очистка кэша и запуск скрипта на русском языке."
+            EXAMPLE2="Запуск скрипта на английском языке."
+            EXAMPLE3="Очистка кэша и запуск скрипта на английском языке."
             ;;
         en|*)
             DESCRIPTION="Dedicated configuration software for OpenWrt"

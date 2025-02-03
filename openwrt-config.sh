@@ -11,7 +11,7 @@
 # ・共通関数 (common-functions.sh) のダウンロードと読み込み
 # ・システム情報の取得と表示
 # ・メインメニューの表示とユーザーによる各種オプションの選択
-echo "openwrt-config.sh Last update 202502031417-14"
+echo "openwrt-config.sh Last update 202502031417-15"
 
 # 定数の設定
 BASE_URL="https://raw.githubusercontent.com/site-u2023/aios/main"
@@ -230,7 +230,7 @@ main_menu() {
     ACTION00="exit"
     ACTION01="delete"
     ACTION02="download" ; TARGET02="country-zone.sh"
-    ACTION03="download" ; TARGET03="aios --reset"
+    ACTION03="command" ; TARGET03="aios --reset"
 
     while :; do
         echo -e "$(color "white" "------------------------------------------------------")"

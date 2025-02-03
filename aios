@@ -10,7 +10,7 @@
 # ・OpenWrt バージョンのチェック、ttyd のインストール確認
 # ・各種設定スクリプト (country-zone, common-functions, openwrt-config) のダウンロードおよび実行
 #
-echo aios Last update 202502031430-2
+echo aios Last update 202502031430-3
 
 # 定数の設定
 BASE_URL="https://raw.githubusercontent.com/site-u2023/aios/main/"
@@ -29,11 +29,6 @@ banner() {
     local msg disclaimer all_in_one
 
     case "$lang" in
-        en|*) # 英語とその他すべての未定義言語の処理
-            msg="Dedicated configuration software for OpenWrt."
-            disclaimer="Disclaimer: Use this script at your own risk."
-            all_in_one="all in one scripts"
-            ;;
         ja)
             msg="オープンダブルアールティー専用設定ソフトウェア"
             disclaimer="免責事項: 本スクリプトは自己責任でご使用下さい"
@@ -49,7 +44,11 @@ banner() {
             disclaimer="免責聲明: 請自行承擔使用本脚本"
             all_in_one="全功能集成脚本"
             ;;
-
+        en|*) # 英語とその他すべての未定義言語の処理
+            msg="Dedicated configuration software for OpenWrt."
+            disclaimer="Disclaimer: Use this script at your own risk."
+            all_in_one="all in one scripts"
+            ;;
     esac
 
     echo -e "$(color "white" "                                                      ")"

@@ -375,6 +375,28 @@ normalize_language() {
 
     if [ -z "$SELECTED_LANGUAGE" ]; then
         SELECTED_LANGUAGE="en"
+        echo -e "$(color "red" "Unsupported language detected. Defaulting to English (en).")"
+        echo "$SELECTED_LANGUAGE" > "${BASE_DIR}/check_language"
+    fi
+}
+
+XXXXX_normalize_language() {
+    local CHECK_LANGUAGE READ_LANGUAGE
+    CHECK_LANGUAGE="${BASE_DIR}/check_language"
+    if [ -f "$CHECK_LANGUAGE" ]; then
+        READ_LANGUAGE=$(cat "$CHECK_LANGUAGE")
+    fi
+
+    SELECTED_LANGUAGE=""
+    for lang in $SUPPORTED_LANGUAGES; do
+        if [ "$READ_LANGUAGE" = "$lang" ]; then
+            SELECTED_LANGUAGE="$READ_LANGUAGE"
+            break
+        fi
+    done
+
+    if [ -z "$SELECTED_LANGUAGE" ]; then
+        SELECTED_LANGUAGE="en"
         echo "Language not supported. Defaulting to English (en)."
         echo "$SELECTED_LANGUAGE" > "${BASE_DIR}/check_language"
     fi

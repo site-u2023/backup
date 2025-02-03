@@ -11,7 +11,7 @@
 # ・共通関数 (common-functions.sh) のダウンロードと読み込み
 # ・システム情報の取得と表示
 # ・メインメニューの表示とユーザーによる各種オプションの選択
-echo openwrt-config.sh Last update 202502031417-1
+echo openwrt-config.sh Last update 202502031417-2
 
 # 定数の設定
 BASE_URL="https://raw.githubusercontent.com/site-u2023/aios/main"
@@ -95,8 +95,9 @@ display_info() {
             echo -e "$(color "white" "メモリ (残量/総容量): ${MEM_USAGE}")"
             echo -e "$(color "white" "フラッシュ (残量/総容量): ${FLASH_INFO}")"
             echo -e "$(color "white" "USB: ${USB_STATUS_JA}")"
-            echo -e "$(color "white" "ディレクトリ: ${BASE_DIR}")"
-            echo -e "$(color "white" "OpenWrtバージョン: ${RELEASE_VERSION}")"
+            echo -e "$(color "white" "統一資源位置指定子: ${BASE_URL}")"
+            echo -e "$(color "white" "ディレクトリリスト: ${BASE_DIR}")"
+            echo -e "$(color "white" "オープンダブルアールティーバージョン: ${RELEASE_VERSION}")"
             echo -e "$(color "white" "ゾーン: $full_info")"
             echo -e "$(color "white" "ダウンローダー: ${PACKAGE_MANAGER}")"
             ;;
@@ -153,6 +154,7 @@ main_menu() {
             MENU00="Exit Script"
             MENU01="Remove script and exit"
             MENU02="country code"
+            MENU03="reset"
             SELECT1="Select an option: "
             ;;
         ja)
@@ -165,6 +167,7 @@ main_menu() {
             MENU00="スクリプト終了"
             MENU01="スクリプト削除終了"
             MENU02="カントリーコード"
+            MENU03="リセット"
             SELECT1="選択してください: "
             ;;
         zh-cn)
@@ -177,6 +180,7 @@ main_menu() {
             MENU00="退出脚本"
             MENU01="删除脚本并退出"
             MENU02="国码"
+            MENU03="重置"
             SELECT1="选择一个选项: "
             ;;
         zh-tw)
@@ -189,6 +193,7 @@ main_menu() {
             MENU00="退出脚本"
             MENU01="移除脚本並退出"
             MENU02="國碼"
+            MENU03="重設"
             SELECT1="選擇一個選項: "
             ;;
     esac
@@ -201,8 +206,9 @@ main_menu() {
     ACTION6="download" ; TARGET6="etc-config.sh"
     ACTION00="exit"
     ACTION01="delete"
-    ACTION02="download" ; TARGET02="country_timezone.sh"
-
+    ACTION02="download" ; TARGET02="country-zone.sh"
+    ACTION03="download" ; TARGET03="aios --reset"
+    
     while :; do
         echo -e "$(color "white" "------------------------------------------------------")"
         echo -e "$(color "blue" "[i]: ${MENU1}")"
@@ -225,7 +231,8 @@ main_menu() {
             "o") menu_option "${ACTION6}" "${MENU6}" "${TARGET6}" ;;
             "e") menu_option "${ACTION00}" "${MENU00}" ;;
             "d") menu_option "${ACTION01}" "${MENU01}" ;;
-            "cc") menu_option "${ACTION02}" "${MENU02}" "${TARGET02}" ;;
+            "cz") menu_option "${ACTION02}" "${MENU02}" "${TARGET02}" ;;
+            "reset") menu_option "${ACTION03}" "${MENU03}" "${TARGET03}" ;;
             *) echo -e "$(color "red" "Invalid option. Please try again.")" ;;
         esac
     done

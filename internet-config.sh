@@ -10,7 +10,7 @@
 # ※ 外部の common-functions.sh からは、color、ask_confirmation、show_notification、check_common
 #    などの関数を利用しますが、get_message は本スクリプト内に保持します。
 #
-echo "internet-config.sh Last update 202502032202-5"
+echo "internet-config.sh Last update 202502032202-"6
 
 #-----------------------------------------------------------------
 # 基本設定
@@ -20,13 +20,12 @@ BASE_DIR="/tmp/aios"
 SUPPORTED_VERSIONS="19 21 22 23 24 SN"
 SUPPORTED_LANGUAGES="en ja zh-cn zh-tw id ko de ru"
 INPUT_LANG="$1"
-# ※ なお、LINKED 変数がセットされている場合は、openwrt-config.sh からリンクで呼ばれているものとみなす
+# ※ LINKED 変数がセットされている場合は、openwrt-config.sh からリンクで呼ばれているとみなす
 
 #########################################################################
 # download_country_zone
-#  国・ゾーン情報スクリプト (country-zone.sh)
-#  を BASE_URL からダウンロードする。ダウンロードに失敗した場合は
-#  handle_error を呼び出して終了する。
+#  国・ゾーン情報スクリプト (country-zone.sh) を BASE_URL からダウンロードする。
+#  ダウンロードに失敗した場合は handle_error を呼び出して終了する。
 #########################################################################
 download_country_zone() {
     if [ ! -f "${BASE_DIR%/}/country-zone.sh" ]; then
@@ -138,16 +137,16 @@ main_menu_internet() {
     esac
 
     while :; do
-        echo -e "$(color "white" "-----------------------------------------------")"
-        echo -e "$(color "white" "$title")"
-        echo -e "$(color "blue"   "$menu_m")"
-        echo -e "$(color "yellow" "$menu_n")"
-        echo -e "$(color "green"  "$menu_t")"
-        echo -e "$(color "magenta" "$menu_x")"
-        echo -e "$(color "red"    "$menu_v")"
-        echo -e "$(color "cyan"   "$menu_p")"
-        echo -e "$(color "white" "$menu_e")"
-        echo -e "$(color "white" "-----------------------------------------------")"
+        echo -e "$(color 'white' "-----------------------------------------------")"
+        echo -e "$(color 'white' "$title")"
+        echo -e "$(color 'blue'   "$menu_m")"
+        echo -e "$(color 'yellow' "$menu_n")"
+        echo -e "$(color 'green'  "$menu_t")"
+        echo -e "$(color 'magenta' "$menu_x")"
+        echo -e "$(color 'red'    "$menu_v")"
+        echo -e "$(color 'cyan'   "$menu_p")"
+        echo -e "$(color 'white' "$menu_e")"
+        echo -e "$(color 'white' "-----------------------------------------------")"
 
         printf "%s" "$prompt"
         read option
@@ -163,20 +162,20 @@ main_menu_internet() {
                     en) echo "Exiting" ;;
                     *)  echo "スクリプト終了" ;;
                 esac
-                # LINKED が未設定なら単体利用：exit、設定されていれば openwrt.sh のメインメニューに戻る
+                # LINKED が未設定なら単体利用として exit、設定済みなら return する
                 if [ -z "$LINKED" ]; then
                     exit 0
                 else
                     return 0
                 fi
                 ;;
-            *) echo -e "$(color "red" "$(get_message invalid_option)")" ;;
+            *) echo -e "$(color 'red' "$(get_message invalid_option)")" ;;
         esac
     done
 }
 
 #########################################################################
-# 以下、各サブメニュー実装（省略はせず、前回の例と同様の実装）
+# 各サブメニュー実装
 #########################################################################
 
 # MAP-E メニュー (例: OCNバーチャルコネクト)
@@ -205,23 +204,23 @@ handle_map_e_menu() {
     esac
 
     while :; do
-        echo -e "$(color "white" "-----------------------------------------------")"
-        echo -e "$(color "white" "$submenu_title")"
-        echo -e "$(color "blue"   "$option1")"
-        echo -e "$(color "yellow" "$option2")"
-        echo -e "$(color "green"  "$option3")"
-        echo -e "$(color "magenta" "$option4")"
-        echo -e "$(color "white" "$option_back")"
-        echo -e "$(color "white" "-----------------------------------------------")"
+        echo -e "$(color 'white' "-----------------------------------------------")"
+        echo -e "$(color 'white' "$submenu_title")"
+        echo -e "$(color 'blue'   "$option1")"
+        echo -e "$(color 'yellow' "$option2")"
+        echo -e "$(color 'green'  "$option3")"
+        echo -e "$(color 'magenta' "$option4")"
+        echo -e "$(color 'white' "$option_back")"
+        echo -e "$(color 'white' "-----------------------------------------------")"
         printf "%s" "$prompt"
         read opt
         case "$opt" in
-            1) echo -e "$(color "white" "MAP-E自動設定を実行しました。")" ;;
-            2) echo -e "$(color "white" "MAP-E自動設定の削除を実行しました。")" ;;
-            3) echo -e "$(color "white" "複数MAP-E設定を実行しました。")" ;;
-            4) echo -e "$(color "white" "複数MAP-E設定の削除を実行しました。")" ;;
+            1) echo -e "$(color 'white' "MAP-E自動設定を実行しました。")" ;;
+            2) echo -e "$(color 'white' "MAP-E自動設定の削除を実行しました。")" ;;
+            3) echo -e "$(color 'white' "複数MAP-E設定を実行しました。")" ;;
+            4) echo -e "$(color 'white' "複数MAP-E設定の削除を実行しました。")" ;;
             r) break ;;
-            *) echo -e "$(color "red" "$invalid")" ;;
+            *) echo -e "$(color 'red' "$invalid")" ;;
         esac
     done
 }
@@ -241,12 +240,12 @@ handle_nuro_map() {
             ;;
     esac
 
-    echo -e "$(color "white" "$submenu_title")"
+    echo -e "$(color 'white' "$submenu_title")"
     printf "%s" "$prompt"
     read ans
     case "$ans" in
-        y|Y) echo -e "$(color "white" "$submenu_title を実行しました。")" ;;
-        *)   echo -e "$(color "white" "$cancelled")" ;;
+        y|Y) echo -e "$(color 'white' "$submenu_title を実行しました。")" ;;
+        *)   echo -e "$(color 'white' "$cancelled")" ;;
     esac
 }
 
@@ -272,19 +271,19 @@ handle_ds_lite_transix_menu() {
     esac
 
     while :; do
-        echo -e "$(color "white" "-----------------------------------------------")"
-        echo -e "$(color "white" "$submenu_title")"
-        echo -e "$(color "blue"   "$option1")"
-        echo -e "$(color "yellow" "$option2")"
-        echo -e "$(color "white" "$option_back")"
-        echo -e "$(color "white" "-----------------------------------------------")"
+        echo -e "$(color 'white' "-----------------------------------------------")"
+        echo -e "$(color 'white' "$submenu_title")"
+        echo -e "$(color 'blue'   "$option1")"
+        echo -e "$(color 'yellow' "$option2")"
+        echo -e "$(color 'white' "$option_back")"
+        echo -e "$(color 'white' "-----------------------------------------------")"
         printf "%s" "$prompt"
         read opt
         case "$opt" in
-            1) echo -e "$(color "white" "$submenu_title: 東日本設定を実行しました。")" ;;
-            2) echo -e "$(color "white" "$submenu_title: 西日本設定を実行しました。")" ;;
+            1) echo -e "$(color 'white' "$submenu_title: 東日本設定を実行しました。")" ;;
+            2) echo -e "$(color 'white' "$submenu_title: 西日本設定を実行しました。")" ;;
             r) break ;;
-            *) echo -e "$(color "red" "$invalid")" ;;
+            *) echo -e "$(color 'red' "$invalid")" ;;
         esac
     done
 }
@@ -304,12 +303,12 @@ handle_ds_lite_xpass_menu() {
             ;;
     esac
 
-    echo -e "$(color "white" "$submenu_title")"
+    echo -e "$(color 'white' "$submenu_title")"
     printf "%s" "$prompt"
     read ans
     case "$ans" in
-        y|Y) echo -e "$(color "white" "$submenu_title を実行しました。")" ;;
-        *)   echo -e "$(color "white" "$cancelled")" ;;
+        y|Y) echo -e "$(color 'white' "$submenu_title を実行しました。")" ;;
+        *)   echo -e "$(color 'white' "$cancelled")" ;;
     esac
 }
 
@@ -328,12 +327,12 @@ handle_ds_lite_v6connect_menu() {
             ;;
     esac
 
-    echo -e "$(color "white" "$submenu_title")"
+    echo -e "$(color 'white' "$submenu_title")"
     printf "%s" "$prompt"
     read ans
     case "$ans" in
-        y|Y) echo -e "$(color "white" "$submenu_title を実行しました。")" ;;
-        *)   echo -e "$(color "white" "$cancelled")" ;;
+        y|Y) echo -e "$(color 'white' "$submenu_title を実行しました。")" ;;
+        *)   echo -e "$(color 'white' "$cancelled")" ;;
     esac
 }
 
@@ -359,6 +358,46 @@ handle_pppoe_menu() {
     esac
 
     while :; do
-        echo -e "$(color "white" "-----------------------------------------------")"
-        echo -e "$(color "white" "$submenu_title")"
-        echo -e "$(color "cyan" "$o
+        echo -e "$(color 'white' "-----------------------------------------------")"
+        echo -e "$(color 'white' "$submenu_title")"
+        echo -e "$(color 'cyan' "$opt4")"
+        echo -e "$(color 'green' "$opt6")"
+        echo -e "$(color 'white' "$option_back")"
+        echo -e "$(color 'white' "-----------------------------------------------")"
+        printf "%s" "$prompt"
+        read opt
+        case "$opt" in
+            4) pppoe_config_ipv4 ;;
+            6) pppoe_config_ipv4_ipv6 ;;
+            r) break ;;
+            *) echo -e "$(color 'red' "$invalid")" ;;
+        esac
+    done
+}
+
+# PPPoE IPv4 設定処理 (仮実装)
+pppoe_config_ipv4() {
+    printf "%s " "$(get_message pppoe_ipv4_username_prompt)"
+    read username
+    printf "%s " "$(get_message pppoe_ipv4_password_prompt)"
+    read password
+    echo "IPv4設定: ユーザー名 [$username] / パスワード [$password] を実行しました。"
+}
+
+# PPPoE IPv4/IPv6 設定処理 (仮実装)
+pppoe_config_ipv4_ipv6() {
+    printf "%s " "$(get_message pppoe_ipv4_username_prompt)"
+    read username4
+    printf "%s " "$(get_message pppoe_ipv4_password_prompt)"
+    read password4
+    printf "%s " "$(get_message pppoe_ipv6_username_prompt)"
+    read username6
+    printf "%s " "$(get_message pppoe_ipv6_password_prompt)"
+    read password6
+    echo "IPv4/IPv6設定: IPv4ユーザー名 [$username4] / パスワード [$password4]、IPv6ユーザー名 [$username6] / パスワード [$password6] を実行しました。"
+}
+
+#########################################################################
+# エントリーポイント
+#########################################################################
+main_menu_internet

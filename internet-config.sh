@@ -122,8 +122,9 @@ main_menu_internet() {
                 menu_option "${ACTION_PPPOE}" "menu_pppoe" "${TARGET_PPPOE}"
                 ;;
             "e")
-                # ここでは、menu_option 内で exit アクションを処理する（共通の menu_option の exit 処理を利用）
+                # "e" オプションでは、menu_option の "return" アクションを呼び出す
                 menu_option "${ACTION_RETURN}" "$exit_msg"
+                return 0 2>/dev/null || exit 0
                 ;;
             *)
                 echo -e "$(color "red" "$(get_message invalid_option)")"

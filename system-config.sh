@@ -12,7 +12,7 @@
 #  4. デバイス名・パスワードの設定 (set_device_name_password)
 #  5. Wi-Fi SSID・パスワードの設定 (set_wifi_ssid_password)
 #  6. システム全体の設定 (set_device)
-echo system-config.sh Last update 202502031310-3
+echo system-config.sh Last update 202502031310-4
 
 # 定数の設定
 BASE_URL="https://raw.githubusercontent.com/site-u2023/aios/main"
@@ -54,14 +54,14 @@ select_timezone() {
     # 言語に応じたメッセージ設定
     case "$SELECTED_LANGUAGE" in
         en|*) # 英語とその他すべての未定義言語の処理
-            msg_timezone_single="タイムゾーン: "
-            msg_timezone_list="利用可能なタイムゾーン:"
-            msg_select_tz="タイムゾーンの番号を選択してください: "
-            ;;
-        en)
             msg_timezone_single="Time Zone: "
             msg_timezone_list="Available Time Zones:"
             msg_select_tz="Select the time zone by number: "
+            ;;
+        ja)
+            msg_timezone_single="タイムゾーン: "
+            msg_timezone_list="利用可能なタイムゾーン:"
+            msg_select_tz="タイムゾーンの番号を選択してください: "
             ;;
         zh-cn)
             msg_timezone_single="时区: "
@@ -224,6 +224,20 @@ set_device_name_password() {
             msg_success="パスワードとデバイス名が正常に更新されました。"
             msg_cancel="設定がキャンセルされました。"
             ;;
+        zh-cn)
+            msg_device="请输入新的设备名称: "
+            msg_password="请输入新的密码: "
+            msg_confirm="您确认以下设置吗？ (y/n): "
+            msg_success="密码和设备名称已成功更新。"
+            msg_cancel="操作已取消。"
+            ;;
+        zh-tw)
+            msg_device="請輸入新的設備名稱: "
+            msg_password="請輸入新的密碼: "
+            msg_confirm="您確認以下設定嗎？ (y/n): "
+            msg_success="密碼和設備名稱已成功更新。"
+            msg_cancel="操作已取消。"
+            ;;
     esac
 
     echo "Starting device name and password update process..."
@@ -271,6 +285,18 @@ set_wifi_ssid_password() {
     lang="$SELECTED_LANGUAGE"
     case "$lang" in
         en|*) # 英語とその他すべての未定義言語の処理
+            msg_no_devices="No Wi-Fi devices found. Exiting."
+            msg_band="Device %s (Band: %s)"
+            msg_enter_ssid="Enter SSID: "
+            msg_enter_password="Enter password (8 or more characters): "
+            msg_password_invalid="Password must be at least 8 characters long."
+            msg_updated="Device %s settings have been updated."
+            msg_select_band="Enable band %s on device %s? (y/n): "
+            msg_confirm="Configuration: SSID = %s, Password = %s. Is this correct? (y/n): "
+            msg_reenter="Please re-enter the information."
+            msg_invalid="Invalid input. Please enter 'y' or 'n'."
+            ;;
+        ja)
             msg_no_devices="Wi-Fiデバイスが見つかりません。終了します。"
             msg_band="デバイス %s (帯域: %s)"
             msg_enter_ssid="SSIDを入力してください: "
@@ -282,17 +308,29 @@ set_wifi_ssid_password() {
             msg_reenter="もう一度入力してください。"
             msg_invalid="無効な入力です。y または n を入力してください。"
             ;;
-        en)
-            msg_no_devices="No Wi-Fi devices found. Exiting."
-            msg_band="Device %s (Band: %s)"
-            msg_enter_ssid="Enter SSID: "
-            msg_enter_password="Enter password (8 or more characters): "
-            msg_password_invalid="Password must be at least 8 characters long."
-            msg_updated="Device %s settings have been updated."
-            msg_select_band="Enable band %s on device %s? (y/n): "
-            msg_confirm="Configuration: SSID = %s, Password = %s. Is this correct? (y/n): "
-            msg_reenter="Please re-enter the information."
-            msg_invalid="Invalid input. Please enter 'y' or 'n'."
+        zh-cn)
+            msg_no_devices="未找到Wi-Fi设备。正在退出。"
+            msg_band="设备 %s (频段: %s)"
+            msg_enter_ssid="请输入SSID: "
+            msg_enter_password="请输入密码（8个字符以上）: "
+            msg_password_invalid="密码必须至少包含8个字符。"
+            msg_updated="设备 %s 的设置已更新。"
+            msg_select_band="启用设备 %s 的频段 %s？(y/n): "
+            msg_confirm="配置信息: SSID = %s, 密码 = %s。是否正确？(y/n): "
+            msg_reenter="请重新输入信息。"
+            msg_invalid="输入无效。请输入'y'或'n'。"
+            ;;
+        zh-tw)
+            msg_no_devices="未找到Wi-Fi裝置。正在退出。"
+            msg_band="裝置 %s (頻段: %s)"
+            msg_enter_ssid="請輸入SSID: "
+            msg_enter_password="請輸入密碼（8個字元以上）: "
+            msg_password_invalid="密碼必須至少包含8個字元。"
+            msg_updated="裝置 %s 的設定已更新。"
+            msg_select_band="啟用裝置 %s 的頻段 %s？(y/n): "
+            msg_confirm="設定資訊: SSID = %s, 密碼 = %s。是否正確？(y/n): "
+            msg_reenter="請重新輸入資訊。"
+            msg_invalid="輸入無效。請輸入'y'或'n'。"
             ;;
     esac
 

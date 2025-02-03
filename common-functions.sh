@@ -12,7 +12,7 @@ echo common-functions.sh Last update 202502031310-5
 BASE_URL="${BASE_URL:-https://raw.githubusercontent.com/site-u2023/aios/main}"
 BASE_DIR="${BASE_DIR:-/tmp/aios}"
 SUPPORTED_VERSIONS="${SUPPORTED_VERSIONS:-19 21 22 23 24 SN}"
-SUPPORTED_LANGUAGES="${SUPPORTED_LANGUAGES:-en ja zh-cn zh-tw}"
+SUPPORTED_LANGUAGES="${SUPPORTED_LANGUAGES:-en}"
 
 #########################################################################
 # エラーハンドリング関数
@@ -304,7 +304,8 @@ XXXXX_menu_option() {
 #########################################################################
 get_message() {
     local key="$1"
-    local lang="${SELECTED_LANGUAGE:-en}"
+    local lang="$SELECTED_LANGUAGE"
+
     case "$lang" in
         ja)
             case "$key" in
@@ -316,7 +317,6 @@ get_message() {
                 download_cancelled) echo "ダウンロード操作がキャンセルされました。" ;;
                 exit_complete) echo "終了操作が完了しました。" ;;
                 delete_complete) echo "削除操作が完了しました。" ;;
-                # メニュー項目の説明を追加
                 menu_internet) echo "インターネット設定" ;;
                 menu_system) echo "システム初期設定" ;;
                 menu_package) echo "推奨パッケージインストール" ;;
@@ -368,6 +368,90 @@ get_message() {
                 menu_exit) echo "退出腳本" ;;
                 menu_delete) echo "移除腳本並退出" ;;
                 *) echo "操作已完成。" ;;
+            esac
+            ;;
+        id)
+            case "$key" in
+                confirm_default) echo "Apakah Anda yakin?" ;;
+                download_success) echo "Unduhan berhasil." ;;
+                exit_cancelled) echo "Operasi keluar dibatalkan." ;;
+                delete_cancelled) echo "Operasi penghapusan dibatalkan." ;;
+                delete_success) echo "Skrip dan konfigurasi telah dihapus." ;;
+                download_cancelled) echo "Operasi unduhan dibatalkan." ;;
+                exit_complete) echo "Operasi keluar selesai." ;;
+                delete_complete) echo "Operasi penghapusan selesai." ;;
+                menu_internet) echo "Pengaturan Internet" ;;
+                menu_system) echo "Pengaturan Sistem Awal" ;;
+                menu_package) echo "Instalasi Paket yang Direkomendasikan" ;;
+                menu_adblock) echo "Pengaturan Pemasangan Pemblokir Iklan" ;;
+                menu_ap) echo "Pengaturan Titik Akses" ;;
+                menu_other) echo "Pengaturan Skrip Lainnya" ;;
+                menu_exit) echo "Keluar dari Skrip" ;;
+                menu_delete) echo "Hapus skrip dan keluar" ;;
+                *) echo "Operasi selesai." ;;
+            esac
+            ;;
+        ko)
+            case "$key" in
+                confirm_default) echo "정말로 실행하시겠습니까?" ;;
+                download_success) echo "다운로드 성공." ;;
+                exit_cancelled) echo "종료 작업이 취소되었습니다." ;;
+                delete_cancelled) echo "삭제 작업이 취소되었습니다." ;;
+                delete_success) echo "스크립트와 설정이 삭제되었습니다." ;;
+                download_cancelled) echo "다운로드 작업이 취소되었습니다." ;;
+                exit_complete) echo "종료 작업이 완료되었습니다." ;;
+                delete_complete) echo "삭제 작업이 완료되었습니다." ;;
+                menu_internet) echo "인터넷 설정" ;;
+                menu_system) echo "시스템 초기 설정" ;;
+                menu_package) echo "추천 패키지 설치" ;;
+                menu_adblock) echo "광고 차단기 설치 설정" ;;
+                menu_ap) echo "액세스 포인트 설정" ;;
+                menu_other) echo "기타 스크립트 설정" ;;
+                menu_exit) echo "스크립트 종료" ;;
+                menu_delete) echo "스크립트 삭제 및 종료" ;;
+                *) echo "작업이 완료되었습니다." ;;
+            esac
+            ;;
+        de)
+            case "$key" in
+                confirm_default) echo "Sind Sie sicher?" ;;
+                download_success) echo "Download erfolgreich." ;;
+                exit_cancelled) echo "Beenden-Vorgang abgebrochen." ;;
+                delete_cancelled) echo "Löschvorgang abgebrochen." ;;
+                delete_success) echo "Skript und Konfiguration wurden gelöscht." ;;
+                download_cancelled) echo "Download-Vorgang abgebrochen." ;;
+                exit_complete) echo "Beenden-Vorgang abgeschlossen." ;;
+                delete_complete) echo "Löschvorgang abgeschlossen." ;;
+                menu_internet) echo "Interneteinstellungen" ;;
+                menu_system) echo "Erste Systemeinstellungen" ;;
+                menu_package) echo "Empfohlene Paketinstallation" ;;
+                menu_adblock) echo "Werbeblocker-Einstellungen" ;;
+                menu_ap) echo "Zugangspunkt-Einstellungen" ;;
+                menu_other) echo "Andere Skripteinstellungen" ;;
+                menu_exit) echo "Skript beenden" ;;
+                menu_delete) echo "Skript löschen und beenden" ;;
+                *) echo "Vorgang abgeschlossen." ;;
+            esac
+            ;;
+        ru)
+            case "$key" in
+                confirm_default) echo "Вы уверены?" ;;
+                download_success) echo "Загрузка успешна." ;;
+                exit_cancelled) echo "Выход отменён." ;;
+                delete_cancelled) echo "Удаление отменено." ;;
+                delete_success) echo "Скрипт и настройки удалены." ;;
+                download_cancelled) echo "Загрузка отменена." ;;
+                exit_complete) echo "Выход завершён." ;;
+                delete_complete) echo "Удаление завершено." ;;
+                menu_internet) echo "Настройки интернета" ;;
+                menu_system) echo "Начальные настройки системы" ;;
+                menu_package) echo "Рекомендуемая установка пакетов" ;;
+                menu_adblock) echo "Настройки установки блокировщика рекламы" ;;
+                menu_ap) echo "Настройки точки доступа" ;;
+                menu_other) echo "Другие настройки скриптов" ;;
+                menu_exit) echo "Выход из скрипта" ;;
+                menu_delete) echo "Удалить скрипт и выйти" ;;
+                *) echo "Операция завершена." ;;
             esac
             ;;
         en|*)

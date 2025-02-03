@@ -10,7 +10,7 @@
 # ※ 外部の common-functions.sh からは、color、ask_confirmation、show_notification、check_common
 #    などの関数を利用しますが、get_message は本スクリプト内に保持します。
 #
-echo "internet-config.sh Last update 202502032202-7"
+echo "internet-config.sh Last update 202502032202-8"
 
 #-----------------------------------------------------------------
 # 基本設定
@@ -162,6 +162,7 @@ main_menu_internet() {
                     en) echo "Exiting" ;;
                     *)  echo "スクリプト終了" ;;
                 esac
+                unset -f get_message
                 return 0 2>/dev/null || exit 0
                 ;;
             *) echo -e "$(color 'red' "$(get_message invalid_option)")" ;;

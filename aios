@@ -71,15 +71,14 @@ banner() {
             ;;
     esac
 
-    echo -e "$(color "white" "                                                      ")"
+    echo
     echo -e "$(color "magenta" "                    ii i                              ")"
     echo -e "$(color "blue"    "         aaaa      iii       oooo      sssss          ")"
     echo -e "$(color "cyan"    "            aa      ii      oo  oo    ss              ")"
     echo -e "$(color "green"   "         aaaaa      ii      oo  oo     sssss          ")"
     echo -e "$(color "yellow"  "        aa  aa      ii      oo  oo         ss         ")"
     echo -e "$(color "red"     "         aaaaa     iiii      oooo     ssssss          ")"
-    echo -e "$(color "white" "                                                      ")"
-    echo -e "$(color "white" "                                                      ")"
+    echo
     echo -e "$(color "white" "$msg")"
     echo -e "$(color "white" "$all_in_one")"
     echo -e "$(color "red_white" "$disclaimer")"

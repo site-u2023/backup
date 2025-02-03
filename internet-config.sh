@@ -10,7 +10,7 @@
 # ※ 外部の common-functions.sh からは、color、ask_confirmation、show_notification、check_common
 #    などの関数および共通メッセージ管理関数 get_message、menu_option を利用します。
 #
-echo "internet-config.sh Last update 202502032202-16"
+echo "internet-config.sh Last update 202502032202-17"
 
 #-----------------------------------------------------------------
 # 基本設定

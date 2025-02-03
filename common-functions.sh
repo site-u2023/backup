@@ -401,6 +401,166 @@ XXXXX_menu_option() {
 # 引数: メッセージキー
 #########################################################################
 get_message() {
+    local lang="$SELECTED_LANGUAGE"
+    local key="$1"
+    case "$lang" in
+        ja)
+            case "$key" in
+                internet_title)    echo "インターネット設定" ;;
+                exit_message)      echo "終了" ;;
+                select_prompt)     echo "選択してください:" ;;
+                invalid_option)    echo "無効なオプションです" ;;
+                input_prompt)      echo "入力してください:" ;;
+                confirm_default)   echo "本当に実行しますか？" ;;
+                complete_message)  echo "完了しました。" ;;
+                cancelled_message) echo "キャンセルされました。" ;;
+                menu_system)       echo "システム初期設定" ;;
+                menu_package)      echo "推奨パッケージインストール" ;;
+                menu_adblock)      echo "広告ブロッカーインストール設定" ;;
+                menu_ap)           echo "アクセスポイント設定" ;;
+                menu_other)        echo "その他のスクリプト設定" ;;
+                menu_delete)       echo "スクリプト削除終了" ;;
+                *)                 echo "未定義のメッセージ: $key" ;;
+            esac
+            ;;
+        zh-cn)
+            case "$key" in
+                internet_title)    echo "互联网设置" ;;
+                exit_message)      echo "退出" ;;
+                select_prompt)     echo "请选择:" ;;
+                invalid_option)    echo "无效的选项" ;;
+                input_prompt)      echo "请输入:" ;;
+                confirm_default)   echo "您确定吗？" ;;
+                complete_message)  echo "完成了。" ;;
+                cancelled_message) echo "已取消。" ;;
+                menu_system)       echo "系统初始设置" ;;
+                menu_package)      echo "推荐安装包" ;;
+                menu_adblock)      echo "广告拦截器设置" ;;
+                menu_ap)           echo "访问点设置" ;;
+                menu_other)        echo "其他脚本设置" ;;
+                menu_delete)       echo "删除脚本并退出" ;;
+                *)                 echo "Undefined message: $key" ;;
+            esac
+            ;;
+        zh-tw)
+            case "$key" in
+                internet_title)    echo "網路設定" ;;
+                exit_message)      echo "退出" ;;
+                select_prompt)     echo "請選擇:" ;;
+                invalid_option)    echo "無效的選項" ;;
+                input_prompt)      echo "請輸入:" ;;
+                confirm_default)   echo "您確定嗎？" ;;
+                complete_message)  echo "完成了。" ;;
+                cancelled_message) echo "已取消。" ;;
+                menu_system)       echo "系統初始設定" ;;
+                menu_package)      echo "推薦安裝包" ;;
+                menu_adblock)      echo "廣告攔截器設定" ;;
+                menu_ap)           echo "連接點設定" ;;
+                menu_other)        echo "其他腳本設定" ;;
+                menu_delete)       echo "移除腳本並退出" ;;
+                *)                 echo "Undefined message: $key" ;;
+            esac
+            ;;
+        id)
+            case "$key" in
+                internet_title)    echo "Pengaturan Internet" ;;
+                exit_message)      echo "Keluar" ;;
+                select_prompt)     echo "Silakan pilih:" ;;
+                invalid_option)    echo "Opsi tidak valid" ;;
+                input_prompt)      echo "Silakan masukkan:" ;;
+                confirm_default)   echo "Apakah Anda yakin?" ;;
+                complete_message)  echo "Selesai." ;;
+                cancelled_message) echo "Dibatalkan." ;;
+                menu_system)       echo "Pengaturan Sistem Awal" ;;
+                menu_package)      echo "Instalasi Paket yang Direkomendasikan" ;;
+                menu_adblock)      echo "Pengaturan Pemasangan Pemblokir Iklan" ;;
+                menu_ap)           echo "Pengaturan Titik Akses" ;;
+                menu_other)        echo "Pengaturan Skrip Lainnya" ;;
+                menu_delete)       echo "Hapus skrip dan keluar" ;;
+                *)                 echo "Undefined message: $key" ;;
+            esac
+            ;;
+        ko)
+            case "$key" in
+                internet_title)    echo "인터넷 설정" ;;
+                exit_message)      echo "종료" ;;
+                select_prompt)     echo "선택하세요:" ;;
+                invalid_option)    echo "잘못된 옵션입니다" ;;
+                input_prompt)      echo "입력해 주세요:" ;;
+                confirm_default)   echo "정말로 실행하시겠습니까?" ;;
+                complete_message)  echo "완료되었습니다." ;;
+                cancelled_message) echo "취소되었습니다." ;;
+                menu_system)       echo "시스템 초기 설정" ;;
+                menu_package)      echo "추천 패키지 설치" ;;
+                menu_adblock)      echo "광고 차단기 설치 설정" ;;
+                menu_ap)           echo "액세스 포인트 설정" ;;
+                menu_other)        echo "기타 스크립트 설정" ;;
+                menu_delete)       echo "스크립트 삭제 및 종료" ;;
+                *)                 echo "Undefined message: $key" ;;
+            esac
+            ;;
+        de)
+            case "$key" in
+                internet_title)    echo "Interneteinstellungen" ;;
+                exit_message)      echo "Beenden" ;;
+                select_prompt)     echo "Bitte wählen:" ;;
+                invalid_option)    echo "Ungültige Option" ;;
+                input_prompt)      echo "Bitte eingeben:" ;;
+                confirm_default)   echo "Sind Sie sicher?" ;;
+                complete_message)  echo "Abgeschlossen." ;;
+                cancelled_message) echo "Abgebrochen." ;;
+                menu_system)       echo "Erste Systemeinstellungen" ;;
+                menu_package)      echo "Empfohlene Paketinstallation" ;;
+                menu_adblock)      echo "Werbeblocker-Einstellungen" ;;
+                menu_ap)           echo "Zugangspunkt-Einstellungen" ;;
+                menu_other)        echo "Andere Skripteinstellungen" ;;
+                menu_delete)       echo "Skript löschen und beenden" ;;
+                *)                 echo "Undefined message: $key" ;;
+            esac
+            ;;
+        ru)
+            case "$key" in
+                internet_title)    echo "Настройки интернета" ;;
+                exit_message)      echo "Выход" ;;
+                select_prompt)     echo "Пожалуйста, выберите:" ;;
+                invalid_option)    echo "Неверный вариант" ;;
+                input_prompt)      echo "Пожалуйста, введите:" ;;
+                confirm_default)   echo "Вы уверены?" ;;
+                complete_message)  echo "Завершено." ;;
+                cancelled_message) echo "Отменено." ;;
+                menu_system)       echo "Начальные настройки системы" ;;
+                menu_package)      echo "Рекомендуемая установка пакетов" ;;
+                menu_adblock)      echo "Настройки блокировки рекламы" ;;
+                menu_ap)           echo "Настройки точки доступа" ;;
+                menu_other)        echo "Другие настройки скриптов" ;;
+                menu_delete)       echo "Удалить скрипт и выйти" ;;
+                *)                 echo "Undefined message: $key" ;;
+            esac
+            ;;
+        en|*)
+            case "$key" in
+                internet_title)    echo "Internet Configuration" ;;
+                exit_message)      echo "Exit" ;;
+                select_prompt)     echo "Please select:" ;;
+                invalid_option)    echo "Invalid option" ;;
+                input_prompt)      echo "Please enter:" ;;
+                confirm_default)   echo "Are you sure?" ;;
+                complete_message)  echo "Completed." ;;
+                cancelled_message) echo "Cancelled." ;;
+                menu_system)       echo "Initial System Settings" ;;
+                menu_package)      echo "Recommended Package Installation" ;;
+                menu_adblock)      echo "Ad blocker installation settings" ;;
+                menu_ap)           echo "Access Point Settings" ;;
+                menu_other)        echo "Other Script Settings" ;;
+                menu_delete)       echo "Remove script and exit" ;;
+                *)                 echo "Undefined message: $key" ;;
+            esac
+            ;;
+    esac
+}
+
+
+XXXXX_get_message() {
     local key="$1"
     local lang="$SELECTED_LANGUAGE"
 

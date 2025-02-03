@@ -11,7 +11,7 @@
 # ・共通関数 (common-functions.sh) のダウンロードと読み込み
 # ・システム情報の取得と表示
 # ・メインメニューの表示とユーザーによる各種オプションの選択
-echo "openwrt-config.sh Last update 202502031417-11"
+echo "openwrt-config.sh Last update 202502031417-12"
 
 # 定数の設定
 BASE_URL="https://raw.githubusercontent.com/site-u2023/aios/main"
@@ -138,7 +138,6 @@ display_info() {
 #########################################################################
 main_menu() {
     local lang="$SELECTED_LANGUAGE"
-    # 固定文言はすべて get_message から取得
     MENU1="$(get_message internet_title)"
     MENU2="$(get_message menu_system)"
     MENU3="$(get_message menu_package)"
@@ -150,6 +149,7 @@ main_menu() {
     MENU02="$(get_message country_code)"
     MENU03="$(get_message reset)"
     SELECT1="$(get_message select_prompt)"
+
 
     local ACTION1 ACTION2 ACTION3 ACTION4 ACTION5 ACTION6 ACTION00 ACTION01 ACTION02 ACTION03
     local TARGET1 TARGET2 TARGET3 TARGET4 TARGET5 TARGET6 TARGET02 TARGET03

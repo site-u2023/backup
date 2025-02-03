@@ -423,6 +423,7 @@ get_message() {
                 execute_message)      echo "実行します。" ;;
                 complete_message)     echo "完了しました。" ;;
                 cancelled_message)    echo "キャンセルされました。" ;;
+                download_success)     echo "ダウンロードが成功しました。" ;;
                 *)                    echo "未定義のメッセージ: $key" ;;
             esac
             ;;
@@ -445,6 +446,7 @@ get_message() {
                 execute_message)      echo "执行中。" ;;  # または "执行します。" とするかはお好みで
                 complete_message)     echo "完成了。" ;;
                 cancelled_message)    echo "已取消。" ;;
+                download_success)     echo "ダウンロードが成功しました。" ;;
                 *)                    echo "Undefined message: $key" ;;
             esac
             ;;
@@ -467,6 +469,7 @@ get_message() {
                 execute_message)      echo "執行中。" ;;  # ※「実行します。」相当
                 complete_message)     echo "完成了。" ;;
                 cancelled_message)    echo "已取消。" ;;
+                download_success)     echo "ダウンロードが成功しました。" ;;
                 *)                    echo "Undefined message: $key" ;;
             esac
             ;;
@@ -489,6 +492,7 @@ get_message() {
                 execute_message)      echo "Eksekusi." ;;  # または "Sedang dijalankan." とする
                 complete_message)     echo "Selesai." ;;
                 cancelled_message)    echo "Dibatalkan." ;;
+                download_success)     echo "ダウンロードが成功しました。" ;;
                 *)                    echo "Undefined message: $key" ;;
             esac
             ;;
@@ -511,6 +515,7 @@ get_message() {
                 execute_message)      echo "실행합니다." ;;
                 complete_message)     echo "완료되었습니다." ;;
                 cancelled_message)    echo "취소되었습니다." ;;
+                download_success)     echo "ダウンロードが成功しました。" ;;
                 *)                    echo "Undefined message: $key" ;;
             esac
             ;;
@@ -533,6 +538,7 @@ get_message() {
                 execute_message)      echo "Ausführen." ;;
                 complete_message)     echo "Abgeschlossen." ;;
                 cancelled_message)    echo "Abgebrochen." ;;
+                download_success)     echo "ダウンロードが成功しました。" ;;
                 *)                    echo "Undefined message: $key" ;;
             esac
             ;;
@@ -555,6 +561,7 @@ get_message() {
                 execute_message)      echo "Выполняется." ;;
                 complete_message)     echo "Завершено." ;;
                 cancelled_message)    echo "Отменено." ;;
+                download_success)     echo "ダウンロードが成功しました。" ;;
                 *)                    echo "Undefined message: $key" ;;
             esac
             ;;
@@ -577,6 +584,7 @@ get_message() {
                 execute_message)      echo "Executing." ;;
                 complete_message)     echo "Completed." ;;
                 cancelled_message)    echo "Cancelled." ;;
+                download_success)     echo "ダウンロードが成功しました。" ;;
                 *)                    echo "Undefined message: $key" ;;
             esac
             ;;

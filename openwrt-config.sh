@@ -124,7 +124,6 @@ display_info() {
             echo -e "$(color "white" "自動下載管理器: ${PACKAGE_MANAGER}")"
             ;;
         *)
-        en)
             echo -e "$(color "white" "Volatile Primary Memory (Free/Total): ${MEM_USAGE}")"
             echo -e "$(color "white" "Non-Volatile Semiconductor Storage (Free/Total): ${FLASH_INFO}")"
             echo -e "$(color "white" "Universal Serial Bus: ${USB_STATUS_EN}")"

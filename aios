@@ -10,6 +10,7 @@
 # ・OpenWrt バージョンのチェック、ttyd のインストール確認
 # ・各種設定スクリプト (country-zone, common-functions, openwrt-config) のダウンロードおよび実行
 #
+echo aios Last update 202502031430-1
 
 # 定数の設定
 BASE_URL="https://raw.githubusercontent.com/site-u2023/aios/main/"

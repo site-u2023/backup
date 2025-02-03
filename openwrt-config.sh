@@ -59,8 +59,9 @@ get_system_info() {
     _mem_free=$(grep MemAvailable /proc/meminfo | awk '{print $2 / 1024 " MB"}')
     MEM_USAGE="${_mem_free} / ${_mem_total}"
     FLASH_INFO=$(df -h | grep '/overlay' | head -n 1 | awk '{print $4 " / " $2}')
-
-    case "$SELECTED_LANGUAGE" in
+    local lang="$SELECTED_LANGUAGE"
+    
+    case "$lang" in
         ja)
             USB_STATUS="検出済み"
             USB_STATUS_NOT="未検出"

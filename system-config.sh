@@ -12,7 +12,7 @@
 #  4. デバイス名・パスワードの設定 (set_device_name_password)
 #  5. Wi-Fi SSID・パスワードの設定 (set_wifi_ssid_password)
 #  6. システム全体の設定 (set_device)
-echo system-config.sh Last update 202502031310-1
+echo system-config.sh Last update 202502031310-2
 
 # 定数の設定
 BASE_URL="https://raw.githubusercontent.com/site-u2023/aios/main"
@@ -126,36 +126,38 @@ select_timezone() {
 # information: country_zone で取得済みのゾーン情報を元にシステム情報を表示する
 #########################################################################
 information() {
-    local lang="$SELECTED_LANGUAGE"
-    local country_data
+    local country_name="$ZONENAME"
+    local display_name="$DISPLAYNAME"
+    local language_code="$LANGUAGE"
+    local country_code="$COUNTRYCODE"
 
-    # 選択された国の情報を取得、最初の一行だけを使用
-    country_data=$(sh /tmp/aios/country-zone.sh "$SELECTED_COUNTRY" "all" | head -n 1)
-
-    # データの分割と抽出
-    country_name=$(echo "$country_data" | awk '{print $1}')
-    display_name=$(echo "$country_data" | awk '{print $2}')
-    language_code=$(echo "$country_data" | awk '{print $3}')
-    country_code=$(echo "$country_data" | awk '{print $4}')
-    timezones=$(echo "$country_data" | sed 's/.*;//' | tr ',' ' ')
-
-    case "$lang" in
+    case "$SELECTED_LANGUAGE" in
         en)
             echo -e "$(color white "Country: $country_name")"
             echo -e "$(color white "Display Name: $display_name")"
             echo -e "$(color white "Language Code: $language_code")"
             echo -e "$(color white "Country Code: $country_code")"
-            echo -e "$(color white "Available Time Zones:")"
             ;;
         ja)
             echo -e "$(color white "国名: $country_name")"
             echo -e "$(color white "表示名: $display_name")"
             echo -e "$(color white "言語コード: $language_code")"
             echo -e "$(color white "国コード: $country_code")"
-            echo -e "$(color white "利用可能なタイムゾーン:")"
+            ;;
+        zh-cn)
+            echo -e "$(color white "国家: $country_name")"
+            echo -e "$(color white "显示名称: $display_name")"
+            echo -e "$(color white "语言代码: $language_code")"
+            echo -e "$(color white "国家代码: $country_code")"
+            ;;
+        zh-tw)
+            echo -e "$(color white "國家: $country_name")"
+            echo -e "$(color white "顯示名稱: $display_name")"
+            echo -e "$(color white "語言代碼: $language_code")"
+            echo -e "$(color white "國家代碼: $country_code")"
             ;;
         *)
-            handle_error "Unsupported language: $lang"
+            handle_error "Unsupported language: $SELECTED_LANGUAGE"
             ;;
     esac
 }
@@ -477,10 +479,15 @@ set_device() {
 #########################################################################
 download_country_zone
 download_and_execute_common
-check_common "$INPUT_LANG"
-country_zone
+check_common "$INPUT_LANG"   # ここで言語が確定
+
+# 言語・国情報の表示（common-functions.shで確定された値を使用）
 information
+
+# タイムゾーンの選択
 select_timezone
+
+# デバイス設定（必要に応じてコメントアウト解除）
 #set_device_name_password
 #set_wifi_ssid_password
 #set_device

@@ -4,6 +4,7 @@
 #
 # 初期設定用 all-in-one スクリプト (aios) のセットアップスクリプト
 #
+echo aios.sh Last update 202502031422-1
 
 # 定数の設定
 BASE_URL="https://raw.githubusercontent.com/site-u2023/aios/main"

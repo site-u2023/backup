@@ -10,7 +10,7 @@
 # ・OpenWrt バージョンのチェック、ttyd のインストール確認
 # ・各種設定スクリプト (country-zone, common-functions, openwrt-config) のダウンロードおよび実行
 #
-echo aios Last update 202502031430-1
+echo aios Last update 202502031430-2
 
 # 定数の設定
 BASE_URL="https://raw.githubusercontent.com/site-u2023/aios/main/"
@@ -35,17 +35,17 @@ banner() {
             all_in_one="all in one scripts"
             ;;
         ja)
-            msg="OpenWrt専用設定ソフトウェア"
+            msg="オープンダブルアールティー専用設定ソフトウェア"
             disclaimer="免責事項: 本スクリプトは自己責任でご使用下さい"
             all_in_one="オールインワンスクリプト"
             ;;
         zh-cn)
-            msg="OpenWrt封装配置软件"
+            msg="欧鹏达布里阿尔提封装配置软件"
             disclaimer="声明: 使用本脚本风险自承"
             all_in_one="全面集成脚本"
             ;;
         zh-tw)
-            msg="OpenWrt專用設定軟體"
+            msg="歐彭達布里阿爾提專用設定軟體"
             disclaimer="免責聲明: 請自行承擔使用本脚本"
             all_in_one="全功能集成脚本"
             ;;

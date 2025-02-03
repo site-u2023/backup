@@ -44,6 +44,26 @@ banner() {
             disclaimer="免責聲明: 請自行承擔使用本脚本"
             all_in_one="全功能集成脚本"
             ;;
+        id)
+            msg="Perangkat lunak konfigurasi khusus untuk Open Double R T"
+            disclaimer="Penafian: Gunakan skrip ini dengan risiko Anda sendiri"
+            all_in_one="Skrip serba ada"
+            ;;
+        ko)
+            msg="오픈더블알티 전용 설정 소프트웨어"
+            disclaimer="면책 조항: 이 스크립트는 본인 책임하에 사용하십시오"
+            all_in_one="올인원 스크립트"
+            ;;
+        de)
+            msg="Dedizierte Konfigurationssoftware für Open Double R T"
+            disclaimer="Haftungsausschluss: Verwenden Sie dieses Skript auf eigenes Risiko"
+            all_in_one="All-in-One-Skripte"
+            ;;
+        ru)
+            msg="Специальное программное обеспечение для настройки Open Double R T"
+            disclaimer="Отказ от ответственности: Используйте этот скрипт на свой страх и риск"
+            all_in_one="Комплексные скрипты"
+            ;;
         en|*) # 英語とその他すべての未定義言語の処理
             msg="Dedicated configuration software for OpenWrt."
             disclaimer="Disclaimer: Use this script at your own risk."

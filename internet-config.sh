@@ -8,9 +8,9 @@
 # 単一ファイル内で完結させる例です。
 #
 # ※ 外部の common-functions.sh からは、color、ask_confirmation、show_notification、check_common
-#    などの関数を利用しますが、get_message は本スクリプト内に保持します。
+#    などの関数を利用しますが、get_message_Internet_config は本スクリプト内に保持します。
 #
-echo "internet-config.sh Last update 202502032202-8"
+echo "internet-config.sh Last update 202502032202-10"
 
 #-----------------------------------------------------------------
 # 基本設定
@@ -59,10 +59,10 @@ download_country_zone
 country_zone
 
 #########################################################################
-# 内部定義: get_message (多言語対応メッセージ)
-# ※ 外部の get_message があっても、ここで再定義することで内部実装を優先させる
+# 内部定義: get_message_Internet_config (多言語対応メッセージ)
+# ※ 外部の get_message_Internet_config があっても、ここで再定義することで内部実装を優先させる
 #########################################################################
-get_message() {
+get_message_Internet_config() {
     local lang="$SELECTED_LANGUAGE"
     local key="$1"
     case "$lang" in
@@ -78,10 +78,9 @@ get_message() {
                 menu_exit)                     echo "Exit" ;;
                 menu_select_prompt)            echo "Please select: " ;;
                 invalid_option)                echo "Invalid option" ;;
-                pppoe_ipv4_username_prompt)    echo "Please enter your IPv4 username:" ;;
-                pppoe_ipv4_password_prompt)    echo "Please enter your IPv4 password:" ;;
-                pppoe_ipv6_username_prompt)    echo "Please enter your IPv6 username:" ;;
-                pppoe_ipv6_password_prompt)    echo "Please enter your IPv6 password:" ;;
+                # IPv4 と IPv6 のユーザー名・パスワード入力は統一
+                pppoe_ipv4_username_prompt|pppoe_ipv6_username_prompt) echo "Please enter your username:" ;;
+                pppoe_ipv4_password_prompt|pppoe_ipv6_password_prompt) echo "Please enter your password:" ;;
                 *)                             echo "Undefined message: $key" ;;
             esac
             ;;
@@ -97,10 +96,9 @@ get_message() {
                 menu_exit)                     echo "終了" ;;
                 menu_select_prompt)            echo "選択してください: " ;;
                 invalid_option)                echo "無効なオプションです" ;;
-                pppoe_ipv4_username_prompt)    echo "IPv4のユーザー名を入力してください:" ;;
-                pppoe_ipv4_password_prompt)    echo "IPv4のパスワードを入力してください:" ;;
-                pppoe_ipv6_username_prompt)    echo "IPv6のユーザー名を入力してください:" ;;
-                pppoe_ipv6_password_prompt)    echo "IPv6のパスワードを入力してください:" ;;
+                # IPv4 と IPv6 のユーザー名・パスワード入力は統一
+                pppoe_ipv4_username_prompt|pppoe_ipv6_username_prompt) echo "ユーザー名を入力してください:" ;;
+                pppoe_ipv4_password_prompt|pppoe_ipv6_password_prompt) echo "パスワードを入力してください:" ;;
                 *)                             echo "未定義のメッセージ: $key" ;;
             esac
             ;;
@@ -113,26 +111,26 @@ get_message() {
 main_menu_internet() {
     case "$SELECTED_LANGUAGE" in
         en)
-            title="$(get_message internet_config_title)"
-            menu_m="[m]: $(get_message menu_map_e)"
-            menu_n="[n]: $(get_message menu_nuro)"
-            menu_t="[t]: $(get_message menu_transix)"
-            menu_x="[x]: $(get_message menu_xpass)"
-            menu_v="[v]: $(get_message menu_v6connect)"
-            menu_p="[p]: $(get_message menu_pppoe)"
-            menu_e="[e]: $(get_message menu_exit)"
-            prompt="$(get_message menu_select_prompt)"
+            title="$(get_message_Internet_config internet_config_title)"
+            menu_m="[m]: $(get_message_Internet_config menu_map_e)"
+            menu_n="[n]: $(get_message_Internet_config menu_nuro)"
+            menu_t="[t]: $(get_message_Internet_config menu_transix)"
+            menu_x="[x]: $(get_message_Internet_config menu_xpass)"
+            menu_v="[v]: $(get_message_Internet_config menu_v6connect)"
+            menu_p="[p]: $(get_message_Internet_config menu_pppoe)"
+            menu_e="[e]: $(get_message_Internet_config menu_exit)"
+            prompt="$(get_message_Internet_config menu_select_prompt)"
             ;;
         *)
-            title="$(get_message internet_config_title)"
-            menu_m="[m]: $(get_message menu_map_e)"
-            menu_n="[n]: $(get_message menu_nuro)"
-            menu_t="[t]: $(get_message menu_transix)"
-            menu_x="[x]: $(get_message menu_xpass)"
-            menu_v="[v]: $(get_message menu_v6connect)"
-            menu_p="[p]: $(get_message menu_pppoe)"
-            menu_e="[e]: $(get_message menu_exit)"
-            prompt="$(get_message menu_select_prompt)"
+            title="$(get_message_Internet_config internet_config_title)"
+            menu_m="[m]: $(get_message_Internet_config menu_map_e)"
+            menu_n="[n]: $(get_message_Internet_config menu_nuro)"
+            menu_t="[t]: $(get_message_Internet_config menu_transix)"
+            menu_x="[x]: $(get_message_Internet_config menu_xpass)"
+            menu_v="[v]: $(get_message_Internet_config menu_v6connect)"
+            menu_p="[p]: $(get_message_Internet_config menu_pppoe)"
+            menu_e="[e]: $(get_message_Internet_config menu_exit)"
+            prompt="$(get_message_Internet_config menu_select_prompt)"
             ;;
     esac
 
@@ -162,10 +160,10 @@ main_menu_internet() {
                     en) echo "Exiting" ;;
                     *)  echo "スクリプト終了" ;;
                 esac
-                unset -f get_message
+                unset -f get_message_Internet_config
                 return 0 2>/dev/null || exit 0
                 ;;
-            *) echo -e "$(color 'red' "$(get_message invalid_option)")" ;;
+            *) echo -e "$(color 'red' "$(get_message_Internet_config invalid_option)")" ;;
         esac
     done
 }
@@ -337,16 +335,17 @@ handle_pppoe_menu() {
     case "$SELECTED_LANGUAGE" in
         en)
             submenu_title="PPPoE Configuration"
-            opt4="[4]: $(get_message pppoe_ipv4_username_prompt)"
-            opt6="[6]: $(get_message pppoe_ipv6_username_prompt)"
+            # IPv4/IPv6 の入力プロンプトは統一済み
+            opt4="[4]: $(get_message_Internet_config pppoe_ipv4_username_prompt)"
+            opt6="[6]: $(get_message_Internet_config pppoe_ipv6_username_prompt)"
             option_back="[r]: Back"
             prompt="Please select: "
             invalid="Invalid option"
             ;;
         *)
             submenu_title="PPPoE設定"
-            opt4="[4]: $(get_message pppoe_ipv4_username_prompt)"
-            opt6="[6]: $(get_message pppoe_ipv6_username_prompt)"
+            opt4="[4]: $(get_message_Internet_config pppoe_ipv4_username_prompt)"
+            opt6="[6]: $(get_message_Internet_config pppoe_ipv6_username_prompt)"
             option_back="[r]: 戻る"
             prompt="選択してください: "
             invalid="無効なオプションです"
@@ -373,24 +372,20 @@ handle_pppoe_menu() {
 
 # PPPoE IPv4 設定処理 (仮実装)
 pppoe_config_ipv4() {
-    printf "%s " "$(get_message pppoe_ipv4_username_prompt)"
+    printf "%s " "$(get_message_Internet_config pppoe_ipv4_username_prompt)"
     read username
-    printf "%s " "$(get_message pppoe_ipv4_password_prompt)"
+    printf "%s " "$(get_message_Internet_config pppoe_ipv4_password_prompt)"
     read password
     echo "IPv4設定: ユーザー名 [$username] / パスワード [$password] を実行しました。"
 }
 
 # PPPoE IPv4/IPv6 設定処理 (仮実装)
 pppoe_config_ipv4_ipv6() {
-    printf "%s " "$(get_message pppoe_ipv4_username_prompt)"
-    read username4
-    printf "%s " "$(get_message pppoe_ipv4_password_prompt)"
-    read password4
-    printf "%s " "$(get_message pppoe_ipv6_username_prompt)"
+    printf "%s " "$(get_message_Internet_config pppoe_ipv6_username_prompt)"
     read username6
-    printf "%s " "$(get_message pppoe_ipv6_password_prompt)"
+    printf "%s " "$(get_message_Internet_config pppoe_ipv6_password_prompt)"
     read password6
-    echo "IPv4/IPv6設定: IPv4ユーザー名 [$username4] / パスワード [$password4]、IPv6ユーザー名 [$username6] / パスワード [$password6] を実行しました。"
+    echo "IPv4/IPv6設定: ユーザー名 [$username6] / パスワード [$password6] を実行しました。"
 }
 
 #########################################################################

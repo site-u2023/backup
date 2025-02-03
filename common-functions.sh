@@ -318,6 +318,7 @@ menu_option() {
             else
                 show_notification "exit_cancelled"
             fi
+            ;;
         "exit")
             if ask_confirmation "exit"; then
                 show_notification "exit"

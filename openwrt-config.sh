@@ -11,7 +11,7 @@
 # ・共通関数 (common-functions.sh) のダウンロードと読み込み
 # ・システム情報の取得と表示
 # ・メインメニューの表示とユーザーによる各種オプションの選択
-echo openwrt-config.sh Last update 202502031417-9
+echo openwrt-config.sh Last update 202502031417-10
 
 # 定数の設定
 BASE_URL="https://raw.githubusercontent.com/site-u2023/aios/main"

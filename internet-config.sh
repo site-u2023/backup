@@ -171,23 +171,21 @@ handle_nuro_map() {
     case "$SELECTED_LANGUAGE" in
         en)
             submenu_title="NURO MAP‑E Configuration"
-            prompt="Do you want to execute NURO MAP‑E configuration? [y/n]: "
-            cancelled="Operation cancelled."
+            prompt="Do you want to execute NURO MAP‑E configuration?"
             ;;
         *)
             submenu_title="NURO光 MAP‑E設定"
-            prompt="NURO光 MAP‑E設定を実行しますか？ [y/n]: "
-            cancelled="操作はキャンセルされました。"
+            prompt="NURO光 MAP‑E設定を実行しますか？"
             ;;
     esac
 
     echo -e "$(color 'white' "$submenu_title")"
-    printf "%s" "$prompt"
-    read ans
-    case "$ans" in
-        y|Y) echo -e "$(color 'white' "$submenu_title を実行しました。")" ;;
-        *)   echo -e "$(color 'white' "$cancelled")" ;;
-    esac
+    # 共通関数 ask_confirmation を利用
+    if ask_confirmation; then
+        echo -e "$(color 'white' "$submenu_title を実行しました。")"
+    else
+        echo -e "$(color 'white' "$(get_message cancelled_message)")"
+    fi
 }
 
 # DS‑Lite (transix) メニュー
@@ -234,23 +232,20 @@ handle_ds_lite_xpass_menu() {
     case "$SELECTED_LANGUAGE" in
         en)
             submenu_title="DS‑Lite (xpass) Configuration"
-            prompt="Do you want to execute DS‑Lite (xpass) configuration? [y/n]: "
-            cancelled="Operation cancelled."
+            prompt="Do you want to execute DS‑Lite (xpass) configuration?"
             ;;
         *)
             submenu_title="DS‑Lite (xpass) 設定"
-            prompt="DS‑Lite (xpass)設定を実行しますか？ [y/n]: "
-            cancelled="操作はキャンセルされました。"
+            prompt="DS‑Lite (xpass)設定を実行しますか？"
             ;;
     esac
 
     echo -e "$(color 'white' "$submenu_title")"
-    printf "%s" "$prompt"
-    read ans
-    case "$ans" in
-        y|Y) echo -e "$(color 'white' "$submenu_title を実行しました。")" ;;
-        *)   echo -e "$(color 'white' "$cancelled")" ;;
-    esac
+    if ask_confirmation; then
+        echo -e "$(color 'white' "$submenu_title を実行しました。")"
+    else
+        echo -e "$(color 'white' "$(get_message cancelled_message)")"
+    fi
 }
 
 # DS‑Lite (v6connect) メニュー
@@ -258,23 +253,20 @@ handle_ds_lite_v6connect_menu() {
     case "$SELECTED_LANGUAGE" in
         en)
             submenu_title="DS‑Lite (v6connect) Configuration"
-            prompt="Do you want to execute DS‑Lite (v6connect) configuration? [y/n]: "
-            cancelled="Operation cancelled."
+            prompt="Do you want to execute DS‑Lite (v6connect) configuration?"
             ;;
         *)
             submenu_title="DS‑Lite (v6connect) 設定"
-            prompt="DS‑Lite (v6connect)設定を実行しますか？ [y/n]: "
-            cancelled="操作はキャンセルされました。"
+            prompt="DS‑Lite (v6connect)設定を実行しますか？"
             ;;
     esac
 
     echo -e "$(color 'white' "$submenu_title")"
-    printf "%s" "$prompt"
-    read ans
-    case "$ans" in
-        y|Y) echo -e "$(color 'white' "$submenu_title を実行しました。")" ;;
-        *)   echo -e "$(color 'white' "$cancelled")" ;;
-    esac
+    if ask_confirmation; then
+        echo -e "$(color 'white' "$submenu_title を実行しました。")"
+    else
+        echo -e "$(color 'white' "$(get_message cancelled_message)")"
+    fi
 }
 
 # PPPoE メニュー

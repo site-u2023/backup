@@ -6,7 +6,7 @@
 #
 # 各種共通処理（ヘルプ表示、カラー出力、システム情報確認、言語選択、確認・通知メッセージの多言語対応など）を提供する。
 #
-echo common-functions.sh Last update 202502031310-16
+echo common-functions.sh Last update 202502031310-17
 
 # 基本定数の設定
 BASE_URL="${BASE_URL:-https://raw.githubusercontent.com/site-u2023/aios/main}"
@@ -432,6 +432,8 @@ get_message() {
                 complete_message)     echo "完了しました。" ;;
                 cancelled_message)    echo "キャンセルされました。" ;;
                 download_success)     echo "ダウンロードが成功しました。" ;;
+                return)               echo "戻ります。" ;;
+                return_cancelled)     echo "戻る操作がキャンセルされました。" ;;
                 *)                    echo "未定義のメッセージ: $key" ;;
             esac
             ;;
@@ -455,6 +457,8 @@ get_message() {
                 complete_message)     echo "完成了。" ;;
                 cancelled_message)    echo "已取消。" ;;
                 download_success)     echo "ダウンロードが成功しました。" ;;
+                return)               echo "戻ります。" ;;
+                return_cancelled)     echo "戻る操作がキャンセルされました。" ;;
                 *)                    echo "Undefined message: $key" ;;
             esac
             ;;
@@ -478,6 +482,8 @@ get_message() {
                 complete_message)     echo "完成了。" ;;
                 cancelled_message)    echo "已取消。" ;;
                 download_success)     echo "ダウンロードが成功しました。" ;;
+                return)               echo "戻ります。" ;;
+                return_cancelled)     echo "戻る操作がキャンセルされました。" ;;
                 *)                    echo "Undefined message: $key" ;;
             esac
             ;;
@@ -501,6 +507,8 @@ get_message() {
                 complete_message)     echo "Selesai." ;;
                 cancelled_message)    echo "Dibatalkan." ;;
                 download_success)     echo "ダウンロードが成功しました。" ;;
+                return)               echo "戻ります。" ;;
+                return_cancelled)     echo "戻る操作がキャンセルされました。" ;;
                 *)                    echo "Undefined message: $key" ;;
             esac
             ;;
@@ -524,6 +532,8 @@ get_message() {
                 complete_message)     echo "완료되었습니다." ;;
                 cancelled_message)    echo "취소되었습니다." ;;
                 download_success)     echo "ダウンロードが成功しました。" ;;
+                return)               echo "戻ります。" ;;
+                return_cancelled)     echo "戻る操作がキャンセルされました。" ;;
                 *)                    echo "Undefined message: $key" ;;
             esac
             ;;
@@ -547,6 +557,8 @@ get_message() {
                 complete_message)     echo "Abgeschlossen." ;;
                 cancelled_message)    echo "Abgebrochen." ;;
                 download_success)     echo "ダウンロードが成功しました。" ;;
+                return)               echo "戻ります。" ;;
+                return_cancelled)     echo "戻る操作がキャンセルされました。" ;;
                 *)                    echo "Undefined message: $key" ;;
             esac
             ;;
@@ -570,6 +582,8 @@ get_message() {
                 complete_message)     echo "Завершено." ;;
                 cancelled_message)    echo "Отменено." ;;
                 download_success)     echo "ダウンロードが成功しました。" ;;
+                return)               echo "戻ります。" ;;
+                return_cancelled)     echo "戻る操作がキャンセルされました。" ;;
                 *)                    echo "Undefined message: $key" ;;
             esac
             ;;
@@ -593,6 +607,8 @@ get_message() {
                 complete_message)     echo "Completed." ;;
                 cancelled_message)    echo "Cancelled." ;;
                 download_success)     echo "Download successful." ;;
+                return)               echo "戻ります。" ;;
+                return_cancelled)     echo "戻る操作がキャンセルされました。" ;;
                 *)                    echo "Undefined message: $key" ;;
             esac
             ;;

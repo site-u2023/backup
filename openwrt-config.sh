@@ -11,7 +11,7 @@
 # ・共通関数 (common-functions.sh) のダウンロードと読み込み
 # ・システム情報の取得と表示
 # ・メインメニューの表示とユーザーによる各種オプションの選択
-echo "openwrt-config.sh Last update 202502031417-13"
+echo "openwrt-config.sh Last update 202502031417-14"
 
 # 定数の設定
 BASE_URL="https://raw.githubusercontent.com/site-u2023/aios/main"
@@ -198,20 +198,24 @@ display_info() {
 # main_menu
 #  メインメニューを表示し、ユーザーの選択を受け付ける。
 #########################################################################
+#########################################################################
+# main_menu
+#  メインメニューを表示し、ユーザーの選択を受け付ける。
+#########################################################################
 main_menu() {
     local lang="$SELECTED_LANGUAGE"
-    # すべての固定文言は get_message から取得
-    MENU1="$(get_message internet_title)"
-    MENU2="$(get_message menu_system)"
-    MENU3="$(get_message menu_package)"
-    MENU4="$(get_message menu_adblock)"
-    MENU5="$(get_message menu_ap)"
-    MENU6="$(get_message menu_other)"
-    MENU00="$(get_message menu_exit)"
-    MENU01="$(get_message menu_delete)"
-    MENU02="$(get_message country_code)"
-    MENU03="$(get_message reset)"
-    SELECT1="$(get_message select_prompt)"
+    # 各固定文言はキー名として保持（resolve は menu_option 内または表示時に get_message で取得）
+    MENU1="internet_title"
+    MENU2="menu_system"
+    MENU3="menu_package"
+    MENU4="menu_adblock"
+    MENU5="menu_ap"
+    MENU6="menu_other"
+    MENU00="menu_exit"
+    MENU01="menu_delete"
+    MENU02="country_code"
+    MENU03="reset"
+    SELECT1="select_prompt"
 
     local ACTION1 ACTION2 ACTION3 ACTION4 ACTION5 ACTION6 ACTION00 ACTION01 ACTION02 ACTION03
     local TARGET1 TARGET2 TARGET3 TARGET4 TARGET5 TARGET6 TARGET02 TARGET03
@@ -230,28 +234,29 @@ main_menu() {
 
     while :; do
         echo -e "$(color "white" "------------------------------------------------------")"
-        echo -e "$(color "blue" "[i]: ${MENU1}")"
-        echo -e "$(color "yellow" "[s]: ${MENU2}")"
-        echo -e "$(color "green" "[p]: ${MENU3}")"
-        echo -e "$(color "magenta" "[b]: ${MENU4}")"
-        echo -e "$(color "red" "[a]: ${MENU5}")"
-        echo -e "$(color "cyan" "[o]: ${MENU6}")"
-        echo -e "$(color "white" "[e]: ${MENU00}")"
-        echo -e "$(color "white_black" "[d]: ${MENU01}")"
+        # 表示用に各キーの文言を取得
+        echo -e "$(color "blue" "[i]: $(get_message "$MENU1")")"
+        echo -e "$(color "yellow" "[s]: $(get_message "$MENU2")")"
+        echo -e "$(color "green" "[p]: $(get_message "$MENU3")")"
+        echo -e "$(color "magenta" "[b]: $(get_message "$MENU4")")"
+        echo -e "$(color "red" "[a]: $(get_message "$MENU5")")"
+        echo -e "$(color "cyan" "[o]: $(get_message "$MENU6")")"
+        echo -e "$(color "white" "[e]: $(get_message "$MENU00")")"
+        echo -e "$(color "white_black" "[d]: $(get_message "$MENU01")")"
         echo -e "$(color "white" "------------------------------------------------------")"
-        read -p "$(color "white" "${SELECT1}")" option
+        read -p "$(color "white" "$(get_message "$SELECT1")")" option
 
         case "${option}" in
-            "i") menu_option "${ACTION1}" "${MENU1}" "${TARGET1}" ;;
-            "s") menu_option "${ACTION2}" "${MENU2}" "${TARGET2}" ;;
-            "p") menu_option "${ACTION3}" "${MENU3}" "${TARGET3}" ;;
-            "b") menu_option "${ACTION4}" "${MENU4}" "${TARGET4}" ;;
-            "a") menu_option "${ACTION5}" "${MENU5}" "${TARGET5}" ;;
-            "o") menu_option "${ACTION6}" "${MENU6}" "${TARGET6}" ;;
-            "e") menu_option "${ACTION00}" "${MENU00}" ;;
-            "d") menu_option "${ACTION01}" "${MENU01}" ;;
-            "cz") menu_option "${ACTION02}" "${MENU02}" "${TARGET02}" ;;
-            "reset") menu_option "${ACTION03}" "${MENU03}" "${TARGET03}" ;;
+            "i") menu_option "${ACTION1}" "$MENU1" "${TARGET1}" ;;
+            "s") menu_option "${ACTION2}" "$MENU2" "${TARGET2}" ;;
+            "p") menu_option "${ACTION3}" "$MENU3" "${TARGET3}" ;;
+            "b") menu_option "${ACTION4}" "$MENU4" "${TARGET4}" ;;
+            "a") menu_option "${ACTION5}" "$MENU5" "${TARGET5}" ;;
+            "o") menu_option "${ACTION6}" "$MENU6" "${TARGET6}" ;;
+            "e") menu_option "${ACTION00}" "$MENU00" ;;
+            "d") menu_option "${ACTION01}" "$MENU01" ;;
+            "cz") menu_option "${ACTION02}" "$MENU02" "${TARGET02}" ;;
+            "reset") menu_option "${ACTION03}" "$MENU03" "${TARGET03}" ;;
             *) echo -e "$(color "red" "$(get_message invalid_option)")" ;;
         esac
     done

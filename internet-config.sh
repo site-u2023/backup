@@ -15,16 +15,11 @@
 # 使用する言語を環境変数LANGで指定 (例: LANG=en)。未指定の場合は日本語(ja)がデフォルトとなる。
 echo openwrt-config.sh Last update 202502032202-1
 
-# 定数の設定
-BASE_URL="https://raw.githubusercontent.com/site-u2023/aios/main"
-BASE_DIR="/tmp/aios"
-SUPPORTED_VERSIONS="19 21 22 23 24 SN"
-SUPPORTED_LANGUAGES="en ja zh-cn zh-tw id ko de ru"
-INPUT_LANG="$1"
-
 get_message() {
-    key="$1"
-    case "$CURRENT_LANG" in
+    local key="$1"
+    local lang="$SELECTED_LANGUAGE"
+
+    case "$lang" in
         ja)
             case "$key" in
                 internet_config_title) echo "インターネット設定" ;;
@@ -108,7 +103,7 @@ get_message() {
             esac
             ;;
         *)
-            echo "Unsupported language: $CURRENT_LANG"
+            echo "Unsupported language: $SELECTED_LANGUAGE"
             ;;
     esac
 }
@@ -118,7 +113,9 @@ get_message() {
 #-----------------------------------------------------------------
 BASE_URL="${BASE_URL:-https://raw.githubusercontent.com/site-u2023/aios/main}"
 BASE_DIR="${BASE_DIR:-/tmp/aios}"
-
+SUPPORTED_VERSIONS="19 21 22 23 24 SN"
+SUPPORTED_LANGUAGES="en ja zh-cn zh-tw id ko de ru"
+INPUT_LANG="$1"
 # ※ 以下の共通関数 (color, ask_confirmation, show_notification, check_common 等) は
 #     コモンファイルへ分離する予定です。現状は仮実装・ダミー関数となります。
 

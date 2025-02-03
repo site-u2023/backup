@@ -88,16 +88,12 @@ make_directory() {
 }
 
 #########################################################################
-# download_country_zone: 国・ゾーン情報のスクリプト (country-timezone.sh, country-zonename.sh)
+# download_country_zone: 国・ゾーン情報のスクリプト (/country-zone.sh)
 #                        を BASE_URL からダウンロードする
 #########################################################################
 download_country_zone() {
-    wget --quiet -O "${BASE_DIR%/}/country-timezone.sh" "${BASE_URL}/country-timezone.sh" || {
-        echo "Failed to download country-timezone.sh"
-        exit 1
-    }
-    wget --quiet -O "${BASE_DIR%/}/country-zonename.sh" "${BASE_URL}/country-zonename.sh" || {
-        echo "Failed to download country-zonename.sh"
+    wget --quiet -O "${BASE_DIR%/}/country-zone.sh" "${BASE_URL}/country-zone.sh" || {
+        echo "Failed to download country-zone.sh"
         exit 1
     }
 }
@@ -150,7 +146,6 @@ execute_openwrt_config() {
 # 6. openwrt-config.sh のダウンロードおよび実行
 #########################################################################
 # delete_language  は必要に応じて使用（現状コメントアウト）
-# delete_language
 make_directory
 download_country_zone
 download_and_execute_common

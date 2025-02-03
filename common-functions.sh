@@ -607,8 +607,8 @@ get_message() {
                 complete_message)     echo "Completed." ;;
                 cancelled_message)    echo "Cancelled." ;;
                 download_success)     echo "Download successful." ;;
-                return)               echo "戻ります。" ;;
-                return_cancelled)     echo "戻る操作がキャンセルされました。" ;;
+                return)               echo "Returning." ;;            # ← 追加
+                return_cancelled)     echo "Return operation cancelled." ;;  # ← 追加
                 *)                    echo "Undefined message: $key" ;;
             esac
             ;;

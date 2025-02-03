@@ -6,7 +6,7 @@
 #
 # 各種共通処理（ヘルプ表示、カラー出力、システム情報確認、言語選択、確認・通知メッセージの多言語対応など）を提供する。
 #
-echo common-functions.sh Last update 202502031310-11
+echo common-functions.sh Last update 202502031310-12
 
 # 基本定数の設定
 BASE_URL="${BASE_URL:-https://raw.githubusercontent.com/site-u2023/aios/main}"
@@ -406,106 +406,178 @@ get_message() {
     case "$lang" in
         ja)
             case "$key" in
-                internet_title)    echo "インターネット設定" ;;
-                exit_message)      echo "終了" ;;
-                select_prompt)     echo "選択してください:" ;;
-                invalid_option)    echo "無効なオプションです" ;;
-                input_prompt)      echo "入力してください:" ;;
-                confirm_default)   echo "本当に実行しますか？" ;;
-                complete_message)  echo "完了しました。" ;;
-                cancelled_message) echo "キャンセルされました。" ;;
-                *)                 echo "未定義のメッセージ: $key" ;;
+                internet_title)       echo "インターネット設定" ;;
+                menu_system)          echo "システム初期設定" ;;
+                menu_package)         echo "推奨パッケージインストール" ;;
+                menu_adblock)         echo "広告ブロッカーインストール設定" ;;
+                menu_ap)              echo "アクセスポイント設定" ;;
+                menu_other)           echo "その他のスクリプト設定" ;;
+                menu_exit)            echo "スクリプト終了" ;;
+                menu_delete)          echo "スクリプト削除終了" ;;
+                country_code)         echo "カントリーコード" ;;
+                reset)                echo "リセット" ;;
+                select_prompt)        echo "選択してください:" ;;
+                invalid_option)       echo "無効なオプションです" ;;
+                input_prompt)         echo "入力してください:" ;;
+                confirm_default)      echo "本当に実行しますか？" ;;
+                execute_message)      echo "実行します。" ;;
+                complete_message)     echo "完了しました。" ;;
+                cancelled_message)    echo "キャンセルされました。" ;;
+                *)                    echo "未定義のメッセージ: $key" ;;
             esac
             ;;
         zh-cn)
             case "$key" in
-                internet_title)    echo "互联网设置" ;;
-                exit_message)      echo "退出" ;;
-                select_prompt)     echo "请选择:" ;;
-                invalid_option)    echo "无效的选项" ;;
-                input_prompt)      echo "请输入:" ;;
-                confirm_default)   echo "您确定吗？" ;;
-                complete_message)  echo "完成了。" ;;
-                cancelled_message) echo "已取消。" ;;
-                *)                 echo "Undefined message: $key" ;;
+                internet_title)       echo "互联网设置" ;;
+                menu_system)          echo "系统初始设置" ;;
+                menu_package)         echo "推荐安装包" ;;
+                menu_adblock)         echo "广告拦截器设置" ;;
+                menu_ap)              echo "访问点设置" ;;
+                menu_other)           echo "其他脚本设置" ;;
+                menu_exit)            echo "退出脚本" ;;
+                menu_delete)          echo "删除脚本并退出" ;;
+                country_code)         echo "国码" ;;
+                reset)                echo "重置" ;;
+                select_prompt)        echo "请选择:" ;;
+                invalid_option)       echo "无效的选项" ;;
+                input_prompt)         echo "请输入:" ;;
+                confirm_default)      echo "您确定吗？" ;;
+                execute_message)      echo "执行中。" ;;  # または "执行します。" とするかはお好みで
+                complete_message)     echo "完成了。" ;;
+                cancelled_message)    echo "已取消。" ;;
+                *)                    echo "Undefined message: $key" ;;
             esac
             ;;
         zh-tw)
             case "$key" in
-                internet_title)    echo "網路設定" ;;
-                exit_message)      echo "退出" ;;
-                select_prompt)     echo "請選擇:" ;;
-                invalid_option)    echo "無效的選項" ;;
-                input_prompt)      echo "請輸入:" ;;
-                confirm_default)   echo "您確定嗎？" ;;
-                complete_message)  echo "完成了。" ;;
-                cancelled_message) echo "已取消。" ;;
-                *)                 echo "Undefined message: $key" ;;
+                internet_title)       echo "網路設定" ;;
+                menu_system)          echo "系統初始設定" ;;
+                menu_package)         echo "推薦安裝包" ;;
+                menu_adblock)         echo "廣告攔截器設定" ;;
+                menu_ap)              echo "連接點設定" ;;
+                menu_other)           echo "其他腳本設定" ;;
+                menu_exit)            echo "退出腳本" ;;
+                menu_delete)          echo "移除腳本並退出" ;;
+                country_code)         echo "國碼" ;;
+                reset)                echo "重設" ;;
+                select_prompt)        echo "請選擇:" ;;
+                invalid_option)       echo "無效的選項" ;;
+                input_prompt)         echo "請輸入:" ;;
+                confirm_default)      echo "您確定嗎？" ;;
+                execute_message)      echo "執行中。" ;;  # ※「実行します。」相当
+                complete_message)     echo "完成了。" ;;
+                cancelled_message)    echo "已取消。" ;;
+                *)                    echo "Undefined message: $key" ;;
             esac
             ;;
         id)
             case "$key" in
-                internet_title)    echo "Pengaturan Internet" ;;
-                exit_message)      echo "Keluar" ;;
-                select_prompt)     echo "Silakan pilih:" ;;
-                invalid_option)    echo "Opsi tidak valid" ;;
-                input_prompt)      echo "Silakan masukkan:" ;;
-                confirm_default)   echo "Apakah Anda yakin?" ;;
-                complete_message)  echo "Selesai." ;;
-                cancelled_message) echo "Dibatalkan." ;;
-                *)                 echo "Undefined message: $key" ;;
+                internet_title)       echo "Pengaturan Internet" ;;
+                menu_system)          echo "Pengaturan Sistem Awal" ;;
+                menu_package)         echo "Instalasi Paket yang Direkomendasikan" ;;
+                menu_adblock)         echo "Pengaturan Pemblokir Iklan" ;;
+                menu_ap)              echo "Pengaturan Titik Akses" ;;
+                menu_other)           echo "Pengaturan Skrip Lainnya" ;;
+                menu_exit)            echo "Keluar dari Skrip" ;;
+                menu_delete)          echo "Hapus skrip dan keluar" ;;
+                country_code)         echo "Kode Negara" ;;
+                reset)                echo "Reset" ;;
+                select_prompt)        echo "Silakan pilih:" ;;
+                invalid_option)       echo "Opsi tidak valid" ;;
+                input_prompt)         echo "Silakan masukkan:" ;;
+                confirm_default)      echo "Apakah Anda yakin?" ;;
+                execute_message)      echo "Eksekusi." ;;  # または "Sedang dijalankan." とする
+                complete_message)     echo "Selesai." ;;
+                cancelled_message)    echo "Dibatalkan." ;;
+                *)                    echo "Undefined message: $key" ;;
             esac
             ;;
         ko)
             case "$key" in
-                internet_title)    echo "인터넷 설정" ;;
-                exit_message)      echo "종료" ;;
-                select_prompt)     echo "선택하세요:" ;;
-                invalid_option)    echo "잘못된 옵션입니다" ;;
-                input_prompt)      echo "입력해 주세요:" ;;
-                confirm_default)   echo "정말로 실행하시겠습니까?" ;;
-                complete_message)  echo "완료되었습니다." ;;
-                cancelled_message) echo "취소되었습니다." ;;
-                *)                 echo "Undefined message: $key" ;;
+                internet_title)       echo "인터넷 설정" ;;
+                menu_system)          echo "시스템 초기 설정" ;;
+                menu_package)         echo "추천 패키지 설치" ;;
+                menu_adblock)         echo "광고 차단기 설치 설정" ;;
+                menu_ap)              echo "액세스 포인트 설정" ;;
+                menu_other)           echo "기타 스크립트 설정" ;;
+                menu_exit)            echo "스크립트 종료" ;;
+                menu_delete)          echo "스크립트 삭제 및 종료" ;;
+                country_code)         echo "국가 코드" ;;
+                reset)                echo "리셋" ;;
+                select_prompt)        echo "옵션을 선택하세요:" ;;
+                invalid_option)       echo "잘못된 옵션입니다" ;;
+                input_prompt)         echo "입력해 주세요:" ;;
+                confirm_default)      echo "정말로 실행하시겠습니까?" ;;
+                execute_message)      echo "실행합니다." ;;
+                complete_message)     echo "완료되었습니다." ;;
+                cancelled_message)    echo "취소되었습니다." ;;
+                *)                    echo "Undefined message: $key" ;;
             esac
             ;;
         de)
             case "$key" in
-                internet_title)    echo "Interneteinstellungen" ;;
-                exit_message)      echo "Beenden" ;;
-                select_prompt)     echo "Bitte wählen:" ;;
-                invalid_option)    echo "Ungültige Option" ;;
-                input_prompt)      echo "Bitte eingeben:" ;;
-                confirm_default)   echo "Sind Sie sicher?" ;;
-                complete_message)  echo "Abgeschlossen." ;;
-                cancelled_message) echo "Abgebrochen." ;;
-                *)                 echo "Undefined message: $key" ;;
+                internet_title)       echo "Interneteinstellungen" ;;
+                menu_system)          echo "Erste Systemeinstellungen" ;;
+                menu_package)         echo "Empfohlene Paketinstallation" ;;
+                menu_adblock)         echo "Werbeblocker-Einstellungen" ;;
+                menu_ap)              echo "Zugangspunkt-Einstellungen" ;;
+                menu_other)           echo "Andere Skripteinstellungen" ;;
+                menu_exit)            echo "Skript beenden" ;;
+                menu_delete)          echo "Skript löschen und beenden" ;;
+                country_code)         echo "Ländercode" ;;
+                reset)                echo "Zurücksetzen" ;;
+                select_prompt)        echo "Bitte wählen Sie eine Option:" ;;
+                invalid_option)       echo "Ungültige Option" ;;
+                input_prompt)         echo "Bitte eingeben:" ;;
+                confirm_default)      echo "Sind Sie sicher?" ;;
+                execute_message)      echo "Ausführen." ;;
+                complete_message)     echo "Abgeschlossen." ;;
+                cancelled_message)    echo "Abgebrochen." ;;
+                *)                    echo "Undefined message: $key" ;;
             esac
             ;;
         ru)
             case "$key" in
-                internet_title)    echo "Настройки интернета" ;;
-                exit_message)      echo "Выход" ;;
-                select_prompt)     echo "Пожалуйста, выберите:" ;;
-                invalid_option)    echo "Неверный вариант" ;;
-                input_prompt)      echo "Пожалуйста, введите:" ;;
-                confirm_default)   echo "Вы уверены?" ;;
-                complete_message)  echo "Завершено." ;;
-                cancelled_message) echo "Отменено." ;;
-                *)                 echo "Undefined message: $key" ;;
+                internet_title)       echo "Настройки интернета" ;;
+                menu_system)          echo "Начальные настройки системы" ;;
+                menu_package)         echo "Рекомендуемая установка пакетов" ;;
+                menu_adblock)         echo "Настройки блокировки рекламы" ;;
+                menu_ap)              echo "Настройки точки доступа" ;;
+                menu_other)           echo "Другие настройки скриптов" ;;
+                menu_exit)            echo "Выход из скрипта" ;;
+                menu_delete)          echo "Удалить скрипт и выйти" ;;
+                country_code)         echo "Код страны" ;;
+                reset)                echo "Сброс" ;;
+                select_prompt)        echo "Пожалуйста, выберите опцию:" ;;
+                invalid_option)       echo "Неверный вариант" ;;
+                input_prompt)         echo "Пожалуйста, введите:" ;;
+                confirm_default)      echo "Вы уверены?" ;;
+                execute_message)      echo "Выполняется." ;;
+                complete_message)     echo "Завершено." ;;
+                cancelled_message)    echo "Отменено." ;;
+                *)                    echo "Undefined message: $key" ;;
             esac
             ;;
         en|*)
             case "$key" in
-                internet_title)    echo "Internet Configuration" ;;
-                exit_message)      echo "Exit" ;;
-                select_prompt)     echo "Please select:" ;;
-                invalid_option)    echo "Invalid option" ;;
-                input_prompt)      echo "Please enter:" ;;
-                confirm_default)   echo "Are you sure?" ;;
-                complete_message)  echo "Completed." ;;
-                cancelled_message) echo "Cancelled." ;;
-                *)                 echo "Undefined message: $key" ;;
+                internet_title)       echo "Internet Configuration" ;;
+                menu_system)          echo "Initial System Settings" ;;
+                menu_package)         echo "Recommended Package Installation" ;;
+                menu_adblock)         echo "Ad blocker installation settings" ;;
+                menu_ap)              echo "Access Point Settings" ;;
+                menu_other)           echo "Other Script Settings" ;;
+                menu_exit)            echo "Exit Script" ;;
+                menu_delete)          echo "Remove script and exit" ;;
+                country_code)         echo "Country Code" ;;
+                reset)                echo "Reset" ;;
+                select_prompt)        echo "Please select:" ;;
+                invalid_option)       echo "Invalid option" ;;
+                input_prompt)         echo "Please enter:" ;;
+                confirm_default)      echo "Are you sure?" ;;
+                execute_message)      echo "Executing." ;;
+                complete_message)     echo "Completed." ;;
+                cancelled_message)    echo "Cancelled." ;;
+                *)                    echo "Undefined message: $key" ;;
             esac
             ;;
     esac

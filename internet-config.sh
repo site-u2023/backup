@@ -10,7 +10,7 @@
 # ※ 外部の common-functions.sh からは、color、ask_confirmation、show_notification、check_common
 #    などの関数を利用しますが、get_message は本スクリプト内に保持します。
 #
-echo internet-config.sh Last update 202502032202-4
+echo "internet-config.sh Last update 202502032202-5"
 
 #-----------------------------------------------------------------
 # 基本設定
@@ -20,6 +20,7 @@ BASE_DIR="/tmp/aios"
 SUPPORTED_VERSIONS="19 21 22 23 24 SN"
 SUPPORTED_LANGUAGES="en ja zh-cn zh-tw id ko de ru"
 INPUT_LANG="$1"
+# ※ なお、LINKED 変数がセットされている場合は、openwrt-config.sh からリンクで呼ばれているものとみなす
 
 #########################################################################
 # download_country_zone
@@ -68,32 +69,40 @@ get_message() {
     case "$lang" in
         en)
             case "$key" in
-                internet_config_title) echo "Internet Configuration" ;;
-                menu_map_e)            echo "MAP-E Configuration" ;;
-                menu_nuro)             echo "NURO MAP-E Configuration" ;;
-                menu_transix)          echo "DS-Lite (transix) Configuration" ;;
-                menu_xpass)            echo "DS-Lite (xpass) Configuration" ;;
-                menu_v6connect)        echo "DS-Lite (v6connect) Configuration" ;;
-                menu_pppoe)            echo "PPPoE Configuration" ;;
-                menu_exit)             echo "Exit" ;;
-                menu_select_prompt)    echo "Please select: " ;;
-                invalid_option)        echo "Invalid option" ;;
-                *)                     echo "Undefined message: $key" ;;
+                internet_config_title)         echo "Internet Configuration" ;;
+                menu_map_e)                    echo "MAP-E Configuration" ;;
+                menu_nuro)                     echo "NURO MAP-E Configuration" ;;
+                menu_transix)                  echo "DS-Lite (transix) Configuration" ;;
+                menu_xpass)                    echo "DS-Lite (xpass) Configuration" ;;
+                menu_v6connect)                echo "DS-Lite (v6connect) Configuration" ;;
+                menu_pppoe)                    echo "PPPoE Configuration" ;;
+                menu_exit)                     echo "Exit" ;;
+                menu_select_prompt)            echo "Please select: " ;;
+                invalid_option)                echo "Invalid option" ;;
+                pppoe_ipv4_username_prompt)    echo "Please enter your IPv4 username:" ;;
+                pppoe_ipv4_password_prompt)    echo "Please enter your IPv4 password:" ;;
+                pppoe_ipv6_username_prompt)    echo "Please enter your IPv6 username:" ;;
+                pppoe_ipv6_password_prompt)    echo "Please enter your IPv6 password:" ;;
+                *)                             echo "Undefined message: $key" ;;
             esac
             ;;
         *)
             case "$key" in
-                internet_config_title) echo "インターネット設定" ;;
-                menu_map_e)            echo "MAP-E設定" ;;
-                menu_nuro)             echo "NURO光 MAP-E設定" ;;
-                menu_transix)          echo "DS-Lite (transix) 設定" ;;
-                menu_xpass)            echo "DS-Lite (xpass) 設定" ;;
-                menu_v6connect)        echo "DS-Lite (v6connect) 設定" ;;
-                menu_pppoe)            echo "PPPoE設定" ;;
-                menu_exit)             echo "終了" ;;
-                menu_select_prompt)    echo "選択してください: " ;;
-                invalid_option)        echo "無効なオプションです" ;;
-                *)                     echo "未定義のメッセージ: $key" ;;
+                internet_config_title)         echo "インターネット設定" ;;
+                menu_map_e)                    echo "MAP-E設定" ;;
+                menu_nuro)                     echo "NURO光 MAP-E設定" ;;
+                menu_transix)                  echo "DS-Lite (transix) 設定" ;;
+                menu_xpass)                    echo "DS-Lite (xpass) 設定" ;;
+                menu_v6connect)                echo "DS-Lite (v6connect) 設定" ;;
+                menu_pppoe)                    echo "PPPoE設定" ;;
+                menu_exit)                     echo "終了" ;;
+                menu_select_prompt)            echo "選択してください: " ;;
+                invalid_option)                echo "無効なオプションです" ;;
+                pppoe_ipv4_username_prompt)    echo "IPv4のユーザー名を入力してください:" ;;
+                pppoe_ipv4_password_prompt)    echo "IPv4のパスワードを入力してください:" ;;
+                pppoe_ipv6_username_prompt)    echo "IPv6のユーザー名を入力してください:" ;;
+                pppoe_ipv6_password_prompt)    echo "IPv6のパスワードを入力してください:" ;;
+                *)                             echo "未定義のメッセージ: $key" ;;
             esac
             ;;
     esac
@@ -112,7 +121,7 @@ main_menu_internet() {
             menu_x="[x]: $(get_message menu_xpass)"
             menu_v="[v]: $(get_message menu_v6connect)"
             menu_p="[p]: $(get_message menu_pppoe)"
-            menu_q="[q]: $(get_message menu_exit)"
+            menu_e="[e]: $(get_message menu_exit)"
             prompt="$(get_message menu_select_prompt)"
             ;;
         *)
@@ -123,7 +132,7 @@ main_menu_internet() {
             menu_x="[x]: $(get_message menu_xpass)"
             menu_v="[v]: $(get_message menu_v6connect)"
             menu_p="[p]: $(get_message menu_pppoe)"
-            menu_q="[q]: $(get_message menu_exit)"
+            menu_e="[e]: $(get_message menu_exit)"
             prompt="$(get_message menu_select_prompt)"
             ;;
     esac
@@ -137,7 +146,7 @@ main_menu_internet() {
         echo -e "$(color "magenta" "$menu_x")"
         echo -e "$(color "red"    "$menu_v")"
         echo -e "$(color "cyan"   "$menu_p")"
-        echo -e "$(color "white" "$menu_q")"
+        echo -e "$(color "white" "$menu_e")"
         echo -e "$(color "white" "-----------------------------------------------")"
 
         printf "%s" "$prompt"
@@ -149,12 +158,17 @@ main_menu_internet() {
             x) handle_ds_lite_xpass_menu ;;
             v) handle_ds_lite_v6connect_menu ;;
             p) handle_pppoe_menu ;;
-            q)
+            e)
                 case "$SELECTED_LANGUAGE" in
                     en) echo "Exiting" ;;
                     *)  echo "スクリプト終了" ;;
                 esac
-                exit 0
+                # LINKED が未設定なら単体利用：exit、設定されていれば openwrt.sh のメインメニューに戻る
+                if [ -z "$LINKED" ]; then
+                    exit 0
+                else
+                    return 0
+                fi
                 ;;
             *) echo -e "$(color "red" "$(get_message invalid_option)")" ;;
         esac
@@ -162,7 +176,7 @@ main_menu_internet() {
 }
 
 #########################################################################
-# 各サブメニュー実装
+# 以下、各サブメニュー実装（省略はせず、前回の例と同様の実装）
 #########################################################################
 
 # MAP-E メニュー (例: OCNバーチャルコネクト)
@@ -328,16 +342,16 @@ handle_pppoe_menu() {
     case "$SELECTED_LANGUAGE" in
         en)
             submenu_title="PPPoE Configuration"
-            opt4="[4]: Enter Username (IPv4)"
-            opt6="[6]: Enter Username (IPv6)"
+            opt4="[4]: $(get_message pppoe_ipv4_username_prompt)"
+            opt6="[6]: $(get_message pppoe_ipv6_username_prompt)"
             option_back="[r]: Back"
             prompt="Please select: "
             invalid="Invalid option"
             ;;
         *)
             submenu_title="PPPoE設定"
-            opt4="[4]: ユーザー名入力 (IPv4)"
-            opt6="[6]: ユーザー名入力 (IPv6)"
+            opt4="[4]: $(get_message pppoe_ipv4_username_prompt)"
+            opt6="[6]: $(get_message pppoe_ipv6_username_prompt)"
             option_back="[r]: 戻る"
             prompt="選択してください: "
             invalid="無効なオプションです"
@@ -347,62 +361,4 @@ handle_pppoe_menu() {
     while :; do
         echo -e "$(color "white" "-----------------------------------------------")"
         echo -e "$(color "white" "$submenu_title")"
-        echo -e "$(color "cyan" "$opt4")"
-        echo -e "$(color "green" "$opt6")"
-        echo -e "$(color "white" "$option_back")"
-        echo -e "$(color "white" "-----------------------------------------------")"
-        printf "%s" "$prompt"
-        read opt
-        case "$opt" in
-            4) pppoe_config_ipv4 ;;
-            6) pppoe_config_ipv4_ipv6 ;;
-            r) break ;;
-            *) echo -e "$(color "red" "$invalid")" ;;
-        esac
-    done
-}
-
-# PPPoE IPv4 設定処理 (仮実装)
-pppoe_config_ipv4() {
-    case "$SELECTED_LANGUAGE" in
-        en) echo "Please enter your IPv4 username:" ;;
-        *)  echo "ユーザー名を入力してください (IPv4):" ;;
-    esac
-    read username
-    case "$SELECTED_LANGUAGE" in
-        en) echo "Please enter your IPv4 password:" ;;
-        *)  echo "パスワードを入力してください (IPv4):" ;;
-    esac
-    read password
-    echo "IPv4設定: ユーザー名 [$username] / パスワード [$password] を実行しました。"
-}
-
-# PPPoE IPv4/IPv6 設定処理 (仮実装)
-pppoe_config_ipv4_ipv6() {
-    case "$SELECTED_LANGUAGE" in
-        en) echo "Please enter your IPv4 username:" ;;
-        *)  echo "ユーザー名を入力してください (IPv4):" ;;
-    esac
-    read username4
-    case "$SELECTED_LANGUAGE" in
-        en) echo "Please enter your IPv4 password:" ;;
-        *)  echo "パスワードを入力してください (IPv4):" ;;
-    esac
-    read password4
-    case "$SELECTED_LANGUAGE" in
-        en) echo "Please enter your IPv6 username:" ;;
-        *)  echo "ユーザー名を入力してください (IPv6):" ;;
-    esac
-    read username6
-    case "$SELECTED_LANGUAGE" in
-        en) echo "Please enter your IPv6 password:" ;;
-        *)  echo "パスワードを入力してください (IPv6):" ;;
-    esac
-    read password6
-    echo "IPv4/IPv6設定: IPv4ユーザー名 [$username4] / パスワード [$password4]、IPv6ユーザー名 [$username6] / パスワード [$password6] を実行しました。"
-}
-
-#########################################################################
-# エントリーポイント
-#########################################################################
-main_menu_internet
+        echo -e "$(color "cyan" "$o

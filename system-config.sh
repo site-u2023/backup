@@ -12,7 +12,7 @@
 #  4. デバイス名・パスワードの設定 (set_device_name_password)
 #  5. Wi-Fi SSID・パスワードの設定 (set_wifi_ssid_password)
 #  6. システム全体の設定 (set_device)
-echo system-config.sh Last update 202502031310-4
+echo system-config.sh Last update 202502031310-5
 
 # 定数の設定
 BASE_URL="https://raw.githubusercontent.com/site-u2023/aios/main"

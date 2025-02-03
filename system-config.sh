@@ -53,11 +53,6 @@ select_timezone() {
 
     # 言語に応じたメッセージ設定
     case "$SELECTED_LANGUAGE" in
-        en|*) # 英語とその他すべての未定義言語の処理
-            msg_timezone_single="Time Zone: "
-            msg_timezone_list="Available Time Zones:"
-            msg_select_tz="Select the time zone by number: "
-            ;;
         ja)
             msg_timezone_single="タイムゾーン: "
             msg_timezone_list="利用可能なタイムゾーン:"
@@ -72,6 +67,11 @@ select_timezone() {
             msg_timezone_single="時區: "
             msg_timezone_list="可用時區:"
             msg_select_tz="請選擇時區編號: "
+            ;;
+        en|*) # 英語とその他すべての未定義言語の処理
+            msg_timezone_single="Time Zone: "
+            msg_timezone_list="Available Time Zones:"
+            msg_select_tz="Select the time zone by number: "
             ;;
     esac
 
@@ -127,12 +127,6 @@ information() {
     local country_code="$COUNTRYCODE"
 
     case "$SELECTED_LANGUAGE" in
-        en|*) # 英語とその他すべての未定義言語の処理
-            echo -e "$(color white "Country: $country_name")"
-            echo -e "$(color white "Display Name: $display_name")"
-            echo -e "$(color white "Language Code: $language_code")"
-            echo -e "$(color white "Country Code: $country_code")"
-            ;;
         ja)
             echo -e "$(color white "国名: $country_name")"
             echo -e "$(color white "表示名: $display_name")"
@@ -150,6 +144,12 @@ information() {
             echo -e "$(color white "顯示名稱: $display_name")"
             echo -e "$(color white "語言代碼: $language_code")"
             echo -e "$(color white "國家代碼: $country_code")"
+            ;;
+        en|*) # 英語とその他すべての未定義言語の処理
+            echo -e "$(color white "Country: $country_name")"
+            echo -e "$(color white "Display Name: $display_name")"
+            echo -e "$(color white "Language Code: $language_code")"
+            echo -e "$(color white "Country Code: $country_code")"
             ;;
     esac
 }
@@ -168,12 +168,6 @@ XXXXXinformation() {
     country_code=$(echo "$country_data" | awk '{print $4}')
 
     case "$lang" in
-        en|*) # 英語とその他すべての未定義言語の処理
-            echo -e "$(color white "Country: $country_name")"
-            echo -e "$(color white "Display Name: $display_name")"
-            echo -e "$(color white "Language Code: $language_code")"
-            echo -e "$(color white "Country Code: $country_code")"
-            ;;
         ja)
             echo -e "$(color white "国名: $country_name")"
             echo -e "$(color white "表示名: $display_name")"
@@ -191,6 +185,12 @@ XXXXXinformation() {
             echo -e "$(color white "顯示名稱: $display_name")"
             echo -e "$(color white "語言代碼: $language_code")"
             echo -e "$(color white "國家代碼: $country_code")"
+            ;;
+        en|*) # 英語とその他すべての未定義言語の処理
+            echo -e "$(color white "Country: $country_name")"
+            echo -e "$(color white "Display Name: $display_name")"
+            echo -e "$(color white "Language Code: $language_code")"
+            echo -e "$(color white "Country Code: $country_code")"
             ;;
     esac
 
@@ -210,13 +210,6 @@ set_device_name_password() {
 
     lang="$SELECTED_LANGUAGE"
     case "$lang" in
-        en|*) # 英語とその他すべての未定義言語の処理
-            msg_device="Enter the new device name: "
-            msg_password="Enter the new password: "
-            msg_confirm="Are you sure with the following settings? (y/n): "
-            msg_success="Password and device name have been successfully updated."
-            msg_cancel="Operation has been canceled."
-            ;;
         ja)
             msg_device="新しいデバイス名を入力してください: "
             msg_password="新しいパスワードを入力してください: "
@@ -237,6 +230,13 @@ set_device_name_password() {
             msg_confirm="您確認以下設定嗎？ (y/n): "
             msg_success="密碼和設備名稱已成功更新。"
             msg_cancel="操作已取消。"
+            ;;
+        en|*) # 英語とその他すべての未定義言語の処理
+            msg_device="Enter the new device name: "
+            msg_password="Enter the new password: "
+            msg_confirm="Are you sure with the following settings? (y/n): "
+            msg_success="Password and device name have been successfully updated."
+            msg_cancel="Operation has been canceled."
             ;;
     esac
 
@@ -284,18 +284,6 @@ set_wifi_ssid_password() {
     
     lang="$SELECTED_LANGUAGE"
     case "$lang" in
-        en|*) # 英語とその他すべての未定義言語の処理
-            msg_no_devices="No Wi-Fi devices found. Exiting."
-            msg_band="Device %s (Band: %s)"
-            msg_enter_ssid="Enter SSID: "
-            msg_enter_password="Enter password (8 or more characters): "
-            msg_password_invalid="Password must be at least 8 characters long."
-            msg_updated="Device %s settings have been updated."
-            msg_select_band="Enable band %s on device %s? (y/n): "
-            msg_confirm="Configuration: SSID = %s, Password = %s. Is this correct? (y/n): "
-            msg_reenter="Please re-enter the information."
-            msg_invalid="Invalid input. Please enter 'y' or 'n'."
-            ;;
         ja)
             msg_no_devices="Wi-Fiデバイスが見つかりません。終了します。"
             msg_band="デバイス %s (帯域: %s)"
@@ -331,6 +319,18 @@ set_wifi_ssid_password() {
             msg_confirm="設定資訊: SSID = %s, 密碼 = %s。是否正確？(y/n): "
             msg_reenter="請重新輸入資訊。"
             msg_invalid="輸入無效。請輸入'y'或'n'。"
+            ;;
+        en|*) # 英語とその他すべての未定義言語の処理
+            msg_no_devices="No Wi-Fi devices found. Exiting."
+            msg_band="Device %s (Band: %s)"
+            msg_enter_ssid="Enter SSID: "
+            msg_enter_password="Enter password (8 or more characters): "
+            msg_password_invalid="Password must be at least 8 characters long."
+            msg_updated="Device %s settings have been updated."
+            msg_select_band="Enable band %s on device %s? (y/n): "
+            msg_confirm="Configuration: SSID = %s, Password = %s. Is this correct? (y/n): "
+            msg_reenter="Please re-enter the information."
+            msg_invalid="Invalid input. Please enter 'y' or 'n'."
             ;;
     esac
 

@@ -316,7 +316,7 @@ menu_option() {
                 unset -f get_message_Internet_config
                 return 0 2>/dev/null || exit 0
             else
-                show_notification "exit_cancelled"
+                show_notification "return_cancelled"
             fi
             ;;
         "exit")

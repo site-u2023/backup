@@ -12,7 +12,7 @@
 #  4. デバイス名・パスワードの設定 (set_device_name_password)
 #  5. Wi-Fi SSID・パスワードの設定 (set_wifi_ssid_password)
 #  6. システム全体の設定 (set_device)
-echo system-config.sh Last update 202502031310-5
+echo system-config.sh Last update 202502031310-6
 
 # 定数の設定
 BASE_URL="https://raw.githubusercontent.com/site-u2023/aios/main"
@@ -67,6 +67,26 @@ select_timezone() {
             msg_timezone_single="時區: "
             msg_timezone_list="可用時區:"
             msg_select_tz="請選擇時區編號: "
+            ;;
+            id)
+            msg_timezone_single="Zona waktu: "
+            msg_timezone_list="Zona waktu yang tersedia:"
+            msg_select_tz="Pilih nomor zona waktu: "
+            ;;
+        ko)
+            msg_timezone_single="시간대: "
+            msg_timezone_list="사용 가능한 시간대:"
+            msg_select_tz="시간대 번호를 선택하세요: "
+            ;;
+        de)
+            msg_timezone_single="Zeitzone: "
+            msg_timezone_list="Verfügbare Zeitzonen:"
+            msg_select_tz="Bitte wählen Sie die Zeitzonennummer: "
+            ;;
+        ru)
+            msg_timezone_single="Часовой пояс: "
+            msg_timezone_list="Доступные часовые пояса:"
+            msg_select_tz="Выберите номер часового пояса: "
             ;;
         en|*) # 英語とその他すべての未定義言語の処理
             msg_timezone_single="Time Zone: "
@@ -145,6 +165,30 @@ information() {
             echo -e "$(color white "語言代碼: $language_code")"
             echo -e "$(color white "國家代碼: $country_code")"
             ;;
+        id)
+            echo -e "$(color white "Nama Negara: $country_name")"
+            echo -e "$(color white "Nama Tampilan: $display_name")"
+            echo -e "$(color white "Kode Bahasa: $language_code")"
+            echo -e "$(color white "Kode Negara: $country_code")"
+            ;;
+        ko)
+            echo -e "$(color white "국가명: $country_name")"
+            echo -e "$(color white "표시 이름: $display_name")"
+            echo -e "$(color white "언어 코드: $language_code")"
+            echo -e "$(color white "국가 코드: $country_code")"
+            ;;
+        de)
+            echo -e "$(color white "Ländername: $country_name")"
+            echo -e "$(color white "Anzeigename: $display_name")"
+            echo -e "$(color white "Sprachcode: $language_code")"
+            echo -e "$(color white "Ländercode: $country_code")"
+            ;;
+        ru)
+            echo -e "$(color white "Название страны: $country_name")"
+            echo -e "$(color white "Отображаемое имя: $display_name")"
+            echo -e "$(color white "Код языка: $language_code")"
+            echo -e "$(color white "Код страны: $country_code")"
+            ;;
         en|*) # 英語とその他すべての未定義言語の処理
             echo -e "$(color white "Country: $country_name")"
             echo -e "$(color white "Display Name: $display_name")"
@@ -186,6 +230,30 @@ XXXXXinformation() {
             echo -e "$(color white "語言代碼: $language_code")"
             echo -e "$(color white "國家代碼: $country_code")"
             ;;
+        id)
+            echo -e "$(color white "Nama Negara: $country_name")"
+            echo -e "$(color white "Nama Tampilan: $display_name")"
+            echo -e "$(color white "Kode Bahasa: $language_code")"
+            echo -e "$(color white "Kode Negara: $country_code")"
+            ;;
+        ko)
+            echo -e "$(color white "국가명: $country_name")"
+            echo -e "$(color white "표시 이름: $display_name")"
+            echo -e "$(color white "언어 코드: $language_code")"
+            echo -e "$(color white "국가 코드: $country_code")"
+            ;;
+        de)
+            echo -e "$(color white "Ländername: $country_name")"
+            echo -e "$(color white "Anzeigename: $display_name")"
+            echo -e "$(color white "Sprachcode: $language_code")"
+            echo -e "$(color white "Ländercode: $country_code")"
+            ;;
+        ru)
+            echo -e "$(color white "Название страны: $country_name")"
+            echo -e "$(color white "Отображаемое имя: $display_name")"
+            echo -e "$(color white "Код языка: $language_code")"
+            echo -e "$(color white "Код страны: $country_code")"
+            ;;    
         en|*) # 英語とその他すべての未定義言語の処理
             echo -e "$(color white "Country: $country_name")"
             echo -e "$(color white "Display Name: $display_name")"
@@ -230,6 +298,34 @@ set_device_name_password() {
             msg_confirm="您確認以下設定嗎？ (y/n): "
             msg_success="密碼和設備名稱已成功更新。"
             msg_cancel="操作已取消。"
+            ;;
+        id)
+            msg_device="Masukkan nama perangkat baru: "
+            msg_password="Masukkan kata sandi baru: "
+            msg_confirm="Apakah Anda yakin dengan pengaturan berikut? (y/n): "
+            msg_success="Kata sandi dan nama perangkat berhasil diperbarui."
+            msg_cancel="Pengaturan telah dibatalkan."
+            ;;
+        ko)
+            msg_device="새 장치 이름을 입력하세요: "
+            msg_password="새 비밀번호를 입력하세요: "
+            msg_confirm="다음 설정으로 진행하시겠습니까? (y/n): "
+            msg_success="비밀번호와 장치 이름이 성공적으로 업데이트되었습니다."
+            msg_cancel="설정이 취소되었습니다."
+            ;;
+        de)
+            msg_device="Geben Sie den neuen Gerätenamen ein: "
+            msg_password="Geben Sie das neue Passwort ein: "
+            msg_confirm="Sind Sie mit den folgenden Einstellungen einverstanden? (y/n): "
+            msg_success="Passwort und Gerätename wurden erfolgreich aktualisiert."
+            msg_cancel="Die Einstellungen wurden abgebrochen."
+            ;;
+        ru)
+            msg_device="Введите новое имя устройства: "
+            msg_password="Введите новый пароль: "
+            msg_confirm="Вы уверены в следующих настройках? (y/n): "
+            msg_success="Пароль и имя устройства успешно обновлены."
+            msg_cancel="Настройки были отменены."
             ;;
         en|*) # 英語とその他すべての未定義言語の処理
             msg_device="Enter the new device name: "
@@ -319,6 +415,54 @@ set_wifi_ssid_password() {
             msg_confirm="設定資訊: SSID = %s, 密碼 = %s。是否正確？(y/n): "
             msg_reenter="請重新輸入資訊。"
             msg_invalid="輸入無效。請輸入'y'或'n'。"
+            ;;
+        id)
+            msg_no_devices="Perangkat Wi-Fi tidak ditemukan. Keluar."
+            msg_band="Perangkat %s (Pita: %s)"
+            msg_enter_ssid="Masukkan SSID: "
+            msg_enter_password="Masukkan kata sandi (minimal 8 karakter): "
+            msg_password_invalid="Kata sandi harus terdiri dari minimal 8 karakter."
+            msg_updated="Pengaturan perangkat %s telah diperbarui."
+            msg_select_band="Aktifkan pita %s di perangkat %s? (y/n): "
+            msg_confirm="Konfigurasi: SSID = %s, Kata Sandi = %s. Apakah ini benar? (y/n): "
+            msg_reenter="Silakan masukkan kembali informasi."
+            msg_invalid="Masukan tidak valid. Harap masukkan 'y' atau 'n'."
+            ;;
+        ko)
+            msg_no_devices="Wi-Fi 장치를 찾을 수 없습니다. 종료합니다."
+            msg_band="장치 %s (대역: %s)"
+            msg_enter_ssid="SSID를 입력하세요: "
+            msg_enter_password="비밀번호를 입력하세요 (8자 이상): "
+            msg_password_invalid="비밀번호는 최소 8자 이상이어야 합니다."
+            msg_updated="장치 %s의 설정이 업데이트되었습니다."
+            msg_select_band="장치 %s에서 대역 %s를 활성화하시겠습니까? (y/n): "
+            msg_confirm="설정 내용: SSID = %s, 비밀번호 = %s. 이대로 진행하시겠습니까? (y/n): "
+            msg_reenter="정보를 다시 입력하세요."
+            msg_invalid="잘못된 입력입니다. 'y' 또는 'n'을 입력하세요."
+            ;;
+        de)
+            msg_no_devices="Keine Wi-Fi-Geräte gefunden. Beenden."
+            msg_band="Gerät %s (Band: %s)"
+            msg_enter_ssid="Bitte SSID eingeben: "
+            msg_enter_password="Bitte Passwort eingeben (mindestens 8 Zeichen): "
+            msg_password_invalid="Das Passwort muss mindestens 8 Zeichen lang sein."
+            msg_updated="Die Einstellungen für Gerät %s wurden aktualisiert."
+            msg_select_band="Band %s auf Gerät %s aktivieren? (y/n): "
+            msg_confirm="Konfiguration: SSID = %s, Passwort = %s. Ist das korrekt? (y/n): "
+            msg_reenter="Bitte geben Sie die Informationen erneut ein."
+            msg_invalid="Ungültige Eingabe. Bitte 'y' oder 'n' eingeben."
+            ;;
+        ru)
+            msg_no_devices="Устройства Wi-Fi не найдены. Завершение работы."
+            msg_band="Устройство %s (Диапазон: %s)"
+            msg_enter_ssid="Введите SSID: "
+            msg_enter_password="Введите пароль (не менее 8 символов): "
+            msg_password_invalid="Пароль должен содержать не менее 8 символов."
+            msg_updated="Настройки устройства %s были обновлены."
+            msg_select_band="Включить диапазон %s на устройстве %s? (y/n): "
+            msg_confirm="Конфигурация: SSID = %s, Пароль = %s. Это правильно? (y/n): "
+            msg_reenter="Пожалуйста, введите информацию заново."
+            msg_invalid="Неверный ввод. Пожалуйста, введите 'y' или 'n'."
             ;;
         en|*) # 英語とその他すべての未定義言語の処理
             msg_no_devices="No Wi-Fi devices found. Exiting."

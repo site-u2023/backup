@@ -6,7 +6,7 @@
 #
 # 各種共通処理（ヘルプ表示、カラー出力、システム情報確認、言語選択、確認・通知メッセージの多言語対応など）を提供する。
 #
-echo common-functions.sh Last update 202502031310-4
+echo common-functions.sh Last update 202502031310-5
 
 # 基本定数の設定
 BASE_URL="${BASE_URL:-https://raw.githubusercontent.com/site-u2023/aios/main}"
@@ -210,6 +210,52 @@ check_common() {
 #########################################################################
 menu_option() {
     local action="$1"
+    local menu_key="$2"  # ここでメニューのキーを受け取る
+    local script_name="$3"
+    local input_lang="$4"
+
+    # メニュー説明を多言語で表示
+    local description=$(get_message "$menu_key")
+    echo -e "$(color white "$description")"
+
+    case "$action" in
+        "exit")
+            if ask_confirmation "exit"; then
+                show_notification "exit"
+                exit 0
+            else
+                show_notification "exit_cancelled"
+            fi
+            ;;
+        "delete")
+            if ask_confirmation "delete"; then
+                rm -rf "${BASE_DIR}" /usr/bin/aios /tmp/aios.sh || handle_error "削除に失敗しました。"
+                show_notification "delete_success"
+                exit 0
+            else
+                show_notification "delete_cancelled"
+            fi
+            ;;
+        "download")
+            if ask_confirmation "download"; then
+                if wget --quiet -O "${BASE_DIR}/${script_name}" "${BASE_URL}/${script_name}"; then
+                    show_notification "download_success"
+                    . "${BASE_DIR}/${script_name}" "$input_lang" || handle_error "スクリプトの実行に失敗しました。"
+                else
+                    show_notification "download_failure"
+                fi
+            else
+                show_notification "download_cancelled"
+            fi
+            ;;
+        *)
+            echo -e "$(color red "Unknown action.")"
+            ;;
+    esac
+}
+
+XXXXX_menu_option() {
+    local action="$1"
     local description="$2"
     local script_name="$3"
     local input_lang="$4"
@@ -263,64 +309,85 @@ get_message() {
         ja)
             case "$key" in
                 confirm_default) echo "本当に実行しますか？" ;;
-                reenter_prompt)  echo "再入力しますか？" ;;
-                choose_prompt)   echo "選択してください: " ;;
                 download_success) echo "ダウンロードが成功しました。" ;;
-                download_failure) echo "ダウンロードに失敗しました。" ;;
                 exit_cancelled) echo "終了操作がキャンセルされました。" ;;
                 delete_cancelled) echo "削除操作がキャンセルされました。" ;;
                 delete_success) echo "スクリプトと設定が削除されました。" ;;
                 download_cancelled) echo "ダウンロード操作がキャンセルされました。" ;;
                 exit_complete) echo "終了操作が完了しました。" ;;
                 delete_complete) echo "削除操作が完了しました。" ;;
+                # メニュー項目の説明を追加
+                menu_internet) echo "インターネット設定" ;;
+                menu_system) echo "システム初期設定" ;;
+                menu_package) echo "推奨パッケージインストール" ;;
+                menu_adblock) echo "広告ブロッカーインストール設定" ;;
+                menu_ap) echo "アクセスポイント設定" ;;
+                menu_other) echo "その他のスクリプト設定" ;;
+                menu_exit) echo "スクリプト終了" ;;
+                menu_delete) echo "スクリプト削除終了" ;;
                 *) echo "操作が完了しました。" ;;
             esac
             ;;
         zh-cn)
             case "$key" in
                 confirm_default) echo "您确定吗？" ;;
-                reenter_prompt)  echo "您要重新输入吗？" ;;
-                choose_prompt)   echo "请选择: " ;;
                 download_success) echo "下载成功。" ;;
-                download_failure) echo "下载失败。" ;;
                 exit_cancelled) echo "退出操作已取消。" ;;
                 delete_cancelled) echo "删除操作已取消。" ;;
                 delete_success) echo "脚本和配置已删除。" ;;
                 download_cancelled) echo "下载操作已取消。" ;;
                 exit_complete) echo "退出操作已完成。" ;;
                 delete_complete) echo "删除操作已完成。" ;;
+                menu_internet) echo "互联网设置" ;;
+                menu_system) echo "系统初始设置" ;;
+                menu_package) echo "推荐安装包" ;;
+                menu_adblock) echo "广告拦截器设置" ;;
+                menu_ap) echo "访问点设置" ;;
+                menu_other) echo "其他脚本设置" ;;
+                menu_exit) echo "退出脚本" ;;
+                menu_delete) echo "删除脚本并退出" ;;
                 *) echo "操作已完成。" ;;
             esac
             ;;
         zh-tw)
             case "$key" in
                 confirm_default) echo "您確定嗎？" ;;
-                reenter_prompt)  echo "您要重新輸入嗎？" ;;
-                choose_prompt)   echo "請選擇: " ;;
                 download_success) echo "下載成功。" ;;
-                download_failure) echo "下載失敗。" ;;
                 exit_cancelled) echo "退出操作已取消。" ;;
                 delete_cancelled) echo "刪除操作已取消。" ;;
                 delete_success) echo "腳本和配置已刪除。" ;;
                 download_cancelled) echo "下載操作已取消。" ;;
                 exit_complete) echo "退出操作已完成。" ;;
                 delete_complete) echo "刪除操作已完成。" ;;
+                menu_internet) echo "網路設定" ;;
+                menu_system) echo "系統初始設定" ;;
+                menu_package) echo "推薦安裝包" ;;
+                menu_adblock) echo "廣告攔截器設定" ;;
+                menu_ap) echo "連接點設定" ;;
+                menu_other) echo "其他腳本設定" ;;
+                menu_exit) echo "退出腳本" ;;
+                menu_delete) echo "移除腳本並退出" ;;
                 *) echo "操作已完成。" ;;
             esac
             ;;
-        en|*) # 英語とその他すべての未定義言語の処理
+        en|*)
             case "$key" in
                 confirm_default) echo "Are you sure?" ;;
-                reenter_prompt)  echo "Do you want to re-enter?" ;;
-                choose_prompt)   echo "Please choose: " ;;
                 download_success) echo "Download successful." ;;
-                download_failure) echo "Download failed." ;;
                 exit_cancelled) echo "Exit operation cancelled." ;;
                 delete_cancelled) echo "Delete operation cancelled." ;;
                 delete_success) echo "Script and configuration deleted." ;;
                 download_cancelled) echo "Download operation cancelled." ;;
                 exit_complete) echo "Exit operation completed." ;;
                 delete_complete) echo "Delete operation completed." ;;
+                menu_internet) echo "Internet settings" ;;
+                menu_system) echo "Initial System Settings" ;;
+                menu_package) echo "Recommended Package Installation" ;;
+                menu_adblock) echo "Ad blocker installation settings" ;;
+                menu_ap) echo "Access Point Settings" ;;
+                menu_other) echo "Other Script Settings" ;;
+                menu_exit) echo "Exit Script" ;;
+                menu_delete) echo "Remove script and exit" ;;
                 *) echo "Operation completed." ;;
             esac
             ;;

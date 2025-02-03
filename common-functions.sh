@@ -6,7 +6,7 @@
 #
 # 各種共通処理（ヘルプ表示、カラー出力、システム情報確認、言語選択、確認・通知メッセージの多言語対応など）を提供する。
 #
-echo common-functions.sh Last update 202502031310-1
+echo common-functions.sh Last update 202502031310-2
 
 # 基本定数の設定
 BASE_URL="${BASE_URL:-https://raw.githubusercontent.com/site-u2023/aios/main}"
@@ -400,6 +400,80 @@ normalize_language() {
 # process_language_selection: ユーザー入力の言語コードから有効な候補を選択する
 #########################################################################
 process_language_selection() {
+    local INPUT_LANG="$1" found_entries found_entry new_input choice num_matches
+
+    while true; do
+        INPUT_LANG=$(echo "$INPUT_LANG" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
+
+        # 完全一致を優先（言語コードまたは国コード）
+        found_entries=$(sh "${BASE_DIR}/country-zone.sh" | grep -i -w "${INPUT_LANG}")
+
+        # 完全一致で見つからない場合、部分一致（国名や言語名も含む）
+        if [ -z "$found_entries" ]; then
+            found_entries=$(sh "${BASE_DIR}/country-zone.sh" | grep -i "${INPUT_LANG}")
+        fi
+
+        # それでも見つからなければ再入力を促す
+        if [ -z "$found_entries" ]; then
+            echo "No matching entry found."
+            read -p "$(color white "Do you want to re-enter? [y/n]: ")" choice
+            case "$choice" in
+                [Yy])
+                    read -p "$(color white "Please re-enter language: ")" new_input
+                    INPUT_LANG="$new_input"
+                    continue
+                    ;;
+                *)
+                    echo "Defaulting to English (en)."
+                    found_entries=$(sh "${BASE_DIR}/country-zone.sh" | grep -i "\ben\b")
+            esac
+        fi
+
+        # 複数候補があれば選択肢を表示
+        num_matches=$(echo "$found_entries" | wc -l)
+        if [ "$num_matches" -gt 1 ]; then
+            echo "Multiple matches found. Please select:"
+            local i=1
+            echo "$found_entries" | while IFS= read -r line; do
+                echo "[$i] $line"
+                i=$((i+1))
+            done
+            echo "[0] Re-enter language"
+
+            read -p "$(color white "Enter the number of your choice: ")" choice
+
+            # 無効な入力処理
+            if ! [ "$choice" -eq "$choice" ] 2>/dev/null || [ "$choice" -lt 0 ] || [ "$choice" -gt "$num_matches" ]; then
+                echo "Invalid selection. Please enter a valid number."
+                continue
+            fi
+
+            if [ "$choice" -eq 0 ]; then
+                read -p "$(color white "Please re-enter language: ")" new_input
+                INPUT_LANG="$new_input"
+                continue
+            fi
+
+            found_entry=$(echo "$found_entries" | sed -n "${choice}p")
+        else
+            found_entry="$found_entries"
+        fi
+
+        break  # 有効な候補が取得できたのでループを抜ける
+    done
+
+    # フィールド抽出
+    SELECTED_LANGUAGE=$(echo "$found_entry" | awk '{print $3}')
+    SELECTED_COUNTRY=$(echo "$found_entry" | awk '{print $4}')
+
+    echo "$SELECTED_LANGUAGE" > "${BASE_DIR}/check_language"
+    echo "$SELECTED_COUNTRY" > "${BASE_DIR}/check_country"
+
+    echo "Selected Language: $SELECTED_LANGUAGE"
+    echo "Selected Country: $SELECTED_COUNTRY"
+}
+
+xxxxx-2-process_language_selection() {
     local INPUT_LANG="$1" found_entries found_entry new_input choice num_matches
 
     while true; do

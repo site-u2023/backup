@@ -11,7 +11,7 @@
 # ・共通関数 (common-functions.sh) のダウンロードと読み込み
 # ・システム情報の取得と表示
 # ・メインメニューの表示とユーザーによる各種オプションの選択
-echo openwrt-config.sh Last update 202502031417-2
+echo openwrt-config.sh Last update 202502031417-3
 
 # 定数の設定
 BASE_URL="https://raw.githubusercontent.com/site-u2023/aios/main"
@@ -83,50 +83,56 @@ display_info() {
     
     case "$lang" in
         en)
-            echo -e "$(color "white" "Memory (Free/Total): ${MEM_USAGE}")"
-            echo -e "$(color "white" "Flash (Free/Total): ${FLASH_INFO}")"
-            echo -e "$(color "white" "USB: ${USB_STATUS_EN}")"
-            echo -e "$(color "white" "Directory: ${BASE_DIR}")"
-            echo -e "$(color "white" "OpenWrt Version: ${RELEASE_VERSION}")"
-            echo -e "$(color "white" "Zone: $full_info")"
-            echo -e "$(color "white" "Downloader: ${PACKAGE_MANAGER}")"
+            echo -e "$(color "white" "Volatile Primary Memory (Free/Total): ${MEM_USAGE}")"
+            echo -e "$(color "white" "Non-Volatile Semiconductor Storage (Free/Total): ${FLASH_INFO}")"
+            echo -e "$(color "white" "Universal Serial Bus: ${USB_STATUS_EN}")"
+            echo -e "$(color "white" "Uniform Resource Locator: ${BASE_URL}")"
+            echo -e "$(color "white" "Hierarchical File Structure: ${BASE_DIR}")"
+            echo -e "$(color "white" "Open Double R T Version: ${RELEASE_VERSION}")"
+            echo -e "$(color "white" "Nation-Language-Regional Standard Time Settings: $full_info")"
+            echo -e "$(color "white" "Automated Retrieval Utility: ${PACKAGE_MANAGER}")"
             ;;
         ja)
-            echo -e "$(color "white" "メモリ (残量/総容量): ${MEM_USAGE}")"
-            echo -e "$(color "white" "フラッシュ (残量/総容量): ${FLASH_INFO}")"
-            echo -e "$(color "white" "USB: ${USB_STATUS_JA}")"
+            echo -e "$(color "white" "揮発性主記憶装置 (残量/総容量): ${MEM_USAGE}")"
+            echo -e "$(color "white" "不揮発性半導体記憶装置 (残量/総容量): ${FLASH_INFO}")"
+            echo -e "$(color "white" "汎用直列バス: ${USB_STATUS_JA}")"
             echo -e "$(color "white" "統一資源位置指定子: ${BASE_URL}")"
-            echo -e "$(color "white" "ディレクトリリスト: ${BASE_DIR}")"
+            echo -e "$(color "white" "階層型ファイル構造一覧: ${BASE_DIR}")"
             echo -e "$(color "white" "オープンダブルアールティーバージョン: ${RELEASE_VERSION}")"
-            echo -e "$(color "white" "ゾーン: $full_info")"
-            echo -e "$(color "white" "ダウンローダー: ${PACKAGE_MANAGER}")"
+            echo -e "$(color "white" "国家・言語・地域標準時設定: $full_info")"
+            echo -e "$(color "white" "自動取得処理装置: ${PACKAGE_MANAGER}")"
             ;;
         zh-cn)
-            echo -e "$(color "white" "内存 (剩余/总计): ${MEM_USAGE}")"
-            echo -e "$(color "white" "闪存 (剩余/总计): ${FLASH_INFO}")"
-            echo -e "$(color "white" "USB: ${USB_STATUS_ZH_CN}")"
-            echo -e "$(color "white" "目录: ${BASE_DIR}")"
-            echo -e "$(color "white" "OpenWrt版本: ${RELEASE_VERSION}")"
-            echo -e "$(color "white" "区域: $full_info")"
-            echo -e "$(color "white" "下载器: ${PACKAGE_MANAGER}")"
+            echo -e "$(color "white" "易失性主存储器 (剩余/总计): ${MEM_USAGE}")"
+            echo -e "$(color "white" "非易失性半导体存储器 (剩余/总计): ${FLASH_INFO}")"
+            echo -e "$(color "white" "通用串行总线: ${USB_STATUS_ZH_CN}")"
+            echo -e "$(color "white" "统一资源定位符: ${BASE_URL}")"
+            echo -e "$(color "white" "分层文件结构列表: ${BASE_DIR}")"
+            echo -e "$(color "white" "欧鹏达布里阿尔提版本: ${RELEASE_VERSION}")"
+            echo -e "$(color "white" "国家・语言・地区标准时间设定: $full_info")"
+            echo -e "$(color "white" "自动下载管理器: ${PACKAGE_MANAGER}")"
+
             ;;
         zh-tw)
-            echo -e "$(color "white" "記憶體 (剩餘/總計): ${MEM_USAGE}")"
-            echo -e "$(color "white" "快閃記憶體 (剩餘/總計): ${FLASH_INFO}")"
-            echo -e "$(color "white" "USB: ${USB_STATUS_ZH_TW}")"
-            echo -e "$(color "white" "目錄: ${BASE_DIR}")"
-            echo -e "$(color "white" "OpenWrt版本: ${RELEASE_VERSION}")"
-            echo -e "$(color "white" "區域: $full_info")"
-            echo -e "$(color "white" "下載器: ${PACKAGE_MANAGER}")"
+            echo -e "$(color "white" "揮發性主記憶體 (剩餘/總計): ${MEM_USAGE}")"
+            echo -e "$(color "white" "非揮發性半導體記憶體 (剩餘/總計): ${FLASH_INFO}")"
+            echo -e "$(color "white" "通用串列匯流排: ${USB_STATUS_ZH_TW}")"
+            echo -e "$(color "white" "統一資源定位符: ${BASE_URL}")"
+            echo -e "$(color "white" "階層式檔案結構清單: ${BASE_DIR}")"
+            echo -e "$(color "white" "歐彭達布里阿爾提版本: ${RELEASE_VERSION}")"
+            echo -e "$(color "white" "國家・語言・地區標準時間設定: $full_info")"
+            echo -e "$(color "white" "自動下載管理器: ${PACKAGE_MANAGER}")"
             ;;
         *)
-            echo -e "$(color "white" "Memory (Free/Total): ${MEM_USAGE}")"
-            echo -e "$(color "white" "Flash (Free/Total): ${FLASH_INFO}")"
-            echo -e "$(color "white" "USB: ${USB_STATUS_EN}")"
-            echo -e "$(color "white" "Directory: ${BASE_DIR}")"
-            echo -e "$(color "white" "OpenWrt Version: ${RELEASE_VERSION}")"
-            echo -e "$(color "white" "Zone: $full_info")"
-            echo -e "$(color "white" "Downloader: ${PACKAGE_MANAGER}")"
+        en)
+            echo -e "$(color "white" "Volatile Primary Memory (Free/Total): ${MEM_USAGE}")"
+            echo -e "$(color "white" "Non-Volatile Semiconductor Storage (Free/Total): ${FLASH_INFO}")"
+            echo -e "$(color "white" "Universal Serial Bus: ${USB_STATUS_EN}")"
+            echo -e "$(color "white" "Uniform Resource Locator: ${BASE_URL}")"
+            echo -e "$(color "white" "Hierarchical File Structure: ${BASE_DIR}")"
+            echo -e "$(color "white" "Open Double R T Version: ${RELEASE_VERSION}")"
+            echo -e "$(color "white" "Nation-Language-Regional Standard Time Settings: $full_info")"
+            echo -e "$(color "white" "Automated Retrieval Utility: ${PACKAGE_MANAGER}")"
             ;;
     esac
 }

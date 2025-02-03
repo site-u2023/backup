@@ -11,7 +11,7 @@
 # ・共通関数 (common-functions.sh) のダウンロードと読み込み
 # ・システム情報の取得と表示
 # ・メインメニューの表示とユーザーによる各種オプションの選択
-echo openwrt-config.sh Last update 202502031417-8
+echo openwrt-config.sh Last update 202502031417-9
 
 # 定数の設定
 BASE_URL="https://raw.githubusercontent.com/site-u2023/aios/main"
@@ -350,9 +350,7 @@ main_menu() {
         echo -e "$(color "white_black" "[d]: ${MENU01}")"
         echo -e "$(color "white" "------------------------------------------------------")"
         read -p "$(color "white" "${SELECT1}")" option
-        #option=$(echo "$option" | awk '{gsub(/Ａ/, "A"); gsub(/ａ/, "a"); gsub(/Ｓ/, "S"); gsub(/ｓ/, "s"); print}') # 入力を半角に変換
-        #option=$(echo "$option" | iconv -f UTF-8 -t ASCII//TRANSLIT)
-        #option=$(echo "$option" | tr 'Ａ-Ｚａ-ｚ０-９' 'A-Za-z0-9')
+
         case "${option}" in
             "i") menu_option "${ACTION1}" "${MENU1}" "${TARGET1}" ;;
             "s") menu_option "${ACTION2}" "${MENU2}" "${TARGET2}" ;;

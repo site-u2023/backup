@@ -6,7 +6,7 @@
 #
 # 各種共通処理（ヘルプ表示、カラー出力、システム情報確認、言語選択、確認・通知メッセージの多言語対応など）を提供する。
 #
-echo common-functions.sh Last update 202502031310-7
+echo common-functions.sh Last update 202502031310-8
 
 # 基本定数の設定
 BASE_URL="${BASE_URL:-https://raw.githubusercontent.com/site-u2023/aios/main}"
@@ -316,7 +316,7 @@ menu_option() {
             ;;
         "delete")
             if ask_confirmation "delete"; then
-                rm -rf "${BASE_DIR}" /usr/bin/aios /tmp/aios.sh || handle_error "削除に失敗しました。"
+                rm -rf "${BASE_DIR}" /usr/bin/aios /tmp/aios.sh || handle_error "$(get_message delete_failed)"
                 show_notification "delete_success"
                 exit 0
             else
@@ -327,7 +327,7 @@ menu_option() {
             if ask_confirmation "download"; then
                 if wget --quiet -O "${BASE_DIR}/${script_name}" "${BASE_URL}/${script_name}"; then
                     show_notification "download_success"
-                    . "${BASE_DIR}/${script_name}" "$input_lang" || handle_error "スクリプトの実行に失敗しました。"
+                    . "${BASE_DIR}/${script_name}" "$input_lang" || handle_error "$(get_message script_execution_failed)"
                 else
                     show_notification "download_failure"
                 fi
@@ -335,8 +335,15 @@ menu_option() {
                 show_notification "download_cancelled"
             fi
             ;;
+        "command")
+            if ask_confirmation "execute_command"; then
+                eval "$script_name" || handle_error "$(get_message script_execution_failed)"
+            else
+                show_notification "execution_cancelled"
+            fi
+            ;;
         *)
-            echo -e "$(color red "Unknown action.")"
+            echo -e "$(color red "$(get_message unknown_action)")"
             ;;
     esac
 }

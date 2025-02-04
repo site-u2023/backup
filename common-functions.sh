@@ -6,7 +6,7 @@
 #
 # 各種共通処理（ヘルプ表示、カラー出力、システム情報確認、言語選択、確認・通知メッセージの多言語対応など）を提供する。
 #
-echo common-functions.sh Last update 202502031310-75
+echo common-functions.sh Last update 202502031310-77
 
 # 基本定数の設定
 BASE_URL="${BASE_URL:-https://raw.githubusercontent.com/site-u2023/aios/main}"
@@ -328,14 +328,20 @@ select_timezone() {
 check_common() {
     # オプション処理
     case "$1" in
-        -h|-help|--help)
+        -h|--help)
             print_help
             exit 0
             ;;
         --reset|-reset|-r)
-            rm -f "${BASE_DIR}/check_language" "${BASE_DIR}/check_country" || handle_error "キャッシュの削除に失敗しました。"
+            rm -f "${BASE_DIR}/check_language" "${BASE_DIR}/check_country"
             echo "Language and country cache cleared."
-            shift  # 次の引数を処理するためにシフト
+            ;;
+        *)
+            if [ -n "$1" ]; then
+                # コマンドライン引数があれば、それを直接使用
+                process_country_selection "$1"
+                return
+            fi
             ;;
     esac
 
@@ -729,12 +735,12 @@ process_country_selection() {
     selection=$(echo "$selection" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
     echo "DEBUG AFTER CLEANING: '$selection'"
 
-    # 番号で選択された場合
+    # マッチング処理 - 数字または文字列による選択
     if echo "$selection" | grep -qE '^[0-9]+$'; then
-        matched_countries=$(sh "$country_file" | grep -E '^[A-Za-z]' | sed -n "${selection}p")
+        matched_countries=$(sh "$country_file" | sed -n "${selection}p")
     else
-        # 部分一致検索（大文字小文字無視 & 単語単位でマッチ）
-        matched_countries=$(sh "$country_file" | grep -i -w "$selection")
+        # 大文字小文字無視して国名、コード、言語すべてを検索
+        matched_countries=$(sh "$country_file" | grep -i -E "\b$selection\b")
     fi
 
     # マッチ結果の数を確認して処理分岐
@@ -744,63 +750,54 @@ process_country_selection() {
     if [ "$match_count" -eq 0 ]; then
         echo -e "$(color red "No matching country found.")"
         return 1
-
     elif [ "$match_count" -eq 1 ]; then
-        # 一致する国が1つの場合はそのまま選択
+        # 一致が1つならそのまま選択
         selected_country="$matched_countries"
-        echo "$selected_country" > "${BASE_DIR}/check_country"
-        country_zone
-        echo -e "$(color green "Selected Country: $ZONENAME ($DISPLAYNAME $LANGUAGE $COUNTRYCODE)")"
-
     else
-        # 複数の一致がある場合、リストを表示して選択を促す
+        # 複数の一致がある場合
         echo -e "$(color yellow "Multiple matches found. Please select from the list below:")"
         echo "$matched_countries" | awk '{print "[" NR "] " $0}'
 
-        # 正しい選択が入力されるまでループ
         while true; do
             read -p "Enter the number or country name of your selection: " choice
-
             if echo "$choice" | grep -qE '^[0-9]+$'; then
-                # 数字で選択された場合
                 selected_country=$(echo "$matched_countries" | sed -n "${choice}p")
             else
-                # 国名やコードで再検索
                 selected_country=$(echo "$matched_countries" | grep -i -w "$choice")
             fi
 
-            # 有効な選択があれば保存
             if [ -n "$selected_country" ]; then
-                echo "$selected_country" > "${BASE_DIR}/check_country"
-                country_zone
-                echo -e "$(color green "Selected Country: $ZONENAME ($DISPLAYNAME $LANGUAGE $COUNTRYCODE)")"
                 break
             else
-                echo -e "$(color red "Invalid selection. Please enter a valid number or country name from the list.")"
+                echo -e "$(color red "Invalid selection. Please try again.")"
             fi
         done
     fi
+
+    # 選択結果を保存
+    echo "$selected_country" > "${BASE_DIR}/check_country"
+    country_zone
+    echo -e "$(color green "Selected Country: $ZONENAME ($DISPLAYNAME $LANGUAGE $COUNTRYCODE)")"
 
     # 設定の確認
     while true; do
         read -p "Apply these settings? [Y/n]: " confirm
         case "$confirm" in
-            [Yy]|"")
+            [Yy]|"") 
                 echo -e "$(color green "Settings applied for $ZONENAME.")"
                 break
                 ;;
-            [Nn])
+            [Nn]) 
                 echo -e "$(color yellow "Let's try again.")"
                 process_country_selection  # 再実行
                 break
                 ;;
-            *)
+            *) 
                 echo -e "$(color red "Invalid choice, please enter 'y' or 'n'.")"
                 ;;
         esac
     done
 }
-
 
 display_country_options() {
     local idx=1

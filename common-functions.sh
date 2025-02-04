@@ -6,7 +6,7 @@
 #
 # 各種共通処理（ヘルプ表示、カラー出力、システム情報確認、言語選択、確認・通知メッセージの多言語対応など）を提供する。
 #
-echo common-functions.sh Last update 202502031310-43
+echo common-functions.sh Last update 202502031310-44
 
 # 基本定数の設定
 BASE_URL="${BASE_URL:-https://raw.githubusercontent.com/site-u2023/aios/main}"
@@ -716,6 +716,9 @@ normalize_language() {
 #########################################################################
 process_country_selection() {
     local input found_entries selected_entry
+
+    # 国一覧を最初に表示
+    display_country_options
 
     while true; do
         read -p "$(color white "Please enter the number or country name (partial matches allowed): ")" input

@@ -6,7 +6,7 @@
 #
 # 各種共通処理（ヘルプ表示、カラー出力、システム情報確認、言語選択、確認・通知メッセージの多言語対応など）を提供する。
 #
-echo common-functions.sh Last update 202502031310-59
+echo common-functions.sh Last update 202502031310-60
 
 # 基本定数の設定
 BASE_URL="${BASE_URL:-https://raw.githubusercontent.com/site-u2023/aios/main}"
@@ -727,19 +727,20 @@ process_country_selection() {
     local matched_countries
     local idx=1
 
-    # 入力から余分なスペースを削除（重要！）
+    # 入力から余分なスペースを削除（重要）
     selection=$(echo "$selection" | xargs)
-    
+
     # 番号で選択された場合
     if echo "$selection" | grep -qE '^[0-9]+$'; then
         matched_countries=$(sh "$country_file" | grep -E '^[A-Za-z]' | sed -n "${selection}p")
     else
-        # 部分一致検索で複数マッチを取得
-        mmatched_countries=$(sh "$country_file" | grep -i -w "$selection")
-        # この部分の直後にデバッグ用のechoを追加
-echo "DEBUG: Searching for '$selection'"
-echo "DEBUG: Matched countries:"
-echo "$matched_countries"
+        # 部分一致検索の強化 - 正規表現で大文字小文字無視 & 単語単位でマッチ
+        matched_countries=$(sh "$country_file" | grep -i -w "$selection")
+
+        # 上記で見つからない場合、柔軟な曖昧検索を実施
+        if [ -z "$matched_countries" ]; then
+            matched_countries=$(sh "$country_file" | grep -i ".*$selection.*")
+        fi
     fi
 
     # 複数マッチした場合の処理
@@ -757,7 +758,7 @@ echo "$matched_countries"
     else
         echo -e "$(color yellow "Multiple matches found. Please select from the list below:")"
         
-        # nl の代わりに手動で番号付与
+        # 複数候補を表示して選択を促す
         echo "$matched_countries" | while IFS= read -r line; do
             echo "[$idx] $line"
             idx=$((idx + 1))

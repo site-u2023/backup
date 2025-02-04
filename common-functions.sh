@@ -6,7 +6,7 @@
 #
 # 各種共通処理（ヘルプ表示、カラー出力、システム情報確認、言語選択、確認・通知メッセージの多言語対応など）を提供する。
 #
-echo common-functions.sh Last update 202502031310-87-3
+echo common-functions.sh Last update 202502031310-87-4
 
 # 基本定数の設定
 BASE_URL="${BASE_URL:-https://raw.githubusercontent.com/site-u2023/aios/main}"
@@ -717,7 +717,7 @@ process_country_selection() {
     local selection="$1"
     local matched_countries selected_country
 
-    # 既に設定が適用されている場合、再確認をスキップ
+    # 既に設定済みか確認
     if [ -f "${BASE_DIR}/check_country" ]; then
         local current_country
         current_country=$(cat "${BASE_DIR}/check_country")
@@ -728,7 +728,7 @@ process_country_selection() {
         fi
     fi
 
-    # (既存の選択処理)
+    # 選択プロセス続行
     selection=$(echo "$selection" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
 
     if echo "$selection" | grep -qE '^[0-9]+$'; then
@@ -737,7 +737,6 @@ process_country_selection() {
         matched_countries=$(sh "${BASE_DIR}/country-zone.sh" | grep -i -w "$selection")
     fi
 
-    # (マッチング結果の確認と設定)
     if [ -z "$matched_countries" ]; then
         echo -e "$(color red "No matching country found.")"
         return 1
@@ -759,7 +758,7 @@ process_country_selection() {
         selected_country="$matched_countries"
     fi
 
-    # 設定確認
+    # 設定確認プロンプト
     if ask_confirmation "Apply these settings for $selected_country?"; then
         echo "$selected_country" > "${BASE_DIR}/check_country"
         country_zone

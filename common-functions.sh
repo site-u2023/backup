@@ -994,18 +994,19 @@ XXXXX_get_message() {
 }
 
 #########################################################################
-# ask_confirmation: 確認プロンプトを表示し、ユーザーの入力 (y/n) を待つ
+# ask_confirmation: 確認プロンプトを表示し、全角/半角の y/n に対応
+# 戻り値: y (0) の場合は成功、n (1) の場合はキャンセル
 #########################################################################
 ask_confirmation() {
-    local prompt
-    prompt=$(get_message confirm_default)
+    local prompt="${1:-$(get_message confirm_default)}"
     local choice
+
     while true; do
-        read -p "$(color white "$prompt [y/n]: ")" choice
+        read -p "$(color white "$prompt [Y/n]: ")" choice
         case "$choice" in
-            [Yy]*) return 0 ;;
-            [Nn]*) return 1 ;;
-            *) echo -e "$(color white "Invalid choice, please enter 'y' or 'n'.")" ;;
+            [YyＹｙ]* | "" ) return 0 ;;  # デフォルトは Yes
+            [NnＮｎ]* ) return 1 ;;
+            * ) echo -e "$(color red "Invalid choice, please enter 'y' or 'n'.")" ;;
         esac
     done
 }

@@ -247,17 +247,13 @@ check_language() {
     echo -e "$(color white "------------------------------------------------------")"
     echo -e "$(color white "Select a country for language and timezone configuration.")"
 
-    # ユーザー入力を受け取る
     while true; do
         read -p "$(color cyan "Please enter the number or country name (partial matches allowed): ")" INPUT_LANG
         process_country_selection "$INPUT_LANG"
 
-        # process_country_selection の結果に基づいてループ制御
         if [ $? -eq 0 ]; then
-            echo -e "$(color green "Settings applied successfully.")"
-            break  # 設定完了後にループを終了
-        else
-            echo -e "$(color yellow "Settings were not applied. Let's try again.")"
+            echo -e "$(color green "Configuration completed successfully.")"
+            break  # 設定が成功したらループを終了
         fi
     done
 }
@@ -724,60 +720,33 @@ process_country_selection() {
     local selection="$1"
     local country_file="${BASE_DIR}/country-zone.sh"
     local matched_countries selected_country
-    local idx=1
 
-    # 入力をトリムして正規化
-    echo "DEBUG BEFORE CLEANING: '$selection'"
+    # 入力のトリム
     selection=$(echo "$selection" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
-    echo "DEBUG AFTER CLEANING: '$selection'"
 
-    # 数字または文字列による選択
+    # 国のマッチング
     if echo "$selection" | grep -qE '^[0-9]+$'; then
         matched_countries=$(sh "$country_file" | sed -n "${selection}p")
     else
         matched_countries=$(sh "$country_file" | grep -i -w "$selection")
     fi
 
-    # マッチ結果の数を確認して処理分岐
-    local match_count
-    match_count=$(echo "$matched_countries" | wc -l)
-
-    if [ "$match_count" -eq 0 ]; then
+    if [ -z "$matched_countries" ]; then
         echo -e "$(color red "No matching country found.")"
         return 1
-    elif [ "$match_count" -eq 1 ]; then
-        selected_country="$matched_countries"
-    else
-        echo -e "$(color yellow "Multiple matches found. Please select from the list below:")"
-        echo "$matched_countries" | awk '{print "[" NR "] " $0}'
-
-        while true; do
-            read -p "Enter the number or country name of your selection: " choice
-            if echo "$choice" | grep -qE '^[0-9]+$'; then
-                selected_country=$(echo "$matched_countries" | sed -n "${choice}p")
-            else
-                selected_country=$(echo "$matched_countries" | grep -i -w "$choice")
-            fi
-
-            if [ -n "$selected_country" ]; then
-                break
-            else
-                echo -e "$(color red "Invalid selection. Please try again.")"
-            fi
-        done
     fi
 
-    # 選択結果を保存
+    selected_country="$matched_countries"
     echo "$selected_country" > "${BASE_DIR}/check_country"
-    country_zone
-    echo -e "$(color green "Selected Country: $ZONENAME ($DISPLAYNAME $LANGUAGE $COUNTRYCODE)")"
 
     # 設定の確認
-    if ask_confirmation "Apply these settings?"; then
-        echo -e "$(color green "Settings applied for $ZONENAME.")"
+    if ask_confirmation "Apply these settings for $selected_country?"; then
+        country_zone
+        echo -e "$(color green "Settings applied for $ZONENAME ($DISPLAYNAME $LANGUAGE $COUNTRYCODE).")"
+        exit 0  # 成功時に即座に終了
     else
-        echo -e "$(color yellow "Settings were not applied. Let's try again.")"
-        return 1
+        echo -e "$(color yellow "Settings were not applied. Returning to selection.")"
+        return 1  # 設定拒否時はループ継続
     fi
 }
 

@@ -6,7 +6,7 @@
 #
 # 各種共通処理（ヘルプ表示、カラー出力、システム情報確認、言語選択、確認・通知メッセージの多言語対応など）を提供する。
 #
-echo common-functions.sh Last update 202502031310-47
+echo common-functions.sh Last update 202502031310-48
 
 # 基本定数の設定
 BASE_URL="${BASE_URL:-https://raw.githubusercontent.com/site-u2023/aios/main}"
@@ -768,11 +768,13 @@ process_country_selection() {
 
 display_country_options() {
     local idx=1
+    local country_file="${BASE_DIR}/country-zone.sh"
 
     echo -e "$(color cyan "Available Countries:")"
-    # 'EOF' 内のデータだけを抽出する
-    awk '/^EOF$/ {flag=0} flag {print} /^EOF$/ {flag=1}' "${BASE_DIR}/country-zone.sh" | while IFS= read -r line; do
-        # 行が空白でない場合のみ表示
+
+    # データブロックのみ抽出 (country_data関数の内部)
+    awk '/^country_data\(\) {/,/^EOF/ { if ($0 !~ /^{|^EOF|^country_data|^}$/) print }' "$country_file" | while IFS= read -r line; do
+        # 行が空でない場合のみ処理
         if [ -n "$line" ]; then
             country_name=$(echo "$line" | awk '{print $1}')
             display_name=$(echo "$line" | awk '{print $2}')
@@ -784,8 +786,6 @@ display_country_options() {
         fi
     done
 }
-
-
 
 #########################################################################
 # country_zone: 国・ゾーン情報を取得する関数

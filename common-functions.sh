@@ -6,7 +6,7 @@
 #
 # 各種共通処理（ヘルプ表示、カラー出力、システム情報確認、言語選択、確認・通知メッセージの多言語対応など）を提供する。
 #
-echo common-functions.sh Last update 202502031310-29
+echo common-functions.sh Last update 202502031310-30
 
 # 基本定数の設定
 BASE_URL="${BASE_URL:-https://raw.githubusercontent.com/site-u2023/aios/main}"
@@ -360,13 +360,13 @@ menu_option() {
                 show_notification "exit_cancelled"
             fi
             ;;
+    case "$action" in
         "delete")
-            if ask_confirmation "delete"; then
-                rm -rf "${BASE_DIR}" /usr/bin/aios /tmp/aios.sh || handle_error "$(get_message delete_failed)"
-                show_notification "delete_success"
-                exit 0
+            if ask_confirmation "Do you really want to delete ${target}?"; then
+                rm -f "${BASE_DIR}/${target}"
+                echo -e "$(color green "Deleted: ${target}")"
             else
-                show_notification "delete_cancelled"
+                echo -e "$(color yellow "Deletion cancelled.")"
             fi
             ;;
         "download")

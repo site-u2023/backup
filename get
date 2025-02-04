@@ -533,51 +533,13 @@ get_message() {
             ;;
         zh-cn)
             case "$key" in
-                internet_title)       echo "互联网设置" ;;
-                menu_system)          echo "系统初始设置" ;;
-                menu_package)         echo "推荐安装包" ;;
-                menu_adblock)         echo "广告拦截器设置" ;;
-                menu_ap)              echo "访问点设置" ;;
-                menu_other)           echo "其他脚本设置" ;;
-                menu_exit)            echo "退出脚本" ;;
-                menu_delete)          echo "删除脚本并退出" ;;
-                country_code)         echo "国码" ;;
-                reset)                echo "重置" ;;
-                select_prompt)        echo "请选择:" ;;
-                invalid_option)       echo "无效的选项" ;;
-                input_prompt)         echo "请输入:" ;;
-                confirm_default)      echo "您确定吗？" ;;
-                execute_message)      echo "执行中。" ;;  # または "执行します。" とするかはお好みで
-                complete_message)     echo "完成了。" ;;
-                cancelled_message)    echo "已取消。" ;;
-                download_success)     echo "ダウンロードが成功しました。" ;;
-                return)               echo "戻ります。" ;;
-                return_cancelled)     echo "戻る操作がキャンセルされました。" ;;
+
                 *)                    echo "Undefined message: $key" ;;
             esac
             ;;
         zh-tw)
             case "$key" in
-                internet_title)       echo "網路設定" ;;
-                menu_system)          echo "系統初始設定" ;;
-                menu_package)         echo "推薦安裝包" ;;
-                menu_adblock)         echo "廣告攔截器設定" ;;
-                menu_ap)              echo "連接點設定" ;;
-                menu_other)           echo "其他腳本設定" ;;
-                menu_exit)            echo "退出腳本" ;;
-                menu_delete)          echo "移除腳本並退出" ;;
-                country_code)         echo "國碼" ;;
-                reset)                echo "重設" ;;
-                select_prompt)        echo "請選擇:" ;;
-                invalid_option)       echo "無效的選項" ;;
-                input_prompt)         echo "請輸入:" ;;
-                confirm_default)      echo "您確定嗎？" ;;
-                execute_message)      echo "執行中。" ;;  # ※「実行します。」相当
-                complete_message)     echo "完成了。" ;;
-                cancelled_message)    echo "已取消。" ;;
-                download_success)     echo "ダウンロードが成功しました。" ;;
-                return)               echo "戻ります。" ;;
-                return_cancelled)     echo "戻る操作がキャンセルされました。" ;;
+
                 *)                    echo "Undefined message: $key" ;;
             esac
             ;;

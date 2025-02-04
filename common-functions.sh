@@ -281,6 +281,52 @@ XXXXX_1_check_language() {
 }
 
 #########################################################################
+# select_timezone_for_country: 国コードに基づき、タイムゾーンを選択
+# 引数: 国コード
+# 戻り値: 選択されたタイムゾーン
+#########################################################################
+select_timezone_for_country() {
+    local country_code="$1"
+    local timezone_data timezones timezone_choice
+
+    # country-zone.sh からタイムゾーン情報を取得
+    timezone_data=$(grep -i -w "$country_code" "${BASE_DIR}/country-zone.sh" | awk '{print $5}')
+
+    # タイムゾーンが複数ある場合
+    IFS=',' read -r -a timezones <<< "$timezone_data"
+
+    if [ "${#timezones[@]}" -gt 1 ]; then
+        echo -e "$(color cyan "Multiple timezones found for $country_code. Please select:")"
+        local i=1
+        for tz in "${timezones[@]}"; do
+            echo "[$i] $tz"
+            ((i++))
+        done
+        echo "[0] Cancel"
+
+        while true; do
+            read -p "$(color white "Enter the number of your timezone choice: ")" timezone_choice
+            if [[ "$timezone_choice" =~ ^[0-9]+$ ]] && [ "$timezone_choice" -ge 0 ] && [ "$timezone_choice" -le "${#timezones[@]}" ]; then
+                if [ "$timezone_choice" -eq 0 ]; then
+                    echo -e "$(color yellow "Timezone selection cancelled.")"
+                    return 1
+                fi
+                SELECTED_TIMEZONE="${timezones[$((timezone_choice - 1))]}"
+                break
+            else
+                echo -e "$(color red "Invalid selection. Please enter a valid number.")"
+            fi
+        done
+    else
+        # タイムゾーンが1つだけなら自動選択
+        SELECTED_TIMEZONE="${timezones[0]}"
+    fi
+
+    echo "$SELECTED_TIMEZONE" > "${BASE_DIR}/check_timezone"
+    echo -e "$(color green "Selected Timezone: $SELECTED_TIMEZONE")"
+}
+
+#########################################################################
 # check_common: 初期化処理（オプション処理、バージョン・パッケージマネージャ確認、言語選択）
 #########################################################################
 check_common() {
@@ -702,7 +748,7 @@ XXXXX_1_normalize_language() {
 # process_language_selection: ユーザー入力をもとに言語・国を選択
 #########################################################################
 process_language_selection() {
-    local INPUT_LANG="$1" found_entries found_entry new_input
+    local INPUT_LANG="$1" found_entries found_entry
 
     while true; do
         INPUT_LANG=$(echo "$INPUT_LANG" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
@@ -745,14 +791,17 @@ process_language_selection() {
     done
 
     # フィールド抽出
-    SELECTED_LANGUAGE=$(echo "$found_entry" | awk '{print $3}')
-    SELECTED_COUNTRY=$(echo "$found_entry" | awk '{print $4}')
+    SELECTED_LANGUAGE=$(echo "$found_entry" | awk '{print $2}')  # 言語名を取得
+    SELECTED_COUNTRY=$(echo "$found_entry" | awk '{print $4}')   # 国コードを取得
 
     echo "$SELECTED_LANGUAGE" > "${BASE_DIR}/check_language"
     echo "$SELECTED_COUNTRY" > "${BASE_DIR}/check_country"
 
-    echo -e "$(color green "Selected Country: $SELECTED_COUNTRY")"
-    echo -e "$(color green "Selected Language: $SELECTED_LANGUAGE")"
+    # 言語と国を統合して表示
+    echo -e "$(color green "Selected Language: ${SELECTED_LANGUAGE} (${SELECTED_COUNTRY})")"
+
+    # タイムゾーン選択を実行
+    select_timezone_for_country "$SELECTED_COUNTRY"
 }
 
 XXXXX_1_process_language_selection() {

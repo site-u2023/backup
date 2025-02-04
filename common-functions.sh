@@ -6,7 +6,7 @@
 #
 # 各種共通処理（ヘルプ表示、カラー出力、システム情報確認、言語選択、確認・通知メッセージの多言語対応など）を提供する。
 #
-echo common-functions.sh Last update 202502031310-86
+echo common-functions.sh Last update 202502031310-87-1
 
 # 基本定数の設定
 BASE_URL="${BASE_URL:-https://raw.githubusercontent.com/site-u2023/aios/main}"
@@ -251,10 +251,8 @@ check_language() {
         read -p "$(color cyan "Please enter the number or country name (partial matches allowed): ")" INPUT_LANG
         process_country_selection "$INPUT_LANG"
 
-        if [ $? -eq 0 ]; then
-            echo -e "$(color green "Configuration completed successfully.")"
-            break  # 設定が成功したらループを終了
-        fi
+        # 設定が完了した場合はループを終了
+        [ $? -eq 0 ] && break
     done
 }
 
@@ -334,9 +332,8 @@ check_common() {
             ;;
         *)
             if [ -n "$1" ]; then
-                # コマンドライン引数があれば、それを直接使用
                 process_country_selection "$1"
-                return
+                exit 0  # 引数で選択が完了した場合は終了
             fi
             ;;
     esac
@@ -718,35 +715,47 @@ normalize_language() {
 # process_country_selection: ユーザー入力の言語コードから有効な候補を選択する
 process_country_selection() {
     local selection="$1"
-    local country_file="${BASE_DIR}/country-zone.sh"
     local matched_countries selected_country
 
-    # 入力のトリム
     selection=$(echo "$selection" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
 
-    # 国のマッチング
+    # 入力が数字か文字かで処理を分ける
     if echo "$selection" | grep -qE '^[0-9]+$'; then
-        matched_countries=$(sh "$country_file" | sed -n "${selection}p")
+        matched_countries=$(sh "${BASE_DIR}/country-zone.sh" | sed -n "${selection}p")
     else
-        matched_countries=$(sh "$country_file" | grep -i -w "$selection")
+        matched_countries=$(sh "${BASE_DIR}/country-zone.sh" | grep -i -w "$selection")
     fi
 
+    # 結果に基づいた処理
     if [ -z "$matched_countries" ]; then
         echo -e "$(color red "No matching country found.")"
         return 1
-    fi
+    elif [ $(echo "$matched_countries" | wc -l) -gt 1 ]; then
+        echo -e "$(color yellow "Multiple matches found. Please select from the list below:")"
+        echo "$matched_countries" | awk '{print "[" NR "] " $0}'
 
-    selected_country="$matched_countries"
-    echo "$selected_country" > "${BASE_DIR}/check_country"
+        while true; do
+            read -p "Enter the number or country name of your selection: " choice
+            if echo "$choice" | grep -qE '^[0-9]+$'; then
+                selected_country=$(echo "$matched_countries" | sed -n "${choice}p")
+            else
+                selected_country=$(echo "$matched_countries" | grep -i -w "$choice")
+            fi
+
+            [ -n "$selected_country" ] && break || echo -e "$(color red "Invalid selection. Please try again.")"
+        done
+    else
+        selected_country="$matched_countries"
+    fi
 
     # 設定の確認
     if ask_confirmation "Apply these settings for $selected_country?"; then
+        echo "$selected_country" > "${BASE_DIR}/check_country"
         country_zone
         echo -e "$(color green "Settings applied for $ZONENAME ($DISPLAYNAME $LANGUAGE $COUNTRYCODE).")"
-        exit 0  # 成功時に即座に終了
     else
         echo -e "$(color yellow "Settings were not applied. Returning to selection.")"
-        return 1  # 設定拒否時はループ継続
+        return 1
     fi
 }
 

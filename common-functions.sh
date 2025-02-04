@@ -6,7 +6,7 @@
 #
 # 各種共通処理（ヘルプ表示、カラー出力、システム情報確認、言語選択、確認・通知メッセージの多言語対応など）を提供する。
 #
-echo common-functions.sh Last update 202502031310-51
+echo common-functions.sh Last update 202502031310-52
 
 # 基本定数の設定
 BASE_URL="${BASE_URL:-https://raw.githubusercontent.com/site-u2023/aios/main}"
@@ -715,55 +715,26 @@ normalize_language() {
 # process_country_selection: ユーザー入力の言語コードから有効な候補を選択する
 #########################################################################
 process_country_selection() {
-    local input selected_entry found_entries
+    local selection="$1"
+    local country_file="${BASE_DIR}/country-zone.sh"
+    local selected_country
 
-    # 国のリストを表示
-    display_country_options
+    # 番号で選択された場合
+    if echo "$selection" | grep -qE '^[0-9]+$'; then
+        selected_country=$(sh "$country_file" | grep -E '^[A-Za-z]' | sed -n "${selection}p" | awk '{print $1}')
+    else
+        # 部分一致検索
+        selected_country=$(sh "$country_file" | grep -i -m 1 "$selection" | awk '{print $1}')
+    fi
 
-    while true; do
-        read -p "$(color white "Please enter the number or country name (partial matches allowed): ")" input
-        
-        # 数字での選択
-        if echo "$input" | grep -Eq '^[0-9]+$'; then
-            selected_entry=$(awk '/^EOF$/ {flag=0} flag {print} /^EOF$/ {flag=1}' "${BASE_DIR}/country-zone.sh" | sed -n "${input}p")
-            if [ -n "$selected_entry" ]; then
-                break
-            else
-                echo -e "$(color red "Invalid number. Please try again.")"
-                continue
-            fi
-        fi
+    if [ -z "$selected_country" ]; then
+        echo -e "$(color red "No matching country found.")"
+        return 1
+    fi
 
-        # 曖昧検索処理（部分一致）
-        found_entries=$(awk '/^EOF$/ {flag=0} flag {print} /^EOF$/ {flag=1}' "${BASE_DIR}/country-zone.sh" | grep -i "$input")
-        if [ -z "$found_entries" ]; then
-            echo -e "$(color red "No matches found for '$input'. Please try again.")"
-            continue
-        fi
-
-        num_matches=$(echo "$found_entries" | wc -l)
-        if [ "$num_matches" -gt 1 ]; then
-            echo -e "$(color yellow "Multiple matches found for '$input'. Please refine your input.")"
-            echo "$found_entries" | nl -w2 -s'. '
-            continue
-        fi
-
-        selected_entry="$found_entries"
-        break
-    done
-
-    # 選択されたエントリから情報を抽出
-    SELECTED_COUNTRY=$(echo "$selected_entry" | awk '{print $1}')
-    SELECTED_LANGUAGE=$(echo "$selected_entry" | awk '{print $2}')
-    LANGUAGE_CODE=$(echo "$selected_entry" | awk '{print $3}')
-    COUNTRY_CODE=$(echo "$selected_entry" | awk '{print $4}')
-
-    echo -e "$(color green "Selected: $SELECTED_COUNTRY (${SELECTED_LANGUAGE} ${LANGUAGE_CODE} ${COUNTRY_CODE})")"
-    echo "$SELECTED_COUNTRY" > "${BASE_DIR}/check_country"
-    echo "$SELECTED_LANGUAGE" > "${BASE_DIR}/check_language"
-
-    # タイムゾーン選択へ
-    select_timezone "$COUNTRY_CODE"
+    echo "$selected_country" > "${BASE_DIR}/check_country"
+    country_zone  # ここで選択された国の詳細情報を取得
+    echo -e "$(color green "Selected Country: $ZONENAME ($DISPLAYNAME $LANGUAGE $COUNTRYCODE)")"
 }
 
 display_country_options() {
@@ -772,12 +743,12 @@ display_country_options() {
 
     echo -e "$(color cyan "Available Countries:")"
 
-    # country_data() から直接データを取得し、不要な行を除外
+    # country_full_info 関数を使って全情報を取得
     sh "$country_file" | grep -E '^[A-Za-z]' | while IFS= read -r line; do
-        country_name=$(echo "$line" | cut -d' ' -f1)
-        display_name=$(echo "$line" | cut -d' ' -f2)
-        language_code=$(echo "$line" | cut -d' ' -f3)
-        country_code=$(echo "$line" | cut -d' ' -f4)
+        country_name=$(echo "$line" | awk '{print $1}')
+        display_name=$(echo "$line" | awk '{print $2}')
+        language_code=$(echo "$line" | awk '{print $3}')
+        country_code=$(echo "$line" | awk '{print $4}')
 
         echo "[$idx] ${country_name} (${display_name} ${language_code} ${country_code})"
         idx=$((idx + 1))

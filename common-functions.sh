@@ -717,15 +717,15 @@ normalize_language() {
 process_country_selection() {
     local input found_entries selected_entry
 
-    # 国一覧を最初に表示
+    # 国のリストを表示
     display_country_options
 
     while true; do
         read -p "$(color white "Please enter the number or country name (partial matches allowed): ")" input
         
-        # 数字での選択処理
+        # 数字での選択
         if echo "$input" | grep -Eq '^[0-9]+$'; then
-            selected_entry=$(sed -n "${input}p" "${BASE_DIR}/country-zone.sh")
+            selected_entry=$(grep -Ev '^\s*#|^\s*$|^EOF' "${BASE_DIR}/country-zone.sh" | sed -n "${input}p")
             if [ -n "$selected_entry" ]; then
                 break
             else
@@ -735,7 +735,7 @@ process_country_selection() {
         fi
 
         # 曖昧検索処理（部分一致）
-        found_entries=$(grep -i "$input" "${BASE_DIR}/country-zone.sh")
+        found_entries=$(grep -i "$input" "${BASE_DIR}/country-zone.sh" | grep -Ev '^\s*#|^\s*$|^EOF')
         if [ -z "$found_entries" ]; then
             echo -e "$(color red "No matches found for '$input'. Please try again.")"
             continue
@@ -758,13 +758,14 @@ process_country_selection() {
     LANGUAGE_CODE=$(echo "$selected_entry" | awk '{print $3}')
     COUNTRY_CODE=$(echo "$selected_entry" | awk '{print $4}')
 
-    echo -e "$(color green "Selected: $SELECTED_COUNTRY ($SELECTED_LANGUAGE $LANGUAGE_CODE $COUNTRY_CODE)")"
+    echo -e "$(color green "Selected: $SELECTED_COUNTRY (${SELECTED_LANGUAGE} ${LANGUAGE_CODE} ${COUNTRY_CODE})")"
     echo "$SELECTED_COUNTRY" > "${BASE_DIR}/check_country"
     echo "$SELECTED_LANGUAGE" > "${BASE_DIR}/check_language"
 
     # タイムゾーン選択へ
     select_timezone "$COUNTRY_CODE"
 }
+
 
 display_country_options() {
     local line idx=1

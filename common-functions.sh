@@ -6,7 +6,7 @@
 #
 # 各種共通処理（ヘルプ表示、カラー出力、システム情報確認、言語選択、確認・通知メッセージの多言語対応など）を提供する。
 #
-echo common-functions.sh Last update 202502031310-77
+echo common-functions.sh Last update 202502031310-78
 
 # 基本定数の設定
 BASE_URL="${BASE_URL:-https://raw.githubusercontent.com/site-u2023/aios/main}"
@@ -252,14 +252,14 @@ check_language() {
         read -p "$(color cyan "Please enter the number or country name (partial matches allowed): ")" INPUT_LANG
         process_country_selection "$INPUT_LANG"
 
-        # 設定適用の確認
-        if ask_confirmation "Apply these settings?"; then
-            echo -e "$(color green "Settings applied successfully.")"
-            break
-        else
-            echo -e "$(color yellow "Let's try again.")"
-        fi
-    done
+#        # 設定適用の確認
+#        if ask_confirmation "Apply these settings?"; then
+#            echo -e "$(color green "Settings applied successfully.")"
+#            break
+#        else
+#            echo -e "$(color yellow "Let's try again.")"
+#        fi
+#    done
 }
 
 #########################################################################
@@ -724,6 +724,7 @@ normalize_language() {
 #########################################################################
 # process_country_selection: ユーザー入力の言語コードから有効な候補を選択する
 #########################################################################
+# process_country_selection: ユーザー入力の言語コードから有効な候補を選択する
 process_country_selection() {
     local selection="$1"
     local country_file="${BASE_DIR}/country-zone.sh"
@@ -735,12 +736,11 @@ process_country_selection() {
     selection=$(echo "$selection" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
     echo "DEBUG AFTER CLEANING: '$selection'"
 
-    # マッチング処理 - 数字または文字列による選択
+    # 数字または文字列による選択
     if echo "$selection" | grep -qE '^[0-9]+$'; then
         matched_countries=$(sh "$country_file" | sed -n "${selection}p")
     else
-        # 大文字小文字無視して国名、コード、言語すべてを検索
-        matched_countries=$(sh "$country_file" | grep -i -E "\b$selection\b")
+        matched_countries=$(sh "$country_file" | grep -i -w "$selection")
     fi
 
     # マッチ結果の数を確認して処理分岐
@@ -751,10 +751,8 @@ process_country_selection() {
         echo -e "$(color red "No matching country found.")"
         return 1
     elif [ "$match_count" -eq 1 ]; then
-        # 一致が1つならそのまま選択
         selected_country="$matched_countries"
     else
-        # 複数の一致がある場合
         echo -e "$(color yellow "Multiple matches found. Please select from the list below:")"
         echo "$matched_countries" | awk '{print "[" NR "] " $0}'
 
@@ -779,18 +777,23 @@ process_country_selection() {
     country_zone
     echo -e "$(color green "Selected Country: $ZONENAME ($DISPLAYNAME $LANGUAGE $COUNTRYCODE)")"
 
-    # 設定の確認
+    # 設定の確認（この部分だけに確認処理を集中させる）
+    confirm_settings
+}
+
+# 設定の確認を行う専用関数
+confirm_settings() {
     while true; do
         read -p "Apply these settings? [Y/n]: " confirm
         case "$confirm" in
             [Yy]|"") 
                 echo -e "$(color green "Settings applied for $ZONENAME.")"
-                break
+                return 0
                 ;;
             [Nn]) 
                 echo -e "$(color yellow "Let's try again.")"
                 process_country_selection  # 再実行
-                break
+                return 1
                 ;;
             *) 
                 echo -e "$(color red "Invalid choice, please enter 'y' or 'n'.")"

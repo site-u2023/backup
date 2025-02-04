@@ -94,8 +94,7 @@ $1は曖昧な入力も受け付けます。
 URL の末尾にダミーのクエリパラメータを追加することで、キャッシュを回避
 
 ```sh
-wget -O /tmp/aios.sh "https://raw.githubusercontent.com/site-u2023/aios/main/aios.sh?cache_bust=$(date +%s)"
-sh /tmp/aios.sh
+wget -O /tmp/aios.sh "https://raw.githubusercontent.com/site-u2023/aios/main/aios.sh?cache_bust=$(date +%s)"; sh /tmp/aios.sh
 ```
 
 - --timestamping

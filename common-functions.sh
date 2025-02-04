@@ -6,7 +6,7 @@
 #
 # 各種共通処理（ヘルプ表示、カラー出力、システム情報確認、言語選択、確認・通知メッセージの多言語対応など）を提供する。
 #
-echo common-functions.sh Last update 202502031310-50
+echo common-functions.sh Last update 202502031310-51
 
 # 基本定数の設定
 BASE_URL="${BASE_URL:-https://raw.githubusercontent.com/site-u2023/aios/main}"
@@ -772,17 +772,15 @@ display_country_options() {
 
     echo -e "$(color cyan "Available Countries:")"
 
-    # sed で country_data() 内のデータのみ抽出
-    sed -n '/^country_data()/,/^EOF/ {/^\(country_data\|EOF\)/d; p}' "$country_file" | while IFS= read -r line; do
-        if [ -n "$line" ]; then
-            country_name=$(echo "$line" | awk '{print $1}')
-            display_name=$(echo "$line" | awk '{print $2}')
-            language_code=$(echo "$line" | awk '{print $3}')
-            country_code=$(echo "$line" | awk '{print $4}')
+    # country_data() から直接データを取得し、不要な行を除外
+    sh "$country_file" | grep -E '^[A-Za-z]' | while IFS= read -r line; do
+        country_name=$(echo "$line" | cut -d' ' -f1)
+        display_name=$(echo "$line" | cut -d' ' -f2)
+        language_code=$(echo "$line" | cut -d' ' -f3)
+        country_code=$(echo "$line" | cut -d' ' -f4)
 
-            echo "[$idx] ${country_name} (${display_name} ${language_code} ${country_code})"
-            idx=$((idx + 1))
-        fi
+        echo "[$idx] ${country_name} (${display_name} ${language_code} ${country_code})"
+        idx=$((idx + 1))
     done
 }
 

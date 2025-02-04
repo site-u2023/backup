@@ -6,7 +6,7 @@
 #
 # 各種共通処理（ヘルプ表示、カラー出力、システム情報確認、言語選択、確認・通知メッセージの多言語対応など）を提供する。
 #
-echo common-functions.sh Last update 202502031310-70
+echo common-functions.sh Last update 202502031310-71
 
 # 基本定数の設定
 BASE_URL="${BASE_URL:-https://raw.githubusercontent.com/site-u2023/aios/main}"
@@ -221,9 +221,6 @@ check_package_manager() {
     echo "${PACKAGE_MANAGER}" > "${BASE_DIR}/check_package_manager"
 }
 
-#########################################################################
-# check_language: 言語選択メニューを表示し、ユーザーに言語を選択させる
-#########################################################################
 #########################################################################
 # check_language: 番号付きで国データを表示し、ユーザーに選択させる
 #########################################################################
@@ -741,6 +738,25 @@ echo "DEBUG matched_countries ${matched_countries}"
         # 部分一致検索の強化 - 正規表現で大文字小文字無視 & 単語単位でマッチ
         matched_countries=$(sh "$country_file" | grep -i -w "$selection")
 
+if [ $(echo "$matched_countries" | wc -l) -gt 1 ]; then
+    echo "Multiple matches found. Please select from the list below:"
+    echo "$matched_countries" | nl
+
+    read -p "Enter the number or country name: " choice
+    selected_country=$(echo "$matched_countries" | sed -n "${choice}p")
+else
+    selected_country="$matched_countries"
+fi
+
+# 選択結果を保存
+if [ -n "$selected_country" ]; then
+    echo "$selected_country" > "${BASE_DIR}/check_country"
+    echo "Selected Country: $selected_country"
+else
+    echo "No matching country found."
+fi
+
+
         # 上記で見つからない場合、柔軟な曖昧検索を実施
         if [ -z "$matched_countries" ]; then
             matched_countries=$(sh "$country_file" | grep -i -E "$selection")
@@ -772,7 +788,7 @@ read -p "Please enter the number or country name (partial matches allowed): " in
 input_country=$(echo "$input_country" | tr -d '[:space:]')  # 余計なスペースを削除
 
 # マッチング処理
-matched_countries=$(grep -i "$input_country" country_list.txt)
+matched_countries=$(sh "$country_file" | grep -i -w "$selection")
 
 # デバッグ出力
 echo "DEBUG matched_countries: $matched_countries"

@@ -12,7 +12,7 @@
 #  4. デバイス名・パスワードの設定 (set_device_name_password)
 #  5. Wi-Fi SSID・パスワードの設定 (set_wifi_ssid_password)
 #  6. システム全体の設定 (set_device)
-echo system-config.sh Last update 202502031310-6
+echo system-config.sh Last update 202502031310-7
 
 # 定数の設定
 BASE_URL="https://raw.githubusercontent.com/site-u2023/aios/main"
@@ -47,7 +47,7 @@ download_and_execute_common() {
 #########################################################################
 # select_timezone: 複数のタイムゾーンから選択
 #########################################################################
-select_timezone() {
+XXXXX_select_timezone() {
     local available_zonename available_timezones selected_timezone selected_zone
     local msg_timezone_single msg_timezone_list msg_select_tz
 
@@ -634,13 +634,13 @@ set_device() {
 #########################################################################
 download_country_zone
 download_and_execute_common
-check_common "$INPUT_LANG"   # ここで言語が確定
+check_common "$INPUT_LANG"
 
 # 言語・国情報の表示（common-functions.shで確定された値を使用）
 information
 
-# タイムゾーンの選択
-select_timezone
+# タイムゾーンの選択（common-functions.sh の関数を利用）
+select_timezone "$SELECTED_COUNTRY"
 
 # デバイス設定（必要に応じてコメントアウト解除）
 #set_device_name_password

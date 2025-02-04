@@ -6,7 +6,7 @@
 #
 # 各種共通処理（ヘルプ表示、カラー出力、システム情報確認、言語選択、確認・通知メッセージの多言語対応など）を提供する。
 #
-echo common-functions.sh Last update 202502031310-52
+echo common-functions.sh Last update 202502031310-53
 
 # 基本定数の設定
 BASE_URL="${BASE_URL:-https://raw.githubusercontent.com/site-u2023/aios/main}"
@@ -717,24 +717,43 @@ normalize_language() {
 process_country_selection() {
     local selection="$1"
     local country_file="${BASE_DIR}/country-zone.sh"
-    local selected_country
+    local matched_countries
 
     # 番号で選択された場合
     if echo "$selection" | grep -qE '^[0-9]+$'; then
-        selected_country=$(sh "$country_file" | grep -E '^[A-Za-z]' | sed -n "${selection}p" | awk '{print $1}')
+        matched_countries=$(sh "$country_file" | grep -E '^[A-Za-z]' | sed -n "${selection}p")
     else
-        # 部分一致検索
-        selected_country=$(sh "$country_file" | grep -i -m 1 "$selection" | awk '{print $1}')
+        # 部分一致検索で複数マッチを取得
+        matched_countries=$(sh "$country_file" | grep -i "$selection")
     fi
 
-    if [ -z "$selected_country" ]; then
+    # 複数マッチした場合の処理
+    local match_count
+    match_count=$(echo "$matched_countries" | wc -l)
+
+    if [ "$match_count" -eq 0 ]; then
         echo -e "$(color red "No matching country found.")"
         return 1
-    fi
+    elif [ "$match_count" -eq 1 ]; then
+        selected_country=$(echo "$matched_countries" | awk '{print $1}')
+        echo "$selected_country" > "${BASE_DIR}/check_country"
+        country_zone
+        echo -e "$(color green "Selected Country: $ZONENAME ($DISPLAYNAME $LANGUAGE $COUNTRYCODE)")"
+    else
+        echo -e "$(color yellow "Multiple matches found. Please select from the list below:")"
+        echo "$matched_countries" | nl -w2 -s". "
+        read -p "Enter the number of your choice: " selected_index
+        selected_country=$(echo "$matched_countries" | sed -n "${selected_index}p" | awk '{print $1}')
 
-    echo "$selected_country" > "${BASE_DIR}/check_country"
-    country_zone  # ここで選択された国の詳細情報を取得
-    echo -e "$(color green "Selected Country: $ZONENAME ($DISPLAYNAME $LANGUAGE $COUNTRYCODE)")"
+        if [ -n "$selected_country" ]; then
+            echo "$selected_country" > "${BASE_DIR}/check_country"
+            country_zone
+            echo -e "$(color green "Selected Country: $ZONENAME ($DISPLAYNAME $LANGUAGE $COUNTRYCODE)")"
+        else
+            echo -e "$(color red "Invalid selection.")"
+            return 1
+        fi
+    fi
 }
 
 display_country_options() {
@@ -743,8 +762,8 @@ display_country_options() {
 
     echo -e "$(color cyan "Available Countries:")"
 
-    # country_full_info 関数を使って全情報を取得
-    sh "$country_file" | grep -E '^[A-Za-z]' | while IFS= read -r line; do
+    # 正しい国データのみを抽出し、番号付きで表示
+    sh "$country_file" | grep -E '^[A-Za-z]' | sort | while IFS= read -r line; do
         country_name=$(echo "$line" | awk '{print $1}')
         display_name=$(echo "$line" | awk '{print $2}')
         language_code=$(echo "$line" | awk '{print $3}')
@@ -764,6 +783,7 @@ country_zone() {
     local country_file="${BASE_DIR}/country-zone.sh"
     local country=$(cat "${BASE_DIR}/check_country")
 
+    # 各情報を個別に取得
     ZONENAME=$(sh "$country_file" "$country" "name")
     DISPLAYNAME=$(sh "$country_file" "$country" "display")
     LANGUAGE=$(sh "$country_file" "$country" "lang")

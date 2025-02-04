@@ -6,7 +6,7 @@
 #
 # 各種共通処理（ヘルプ表示、カラー出力、システム情報確認、言語選択、確認・通知メッセージの多言語対応など）を提供する。
 #
-echo common-functions.sh Last update 202502031310-38
+echo common-functions.sh Last update 202502031310-39
 
 # 基本定数の設定
 BASE_URL="${BASE_URL:-https://raw.githubusercontent.com/site-u2023/aios/main}"
@@ -287,30 +287,32 @@ XXXXX_1_check_language() {
 #########################################################################
 select_timezone() {
     local country_code="$1"
-    local timezone_data offset_data timezones offsets timezone_choice
+    local timezone_data offset_data timezone_list offset_list timezone_choice
 
     # タイムゾーンとオフセット情報を取得
     timezone_data=$(grep -i -w "$country_code" "${BASE_DIR}/country-zone.sh" | awk '{print $5}')
     offset_data=$(grep -i -w "$country_code" "${BASE_DIR}/country-zone.sh" | awk -F';' '{print $2}')
 
-    # カンマ区切りをスペース区切りに変換
-    timezones=$(echo "$timezone_data" | tr ',' ' ')
-    offsets=$(echo "$offset_data" | tr ',' ' ')
+    # カンマ区切りを改行に変換して一時ファイルに保存
+    echo "$timezone_data" | tr ',' '\n' > /tmp/timezone_list
+    echo "$offset_data" | tr ',' '\n' > /tmp/offset_list
 
-    # タイムゾーンとオフセットをペアで表示
-    IFS=' ' read -r -a timezone_array <<< "$timezones"
-    IFS=' ' read -r -a offset_array <<< "$offsets"
-
-    # タイムゾーン数を数える
-    num_timezones=${#timezone_array[@]}
+    # タイムゾーンの数を数える
+    num_timezones=$(wc -l < /tmp/timezone_list)
 
     if [ "$num_timezones" -gt 1 ]; then
         echo -e "$(color cyan "Multiple timezones found for $country_code. Please select:")"
-        for ((i=0; i<num_timezones; i++)); do
-            echo "[$((i+1))] ${timezone_array[$i]} (${offset_array[$i]})"
-        done
+
+        i=1
+        # 並行してゾーンネームとオフセットを表示
+        while read -r tz && read -r offset <&3; do
+            echo "[$i] $tz ($offset)"
+            i=$((i + 1))
+        done < /tmp/timezone_list 3< /tmp/offset_list
+
         echo "[0] Cancel"
 
+        # ユーザーに選択を促す
         while true; do
             read -p "$(color white "Enter the number of your timezone choice: ")" timezone_choice
             if echo "$timezone_choice" | grep -Eq '^[0-9]+$' && [ "$timezone_choice" -ge 0 ] && [ "$timezone_choice" -le "$num_timezones" ]; then
@@ -318,8 +320,8 @@ select_timezone() {
                     echo -e "$(color yellow "Timezone selection cancelled.")"
                     return 1
                 fi
-                SELECTED_TIMEZONE="${timezone_array[$((timezone_choice - 1))]}"
-                SELECTED_OFFSET="${offset_array[$((timezone_choice - 1))]}"
+                SELECTED_TIMEZONE=$(sed -n "${timezone_choice}p" /tmp/timezone_list)
+                SELECTED_OFFSET=$(sed -n "${timezone_choice}p" /tmp/offset_list)
                 break
             else
                 echo -e "$(color red "Invalid selection. Please enter a valid number.")"
@@ -327,15 +329,15 @@ select_timezone() {
         done
     else
         # タイムゾーンが1つだけの場合は自動選択
-        SELECTED_TIMEZONE="${timezone_array[0]}"
-        SELECTED_OFFSET="${offset_array[0]}"
+        SELECTED_TIMEZONE=$(head -n 1 /tmp/timezone_list)
+        SELECTED_OFFSET=$(head -n 1 /tmp/offset_list)
     fi
 
-    # 設定を保存
+    # 選択したタイムゾーンとオフセットを保存
     echo "$SELECTED_TIMEZONE" > "${BASE_DIR}/check_timezone"
     echo "$SELECTED_OFFSET" > "${BASE_DIR}/check_offset"
 
-    echo -e "$(color green "Selected Timezone: $SELECTED_TIMEZONE (${SELECTED_OFFSET})")"
+    echo -e "$(color green "Selected Timezone: $SELECTED_TIMEZONE ($SELECTED_OFFSET)")"
 }
 
 #########################################################################

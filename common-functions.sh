@@ -285,16 +285,20 @@ XXXXX_1_check_language() {
 # 引数: 国コード
 # 戻り値: 選択されたタイムゾーン
 #########################################################################
-select_timezone_for_country() {
+select_timezone() {
     local country_code="$1"
     local timezone_data timezones timezone_choice
 
-    # country-zone.sh からタイムゾーン情報を取得
+    # タイムゾーン情報を取得
     timezone_data=$(grep -i -w "$country_code" "${BASE_DIR}/country-zone.sh" | awk '{print $5}')
 
-    # タイムゾーンが複数ある場合
-    IFS=',' read -r -a timezones <<< "$timezone_data"
+    # BusyBox 互換: カンマ区切りを配列に変換
+    timezones=()
+    while IFS= read -r line; do
+        timezones+=("$line")
+    done < <(echo "$timezone_data" | tr ',' '\n')
 
+    # 複数タイムゾーンがある場合の処理
     if [ "${#timezones[@]}" -gt 1 ]; then
         echo -e "$(color cyan "Multiple timezones found for $country_code. Please select:")"
         local i=1
@@ -318,7 +322,7 @@ select_timezone_for_country() {
             fi
         done
     else
-        # タイムゾーンが1つだけなら自動選択
+        # タイムゾーンが1つしかない場合は自動選択
         SELECTED_TIMEZONE="${timezones[0]}"
     fi
 

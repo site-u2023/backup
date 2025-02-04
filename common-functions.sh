@@ -6,7 +6,7 @@
 #
 # 各種共通処理（ヘルプ表示、カラー出力、システム情報確認、言語選択、確認・通知メッセージの多言語対応など）を提供する。
 #
-echo common-functions.sh Last update 202502031310-87-4-2
+echo common-functions.sh Last update 202502031310-87-4-3
 
 # 基本定数の設定
 BASE_URL="${BASE_URL:-https://raw.githubusercontent.com/site-u2023/aios/main}"
@@ -222,19 +222,22 @@ check_package_manager() {
 }
 
 #########################################################################
-# check_language: 番号付きで国データを表示し、ユーザーに選択させる
+# check_language_support: 番号付きで国データを表示し、ユーザーに選択させる
 #########################################################################
-# check_language_support: サポートされている言語か確認
+# check_language_support_support: サポートされている言語か確認
 check_language_support() {
     local selected_language
     selected_language=$(cat "${BASE_DIR}/check_country")
 
+    # サポートされている言語をチェック
     if echo "$SUPPORTED_LANGUAGES" | grep -qw "$selected_language"; then
-        echo -e "$(color green "Language $selected_language is supported.")"
+        echo -e "$(color green "Language supported: $selected_language")"
     else
         echo -e "$(color yellow "Unsupported language detected. Defaulting to English (en).")"
-        echo "en" > "${BASE_DIR}/check_country"
+        selected_language="en"
     fi
+
+    export LANG="$selected_language"
 }
 
 
@@ -341,7 +344,7 @@ check_common() {
             exit 0
             ;;
         --reset|-reset|-r)
-            rm -f "${BASE_DIR}/check_language" "${BASE_DIR}/check_country"
+            rm -f "${BASE_DIR}/check_language_support" "${BASE_DIR}/check_country"
             echo "Language and country cache cleared."
             ;;
         *)
@@ -365,8 +368,8 @@ check_common() {
     [ -z "$PACKAGE_MANAGER" ] && check_package_manager  
 
     # キャッシュから言語・国コードを読み込む
-    if [ -f "${BASE_DIR}/check_language" ]; then
-        SELECTED_LANGUAGE=$(cat "${BASE_DIR}/check_language")
+    if [ -f "${BASE_DIR}/check_language_support" ]; then
+        SELECTED_LANGUAGE=$(cat "${BASE_DIR}/check_language_support")
     fi
     if [ -f "${BASE_DIR}/check_country" ]; then
         SELECTED_COUNTRY=$(cat "${BASE_DIR}/check_country")
@@ -374,7 +377,7 @@ check_common() {
 
     # 言語が未設定の場合、言語選択メニューを表示する
     if [ -z "$SELECTED_LANGUAGE" ]; then
-        check_language
+        check_language_support
     fi
 
     normalize_language  # 言語の正規化
@@ -702,10 +705,10 @@ show_notification() {
 #                      サポート外の場合はデフォルト (en) に上書きする
 #########################################################################
 normalize_language() {
-    local CHECK_LANGUAGE READ_LANGUAGE
-    CHECK_LANGUAGE="${BASE_DIR}/check_language"
-    if [ -f "$CHECK_LANGUAGE" ]; then
-        READ_LANGUAGE=$(cat "$CHECK_LANGUAGE")
+    local check_language_support READ_LANGUAGE
+    check_language_support="${BASE_DIR}/check_language_support"
+    if [ -f "$check_language_support" ]; then
+        READ_LANGUAGE=$(cat "$check_language_support")
     fi
 
     SELECTED_LANGUAGE=""
@@ -719,7 +722,7 @@ normalize_language() {
     if [ -z "$SELECTED_LANGUAGE" ]; then
         SELECTED_LANGUAGE="en"
         echo -e "$(color red "Unsupported language detected. Defaulting to English (en).")"
-        echo "$SELECTED_LANGUAGE" > "${BASE_DIR}/check_language"
+        echo "$SELECTED_LANGUAGE" > "${BASE_DIR}/check_language_support"
     fi
 }
 

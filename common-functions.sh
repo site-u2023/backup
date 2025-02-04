@@ -6,7 +6,7 @@
 #
 # 各種共通処理（ヘルプ表示、カラー出力、システム情報確認、言語選択、確認・通知メッセージの多言語対応など）を提供する。
 #
-echo common-functions.sh Last update 202502031310-25
+echo common-functions.sh Last update 202502031310-26
 
 # 基本定数の設定
 BASE_URL="${BASE_URL:-https://raw.githubusercontent.com/site-u2023/aios/main}"
@@ -1075,12 +1075,12 @@ XXXXX_1_normalize_language() {
 # process_language_selection: ユーザー入力をもとに言語・国を選択
 #########################################################################
 process_language_selection() {
-    local INPUT_LANG="$1" found_entries found_entry new_input choice num_matches
+    local INPUT_LANG="$1" found_entries found_entry new_input confirm
 
     while true; do
         INPUT_LANG=$(echo "$INPUT_LANG" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
 
-        # 完全一致を優先（言語コード、国コード）
+        # 完全一致を優先（言語コード、国コード、国名）
         found_entries=$(sh "${BASE_DIR}/country-zone.sh" | grep -i -w "${INPUT_LANG}")
 
         # 完全一致がない場合、部分一致で曖昧検索
@@ -1088,57 +1088,40 @@ process_language_selection() {
             found_entries=$(sh "${BASE_DIR}/country-zone.sh" | grep -i "${INPUT_LANG}")
         fi
 
-        # 一致するデータがない場合、再入力を促す
+        # 一致するデータがない場合
         if [ -z "$found_entries" ]; then
-            echo -e "$(color red "No matching entry found.")"
-            read -p "$(color yellow "Would you like to try again? [Y/n]: ")" choice
-            case "$choice" in
+            echo -e "$(color red "No matches found for '$INPUT_LANG'.")"
+            read -p "$(color yellow "Would you like to set English (en) as default? [Y/n]: ")" confirm
+            case "$confirm" in
                 [Yy]* | "" )
-                    read -p "$(color cyan "Please re-enter your input: ")" new_input
+                    found_entries=$(sh "${BASE_DIR}/country-zone.sh" | grep -i "\ben\b")
+                    ;;
+                * )
+                    read -p "$(color cyan "Please enter more specific input (country, language, or timezone): ")" new_input
                     INPUT_LANG="$new_input"
                     continue
                     ;;
-                * )
-                    echo -e "$(color yellow "Defaulting to English (en).")"
-                    found_entries=$(sh "${BASE_DIR}/country-zone.sh" | grep -i "\ben\b")
             esac
         fi
 
-        # 複数の候補が見つかった場合、選択肢を表示
+        # 部分一致で複数の候補が見つかった場合
         num_matches=$(echo "$found_entries" | wc -l)
         if [ "$num_matches" -gt 1 ]; then
-            echo -e "$(color yellow "Multiple matches found. Please select:")"
-            local i=1
+            echo -e "$(color yellow "Multiple matches found for '$INPUT_LANG'. Please refine your input.")"
             echo "$found_entries" | while IFS= read -r line; do
-                echo "$(color cyan "[$i] $line")"
-                i=$((i+1))
+                echo "$(color cyan "$line")"
             done
-            echo "$(color cyan "[0] Re-enter input")"
-
-            read -p "$(color white "Enter the number of your choice: ")" choice
-
-            # 入力が数値の場合、選択肢から選ばれたとみなす
-            if [[ "$choice" =~ ^[0-9]+$ ]]; then
-                if [ "$choice" -eq 0 ]; then
-                    read -p "$(color cyan "Please re-enter your input (country, language, or timezone): ")" new_input
-                    INPUT_LANG="$new_input"
-                    continue
-                elif [ "$choice" -ge 1 ] && [ "$choice" -le "$num_matches" ]; then
-                    found_entry=$(echo "$found_entries" | sed -n "${choice}p")
-                else
-                    echo -e "$(color red "Invalid selection. Please enter a valid number.")"
-                    continue
-                fi
-            else
-                # 数字以外が入力された場合は再度曖昧検索
-                INPUT_LANG="$choice"
-                continue
-            fi
+            read -p "$(color cyan "Please enter more specific input to narrow down your selection: ")" new_input
+            INPUT_LANG="$new_input"
+            continue
         else
             found_entry="$found_entries"
         fi
 
-        break  # 有効なエントリが見つかったのでループを終了
+        # 完全一致が得られた場合
+        if [ -n "$found_entry" ]; then
+            break
+        fi
     done
 
     # フィールド抽出

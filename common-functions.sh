@@ -6,7 +6,7 @@
 #
 # 各種共通処理（ヘルプ表示、カラー出力、システム情報確認、言語選択、確認・通知メッセージの多言語対応など）を提供する。
 #
-echo common-functions.sh Last update 202502031310-78
+echo common-functions.sh Last update 202502031310-79
 
 # 基本定数の設定
 BASE_URL="${BASE_URL:-https://raw.githubusercontent.com/site-u2023/aios/main}"
@@ -251,14 +251,14 @@ check_language() {
     while true; do
         read -p "$(color cyan "Please enter the number or country name (partial matches allowed): ")" INPUT_LANG
         process_country_selection "$INPUT_LANG"
-#        # 設定適用の確認
-#        if ask_confirmation "Apply these settings?"; then
-#            echo -e "$(color green "Settings applied successfully.")"
-#            break
-#        else
-#            echo -e "$(color yellow "Let's try again.")"
-#        fi
-#    done
+        
+        # 設定適用の確認
+        if ask_confirmation "Apply these settings?"; then
+            echo -e "$(color green "Settings applied successfully.")"
+            break
+        else
+            echo -e "$(color yellow "Let's try again.")"
+        fi
     done
 }
 

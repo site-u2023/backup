@@ -226,10 +226,18 @@ check_package_manager() {
 #########################################################################
 # check_language_support_support: サポートされている言語か確認
 check_language_support() {
-    local selected_language
-    selected_language=$(cat "${BASE_DIR}/check_country")
+    local selected_language_file="${BASE_DIR}/check_country"
 
-    # サポートされている言語をチェック
+    # 言語ファイルが存在しない場合、デフォルト言語を設定
+    if [ ! -f "$selected_language_file" ]; then
+        echo "en" > "$selected_language_file"
+        echo -e "$(color yellow "Language cache not found. Defaulting to English (en).")"
+    fi
+
+    # 言語コードの読み込み
+    selected_language=$(cat "$selected_language_file")
+
+    # サポートされている言語か確認
     if echo "$SUPPORTED_LANGUAGES" | grep -qw "$selected_language"; then
         echo -e "$(color green "Language supported: $selected_language")"
     else
@@ -239,6 +247,7 @@ check_language_support() {
 
     export LANG="$selected_language"
 }
+
 
 
 check_language() {
@@ -778,11 +787,28 @@ process_country_selection() {
 
     # 言語コードの抽出（例: ja, en, zh-cn）
     language_code=$(echo "$selected_country" | awk '{print $3}')
+
+    # 言語コードの保存
     echo "$language_code" > "${BASE_DIR}/check_country"
 
-    echo -e "$(color green "Selected Language: $language_code")"
-    confirm_settings
+    # デバッグログ：保存内容の確認
+    if [ -f "${BASE_DIR}/check_country" ]; then
+        echo -e "$(color green "Language code saved to check_country: $(cat ${BASE_DIR}/check_country)")"
+    else
+        echo -e "$(color red "Failed to save language code to check_country.")"
+    fi
+
+    # 完全な国情報も別ファイルに保存（デバッグ用）
+    echo "$selected_country" > "${BASE_DIR}/selected_country_info"
+
+    # 設定の確認
+    if declare -f confirm_settings > /dev/null; then
+        confirm_settings
+    else
+        echo -e "$(color red "confirm_settings function not found.")"
+    fi
 }
+
 
 #########################################################################
 # country_zone: 国・ゾーン情報を取得する関数

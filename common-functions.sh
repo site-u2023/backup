@@ -6,7 +6,7 @@
 #
 # 各種共通処理（ヘルプ表示、カラー出力、システム情報確認、言語選択、確認・通知メッセージの多言語対応など）を提供する。
 #
-echo common-functions.sh Last update 202502031310-28
+echo common-functions.sh Last update 202502031310-29
 
 # 基本定数の設定
 BASE_URL="${BASE_URL:-https://raw.githubusercontent.com/site-u2023/aios/main}"
@@ -234,9 +234,9 @@ check_language() {
     # 国、言語、コード、タイムゾーンを表示
     echo "$country_data" | while IFS= read -r line; do
         [ -z "$line" ] && continue
-        lang_field=$(echo "$line" | awk '{print $3}')  # 言語コード
+        lang_field=$(echo "$line" | awk '{print $3}')
         if [ "$lang_field" != "xx" ]; then
-            output=$(echo "$line" | awk '{print $1, $2, $3, $4, $5}')  # 国名、母国語、言語コード、国コード、タイムゾーンを表示
+            output=$(echo "$line" | awk '{print $1, $2, $3, $4, $5}')
             echo -e "$(color white "$output")"
         fi
     done
@@ -247,22 +247,14 @@ check_language() {
     while true; do
         read -p "$(color cyan "Please enter country, language, or timezone: ")" INPUT_LANG
         process_language_selection "$INPUT_LANG"
-        normalize_language
 
-        # 最終確認（全角・半角Y/N対応）
-        read -p "$(color yellow "Apply these settings? [Y/n]: ")" confirm
-        case "$confirm" in
-            [YyＹｙ]* | "" ) 
-                echo -e "$(color green "Settings applied successfully.")"
-                break
-                ;;
-            [NnＮｎ]* )
-                echo -e "$(color white "Let's try again.")"
-                ;;
-            * )
-                echo -e "$(color red "Invalid input. Please enter Y or N.")"
-                ;;
-        esac
+        # 設定適用の確認
+        if ask_confirmation "Apply these settings?"; then
+            echo -e "$(color green "Settings applied successfully.")"
+            break
+        else
+            echo -e "$(color yellow "Let's try again.")"
+        fi
     done
 }
 
@@ -1076,15 +1068,15 @@ XXXXX_1_normalize_language() {
 # process_language_selection: ユーザー入力をもとに言語・国を選択
 #########################################################################
 process_language_selection() {
-    local INPUT_LANG="$1" found_entries found_entry new_input confirm
+    local INPUT_LANG="$1" found_entries found_entry new_input
 
     while true; do
         INPUT_LANG=$(echo "$INPUT_LANG" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
 
-        # 完全一致を優先（言語コード、国コード、国名）
+        # 完全一致を優先
         found_entries=$(sh "${BASE_DIR}/country-zone.sh" | grep -i -w "${INPUT_LANG}")
 
-        # 完全一致がない場合、部分一致で曖昧検索
+        # 部分一致で曖昧検索
         if [ -z "$found_entries" ]; then
             found_entries=$(sh "${BASE_DIR}/country-zone.sh" | grep -i "${INPUT_LANG}")
         fi
@@ -1092,26 +1084,16 @@ process_language_selection() {
         # 一致するデータがない場合
         if [ -z "$found_entries" ]; then
             echo -e "$(color red "No matches found for '$INPUT_LANG'.")"
-            read -p "$(color yellow "Would you like to set English (en) as default? [Y/n]: ")" confirm
-            
-            # 全角・半角のY/N判定
-            case "$confirm" in
-                [YyＹｙ]* | "" )
-                    found_entries=$(sh "${BASE_DIR}/country-zone.sh" | grep -i "\ben\b")
-                    ;;
-                [NnＮｎ]* )
-                    read -p "$(color cyan "Please enter more specific input (country, language, or timezone): ")" new_input
-                    INPUT_LANG="$new_input"
-                    continue
-                    ;;
-                * )
-                    echo -e "$(color red "Invalid input. Please enter Y or N.")"
-                    continue
-                    ;;
-            esac
+            if ask_confirmation "Would you like to set English (en) as default?"; then
+                found_entries=$(sh "${BASE_DIR}/country-zone.sh" | grep -i "\ben\b")
+            else
+                read -p "$(color cyan "Please enter more specific input (country, language, or timezone): ")" new_input
+                INPUT_LANG="$new_input"
+                continue
+            fi
         fi
 
-        # 部分一致で複数の候補が見つかった場合
+        # 複数候補がある場合
         num_matches=$(echo "$found_entries" | wc -l)
         if [ "$num_matches" -gt 1 ]; then
             echo -e "$(color yellow "Multiple matches found for '$INPUT_LANG'. Please refine your input.")"
@@ -1125,10 +1107,7 @@ process_language_selection() {
             found_entry="$found_entries"
         fi
 
-        # 完全一致が得られた場合
-        if [ -n "$found_entry" ]; then
-            break
-        fi
+        break
     done
 
     # フィールド抽出

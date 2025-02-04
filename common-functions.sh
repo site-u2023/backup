@@ -6,7 +6,7 @@
 #
 # 各種共通処理（ヘルプ表示、カラー出力、システム情報確認、言語選択、確認・通知メッセージの多言語対応など）を提供する。
 #
-echo common-functions.sh Last update 202502031310-74
+echo common-functions.sh Last update 202502031310-75
 
 # 基本定数の設定
 BASE_URL="${BASE_URL:-https://raw.githubusercontent.com/site-u2023/aios/main}"
@@ -759,21 +759,24 @@ process_country_selection() {
 
         # 正しい選択が入力されるまでループ
         while true; do
-            read -p "Enter the number of your selection: " choice
+            read -p "Enter the number or country name of your selection: " choice
 
             if echo "$choice" | grep -qE '^[0-9]+$'; then
+                # 数字で選択された場合
                 selected_country=$(echo "$matched_countries" | sed -n "${choice}p")
-
-                if [ -n "$selected_country" ]; then
-                    echo "$selected_country" > "${BASE_DIR}/check_country"
-                    country_zone
-                    echo -e "$(color green "Selected Country: $ZONENAME ($DISPLAYNAME $LANGUAGE $COUNTRYCODE)")"
-                    break
-                else
-                    echo -e "$(color red "Invalid selection. Please enter a valid number from the list.")"
-                fi
             else
-                echo -e "$(color red "Invalid input. Please enter a number corresponding to your choice.")"
+                # 国名やコードで再検索
+                selected_country=$(echo "$matched_countries" | grep -i -w "$choice")
+            fi
+
+            # 有効な選択があれば保存
+            if [ -n "$selected_country" ]; then
+                echo "$selected_country" > "${BASE_DIR}/check_country"
+                country_zone
+                echo -e "$(color green "Selected Country: $ZONENAME ($DISPLAYNAME $LANGUAGE $COUNTRYCODE)")"
+                break
+            else
+                echo -e "$(color red "Invalid selection. Please enter a valid number or country name from the list.")"
             fi
         done
     fi
@@ -797,6 +800,7 @@ process_country_selection() {
         esac
     done
 }
+
 
 display_country_options() {
     local idx=1

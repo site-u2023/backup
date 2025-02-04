@@ -6,7 +6,7 @@
 #
 # 各種共通処理（ヘルプ表示、カラー出力、システム情報確認、言語選択、確認・通知メッセージの多言語対応など）を提供する。
 #
-echo common-functions.sh Last update 202502031310-24
+echo common-functions.sh Last update 202502031310-25
 
 # 基本定数の設定
 BASE_URL="${BASE_URL:-https://raw.githubusercontent.com/site-u2023/aios/main}"
@@ -1117,21 +1117,23 @@ process_language_selection() {
 
             read -p "$(color white "Enter the number of your choice: ")" choice
 
-            # 無効な入力をチェック
-            if ! [[ "$choice" =~ ^[0-9]+$ ]] || [ "$choice" -lt 0 ] || [ "$choice" -gt "$num_matches" ]; then
-                echo -e "$(color red "Invalid selection. Please enter a valid number.")"
+            # 入力が数値の場合、選択肢から選ばれたとみなす
+            if [[ "$choice" =~ ^[0-9]+$ ]]; then
+                if [ "$choice" -eq 0 ]; then
+                    read -p "$(color cyan "Please re-enter your input (country, language, or timezone): ")" new_input
+                    INPUT_LANG="$new_input"
+                    continue
+                elif [ "$choice" -ge 1 ] && [ "$choice" -le "$num_matches" ]; then
+                    found_entry=$(echo "$found_entries" | sed -n "${choice}p")
+                else
+                    echo -e "$(color red "Invalid selection. Please enter a valid number.")"
+                    continue
+                fi
+            else
+                # 数字以外が入力された場合は再度曖昧検索
+                INPUT_LANG="$choice"
                 continue
             fi
-
-            # 再入力を選んだ場合
-            if [ "$choice" -eq 0 ]; then
-                read -p "$(color cyan "Please re-enter your input: ")" new_input
-                INPUT_LANG="$new_input"
-                continue
-            fi
-
-            # 選択されたエントリを取得
-            found_entry=$(echo "$found_entries" | sed -n "${choice}p")
         else
             found_entry="$found_entries"
         fi

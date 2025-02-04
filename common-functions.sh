@@ -6,7 +6,7 @@
 #
 # 各種共通処理（ヘルプ表示、カラー出力、システム情報確認、言語選択、確認・通知メッセージの多言語対応など）を提供する。
 #
-echo common-functions.sh Last update 202502031310-60
+echo common-functions.sh Last update 202502031310-61
 
 # 基本定数の設定
 BASE_URL="${BASE_URL:-https://raw.githubusercontent.com/site-u2023/aios/main}"
@@ -729,7 +729,8 @@ process_country_selection() {
 
     # 入力から余分なスペースを削除（重要）
     selection=$(echo "$selection" | xargs)
-
+    matched_countries=$(sh "$country_file" | grep -i "$selection")
+    
     # 番号で選択された場合
     if echo "$selection" | grep -qE '^[0-9]+$'; then
         matched_countries=$(sh "$country_file" | grep -E '^[A-Za-z]' | sed -n "${selection}p")
@@ -739,7 +740,7 @@ process_country_selection() {
 
         # 上記で見つからない場合、柔軟な曖昧検索を実施
         if [ -z "$matched_countries" ]; then
-            matched_countries=$(sh "$country_file" | grep -i ".*$selection.*")
+            matched_countries=$(sh "$country_file" | grep -i -E "$selection")
         fi
     fi
 
@@ -776,6 +777,10 @@ process_country_selection() {
             return 1
         fi
     fi
+echo "DEBUG: Searching for '$selection'"
+echo "DEBUG: Matched countries:"
+echo "$matched_countries"
+
 }
 
 display_country_options() {

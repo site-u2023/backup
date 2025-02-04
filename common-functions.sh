@@ -246,7 +246,7 @@ check_language() {
 
     while true; do
         read -p "$(color cyan "Please enter country, language, or timezone: ")" INPUT_LANG
-        process_language_selection "$INPUT_LANG"
+        process_country_selection "$INPUT_LANG"
 
         # 設定適用の確認
         if ask_confirmation "Apply these settings?"; then
@@ -349,7 +349,7 @@ check_common() {
 
     # コマンドライン引数で言語指定があれば優先する
     if [ -n "$1" ]; then
-        process_language_selection "$1"
+        process_country_selection "$1"
     fi
 
     # キャッシュから言語・国コードを読み込む
@@ -712,7 +712,7 @@ normalize_language() {
 }
 
 #########################################################################
-# process_language_selection: ユーザー入力の言語コードから有効な候補を選択する
+# process_country_selection: ユーザー入力の言語コードから有効な候補を選択する
 #########################################################################
 process_country_selection() {
     local input found_entries selected_entry

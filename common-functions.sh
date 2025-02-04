@@ -735,7 +735,11 @@ process_country_selection() {
         matched_countries=$(sh "$country_file" | grep -E '^[A-Za-z]' | sed -n "${selection}p")
     else
         # 部分一致検索で複数マッチを取得
-        matched_countries=$(sh "$country_file" | grep -i "$selection")
+        mmatched_countries=$(sh "$country_file" | grep -i -w "$selection")
+        # この部分の直後にデバッグ用のechoを追加
+echo "DEBUG: Searching for '$selection'"
+echo "DEBUG: Matched countries:"
+echo "$matched_countries"
     fi
 
     # 複数マッチした場合の処理

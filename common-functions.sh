@@ -537,6 +537,7 @@ get_message() {
     case "$lang" in
         ja)
             case "$key" in
+                exit_success) echo "Exiting successfully. Goodbye!" ;;
                 # --- メインメニュー関連 ---
                 internet_title)       echo "インターネット設定" ;;
                 menu_system)          echo "システム初期設定" ;;
@@ -622,6 +623,7 @@ get_message() {
             ;;
         en|*)
             case "$key" in
+                exit_success) echo "Exiting successfully. Goodbye!" ;;
                 # --- Main Menu ---
                 internet_title)       echo "Internet Settings" ;;
                 menu_system)          echo "System Initialization" ;;

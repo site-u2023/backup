@@ -6,7 +6,7 @@
 #
 # 各種共通処理（ヘルプ表示、カラー出力、システム情報確認、言語選択、確認・通知メッセージの多言語対応など）を提供する。
 #
-echo common-functions.sh Last update 202502031310-87-1
+echo common-functions.sh Last update 202502031310-87-3
 
 # 基本定数の設定
 BASE_URL="${BASE_URL:-https://raw.githubusercontent.com/site-u2023/aios/main}"
@@ -717,16 +717,27 @@ process_country_selection() {
     local selection="$1"
     local matched_countries selected_country
 
+    # 既に設定が適用されている場合、再確認をスキップ
+    if [ -f "${BASE_DIR}/check_country" ]; then
+        local current_country
+        current_country=$(cat "${BASE_DIR}/check_country")
+
+        if echo "$current_country" | grep -qi "$selection"; then
+            echo -e "$(color green "Settings already applied for $current_country.")"
+            return 0
+        fi
+    fi
+
+    # (既存の選択処理)
     selection=$(echo "$selection" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
 
-    # 入力が数字か文字かで処理を分ける
     if echo "$selection" | grep -qE '^[0-9]+$'; then
         matched_countries=$(sh "${BASE_DIR}/country-zone.sh" | sed -n "${selection}p")
     else
         matched_countries=$(sh "${BASE_DIR}/country-zone.sh" | grep -i -w "$selection")
     fi
 
-    # 結果に基づいた処理
+    # (マッチング結果の確認と設定)
     if [ -z "$matched_countries" ]; then
         echo -e "$(color red "No matching country found.")"
         return 1
@@ -748,7 +759,7 @@ process_country_selection() {
         selected_country="$matched_countries"
     fi
 
-    # 設定の確認
+    # 設定確認
     if ask_confirmation "Apply these settings for $selected_country?"; then
         echo "$selected_country" > "${BASE_DIR}/check_country"
         country_zone
@@ -757,25 +768,6 @@ process_country_selection() {
         echo -e "$(color yellow "Settings were not applied. Returning to selection.")"
         return 1
     fi
-}
-
-display_country_options() {
-    local idx=1
-    local country_file="${BASE_DIR}/country-zone.sh"
-
-    echo -e "$(color cyan "Available Countries:")"
-
-    # 正しい国データのみを抽出し、番号付きで表示
-    sh "$country_file" | grep -E '^[A-Za-z]' | sort | while IFS= read -r line; do
-        country_name=$(echo "$line" | awk '{print $1}')
-        display_name=$(echo "$line" | awk '{print $2}')
-        language_code=$(echo "$line" | awk '{print $3}')
-        country_code=$(echo "$line" | awk '{print $4}')
-
-        # nl コマンドを使わずに手動で番号を付与
-        echo "[$idx] ${country_name} (${display_name} ${language_code} ${country_code})"
-        idx=$((idx + 1))
-    done
 }
 
 #########################################################################

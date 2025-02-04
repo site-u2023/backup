@@ -6,7 +6,7 @@
 #
 # 各種共通処理（ヘルプ表示、カラー出力、システム情報確認、言語選択、確認・通知メッセージの多言語対応など）を提供する。
 #
-echo common-functions.sh Last update 202502031310-71
+echo common-functions.sh Last update 202502031310-73
 
 # 基本定数の設定
 BASE_URL="${BASE_URL:-https://raw.githubusercontent.com/site-u2023/aios/main}"
@@ -724,12 +724,10 @@ process_country_selection() {
     local matched_countries
     local idx=1
     
-    # 入力から余分なスペースを削除（重要）
-echo "DEBUG BEFORE CLEANING: '$selection'"
+    # 入力をトリムして正規化
+    echo "DEBUG BEFORE CLEANING: '$selection'"
     selection=$(echo "$selection" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
-echo "DEBUG AFTER CLEANING: '$selection'"
-    matched_countries=$(sh "$country_file" | grep -iw "$selection")
-echo "DEBUG matched_countries ${matched_countries}"
+    echo "DEBUG AFTER CLEANING: '$selection'"
     
     # 番号で選択された場合
     if echo "$selection" | grep -qE '^[0-9]+$'; then
@@ -737,16 +735,21 @@ echo "DEBUG matched_countries ${matched_countries}"
     else
         # 部分一致検索の強化 - 正規表現で大文字小文字無視 & 単語単位でマッチ
         matched_countries=$(sh "$country_file" | grep -i -w "$selection")
+        echo "DEBUG matched_countries ${matched_countries}"
 
-if [ $(echo "$matched_countries" | wc -l) -gt 1 ]; then
-    echo "Multiple matches found. Please select from the list below:"
-    echo "$matched_countries" | nl
+    # マッチ結果の数を確認して処理分岐
+    if [ $(echo "$matched_countries" | wc -l) -gt 1 ]; then
+        echo "Multiple matches found. Please select from the list below:"
 
-    read -p "Enter the number or country name: " choice
-    selected_country=$(echo "$matched_countries" | sed -n "${choice}p")
-else
-    selected_country="$matched_countries"
-fi
+        # nlコマンドの代わりにawkで行番号を付ける
+        echo "$matched_countries" | awk '{print "[" NR "] " $0}'
+
+        # ユーザーに選択を促す
+        read -p "Enter the number of your selection: " choice
+        selected_country=$(echo "$matched_countries" | sed -n "${choice}p")
+    else
+        selected_country="$matched_countries"
+    fi
 
 # 選択結果を保存
 if [ -n "$selected_country" ]; then

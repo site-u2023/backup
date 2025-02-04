@@ -6,7 +6,7 @@
 #
 # 各種共通処理（ヘルプ表示、カラー出力、システム情報確認、言語選択、確認・通知メッセージの多言語対応など）を提供する。
 #
-echo common-functions.sh Last update 202502031310-64
+echo common-functions.sh Last update 202502031310-66
 
 # 基本定数の設定
 BASE_URL="${BASE_URL:-https://raw.githubusercontent.com/site-u2023/aios/main}"
@@ -731,9 +731,9 @@ process_country_selection() {
 echo "DEBUG BEFORE CLEANING: '$selection'"
     selection=$(echo "$selection" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
 echo "DEBUG AFTER CLEANING: '$selection'"
-echo "country_file ${country_file}"
+echo "DEBUG country_file ${country_file}"
     matched_countries=$(sh "$country_file" | grep -iw "$selection")
-echo "matched_countries ${matched_countries}"
+echo "DEBUG matched_countries ${matched_countries}"
     
     # 番号で選択された場合
     if echo "$selection" | grep -qE '^[0-9]+$'; then
@@ -769,8 +769,16 @@ echo "matched_countries ${matched_countries}"
             idx=$((idx + 1))
         done
 
-        read -p "Enter the number of your choice: " selected_index
-        selected_country=$(echo "$matched_countries" | sed -n "${selected_index}p" | awk '{print $1}')
+        # 数字も文字列も対応できるように変更
+        read -p "Enter the number or country name: " selected_input
+
+        # 数字が入力された場合
+        if echo "$selected_input" | grep -qE '^[0-9]+$'; then
+            selected_country=$(echo "$matched_countries" | sed -n "${selected_input}p" | awk '{print $1}')
+        else
+        # 文字列で入力された場合、部分一致で検索
+            selected_country=$(echo "$matched_countries" | grep -i "$selected_input" | head -n 1 | awk '{print $1}')
+        fi
 
         if [ -n "$selected_country" ]; then
             echo "$selected_country" > "${BASE_DIR}/check_country"

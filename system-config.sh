@@ -12,7 +12,7 @@
 #  4. デバイス名・パスワードの設定 (set_device_name_password)
 #  5. Wi-Fi SSID・パスワードの設定 (set_wifi_ssid_password)
 #  6. システム全体の設定 (set_device)
-echo system-config.sh Last update 202502031310-7
+echo system-config.sh Last update 202502031310-8
 
 # 定数の設定
 BASE_URL="https://raw.githubusercontent.com/site-u2023/aios/main"
@@ -196,76 +196,6 @@ information() {
             echo -e "$(color white "Country Code: $country_code")"
             ;;
     esac
-}
-
-XXXXXinformation() {
-    local lang="$SELECTED_LANGUAGE"
-    local country_data
-
-    # 国情報の取得
-    country_data=$(sh /tmp/aios/country-zone.sh "$SELECTED_COUNTRY" "all")
-
-    # データの分割と抽出
-    country_name=$(echo "$country_data" | awk '{print $1}')
-    display_name=$(echo "$country_data" | awk '{print $2}')
-    language_code=$(echo "$country_data" | awk '{print $3}')
-    country_code=$(echo "$country_data" | awk '{print $4}')
-
-    case "$lang" in
-        ja)
-            echo -e "$(color white "国名: $country_name")"
-            echo -e "$(color white "表示名: $display_name")"
-            echo -e "$(color white "言語コード: $language_code")"
-            echo -e "$(color white "国コード: $country_code")"
-            ;;
-        zh-cn)
-            echo -e "$(color white "国家: $country_name")"
-            echo -e "$(color white "显示名称: $display_name")"
-            echo -e "$(color white "语言代码: $language_code")"
-            echo -e "$(color white "国家代码: $country_code")"
-            ;;
-        zh-tw)
-            echo -e "$(color white "國家: $country_name")"
-            echo -e "$(color white "顯示名稱: $display_name")"
-            echo -e "$(color white "語言代碼: $language_code")"
-            echo -e "$(color white "國家代碼: $country_code")"
-            ;;
-        id)
-            echo -e "$(color white "Nama Negara: $country_name")"
-            echo -e "$(color white "Nama Tampilan: $display_name")"
-            echo -e "$(color white "Kode Bahasa: $language_code")"
-            echo -e "$(color white "Kode Negara: $country_code")"
-            ;;
-        ko)
-            echo -e "$(color white "국가명: $country_name")"
-            echo -e "$(color white "표시 이름: $display_name")"
-            echo -e "$(color white "언어 코드: $language_code")"
-            echo -e "$(color white "국가 코드: $country_code")"
-            ;;
-        de)
-            echo -e "$(color white "Ländername: $country_name")"
-            echo -e "$(color white "Anzeigename: $display_name")"
-            echo -e "$(color white "Sprachcode: $language_code")"
-            echo -e "$(color white "Ländercode: $country_code")"
-            ;;
-        ru)
-            echo -e "$(color white "Название страны: $country_name")"
-            echo -e "$(color white "Отображаемое имя: $display_name")"
-            echo -e "$(color white "Код языка: $language_code")"
-            echo -e "$(color white "Код страны: $country_code")"
-            ;;    
-        en|*) # 英語とその他すべての未定義言語の処理
-            echo -e "$(color white "Country: $country_name")"
-            echo -e "$(color white "Display Name: $display_name")"
-            echo -e "$(color white "Language Code: $language_code")"
-            echo -e "$(color white "Country Code: $country_code")"
-            ;;
-    esac
-
-    # タイムゾーンの表示（1つの場合は簡潔に）
-    if [ -n "$TIMEZONE" ] && [ -n "$ZONENAME" ]; then
-        echo -e "$(color white "$msg_timezone: $ZONENAME - $TIMEZONE")"
-    fi
 }
 
 #########################################################################
@@ -636,7 +566,10 @@ download_country_zone
 download_and_execute_common
 check_common "$INPUT_LANG"
 
-# 言語・国情報の表示（common-functions.shで確定された値を使用）
+# 国選択プロセスの実行（新規実装の関数）
+process_country_selection
+
+# 国・言語・ゾーン情報の表示
 information
 
 # タイムゾーンの選択（common-functions.sh の関数を利用）

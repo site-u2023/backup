@@ -266,7 +266,7 @@ check_language() {
     done
 }
 
-0204_1_check_language() {
+XXXXX_1_check_language() {
     local country_data lang_field output
     echo -e "$(color white "------------------------------------------------------")"
 
@@ -1046,7 +1046,7 @@ normalize_language() {
     fi
 }
 
-0204_1_normalize_language() {
+XXXXX_1_normalize_language() {
     local CHECK_LANGUAGE READ_LANGUAGE
     CHECK_LANGUAGE="${BASE_DIR}/check_language"
     if [ -f "$CHECK_LANGUAGE" ]; then
@@ -1150,7 +1150,7 @@ process_language_selection() {
     echo -e "$(color green "Selected Language: $SELECTED_LANGUAGE")"
 }
 
-0204_1_process_language_selection() {
+XXXXX_1_process_language_selection() {
     local INPUT_LANG="$1" found_entries found_entry new_input choice num_matches
 
     while true; do

@@ -6,7 +6,7 @@
 #
 # 各種共通処理（ヘルプ表示、カラー出力、システム情報確認、言語選択、確認・通知メッセージの多言語対応など）を提供する。
 #
-echo common-functions.sh Last update 202502031310-22
+echo common-functions.sh Last update 202502031310-23
 
 # 基本定数の設定
 BASE_URL="${BASE_URL:-https://raw.githubusercontent.com/site-u2023/aios/main}"
@@ -21,7 +21,7 @@ SUPPORTED_LANGUAGES="${SUPPORTED_LANGUAGES:-en}"
 #########################################################################
 handle_error() {
     local msg="$1"
-    echo -e "$(color red "$msg")" >&2
+    echo -e "$(color red_white " ERROR ") $(color red "$msg")" >&2
     exit 1
 }
 
@@ -245,7 +245,7 @@ check_language() {
     echo -e "$(color white "Select a country for language and timezone configuration.")"
 
     while true; do
-        read -p "$(color white "Please enter country, language, or timezone: ")" INPUT_LANG
+        read -p "$(color cyan "Please enter country, language, or timezone: ")" INPUT_LANG
         process_language_selection "$INPUT_LANG"
         normalize_language
 
@@ -1091,10 +1091,10 @@ process_language_selection() {
         # 一致するデータがない場合、再入力を促す
         if [ -z "$found_entries" ]; then
             echo -e "$(color red "No matching entry found.")"
-            read -p "$(color white "Would you like to try again? [Y/n]: ")" choice
+            read -p "$(color yellow "Would you like to try again? [Y/n]: ")" choice
             case "$choice" in
                 [Yy]* | "" )
-                    read -p "$(color white "Please re-enter your input: ")" new_input
+                    read -p "$(color cyan "Please re-enter your input: ")" new_input
                     INPUT_LANG="$new_input"
                     continue
                     ;;
@@ -1110,10 +1110,10 @@ process_language_selection() {
             echo -e "$(color yellow "Multiple matches found. Please select:")"
             local i=1
             echo "$found_entries" | while IFS= read -r line; do
-                echo "[$i] $line"
+                echo "$(color cyan "[$i] $line")"
                 i=$((i+1))
             done
-            echo "[0] Re-enter input"
+            echo "$(color cyan "[0] Re-enter input")"
 
             read -p "$(color white "Enter the number of your choice: ")" choice
 
@@ -1125,7 +1125,7 @@ process_language_selection() {
 
             # 再入力を選んだ場合
             if [ "$choice" -eq 0 ]; then
-                read -p "$(color white "Please re-enter your input: ")" new_input
+                read -p "$(color cyan "Please re-enter your input: ")" new_input
                 INPUT_LANG="$new_input"
                 continue
             fi

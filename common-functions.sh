@@ -6,7 +6,7 @@
 #
 # 各種共通処理（ヘルプ表示、カラー出力、システム情報確認、言語選択、確認・通知メッセージの多言語対応など）を提供する。
 #
-echo common-functions.sh Last update 202502031310-87-4-4
+echo common-functions.sh Last update 202502031310-87-4-5
 
 # 基本定数の設定
 BASE_URL="${BASE_URL:-https://raw.githubusercontent.com/site-u2023/aios/main}"
@@ -748,6 +748,7 @@ process_country_selection() {
 
     # 入力のトリムと正規化
     selection=$(echo "$selection" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
+    echo -e "$(color cyan "DEBUG: Normalized selection input: '$selection'")"
 
     # 数字か部分一致で検索
     if echo "$selection" | grep -qE '^[0-9]+$'; then
@@ -759,6 +760,7 @@ process_country_selection() {
     # マッチ数の確認
     local match_count
     match_count=$(echo "$matched_countries" | wc -l)
+    echo -e "$(color cyan "DEBUG: Found $match_count matches for '$selection'")"
 
     if [ "$match_count" -eq 0 ]; then
         echo -e "$(color red "No matching country found.")"
@@ -785,21 +787,30 @@ process_country_selection() {
         done
     fi
 
+    # デバッグ: 選択された国情報の確認
+    echo -e "$(color cyan "DEBUG: Selected country info: $selected_country")"
+
     # 言語コードの抽出（例: ja, en, zh-cn）
     language_code=$(echo "$selected_country" | awk '{print $3}')
+    echo -e "$(color cyan "DEBUG: Extracted language code: $language_code")"
 
     # 言語コードの保存
     echo "$language_code" > "${BASE_DIR}/check_country"
 
-    # デバッグログ：保存内容の確認
+    # デバッグログ: 保存内容の確認
     if [ -f "${BASE_DIR}/check_country" ]; then
         echo -e "$(color green "Language code saved to check_country: $(cat ${BASE_DIR}/check_country)")"
     else
         echo -e "$(color red "Failed to save language code to check_country.")"
     fi
 
-    # 完全な国情報も別ファイルに保存（デバッグ用）
+    # 完全な国情報も保存
     echo "$selected_country" > "${BASE_DIR}/selected_country_info"
+    if [ -f "${BASE_DIR}/selected_country_info" ]; then
+        echo -e "$(color green "Full country info saved to selected_country_info.")"
+    else
+        echo -e "$(color red "Failed to save full country info.")"
+    fi
 
     # 設定の確認
     if declare -f confirm_settings > /dev/null; then
@@ -808,7 +819,6 @@ process_country_selection() {
         echo -e "$(color red "confirm_settings function not found.")"
     fi
 }
-
 
 #########################################################################
 # country_zone: 国・ゾーン情報を取得する関数

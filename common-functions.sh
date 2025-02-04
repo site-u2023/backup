@@ -6,7 +6,7 @@
 #
 # 各種共通処理（ヘルプ表示、カラー出力、システム情報確認、言語選択、確認・通知メッセージの多言語対応など）を提供する。
 #
-echo common-functions.sh Last update 202502031310-20
+echo common-functions.sh Last update 202502031310-21
 
 # 基本定数の設定
 BASE_URL="${BASE_URL:-https://raw.githubusercontent.com/site-u2023/aios/main}"
@@ -227,7 +227,6 @@ check_package_manager() {
 check_language() {
     local country_data lang_field output
     echo -e "$(color white "------------------------------------------------------")"
-    echo -e "$(color white "Select your language")"
 
     country_data=$(sh "${BASE_DIR}/country-zone.sh" "") || handle_error "country-zone.sh の実行に失敗しました。"
 
@@ -241,7 +240,7 @@ check_language() {
     done
 
     echo -e "$(color white "------------------------------------------------------")"
-    echo -e "$(color white "Select your language")"
+    echo -e "$(color white "Select a country for language and timezone configuration.")"
     read -p "$(color white "Please choose: ")" INPUT_LANG
     process_language_selection "$INPUT_LANG"
     normalize_language

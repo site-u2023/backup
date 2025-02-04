@@ -6,7 +6,7 @@
 #
 # 各種共通処理（ヘルプ表示、カラー出力、システム情報確認、言語選択、確認・通知メッセージの多言語対応など）を提供する。
 #
-echo common-functions.sh Last update 202502031310-81
+echo common-functions.sh Last update 202502031310-83
 
 # 基本定数の設定
 BASE_URL="${BASE_URL:-https://raw.githubusercontent.com/site-u2023/aios/main}"
@@ -772,29 +772,13 @@ process_country_selection() {
     country_zone
     echo -e "$(color green "Selected Country: $ZONENAME ($DISPLAYNAME $LANGUAGE $COUNTRYCODE)")"
 
-    # 設定の確認（この部分だけに確認処理を集中させる）
-    confirm_settings
-}
-
-# 設定の確認を行う専用関数
-confirm_settings() {
-    while true; do
-        read -p "Apply these settings? [Y/n]: " confirm
-        case "$confirm" in
-            [Yy]|"") 
-                echo -e "$(color green "Settings applied for $ZONENAME.")"
-                return 0
-                ;;
-            [Nn]) 
-                echo -e "$(color yellow "Let's try again.")"
-                process_country_selection  # 再実行
-                return 1
-                ;;
-            *) 
-                echo -e "$(color red "Invalid choice, please enter 'y' or 'n'.")"
-                ;;
-        esac
-    done
+    # 設定の確認
+    if ask_confirmation "Apply these settings?"; then
+        echo -e "$(color green "Settings applied for $ZONENAME.")"
+    else
+        echo -e "$(color yellow "Settings were not applied. Let's try again.")"
+        return 1
+    fi
 }
 
 display_country_options() {

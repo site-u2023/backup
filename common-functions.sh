@@ -6,7 +6,7 @@
 #
 # 各種共通処理（ヘルプ表示、カラー出力、システム情報確認、言語選択、確認・通知メッセージの多言語対応など）を提供する。
 #
-echo common-functions.sh Last update 202502031310-35
+echo common-functions.sh Last update 202502031310-36
 
 # 基本定数の設定
 BASE_URL="${BASE_URL:-https://raw.githubusercontent.com/site-u2023/aios/main}"
@@ -292,38 +292,37 @@ select_timezone() {
     # タイムゾーン情報を取得
     timezone_data=$(grep -i -w "$country_code" "${BASE_DIR}/country-zone.sh" | awk '{print $5}')
 
-    # BusyBox 互換: カンマ区切りを配列に変換
-    timezones=()
-    while IFS= read -r line; do
-        timezones+=("$line")
-    done < <(echo "$timezone_data" | tr ',' '\n')
+    # カンマ区切りのタイムゾーンをスペース区切りに変換
+    timezones=$(echo "$timezone_data" | tr ',' ' ')
 
-    # 複数タイムゾーンがある場合の処理
-    if [ "${#timezones[@]}" -gt 1 ]; then
+    # タイムゾーン数を数える
+    num_timezones=$(echo "$timezones" | wc -w)
+
+    if [ "$num_timezones" -gt 1 ]; then
         echo -e "$(color cyan "Multiple timezones found for $country_code. Please select:")"
-        local i=1
-        for tz in "${timezones[@]}"; do
+        i=1
+        for tz in $timezones; do
             echo "[$i] $tz"
-            ((i++))
+            i=$((i + 1))
         done
         echo "[0] Cancel"
 
         while true; do
             read -p "$(color white "Enter the number of your timezone choice: ")" timezone_choice
-            if [[ "$timezone_choice" =~ ^[0-9]+$ ]] && [ "$timezone_choice" -ge 0 ] && [ "$timezone_choice" -le "${#timezones[@]}" ]; then
+            if echo "$timezone_choice" | grep -Eq '^[0-9]+$' && [ "$timezone_choice" -ge 0 ] && [ "$timezone_choice" -le "$num_timezones" ]; then
                 if [ "$timezone_choice" -eq 0 ]; then
                     echo -e "$(color yellow "Timezone selection cancelled.")"
                     return 1
                 fi
-                SELECTED_TIMEZONE="${timezones[$((timezone_choice - 1))]}"
+                SELECTED_TIMEZONE=$(echo "$timezones" | awk -v idx="$timezone_choice" '{print $idx}')
                 break
             else
                 echo -e "$(color red "Invalid selection. Please enter a valid number.")"
             fi
         done
     else
-        # タイムゾーンが1つしかない場合は自動選択
-        SELECTED_TIMEZONE="${timezones[0]}"
+        # タイムゾーンが1つだけの場合は自動選択
+        SELECTED_TIMEZONE="$timezones"
     fi
 
     echo "$SELECTED_TIMEZONE" > "${BASE_DIR}/check_timezone"

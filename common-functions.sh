@@ -6,7 +6,7 @@
 #
 # 各種共通処理（ヘルプ表示、カラー出力、システム情報確認、言語選択、確認・通知メッセージの多言語対応など）を提供する。
 #
-echo common-functions.sh Last update 202502031310-87-4-6
+echo common-functions.sh Last update 202502031310-87-4-7
 
 # 基本定数の設定
 BASE_URL="${BASE_URL:-https://raw.githubusercontent.com/site-u2023/aios/main}"
@@ -346,8 +346,9 @@ select_timezone() {
 # check_common: 初期化処理（オプション処理、バージョン・パッケージマネージャ確認、言語選択）
 #########################################################################
 check_common() {
+local INPUT_LANG="$1"
     # オプション処理
-    case "$1" in
+    case "$INPUT_LANG" in
         -h|--help)
             print_help
             exit 0
@@ -357,7 +358,7 @@ check_common() {
             echo "Language and country cache cleared."
             ;;
         *)
-            if [ -n "$1" ]; then
+            if [ -n "$INPUT_LANG" ]; then
                 process_country_selection "$1"
                 exit 0  # 引数で選択が完了した場合は終了
             fi

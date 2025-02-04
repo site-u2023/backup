@@ -6,7 +6,7 @@
 #
 # 各種共通処理（ヘルプ表示、カラー出力、システム情報確認、言語選択、確認・通知メッセージの多言語対応など）を提供する。
 #
-echo common-functions.sh Last update 202502031310-69
+echo common-functions.sh Last update 202502031310-70
 
 # 基本定数の設定
 BASE_URL="${BASE_URL:-https://raw.githubusercontent.com/site-u2023/aios/main}"
@@ -767,32 +767,66 @@ echo "DEBUG matched_countries ${matched_countries}"
             echo "[$idx] $line"
             idx=$((idx + 1))
         done
+# 入力処理
+read -p "Please enter the number or country name (partial matches allowed): " input_country
+input_country=$(echo "$input_country" | tr -d '[:space:]')  # 余計なスペースを削除
 
-        # 数字も文字列も対応できるように変更
-        read -p "Enter the number or country name: " selected_input
+# マッチング処理
+matched_countries=$(grep -i "$input_country" country_list.txt)
 
-        # 数字が入力された場合
-        if echo "$selected_input" | grep -qE '^[0-9]+$'; then
-            selected_country=$(echo "$matched_countries" | sed -n "${selected_input}p" | awk '{print $1}')
-        else
-        # 文字列で入力された場合、部分一致で検索
-            selected_country=$(echo "$matched_countries" | grep -i "$selected_input" | head -n 1 | awk '{print $1}')
-        fi
+# デバッグ出力
+echo "DEBUG matched_countries: $matched_countries"
 
-        # ここで再度空のチェックを入れる
-        if [ -z "$selected_country" ]; then
-            echo -e "$(color red "Invalid selection or no match found.")"
-            return 1
-        fi
-        
-        if [ -n "$selected_country" ]; then
-            echo "$selected_country" > "${BASE_DIR}/check_country"
-            country_zone
-            echo -e "$(color green "Selected Country: $ZONENAME ($DISPLAYNAME $LANGUAGE $COUNTRYCODE)")"
-        else
-            echo -e "$(color red "Invalid selection.")"
-            return 1
-        fi
+# マッチング結果に基づく処理
+if [ -z "$matched_countries" ]; then
+    echo -e "$(color red "No matching country found. Please try again.")"
+    continue  # ループの先頭に戻る
+fi
+
+# 一致が1つの場合はそのまま選択
+match_count=$(echo "$matched_countries" | wc -l)
+if [ "$match_count" -eq 1 ]; then
+    selected_country=$(echo "$matched_countries" | awk '{print $1}')
+    echo -e "$(color green "Selected Country: $selected_country")"
+else
+    # 複数一致の場合、選択を促す
+    echo -e "$(color yellow "Multiple matches found. Please select from the list below:")"
+    echo "$matched_countries" | nl -w2 -s'. '
+
+    read -p "Enter the number or country name: " selected_input
+
+    # 数字ならリストから選択
+    if [[ "$selected_input" =~ ^[0-9]+$ ]]; then
+        selected_country=$(echo "$matched_countries" | sed -n "${selected_input}p" | awk '{print $1}')
+    else
+        # 文字列で入力された場合は再マッチング
+        selected_country=$(echo "$matched_countries" | grep -i "$selected_input" | head -n 1 | awk '{print $1}')
+    fi
+
+    # 再度、選択が有効かチェック
+    if [ -z "$selected_country" ]; then
+        echo -e "$(color red "Invalid selection or no match found.")"
+        continue  # ループの先頭に戻る
+    fi
+fi
+
+# 設定の確認
+while true; do
+    read -p "Apply these settings? [Y/n]: " confirm
+    case "$confirm" in
+        [Yy]|"") 
+            echo -e "$(color green "Settings applied for $selected_country.")"
+            break 2  # 完了してループを抜ける
+            ;;
+        [Nn]) 
+            echo "Let's try again."
+            break  # 再入力へ
+            ;;
+        *)
+            echo -e "$(color red "Invalid choice, please enter 'y' or 'n'.")"
+            ;;
+    esac
+done
     fi
 }
 

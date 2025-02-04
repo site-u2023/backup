@@ -6,7 +6,7 @@
 #
 # 各種共通処理（ヘルプ表示、カラー出力、システム情報確認、言語選択、確認・通知メッセージの多言語対応など）を提供する。
 #
-echo common-functions.sh Last update 202502031310-41
+echo common-functions.sh Last update 202502031310-42
 
 # 基本定数の設定
 BASE_URL="${BASE_URL:-https://raw.githubusercontent.com/site-u2023/aios/main}"
@@ -715,237 +715,67 @@ normalize_language() {
 # process_language_selection: ユーザー入力の言語コードから有効な候補を選択する
 #########################################################################
 process_country_selection() {
-    local INPUT_SELECTION="$1" found_entries found_entry
+    local input found_entries selected_entry
 
     while true; do
-        INPUT_SELECTION=$(echo "$INPUT_SELECTION" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
-
-        # 完全一致を優先
-        found_entries=$(sh "${BASE_DIR}/country-zone.sh" | grep -i -w "${INPUT_SELECTION}")
-
-        # 曖昧検索（部分一致）
-        if [ -z "$found_entries" ]; then
-            found_entries=$(sh "${BASE_DIR}/country-zone.sh" | grep -i "${INPUT_SELECTION}")
-        fi
-
-        # 一致するデータがない場合
-        if [ -z "$found_entries" ]; then
-            echo -e "$(color red "No matches found for '$INPUT_SELECTION'.")"
-            if ask_confirmation "Would you like to set English (en) as default?"; then
-                found_entries=$(sh "${BASE_DIR}/country-zone.sh" | grep -i "\ben\b")
+        read -p "$(color white "Please enter the number or country name (partial matches allowed): ")" input
+        
+        # 数字での選択処理
+        if echo "$input" | grep -Eq '^[0-9]+$'; then
+            selected_entry=$(sed -n "${input}p" "${BASE_DIR}/country-zone.sh")
+            if [ -n "$selected_entry" ]; then
+                break
             else
-                read -p "$(color cyan "Please enter more specific input (country or language): ")" new_input
-                INPUT_SELECTION="$new_input"
+                echo -e "$(color red "Invalid number. Please try again.")"
                 continue
             fi
         fi
 
-        # 複数候補がある場合
-        num_matches=$(echo "$found_entries" | wc -l)
-        if [ "$num_matches" -gt 1 ]; then
-            echo -e "$(color yellow "Multiple matches found for '$INPUT_SELECTION'. Please refine your input.")"
-            i=1
-            echo "$found_entries" | while IFS= read -r line; do
-                country_name=$(echo "$line" | awk '{print $1}')
-                lang_name=$(echo "$line" | awk '{print $2}')
-                lang_code=$(echo "$line" | awk '{print $3}')
-                country_code=$(echo "$line" | awk '{print $4}')
-                echo "[$i] $country_name ($lang_name $lang_code $country_code)"
-                i=$((i+1))
-            done
-
-            read -p "$(color cyan "Enter the number or refine your input: ")" new_input
-
-            # 番号選択の場合
-            if echo "$new_input" | grep -Eq '^[0-9]+$'; then
-                found_entry=$(echo "$found_entries" | sed -n "${new_input}p")
-            else
-                INPUT_SELECTION="$new_input"
-                continue
-            fi
-        else
-            found_entry="$found_entries"
-        fi
-
-        break
-    done
-
-    # フィールド抽出
-    SELECTED_COUNTRY=$(echo "$found_entry" | awk '{print $1}')    # 国名
-    SELECTED_LANGUAGE_NAME=$(echo "$found_entry" | awk '{print $2}')  # 言語名
-    SELECTED_LANGUAGE_CODE=$(echo "$found_entry" | awk '{print $3}')  # 言語コード
-    SELECTED_COUNTRY_CODE=$(echo "$found_entry" | awk '{print $4}')   # 国コード
-
-    # 選択結果をファイルに保存
-    echo "$SELECTED_LANGUAGE_CODE" > "${BASE_DIR}/check_language"
-    echo "$SELECTED_COUNTRY_CODE" > "${BASE_DIR}/check_country"
-
-    # 選択内容の表示
-    echo -e "$(color green "Selected Country: ${SELECTED_COUNTRY} (${SELECTED_LANGUAGE_NAME} ${SELECTED_LANGUAGE_CODE} ${SELECTED_COUNTRY_CODE})")"
-
-    # タイムゾーン選択を実行
-    select_timezone "$SELECTED_COUNTRY_CODE"
-}
-
-process_language_selection() {
-    local INPUT_LANG="$1" found_entries found_entry
-
-    while true; do
-        INPUT_LANG=$(echo "$INPUT_LANG" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
-
-        # 完全一致を優先
-        found_entries=$(sh "${BASE_DIR}/country-zone.sh" | grep -i -w "${INPUT_LANG}")
-
-        # 部分一致で曖昧検索
+        # 曖昧検索処理（部分一致）
+        found_entries=$(grep -i "$input" "${BASE_DIR}/country-zone.sh")
         if [ -z "$found_entries" ]; then
-            found_entries=$(sh "${BASE_DIR}/country-zone.sh" | grep -i "${INPUT_LANG}")
-        fi
-
-        # 一致するデータがない場合
-        if [ -z "$found_entries" ]; then
-            echo -e "$(color red "No matches found for '$INPUT_LANG'.")"
-            if ask_confirmation "Would you like to set English (en) as default?"; then
-                found_entries=$(sh "${BASE_DIR}/country-zone.sh" | grep -i "\ben\b")
-            else
-                read -p "$(color cyan "Please enter more specific input (country, language, or timezone): ")" new_input
-                INPUT_LANG="$new_input"
-                continue
-            fi
-        fi
-
-        # 複数候補がある場合
-        num_matches=$(echo "$found_entries" | wc -l)
-        if [ "$num_matches" -gt 1 ]; then
-            echo -e "$(color yellow "Multiple matches found for '$INPUT_LANG'. Please refine your input.")"
-            echo "$found_entries" | while IFS= read -r line; do
-                echo "$(color cyan "$line")"
-            done
-            read -p "$(color cyan "Please enter more specific input to narrow down your selection: ")" new_input
-            INPUT_LANG="$new_input"
+            echo -e "$(color red "No matches found for '$input'. Please try again.")"
             continue
-        else
-            found_entry="$found_entries"
         fi
 
+        num_matches=$(echo "$found_entries" | wc -l)
+        if [ "$num_matches" -gt 1 ]; then
+            echo -e "$(color yellow "Multiple matches found for '$input'. Please refine your input.")"
+            echo "$found_entries" | nl -w2 -s'. '
+            continue
+        fi
+
+        selected_entry="$found_entries"
         break
     done
 
-    # フィールド抽出
-    SELECTED_LANGUAGE=$(echo "$found_entry" | awk '{print $2}')  # 言語名を取得
-    SELECTED_COUNTRY=$(echo "$found_entry" | awk '{print $4}')   # 国コードを取得
+    # 選択されたエントリから情報を抽出
+    SELECTED_COUNTRY=$(echo "$selected_entry" | awk '{print $1}')
+    SELECTED_LANGUAGE=$(echo "$selected_entry" | awk '{print $2}')
+    LANGUAGE_CODE=$(echo "$selected_entry" | awk '{print $3}')
+    COUNTRY_CODE=$(echo "$selected_entry" | awk '{print $4}')
 
-    echo "$SELECTED_LANGUAGE" > "${BASE_DIR}/check_language"
+    echo -e "$(color green "Selected: $SELECTED_COUNTRY ($SELECTED_LANGUAGE $LANGUAGE_CODE $COUNTRY_CODE)")"
     echo "$SELECTED_COUNTRY" > "${BASE_DIR}/check_country"
-
-    # 言語と国を統合して表示
-    echo -e "$(color green "Selected Language: ${SELECTED_LANGUAGE} (${SELECTED_COUNTRY})")"
-
-    # タイムゾーン選択を実行
-    select_timezone "$SELECTED_COUNTRY"
-}
-
-XXXXX_1_process_language_selection() {
-    local INPUT_LANG="$1" found_entries found_entry new_input choice num_matches
-
-    while true; do
-        INPUT_LANG=$(echo "$INPUT_LANG" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
-
-        # 完全一致を優先（言語コードまたは国コード）
-        found_entries=$(sh "${BASE_DIR}/country-zone.sh" | grep -i -w "${INPUT_LANG}")
-
-        # 完全一致で見つからない場合、部分一致（国名や言語名も含む）
-        if [ -z "$found_entries" ]; then
-            found_entries=$(sh "${BASE_DIR}/country-zone.sh" | grep -i "${INPUT_LANG}")
-        fi
-
-        # それでも見つからなければ再入力を促す
-        if [ -z "$found_entries" ]; then
-            echo "No matching entry found."
-            read -p "$(color white "Do you want to re-enter? [y/n]: ")" choice
-            case "$choice" in
-                [Yy])
-                    read -p "$(color white "Please re-enter language: ")" new_input
-                    INPUT_LANG="$new_input"
-                    continue
-                    ;;
-                *)
-                    echo "Defaulting to English (en)."
-                    found_entries=$(sh "${BASE_DIR}/country-zone.sh" | grep -i "\ben\b")
-            esac
-        fi
-
-        # 複数候補があれば選択肢を表示
-        num_matches=$(echo "$found_entries" | wc -l)
-        if [ "$num_matches" -gt 1 ]; then
-            echo "Multiple matches found. Please select:"
-            local i=1
-            echo "$found_entries" | while IFS= read -r line; do
-                echo "[$i] $line"
-                i=$((i+1))
-            done
-            echo "[0] Re-enter language"
-
-            read -p "$(color white "Enter the number of your choice: ")" choice
-
-            # 無効な入力処理
-            if ! [ "$choice" -eq "$choice" ] 2>/dev/null || [ "$choice" -lt 0 ] || [ "$choice" -gt "$num_matches" ]; then
-                echo "Invalid selection. Please enter a valid number."
-                continue
-            fi
-
-            if [ "$choice" -eq 0 ]; then
-                read -p "$(color white "Please re-enter language: ")" new_input
-                INPUT_LANG="$new_input"
-                continue
-            fi
-
-            found_entry=$(echo "$found_entries" | sed -n "${choice}p")
-        else
-            found_entry="$found_entries"
-        fi
-
-        break  # 有効な候補が取得できたのでループを抜ける
-    done
-
-    # フィールド抽出
-    SELECTED_LANGUAGE=$(echo "$found_entry" | awk '{print $3}')
-    SELECTED_COUNTRY=$(echo "$found_entry" | awk '{print $4}')
-
     echo "$SELECTED_LANGUAGE" > "${BASE_DIR}/check_language"
-    echo "$SELECTED_COUNTRY" > "${BASE_DIR}/check_country"
 
-    echo "Selected Language: $SELECTED_LANGUAGE"
-    echo "Selected Country: $SELECTED_COUNTRY"
+    # タイムゾーン選択へ
+    select_timezone "$COUNTRY_CODE"
 }
 
 display_country_options() {
-    local country_data option_count=1
+    local line idx=1
 
-    echo -e "$(color white "------------------------------------------------------")"
+    echo -e "$(color cyan "Available Countries:")"
+    while IFS= read -r line; do
+        country_name=$(echo "$line" | awk '{print $1}')
+        language_name=$(echo "$line" | awk '{print $2}')
+        language_code=$(echo "$line" | awk '{print $3}')
+        country_code=$(echo "$line" | awk '{print $4}')
 
-    # 国情報を取得して表示
-    country_data=$(sh "${BASE_DIR}/country-zone.sh" "")
-
-    echo "$country_data" | while IFS= read -r line; do
-        [ -z "$line" ] && continue
-
-        country_name=$(echo "$line" | awk '{print $1}')  # 国名
-        lang_name=$(echo "$line" | awk '{print $2}')     # 言語名
-        lang_code=$(echo "$line" | awk '{print $3}')     # 言語コード
-        country_code=$(echo "$line" | awk '{print $4}')  # 国コード
-
-        echo "[$option_count] $country_name ($lang_name $lang_code $country_code)"
-        option_count=$((option_count + 1))
-    done
-
-    echo "[0] Cancel"
-    echo -e "$(color white "------------------------------------------------------")"
-
-    # 入力プロンプト（番号選択 or 曖昧検索）
-    read -p "$(color white "Enter the number or type to search (e.g., \"Japan\" or \"ja\"): ")" user_input
-
-    # 入力処理を呼び出し
-    process_country_selection "$user_input"
+        echo "[$idx] ${country_name} (${language_name} ${language_code} ${country_code})"
+        idx=$((idx + 1))
+    done < "${BASE_DIR}/country-zone.sh"
 }
 
 #########################################################################

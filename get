@@ -6,7 +6,7 @@
 #
 # 各種共通処理（ヘルプ表示、カラー出力、システム情報確認、言語選択、確認・通知メッセージの多言語対応など）を提供する。
 #
-echo common-functions.sh Last update 202502031310-31
+echo common-functions.sh Last update 202502031310-33
 
 # 基本定数の設定
 BASE_URL="${BASE_URL:-https://raw.githubusercontent.com/site-u2023/aios/main}"
@@ -335,62 +335,99 @@ check_common() {
 #########################################################################
 menu_option() {
     local action="$1"
-    local menu_key="$2"  # ここでメニューのキーを受け取る
-    local script_name="$3"
-    local input_lang="$4"
-
-    # メニュー説明を多言語で表示
-    local description=$(get_message "$menu_key")
-    echo -e "$(color white "$description")"
+    local label="$2"
+    local target="$3"
 
     case "$action" in
-        "return")
-            if ask_confirmation "return"; then
-                show_notification "return"
-                return 0
-            else
-                show_notification "return_cancelled"
-            fi
-            ;;
-        "exit")
-            if ask_confirmation "menu_exit"; then
-                show_notification "exit"
-                exit 0
-            else
-                show_notification "exit_cancelled"
-            fi
-            ;;
-        "delete")
-            if ask_confirmation "Do you really want to delete ${target}?"; then
-                rm -f "${BASE_DIR}/${target}"
-                echo -e "$(color green "Deleted: ${target}")"
-            else
-                echo -e "$(color yellow "Deletion cancelled.")"
-            fi
-            ;;
         "download")
-            if ask_confirmation "download"; then
-                if wget --quiet -O "${BASE_DIR}/${script_name}" "${BASE_URL}/${script_name}"; then
-                    show_notification "download_success"
-                    . "${BASE_DIR}/${script_name}" "$input_lang" || handle_error "$(get_message script_execution_failed)"
-                else
-                    show_notification "download_failure"
-                fi
-            else
-                show_notification "download_cancelled"
-            fi
+            handle_download "$target"
+            ;;
+        "return")
+            handle_return "$label"
             ;;
         "command")
-            if ask_confirmation "execute_command"; then
-                eval "$script_name" || handle_error "$(get_message script_execution_failed)"
-            else
-                show_notification "execution_cancelled"
-            fi
+            handle_command "$target"
+            ;;
+        "exit")
+            handle_exit
+            ;;
+        "delete")
+            handle_delete "$target"
             ;;
         *)
-            echo -e "$(color red "$(get_message unknown_action)")"
+            echo -e "$(color red "$(get_message "invalid_option")")"
             ;;
     esac
+}
+
+handle_download() {
+    local target="$1"
+
+    # 常に最新バージョンをダウンロード
+    echo -e "$(color cyan "$(get_message "downloading"): ${target}")"
+    wget --quiet -O "${BASE_DIR}/${target}" "${BASE_URL}/${target}"
+
+    if [ $? -eq 0 ]; then
+        echo -e "$(color green "$(get_message "download_success"): ${target}")"
+        
+        # ダウンロード後の実行確認
+        if ask_confirmation "$(get_message "confirm_execute") ${target}?"; then
+            sh "${BASE_DIR}/${target}"
+        else
+            echo -e "$(color yellow "$(get_message "execute_cancelled")")"
+        fi
+    else
+        echo -e "$(color red "$(get_message "download_failed"): ${target}")"
+    fi
+}
+
+handle_return() {
+    local label="$1"
+    
+    if ask_confirmation "$(get_message "confirm_return") $label?"; then
+        echo -e "$(color green "$(get_message "return_success") $label")"
+        # ここで必要な戻り処理を追加可能
+    else
+        echo -e "$(color yellow "$(get_message "return_cancelled")")"
+    fi
+}
+
+handle_command() {
+    local target="$1"
+
+    if ask_confirmation "$(get_message "confirm_execute") $target?"; then
+        sh -c "$target"
+        if [ $? -eq 0 ]; then
+            echo -e "$(color green "$(get_message "execute_success"): $target")"
+        else
+            echo -e "$(color red "$(get_message "execute_failed"): $target")"
+        fi
+    else
+        echo -e "$(color yellow "$(get_message "execute_cancelled")")"
+    fi
+}
+
+handle_exit() {
+    if ask_confirmation "$(get_message "confirm_exit")"; then
+        echo -e "$(color green "$(get_message "exit_success")")"
+        exit 0
+    else
+        echo -e "$(color yellow "$(get_message "exit_cancelled")")"
+    fi
+}
+
+handle_delete() {
+    local target="$1"
+
+    if ask_confirmation "$(get_message "confirm_delete") ${target}?"; then
+        if rm -f "${BASE_DIR}/${target}"; then
+            echo -e "$(color green "$(get_message "delete_success"): ${target}")"
+        else
+            echo -e "$(color red "$(get_message "delete_failed"): ${target}")"
+        fi
+    else
+        echo -e "$(color yellow "$(get_message "delete_cancelled")")"
+    fi
 }
 
 XXXXX_menu_option() {
@@ -447,6 +484,7 @@ get_message() {
     case "$lang" in
         ja)
             case "$key" in
+                # --- メインメニュー関連 ---
                 internet_title)       echo "インターネット設定" ;;
                 menu_system)          echo "システム初期設定" ;;
                 menu_package)         echo "推奨パッケージインストール" ;;
@@ -460,14 +498,37 @@ get_message() {
                 select_prompt)        echo "選択してください:" ;;
                 invalid_option)       echo "無効なオプションです" ;;
                 input_prompt)         echo "入力してください:" ;;
+
+                # --- 実行・確認メッセージ ---
                 confirm_default)      echo "本当に実行しますか？" ;;
+                confirm_execute)      echo "このスクリプトを実行しますか" ;;
+                confirm_exit)         echo "終了してもよろしいですか？" ;;
+                confirm_overwrite)    echo "ファイルは既に存在します。上書きしますか？" ;;
+                confirm_delete)       echo "本当に削除してもよろしいですか？" ;;
+                confirm_return)       echo "メインメニューに戻りますか？" ;;
+
+                # --- 成功メッセージ ---
                 execute_message)      echo "実行します。" ;;
                 complete_message)     echo "完了しました。" ;;
+                download_success)     echo "ダウンロードに成功しました" ;;
+                execute_success)      echo "コマンドが正常に実行されました" ;;
+                return_success)       echo "メインメニューに戻りました。" ;;
+                delete_success)       echo "正常に削除されました。" ;;
+
+                # --- 失敗メッセージ ---
+                download_failed)      echo "ダウンロードに失敗しました" ;;
+                execute_failed)       echo "コマンドの実行に失敗しました" ;;
+                delete_failed)        echo "削除に失敗しました。" ;;
+
+                # --- キャンセルメッセージ ---
                 cancelled_message)    echo "キャンセルされました。" ;;
-                download_success)     echo "ダウンロードが成功しました。" ;;
-                return)               echo "戻ります。" ;;
+                exit_cancelled)       echo "終了がキャンセルされました。" ;;
+                download_cancelled)   echo "ダウンロードがキャンセルされました。" ;;
+                execute_cancelled)    echo "実行がキャンセルされました。" ;;
                 return_cancelled)     echo "戻る操作がキャンセルされました。" ;;
-                *)                    echo "未定義のメッセージ: $key" ;;
+                delete_cancelled)     echo "削除がキャンセルされました。" ;;
+
+                *) echo "未定義のメッセージ: $key" ;;
             esac
             ;;
         zh-cn)
@@ -522,463 +583,75 @@ get_message() {
             ;;
         id)
             case "$key" in
-                internet_title)       echo "Pengaturan Internet" ;;
-                menu_system)          echo "Pengaturan Sistem Awal" ;;
-                menu_package)         echo "Instalasi Paket yang Direkomendasikan" ;;
-                menu_adblock)         echo "Pengaturan Pemblokir Iklan" ;;
-                menu_ap)              echo "Pengaturan Titik Akses" ;;
-                menu_other)           echo "Pengaturan Skrip Lainnya" ;;
-                menu_exit)            echo "Keluar dari Skrip" ;;
-                menu_delete)          echo "Hapus skrip dan keluar" ;;
-                country_code)         echo "Kode Negara" ;;
-                reset)                echo "Reset" ;;
-                select_prompt)        echo "Silakan pilih:" ;;
-                invalid_option)       echo "Opsi tidak valid" ;;
-                input_prompt)         echo "Silakan masukkan:" ;;
-                confirm_default)      echo "Apakah Anda yakin?" ;;
-                execute_message)      echo "Eksekusi." ;;  # または "Sedang dijalankan." とする
-                complete_message)     echo "Selesai." ;;
-                cancelled_message)    echo "Dibatalkan." ;;
-                download_success)     echo "ダウンロードが成功しました。" ;;
-                return)               echo "戻ります。" ;;
-                return_cancelled)     echo "戻る操作がキャンセルされました。" ;;
+
                 *)                    echo "Undefined message: $key" ;;
             esac
             ;;
         ko)
             case "$key" in
-                internet_title)       echo "인터넷 설정" ;;
-                menu_system)          echo "시스템 초기 설정" ;;
-                menu_package)         echo "추천 패키지 설치" ;;
-                menu_adblock)         echo "광고 차단기 설치 설정" ;;
-                menu_ap)              echo "액세스 포인트 설정" ;;
-                menu_other)           echo "기타 스크립트 설정" ;;
-                menu_exit)            echo "스크립트 종료" ;;
-                menu_delete)          echo "스크립트 삭제 및 종료" ;;
-                country_code)         echo "국가 코드" ;;
-                reset)                echo "리셋" ;;
-                select_prompt)        echo "옵션을 선택하세요:" ;;
-                invalid_option)       echo "잘못된 옵션입니다" ;;
-                input_prompt)         echo "입력해 주세요:" ;;
-                confirm_default)      echo "정말로 실행하시겠습니까?" ;;
-                execute_message)      echo "실행합니다." ;;
-                complete_message)     echo "완료되었습니다." ;;
-                cancelled_message)    echo "취소되었습니다." ;;
-                download_success)     echo "ダウンロードが成功しました。" ;;
-                return)               echo "戻ります。" ;;
-                return_cancelled)     echo "戻る操作がキャンセルされました。" ;;
+
                 *)                    echo "Undefined message: $key" ;;
             esac
             ;;
         de)
             case "$key" in
-                internet_title)       echo "Interneteinstellungen" ;;
-                menu_system)          echo "Erste Systemeinstellungen" ;;
-                menu_package)         echo "Empfohlene Paketinstallation" ;;
-                menu_adblock)         echo "Werbeblocker-Einstellungen" ;;
-                menu_ap)              echo "Zugangspunkt-Einstellungen" ;;
-                menu_other)           echo "Andere Skripteinstellungen" ;;
-                menu_exit)            echo "Skript beenden" ;;
-                menu_delete)          echo "Skript löschen und beenden" ;;
-                country_code)         echo "Ländercode" ;;
-                reset)                echo "Zurücksetzen" ;;
-                select_prompt)        echo "Bitte wählen Sie eine Option:" ;;
-                invalid_option)       echo "Ungültige Option" ;;
-                input_prompt)         echo "Bitte eingeben:" ;;
-                confirm_default)      echo "Sind Sie sicher?" ;;
-                execute_message)      echo "Ausführen." ;;
-                complete_message)     echo "Abgeschlossen." ;;
-                cancelled_message)    echo "Abgebrochen." ;;
-                download_success)     echo "ダウンロードが成功しました。" ;;
-                return)               echo "戻ります。" ;;
-                return_cancelled)     echo "戻る操作がキャンセルされました。" ;;
+
                 *)                    echo "Undefined message: $key" ;;
             esac
             ;;
         ru)
             case "$key" in
-                internet_title)       echo "Настройки интернета" ;;
-                menu_system)          echo "Начальные настройки системы" ;;
-                menu_package)         echo "Рекомендуемая установка пакетов" ;;
-                menu_adblock)         echo "Настройки блокировки рекламы" ;;
-                menu_ap)              echo "Настройки точки доступа" ;;
-                menu_other)           echo "Другие настройки скриптов" ;;
-                menu_exit)            echo "Выход из скрипта" ;;
-                menu_delete)          echo "Удалить скрипт и выйти" ;;
-                country_code)         echo "Код страны" ;;
-                reset)                echo "Сброс" ;;
-                select_prompt)        echo "Пожалуйста, выберите опцию:" ;;
-                invalid_option)       echo "Неверный вариант" ;;
-                input_prompt)         echo "Пожалуйста, введите:" ;;
-                confirm_default)      echo "Вы уверены?" ;;
-                execute_message)      echo "Выполняется." ;;
-                complete_message)     echo "Завершено." ;;
-                cancelled_message)    echo "Отменено." ;;
-                download_success)     echo "ダウンロードが成功しました。" ;;
-                return)               echo "戻ります。" ;;
-                return_cancelled)     echo "戻る操作がキャンセルされました。" ;;
+
                 *)                    echo "Undefined message: $key" ;;
             esac
             ;;
         en|*)
             case "$key" in
-                internet_title)       echo "Internet Configuration" ;;
-                menu_system)          echo "Initial System Settings" ;;
+                # --- Main Menu ---
+                internet_title)       echo "Internet Settings" ;;
+                menu_system)          echo "System Initialization" ;;
                 menu_package)         echo "Recommended Package Installation" ;;
-                menu_adblock)         echo "Ad blocker installation settings" ;;
+                menu_adblock)         echo "Ad Blocker Installation Settings" ;;
                 menu_ap)              echo "Access Point Settings" ;;
                 menu_other)           echo "Other Script Settings" ;;
                 menu_exit)            echo "Exit Script" ;;
-                menu_delete)          echo "Remove script and exit" ;;
+                menu_delete)          echo "Delete Script and Exit" ;;
                 country_code)         echo "Country Code" ;;
                 reset)                echo "Reset" ;;
-                select_prompt)        echo "Please select:" ;;
+                select_prompt)        echo "Please make a selection:" ;;
                 invalid_option)       echo "Invalid option" ;;
                 input_prompt)         echo "Please enter:" ;;
-                confirm_default)      echo "Are you sure?" ;;
-                execute_message)      echo "Executing." ;;
+
+                # --- Confirmation ---
+                confirm_default)      echo "Are you sure you want to proceed?" ;;
+                confirm_execute)      echo "Do you want to execute this script?" ;;
+                confirm_exit)         echo "Are you sure you want to exit?" ;;
+                confirm_overwrite)    echo "The file already exists. Do you want to overwrite it?" ;;
+                confirm_delete)       echo "Do you really want to delete this?" ;;
+                confirm_return)       echo "Do you want to return to the main menu?" ;;
+
+                # --- Success Messages ---
+                execute_message)      echo "Executing..." ;;
                 complete_message)     echo "Completed." ;;
+                download_success)     echo "Download successful" ;;
+                execute_success)      echo "Command executed successfully" ;;
+                return_success)       echo "Returned to the main menu." ;;
+                delete_success)       echo "Deleted successfully." ;;
+
+                # --- Failure Messages ---
+                download_failed)      echo "Download failed" ;;
+                execute_failed)       echo "Command execution failed" ;;
+                delete_failed)        echo "Failed to delete." ;;
+
+                # --- Cancelled Messages ---
                 cancelled_message)    echo "Cancelled." ;;
-                download_success)     echo "Download successful." ;;
-                return)               echo "Returning." ;;            # ← 追加
-                return_cancelled)     echo "Return operation cancelled." ;;  # ← 追加
-                *)                    echo "Undefined message: $key" ;;
-            esac
-            ;;
-    esac
-}
+                exit_cancelled)       echo "Exit cancelled." ;;
+                download_cancelled)   echo "Download cancelled." ;;
+                execute_cancelled)    echo "Execution cancelled." ;;
+                return_cancelled)     echo "Return cancelled." ;;
+                delete_cancelled)     echo "Deletion cancelled." ;;
 
-XXXXX_get_message() {
-    local lang="$SELECTED_LANGUAGE"
-    local key="$1"
-    case "$lang" in
-        ja)
-            case "$key" in
-                internet_title)    echo "インターネット設定" ;;
-                exit_message)      echo "終了" ;;
-                select_prompt)     echo "選択してください:" ;;
-                invalid_option)    echo "無効なオプションです" ;;
-                input_prompt)      echo "入力してください:" ;;
-                confirm_default)   echo "本当に実行しますか？" ;;
-                complete_message)  echo "完了しました。" ;;
-                cancelled_message) echo "キャンセルされました。" ;;
-                menu_system)       echo "システム初期設定" ;;
-                menu_package)      echo "推奨パッケージインストール" ;;
-                menu_adblock)      echo "広告ブロッカーインストール設定" ;;
-                menu_ap)           echo "アクセスポイント設定" ;;
-                menu_other)        echo "その他のスクリプト設定" ;;
-                menu_delete)       echo "スクリプト削除終了" ;;
-                *)                 echo "未定義のメッセージ: $key" ;;
-            esac
-            ;;
-        zh-cn)
-            case "$key" in
-                internet_title)    echo "互联网设置" ;;
-                exit_message)      echo "退出" ;;
-                select_prompt)     echo "请选择:" ;;
-                invalid_option)    echo "无效的选项" ;;
-                input_prompt)      echo "请输入:" ;;
-                confirm_default)   echo "您确定吗？" ;;
-                complete_message)  echo "完成了。" ;;
-                cancelled_message) echo "已取消。" ;;
-                menu_system)       echo "系统初始设置" ;;
-                menu_package)      echo "推荐安装包" ;;
-                menu_adblock)      echo "广告拦截器设置" ;;
-                menu_ap)           echo "访问点设置" ;;
-                menu_other)        echo "其他脚本设置" ;;
-                menu_delete)       echo "删除脚本并退出" ;;
-                *)                 echo "Undefined message: $key" ;;
-            esac
-            ;;
-        zh-tw)
-            case "$key" in
-                internet_title)    echo "網路設定" ;;
-                exit_message)      echo "退出" ;;
-                select_prompt)     echo "請選擇:" ;;
-                invalid_option)    echo "無效的選項" ;;
-                input_prompt)      echo "請輸入:" ;;
-                confirm_default)   echo "您確定嗎？" ;;
-                complete_message)  echo "完成了。" ;;
-                cancelled_message) echo "已取消。" ;;
-                menu_system)       echo "系統初始設定" ;;
-                menu_package)      echo "推薦安裝包" ;;
-                menu_adblock)      echo "廣告攔截器設定" ;;
-                menu_ap)           echo "連接點設定" ;;
-                menu_other)        echo "其他腳本設定" ;;
-                menu_delete)       echo "移除腳本並退出" ;;
-                *)                 echo "Undefined message: $key" ;;
-            esac
-            ;;
-        id)
-            case "$key" in
-                internet_title)    echo "Pengaturan Internet" ;;
-                exit_message)      echo "Keluar" ;;
-                select_prompt)     echo "Silakan pilih:" ;;
-                invalid_option)    echo "Opsi tidak valid" ;;
-                input_prompt)      echo "Silakan masukkan:" ;;
-                confirm_default)   echo "Apakah Anda yakin?" ;;
-                complete_message)  echo "Selesai." ;;
-                cancelled_message) echo "Dibatalkan." ;;
-                menu_system)       echo "Pengaturan Sistem Awal" ;;
-                menu_package)      echo "Instalasi Paket yang Direkomendasikan" ;;
-                menu_adblock)      echo "Pengaturan Pemasangan Pemblokir Iklan" ;;
-                menu_ap)           echo "Pengaturan Titik Akses" ;;
-                menu_other)        echo "Pengaturan Skrip Lainnya" ;;
-                menu_delete)       echo "Hapus skrip dan keluar" ;;
-                *)                 echo "Undefined message: $key" ;;
-            esac
-            ;;
-        ko)
-            case "$key" in
-                internet_title)    echo "인터넷 설정" ;;
-                exit_message)      echo "종료" ;;
-                select_prompt)     echo "선택하세요:" ;;
-                invalid_option)    echo "잘못된 옵션입니다" ;;
-                input_prompt)      echo "입력해 주세요:" ;;
-                confirm_default)   echo "정말로 실행하시겠습니까?" ;;
-                complete_message)  echo "완료되었습니다." ;;
-                cancelled_message) echo "취소되었습니다." ;;
-                menu_system)       echo "시스템 초기 설정" ;;
-                menu_package)      echo "추천 패키지 설치" ;;
-                menu_adblock)      echo "광고 차단기 설치 설정" ;;
-                menu_ap)           echo "액세스 포인트 설정" ;;
-                menu_other)        echo "기타 스크립트 설정" ;;
-                menu_delete)       echo "스크립트 삭제 및 종료" ;;
-                *)                 echo "Undefined message: $key" ;;
-            esac
-            ;;
-        de)
-            case "$key" in
-                internet_title)    echo "Interneteinstellungen" ;;
-                exit_message)      echo "Beenden" ;;
-                select_prompt)     echo "Bitte wählen:" ;;
-                invalid_option)    echo "Ungültige Option" ;;
-                input_prompt)      echo "Bitte eingeben:" ;;
-                confirm_default)   echo "Sind Sie sicher?" ;;
-                complete_message)  echo "Abgeschlossen." ;;
-                cancelled_message) echo "Abgebrochen." ;;
-                menu_system)       echo "Erste Systemeinstellungen" ;;
-                menu_package)      echo "Empfohlene Paketinstallation" ;;
-                menu_adblock)      echo "Werbeblocker-Einstellungen" ;;
-                menu_ap)           echo "Zugangspunkt-Einstellungen" ;;
-                menu_other)        echo "Andere Skripteinstellungen" ;;
-                menu_delete)       echo "Skript löschen und beenden" ;;
-                *)                 echo "Undefined message: $key" ;;
-            esac
-            ;;
-        ru)
-            case "$key" in
-                internet_title)    echo "Настройки интернета" ;;
-                exit_message)      echo "Выход" ;;
-                select_prompt)     echo "Пожалуйста, выберите:" ;;
-                invalid_option)    echo "Неверный вариант" ;;
-                input_prompt)      echo "Пожалуйста, введите:" ;;
-                confirm_default)   echo "Вы уверены?" ;;
-                complete_message)  echo "Завершено." ;;
-                cancelled_message) echo "Отменено." ;;
-                menu_system)       echo "Начальные настройки системы" ;;
-                menu_package)      echo "Рекомендуемая установка пакетов" ;;
-                menu_adblock)      echo "Настройки блокировки рекламы" ;;
-                menu_ap)           echo "Настройки точки доступа" ;;
-                menu_other)        echo "Другие настройки скриптов" ;;
-                menu_delete)       echo "Удалить скрипт и выйти" ;;
-                *)                 echo "Undefined message: $key" ;;
-            esac
-            ;;
-        en|*)
-            case "$key" in
-                internet_title)    echo "Internet Configuration" ;;
-                exit_message)      echo "Exit" ;;
-                select_prompt)     echo "Please select:" ;;
-                invalid_option)    echo "Invalid option" ;;
-                input_prompt)      echo "Please enter:" ;;
-                confirm_default)   echo "Are you sure?" ;;
-                complete_message)  echo "Completed." ;;
-                cancelled_message) echo "Cancelled." ;;
-                menu_system)       echo "Initial System Settings" ;;
-                menu_package)      echo "Recommended Package Installation" ;;
-                menu_adblock)      echo "Ad blocker installation settings" ;;
-                menu_ap)           echo "Access Point Settings" ;;
-                menu_other)        echo "Other Script Settings" ;;
-                menu_delete)       echo "Remove script and exit" ;;
-                *)                 echo "Undefined message: $key" ;;
-            esac
-            ;;
-    esac
-}
-
-
-XXXXX_get_message() {
-    local key="$1"
-    local lang="$SELECTED_LANGUAGE"
-
-    case "$lang" in
-        ja)
-            case "$key" in
-                confirm_default) echo "本当に実行しますか？" ;;
-                download_success) echo "ダウンロードが成功しました。" ;;
-                exit_cancelled) echo "終了操作がキャンセルされました。" ;;
-                delete_cancelled) echo "削除操作がキャンセルされました。" ;;
-                delete_success) echo "スクリプトと設定が削除されました。" ;;
-                download_cancelled) echo "ダウンロード操作がキャンセルされました。" ;;
-                exit_complete) echo "終了操作が完了しました。" ;;
-                delete_complete) echo "削除操作が完了しました。" ;;
-                menu_internet) echo "インターネット設定" ;;
-                menu_system) echo "システム初期設定" ;;
-                menu_package) echo "推奨パッケージインストール" ;;
-                menu_adblock) echo "広告ブロッカーインストール設定" ;;
-                menu_ap) echo "アクセスポイント設定" ;;
-                menu_other) echo "その他のスクリプト設定" ;;
-                menu_exit) echo "スクリプト終了" ;;
-                menu_delete) echo "スクリプト削除終了" ;;
-                *) echo "操作が完了しました。" ;;
-            esac
-            ;;
-        zh-cn)
-            case "$key" in
-                confirm_default) echo "您确定吗？" ;;
-                download_success) echo "下载成功。" ;;
-                exit_cancelled) echo "退出操作已取消。" ;;
-                delete_cancelled) echo "删除操作已取消。" ;;
-                delete_success) echo "脚本和配置已删除。" ;;
-                download_cancelled) echo "下载操作已取消。" ;;
-                exit_complete) echo "退出操作已完成。" ;;
-                delete_complete) echo "删除操作已完成。" ;;
-                menu_internet) echo "互联网设置" ;;
-                menu_system) echo "系统初始设置" ;;
-                menu_package) echo "推荐安装包" ;;
-                menu_adblock) echo "广告拦截器设置" ;;
-                menu_ap) echo "访问点设置" ;;
-                menu_other) echo "其他脚本设置" ;;
-                menu_exit) echo "退出脚本" ;;
-                menu_delete) echo "删除脚本并退出" ;;
-                *) echo "操作已完成。" ;;
-            esac
-            ;;
-        zh-tw)
-            case "$key" in
-                confirm_default) echo "您確定嗎？" ;;
-                download_success) echo "下載成功。" ;;
-                exit_cancelled) echo "退出操作已取消。" ;;
-                delete_cancelled) echo "刪除操作已取消。" ;;
-                delete_success) echo "腳本和配置已刪除。" ;;
-                download_cancelled) echo "下載操作已取消。" ;;
-                exit_complete) echo "退出操作已完成。" ;;
-                delete_complete) echo "刪除操作已完成。" ;;
-                menu_internet) echo "網路設定" ;;
-                menu_system) echo "系統初始設定" ;;
-                menu_package) echo "推薦安裝包" ;;
-                menu_adblock) echo "廣告攔截器設定" ;;
-                menu_ap) echo "連接點設定" ;;
-                menu_other) echo "其他腳本設定" ;;
-                menu_exit) echo "退出腳本" ;;
-                menu_delete) echo "移除腳本並退出" ;;
-                *) echo "操作已完成。" ;;
-            esac
-            ;;
-        id)
-            case "$key" in
-                confirm_default) echo "Apakah Anda yakin?" ;;
-                download_success) echo "Unduhan berhasil." ;;
-                exit_cancelled) echo "Operasi keluar dibatalkan." ;;
-                delete_cancelled) echo "Operasi penghapusan dibatalkan." ;;
-                delete_success) echo "Skrip dan konfigurasi telah dihapus." ;;
-                download_cancelled) echo "Operasi unduhan dibatalkan." ;;
-                exit_complete) echo "Operasi keluar selesai." ;;
-                delete_complete) echo "Operasi penghapusan selesai." ;;
-                menu_internet) echo "Pengaturan Internet" ;;
-                menu_system) echo "Pengaturan Sistem Awal" ;;
-                menu_package) echo "Instalasi Paket yang Direkomendasikan" ;;
-                menu_adblock) echo "Pengaturan Pemasangan Pemblokir Iklan" ;;
-                menu_ap) echo "Pengaturan Titik Akses" ;;
-                menu_other) echo "Pengaturan Skrip Lainnya" ;;
-                menu_exit) echo "Keluar dari Skrip" ;;
-                menu_delete) echo "Hapus skrip dan keluar" ;;
-                *) echo "Operasi selesai." ;;
-            esac
-            ;;
-        ko)
-            case "$key" in
-                confirm_default) echo "정말로 실행하시겠습니까?" ;;
-                download_success) echo "다운로드 성공." ;;
-                exit_cancelled) echo "종료 작업이 취소되었습니다." ;;
-                delete_cancelled) echo "삭제 작업이 취소되었습니다." ;;
-                delete_success) echo "스크립트와 설정이 삭제되었습니다." ;;
-                download_cancelled) echo "다운로드 작업이 취소되었습니다." ;;
-                exit_complete) echo "종료 작업이 완료되었습니다." ;;
-                delete_complete) echo "삭제 작업이 완료되었습니다." ;;
-                menu_internet) echo "인터넷 설정" ;;
-                menu_system) echo "시스템 초기 설정" ;;
-                menu_package) echo "추천 패키지 설치" ;;
-                menu_adblock) echo "광고 차단기 설치 설정" ;;
-                menu_ap) echo "액세스 포인트 설정" ;;
-                menu_other) echo "기타 스크립트 설정" ;;
-                menu_exit) echo "스크립트 종료" ;;
-                menu_delete) echo "스크립트 삭제 및 종료" ;;
-                *) echo "작업이 완료되었습니다." ;;
-            esac
-            ;;
-        de)
-            case "$key" in
-                confirm_default) echo "Sind Sie sicher?" ;;
-                download_success) echo "Download erfolgreich." ;;
-                exit_cancelled) echo "Beenden-Vorgang abgebrochen." ;;
-                delete_cancelled) echo "Löschvorgang abgebrochen." ;;
-                delete_success) echo "Skript und Konfiguration wurden gelöscht." ;;
-                download_cancelled) echo "Download-Vorgang abgebrochen." ;;
-                exit_complete) echo "Beenden-Vorgang abgeschlossen." ;;
-                delete_complete) echo "Löschvorgang abgeschlossen." ;;
-                menu_internet) echo "Interneteinstellungen" ;;
-                menu_system) echo "Erste Systemeinstellungen" ;;
-                menu_package) echo "Empfohlene Paketinstallation" ;;
-                menu_adblock) echo "Werbeblocker-Einstellungen" ;;
-                menu_ap) echo "Zugangspunkt-Einstellungen" ;;
-                menu_other) echo "Andere Skripteinstellungen" ;;
-                menu_exit) echo "Skript beenden" ;;
-                menu_delete) echo "Skript löschen und beenden" ;;
-                *) echo "Vorgang abgeschlossen." ;;
-            esac
-            ;;
-        ru)
-            case "$key" in
-                confirm_default) echo "Вы уверены?" ;;
-                download_success) echo "Загрузка успешна." ;;
-                exit_cancelled) echo "Выход отменён." ;;
-                delete_cancelled) echo "Удаление отменено." ;;
-                delete_success) echo "Скрипт и настройки удалены." ;;
-                download_cancelled) echo "Загрузка отменена." ;;
-                exit_complete) echo "Выход завершён." ;;
-                delete_complete) echo "Удаление завершено." ;;
-                menu_internet) echo "Настройки интернета" ;;
-                menu_system) echo "Начальные настройки системы" ;;
-                menu_package) echo "Рекомендуемая установка пакетов" ;;
-                menu_adblock) echo "Настройки установки блокировщика рекламы" ;;
-                menu_ap) echo "Настройки точки доступа" ;;
-                menu_other) echo "Другие настройки скриптов" ;;
-                menu_exit) echo "Выход из скрипта" ;;
-                menu_delete) echo "Удалить скрипт и выйти" ;;
-                *) echo "Операция завершена." ;;
-            esac
-            ;;
-        en|*)
-            case "$key" in
-                confirm_default) echo "Are you sure?" ;;
-                download_success) echo "Download successful." ;;
-                exit_cancelled) echo "Exit operation cancelled." ;;
-                delete_cancelled) echo "Delete operation cancelled." ;;
-                delete_success) echo "Script and configuration deleted." ;;
-                download_cancelled) echo "Download operation cancelled." ;;
-                exit_complete) echo "Exit operation completed." ;;
-                delete_complete) echo "Delete operation completed." ;;
-                menu_internet) echo "Internet settings" ;;
-                menu_system) echo "Initial System Settings" ;;
-                menu_package) echo "Recommended Package Installation" ;;
-                menu_adblock) echo "Ad blocker installation settings" ;;
-                menu_ap) echo "Access Point Settings" ;;
-                menu_other) echo "Other Script Settings" ;;
-                menu_exit) echo "Exit Script" ;;
-                menu_delete) echo "Remove script and exit" ;;
-                *) echo "Operation completed." ;;
+                *) echo "Undefined message key: $key" ;;
             esac
             ;;
     esac
@@ -989,7 +662,7 @@ XXXXX_get_message() {
 # 戻り値: y (0) の場合は成功、n (1) の場合はキャンセル
 #########################################################################
 ask_confirmation() {
-    local prompt="${1:-$(get_message confirm_default)}"
+    local prompt="${1:-Are you sure you want to proceed?}"
     local choice
 
     while true; do

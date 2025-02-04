@@ -6,7 +6,7 @@
 #
 # 各種共通処理（ヘルプ表示、カラー出力、システム情報確認、言語選択、確認・通知メッセージの多言語対応など）を提供する。
 #
-echo common-functions.sh Last update 202502031310-87-4-7
+echo common-functions.sh Last update 202502031310-87-4-8
 
 # 基本定数の設定
 BASE_URL="${BASE_URL:-https://raw.githubusercontent.com/site-u2023/aios/main}"
@@ -225,14 +225,13 @@ check_package_manager() {
 #########################################################################
 # check_language_support: 番号付きで国データを表示し、ユーザーに選択させる
 #########################################################################
-# check_language_support_support: サポートされている言語か確認
-check_language_support() {
+check_language_support() { 
     local selected_language_file="${BASE_DIR}/check_country"
 
-    # 言語ファイルが存在しない場合、デフォルト言語を設定
+    # 言語ファイルが存在しない場合、警告を表示し再選択を促す
     if [ ! -f "$selected_language_file" ]; then
-        echo "en" > "$selected_language_file"
-        echo -e "$(color yellow "Language cache not found. Defaulting to English (en).")"
+        echo -e "$(color red "Language cache not found. Please select your language.")"
+        return 1  # 強制終了せず、再選択のフローへ
     fi
 
     # 言語コードの読み込み
@@ -242,14 +241,12 @@ check_language_support() {
     if echo "$SUPPORTED_LANGUAGES" | grep -qw "$selected_language"; then
         echo -e "$(color green "Language supported: $selected_language")"
     else
-        echo -e "$(color yellow "Unsupported language detected. Defaulting to English (en).")"
-        selected_language="en"
+        echo -e "$(color yellow "Unsupported language detected: $selected_language.")"
+        # サポート外でも警告のみにして、強制的に英語に戻さない
     fi
 
     export LANG="$selected_language"
 }
-
-
 
 check_language() {
     local country_data output

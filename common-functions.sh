@@ -6,7 +6,7 @@
 #
 # 各種共通処理（ヘルプ表示、カラー出力、システム情報確認、言語選択、確認・通知メッセージの多言語対応など）を提供する。
 #
-echo common-functions.sh Last update 202502031310-44
+echo common-functions.sh Last update 202502031310-45
 
 # 基本定数の設定
 BASE_URL="${BASE_URL:-https://raw.githubusercontent.com/site-u2023/aios/main}"
@@ -770,16 +770,21 @@ display_country_options() {
     local line idx=1
 
     echo -e "$(color cyan "Available Countries:")"
-    while IFS= read -r line; do
-        country_name=$(echo "$line" | awk '{print $1}')
-        language_name=$(echo "$line" | awk '{print $2}')
-        language_code=$(echo "$line" | awk '{print $3}')
-        country_code=$(echo "$line" | awk '{print $4}')
-
-        echo "[$idx] ${country_name} (${language_name} ${language_code} ${country_code})"
-        idx=$((idx + 1))
-    done < "${BASE_DIR}/country-zone.sh"
+    # コメント行（#で始まる）や空行を除外してデータ部分だけを表示
+    grep -Ev '^\s*#|^\s*$|^EOF' "${BASE_DIR}/country-zone.sh" | while IFS= read -r line; do
+        # データ部分だけを抽出
+        if echo "$line" | grep -Eq '^[A-Za-z]'; then
+            country_name=$(echo "$line" | awk '{print $1}')
+            language_name=$(echo "$line" | awk '{print $2}')
+            language_code=$(echo "$line" | awk '{print $3}')
+            country_code=$(echo "$line" | awk '{print $4}')
+            
+            echo "[$idx] ${country_name} (${language_name} ${language_code} ${country_code})"
+            idx=$((idx + 1))
+        fi
+    done
 }
+
 
 #########################################################################
 # country_zone: 国・ゾーン情報を取得する関数

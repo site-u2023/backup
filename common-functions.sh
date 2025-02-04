@@ -6,7 +6,7 @@
 #
 # 各種共通処理（ヘルプ表示、カラー出力、システム情報確認、言語選択、確認・通知メッセージの多言語対応など）を提供する。
 #
-echo common-functions.sh Last update 202502031310-80
+echo common-functions.sh Last update 202502031310-81
 
 # 基本定数の設定
 BASE_URL="${BASE_URL:-https://raw.githubusercontent.com/site-u2023/aios/main}"
@@ -356,11 +356,6 @@ check_common() {
         PACKAGE_MANAGER=$(cat "${BASE_DIR}/check_package_manager")
     fi
     [ -z "$PACKAGE_MANAGER" ] && check_package_manager  
-
-    # コマンドライン引数で言語指定があれば優先する
-    if [ -n "$1" ]; then
-        process_country_selection "$1"
-    fi
 
     # キャッシュから言語・国コードを読み込む
     if [ -f "${BASE_DIR}/check_language" ]; then

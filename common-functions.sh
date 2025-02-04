@@ -6,7 +6,7 @@
 #
 # 各種共通処理（ヘルプ表示、カラー出力、システム情報確認、言語選択、確認・通知メッセージの多言語対応など）を提供する。
 #
-echo common-functions.sh Last update 202502031310-45
+echo common-functions.sh Last update 202502031310-47
 
 # 基本定数の設定
 BASE_URL="${BASE_URL:-https://raw.githubusercontent.com/site-u2023/aios/main}"
@@ -715,7 +715,7 @@ normalize_language() {
 # process_country_selection: ユーザー入力の言語コードから有効な候補を選択する
 #########################################################################
 process_country_selection() {
-    local input found_entries selected_entry
+    local input selected_entry found_entries
 
     # 国のリストを表示
     display_country_options
@@ -725,7 +725,7 @@ process_country_selection() {
         
         # 数字での選択
         if echo "$input" | grep -Eq '^[0-9]+$'; then
-            selected_entry=$(grep -Ev '^\s*#|^\s*$|^EOF' "${BASE_DIR}/country-zone.sh" | sed -n "${input}p")
+            selected_entry=$(awk '/^EOF$/ {flag=0} flag {print} /^EOF$/ {flag=1}' "${BASE_DIR}/country-zone.sh" | sed -n "${input}p")
             if [ -n "$selected_entry" ]; then
                 break
             else
@@ -735,7 +735,7 @@ process_country_selection() {
         fi
 
         # 曖昧検索処理（部分一致）
-        found_entries=$(grep -i "$input" "${BASE_DIR}/country-zone.sh" | grep -Ev '^\s*#|^\s*$|^EOF')
+        found_entries=$(awk '/^EOF$/ {flag=0} flag {print} /^EOF$/ {flag=1}' "${BASE_DIR}/country-zone.sh" | grep -i "$input")
         if [ -z "$found_entries" ]; then
             echo -e "$(color red "No matches found for '$input'. Please try again.")"
             continue
@@ -766,25 +766,25 @@ process_country_selection() {
     select_timezone "$COUNTRY_CODE"
 }
 
-
 display_country_options() {
-    local line idx=1
+    local idx=1
 
     echo -e "$(color cyan "Available Countries:")"
-    # コメント行（#で始まる）や空行を除外してデータ部分だけを表示
-    grep -Ev '^\s*#|^\s*$|^EOF' "${BASE_DIR}/country-zone.sh" | while IFS= read -r line; do
-        # データ部分だけを抽出
-        if echo "$line" | grep -Eq '^[A-Za-z]'; then
+    # 'EOF' 内のデータだけを抽出する
+    awk '/^EOF$/ {flag=0} flag {print} /^EOF$/ {flag=1}' "${BASE_DIR}/country-zone.sh" | while IFS= read -r line; do
+        # 行が空白でない場合のみ表示
+        if [ -n "$line" ]; then
             country_name=$(echo "$line" | awk '{print $1}')
-            language_name=$(echo "$line" | awk '{print $2}')
+            display_name=$(echo "$line" | awk '{print $2}')
             language_code=$(echo "$line" | awk '{print $3}')
             country_code=$(echo "$line" | awk '{print $4}')
-            
-            echo "[$idx] ${country_name} (${language_name} ${language_code} ${country_code})"
+
+            echo "[$idx] ${country_name} (${display_name} ${language_code} ${country_code})"
             idx=$((idx + 1))
         fi
     done
 }
+
 
 
 #########################################################################

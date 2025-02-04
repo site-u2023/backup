@@ -6,7 +6,7 @@
 #
 # 各種共通処理（ヘルプ表示、カラー出力、システム情報確認、言語選択、確認・通知メッセージの多言語対応など）を提供する。
 #
-echo common-functions.sh Last update 202502031310-55
+echo common-functions.sh Last update 202502031310-57
 
 # 基本定数の設定
 BASE_URL="${BASE_URL:-https://raw.githubusercontent.com/site-u2023/aios/main}"
@@ -224,28 +224,35 @@ check_package_manager() {
 #########################################################################
 # check_language: 言語選択メニューを表示し、ユーザーに言語を選択させる
 #########################################################################
+#########################################################################
+# check_language: 番号付きで国データを表示し、ユーザーに選択させる
+#########################################################################
 check_language() {
-    local country_data lang_field output
+    local country_data output
     echo -e "$(color white "------------------------------------------------------")"
 
-    # country-zone.sh からデータ取得
-    country_data=$(sh "${BASE_DIR}/country-zone.sh" "") || handle_error "Failed to execute country-zone.sh."
+    # country-zone.sh から国データ取得 & フィルタリング
+    country_data=$(sh "${BASE_DIR}/country-zone.sh" | grep -E '^[A-Za-z]' | sort)
 
-    # 国、言語、コード、タイムゾーンを表示
+    # 番号付きで表示
+    idx=1
     echo "$country_data" | while IFS= read -r line; do
-        [ -z "$line" ] && continue
-        lang_field=$(echo "$line" | awk '{print $3}')
-        if [ "$lang_field" != "xx" ]; then
-            output=$(echo "$line" | awk '{print $1, $2, $3, $4, $5}')
-            echo -e "$(color white "$output")"
-        fi
+        country_name=$(echo "$line" | awk '{print $1}')
+        display_name=$(echo "$line" | awk '{print $2}')
+        language_code=$(echo "$line" | awk '{print $3}')
+        country_code=$(echo "$line" | awk '{print $4}')
+        
+        # 番号付きで表示
+        echo -e "$(color white "[$idx] $country_name ($display_name $language_code $country_code)")"
+        idx=$((idx + 1))
     done
 
     echo -e "$(color white "------------------------------------------------------")"
     echo -e "$(color white "Select a country for language and timezone configuration.")"
 
+    # ユーザー入力を受け取る
     while true; do
-        read -p "$(color cyan "Please enter country, language, or timezone: ")" INPUT_LANG
+        read -p "$(color cyan "Please enter the number or country name (partial matches allowed): ")" INPUT_LANG
         process_country_selection "$INPUT_LANG"
 
         # 設定適用の確認

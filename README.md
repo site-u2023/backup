@@ -89,9 +89,18 @@ $1は曖昧な入力も受け付けます。
 
 例: `aios cn`
 
+- --timestamping
+```sh
+opkg update && opkg install wget-ssl
+```
+```sh
+wget --no-cache --timestamping -O /tmp/aios.sh https://raw.githubusercontent.com/site-u2023/aios/main/aios.sh; sh /tmp/aios.sh
+```
+
 - Select your language
 ```sh
 wget -O /tmp/aios.sh https://raw.githubusercontent.com/site-u2023/aios/main/aios.sh; sh /tmp/aios.sh
+
 ```
 
 - English
@@ -117,14 +126,6 @@ wget -O /tmp/aios.sh https://raw.githubusercontent.com/site-u2023/aios/main/aios
 - 한국어
 ```sh
 wget -O /tmp/aios.sh https://raw.githubusercontent.com/site-u2023/aios/main/aios.sh; sh /tmp/aios.sh ko
-```
-
-- --timestamping
-```sh
-opkg update && opkg install wget-ssl
-```
-```sh
-wget -N /tmp/aios.sh https://raw.githubusercontent.com/site-u2023/aios/main/aios.sh; sh /tmp/aios.sh ja
 ```
 
 aiosインストール後

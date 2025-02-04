@@ -6,7 +6,7 @@
 #
 # 各種共通処理（ヘルプ表示、カラー出力、システム情報確認、言語選択、確認・通知メッセージの多言語対応など）を提供する。
 #
-echo common-functions.sh Last update 202502031310-26
+echo common-functions.sh Last update 202502031310-28
 
 # 基本定数の設定
 BASE_URL="${BASE_URL:-https://raw.githubusercontent.com/site-u2023/aios/main}"
@@ -249,14 +249,14 @@ check_language() {
         process_language_selection "$INPUT_LANG"
         normalize_language
 
-        # 最終確認
+        # 最終確認（全角・半角Y/N対応）
         read -p "$(color yellow "Apply these settings? [Y/n]: ")" confirm
         case "$confirm" in
-            [Yy]* | "" ) 
+            [YyＹｙ]* | "" ) 
                 echo -e "$(color green "Settings applied successfully.")"
                 break
                 ;;
-            [Nn]* )
+            [NnＮｎ]* )
                 echo -e "$(color white "Let's try again.")"
                 ;;
             * )
@@ -1092,13 +1092,19 @@ process_language_selection() {
         if [ -z "$found_entries" ]; then
             echo -e "$(color red "No matches found for '$INPUT_LANG'.")"
             read -p "$(color yellow "Would you like to set English (en) as default? [Y/n]: ")" confirm
+            
+            # 全角・半角のY/N判定
             case "$confirm" in
-                [Yy]* | "" )
+                [YyＹｙ]* | "" )
                     found_entries=$(sh "${BASE_DIR}/country-zone.sh" | grep -i "\ben\b")
                     ;;
-                * )
+                [NnＮｎ]* )
                     read -p "$(color cyan "Please enter more specific input (country, language, or timezone): ")" new_input
                     INPUT_LANG="$new_input"
+                    continue
+                    ;;
+                * )
+                    echo -e "$(color red "Invalid input. Please enter Y or N.")"
                     continue
                     ;;
             esac

@@ -731,7 +731,7 @@ process_country_selection() {
 echo "selectionビフォアー ${selection}"
     selection=$(echo "$selection" | tr -d '[:space:]' | tr '[:upper:]' '[:lower:]')
 echo "selectionアフター ${selection}"
-    matched_countries=$(sh "$country_file" | tr -d ' ' | tr '[:upper:]' '[:lower:]' | grep -i "$selection")
+    matched_countries=$(sh "$country_file" | grep -iw "$selection")
 echo "matched_countries ${matched_countries}"
     
     # 番号で選択された場合

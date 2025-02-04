@@ -251,7 +251,6 @@ check_language() {
     while true; do
         read -p "$(color cyan "Please enter the number or country name (partial matches allowed): ")" INPUT_LANG
         process_country_selection "$INPUT_LANG"
-
 #        # 設定適用の確認
 #        if ask_confirmation "Apply these settings?"; then
 #            echo -e "$(color green "Settings applied successfully.")"
@@ -260,6 +259,7 @@ check_language() {
 #            echo -e "$(color yellow "Let's try again.")"
 #        fi
 #    done
+    done
 }
 
 #########################################################################

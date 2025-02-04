@@ -6,7 +6,7 @@
 #
 # 各種共通処理（ヘルプ表示、カラー出力、システム情報確認、言語選択、確認・通知メッセージの多言語対応など）を提供する。
 #
-echo common-functions.sh Last update 202502031310-48
+echo common-functions.sh Last update 202502031310-50
 
 # 基本定数の設定
 BASE_URL="${BASE_URL:-https://raw.githubusercontent.com/site-u2023/aios/main}"
@@ -772,9 +772,8 @@ display_country_options() {
 
     echo -e "$(color cyan "Available Countries:")"
 
-    # データブロックのみ抽出 (country_data関数の内部)
-    awk '/^country_data\(\) {/,/^EOF/ { if ($0 !~ /^{|^EOF|^country_data|^}$/) print }' "$country_file" | while IFS= read -r line; do
-        # 行が空でない場合のみ処理
+    # sed で country_data() 内のデータのみ抽出
+    sed -n '/^country_data()/,/^EOF/ {/^\(country_data\|EOF\)/d; p}' "$country_file" | while IFS= read -r line; do
         if [ -n "$line" ]; then
             country_name=$(echo "$line" | awk '{print $1}')
             display_name=$(echo "$line" | awk '{print $2}')

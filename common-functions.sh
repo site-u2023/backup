@@ -1,7 +1,7 @@
 #!/bin/sh
 # License: CC0
 # OpenWrt >= 19.07, Compatible with 24.10.0
-echo common-functions.sh Last update: 20250205-8
+echo common-functions.sh Last update: 20250205-9
 
 # === 基本定数の設定 ===
 BASE_WGET="wget --quiet -O"
@@ -153,7 +153,7 @@ download_language_files() {
 #########################################################################
 download_supported_versions_db() {
     if [ ! -f "${BASE_DIR}/supported_versions.db" ]; then
-        ${BASE_WGET} "${BASE_DIR}/supported_versions.db" "${BASE_URL}/supported_versions.db" || handle_error "Failed to download supported_versions.db"
+        wget --quiet -O "${BASE_DIR}/supported_versions.db" "${BASE_URL}/supported_versions.db" || handle_error "Failed to download supported_versions.db"
     fi
 }
 
@@ -163,7 +163,7 @@ download_supported_versions_db() {
 download_language_messages() {
     local lang="${SELECTED_LANGUAGE:-en}"
     if [ ! -f "${BASE_DIR}/messages_${lang}.sh" ]; then
-        wget --quiet -O "${BASE_DIR}/messages_${lang}.sh" "${BASE_URL}/messages_${lang}.sh" || handle_error "Failed to download messages_${lang}.sh"
+        ${BASE_WGET} "${BASE_DIR}/messages_${lang}.sh" "${BASE_URL}/messages_${lang}.sh" || handle_error "Failed to download messages_${lang}.sh"
     fi
 }
 

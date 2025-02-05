@@ -59,11 +59,20 @@ color_code_map() {
 }
 
 #########################################################################
-# handle_error: エラー処理
+# handle_error: エラーおよび警告メッセージの処理
+# 引数1: メッセージ
+# 引数2: エラーレベル ('fatal' または 'warning')
 #########################################################################
 handle_error() {
-    echo -e "\033[31mERROR:\033[0m $1"
-    exit 1
+    local message="$1"
+    local level="${2:-fatal}"  # デフォルトは致命的エラー
+
+    if [ "$level" = "warning" ]; then
+        color yellow "$(get_message 'MSG_VERSION_MISMATCH_WARNING'): $message"
+    else
+        color red "$(get_message 'MSG_ERROR_OCCURRED'): $message"
+        exit 1
+    fi
 }
 
 #########################################################################

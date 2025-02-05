@@ -232,5 +232,5 @@ get_package_manager_and_status() {
 
 
 # === 初期化処理 ===
-check_version
+check_version_common
 check_language_support

@@ -6,7 +6,7 @@
 # 本スクリプトは、aios のインストール後に ttyd をインストールおよび設定するスクリプトです。
 # ・common-functions.sh を読み込んで共通関数を使用。
 # ・ttyd のインストールと設定を行い、サービスを有効化。
-echo ttyd.sh Last update 20250205-8
+echo ttyd.sh Last update 20250205-9
 
 # === 定数の設定 ===
 BASE_URL="https://raw.githubusercontent.com/site-u2023/aios/main"
@@ -33,6 +33,15 @@ download_common() {
 }
 
 #########################################################################
+# サポートバージョンDBのダウンロード
+#########################################################################
+download_supported_versions_db() {
+    if [ ! -f "${BASE_DIR}/supported_versions.db" ]; then
+        wget --quiet -O "${BASE_DIR}/supported_versions.db" "${BASE_URL}/supported_versions.db" || handle_error "Failed to download supported_versions.db"
+    fi
+}
+
+#########################################################################
 # ttyd のインストール状況を確認し、未インストールの場合はインストール
 #########################################################################
 check_ttyd_installed() {
@@ -48,7 +57,8 @@ check_ttyd_installed() {
 # ttyd のインストール
 #########################################################################
 install_ttyd() {
-    # バージョンデータベースを参照し、パッケージマネージャーとステータスを取得
+    # バージョンとパッケージマネージャーを確認
+    check_version_common
     get_package_manager_and_status
 
     echo -e "\033[1;34mInstalling ttyd using $PACKAGE_MANAGER...\033[0m"
@@ -107,5 +117,6 @@ EOF
 # メイン処理
 #########################################################################
 download_common
-check_common "$INPUT_LANG"
+download_supported_versions_db
+check_language_common "$INPUT_LANG"
 check_ttyd_installed

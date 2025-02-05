@@ -25,3 +25,7 @@ detected_package_manager="Detected package manager"
 # check_version_common
 unsupported_version="Unsupported OpenWrt version"
 version_supported="OpenWrt version is supported"
+
+# download_language_messages
+MESSAGE_INSTALL_SUCCESS="Installation completed successfully."
+MESSAGE_INSTALL_FAILED="Installation failed."

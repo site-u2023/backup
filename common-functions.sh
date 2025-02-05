@@ -81,6 +81,11 @@ check_version_common() {
     local version_file="${BASE_DIR}/check_version"
     local supported_versions_db="${BASE_DIR}/supported_versions.db"
 
+    # バージョンデータベースが存在するか確認
+    if [ ! -f "$supported_versions_db" ]; then
+        download_supported_versions_db || handle_error "$(get_message 'download_fail' "$SELECTED_LANGUAGE"): supported_versions.db"
+    fi
+
     # キャッシュされたバージョンが存在するか確認
     if [ -f "$version_file" ]; then
         CURRENT_VERSION=$(cat "$version_file")

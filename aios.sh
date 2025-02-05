@@ -24,12 +24,17 @@ color() {
 }
 
 #########################################################################
-# handle_error: 汎用エラーハンドリング関数
+# handle_error: 汎用エラーハンドリング関数（共通関数ロード前は直接メッセージ）
 #########################################################################
 handle_error() {
-    color red "$(get_message 'MSG_ERROR_OCCURRED'): $1"
+    if [ -f "${BASE_DIR}/common-functions.sh" ]; then
+        color red "$(get_message 'MSG_ERROR_OCCURRED'): $1"
+    else
+        color red "ERROR: $1"
+    fi
     exit 1
 }
+
 
 #########################################################################
 # download_script: ファイルをダウンロードする汎用関数
@@ -132,5 +137,6 @@ initialize_environment() {
 check_version_aios           # 1. バージョンチェック
 initialize_environment       # 2. 環境初期化
 load_common_functions        # 3. 共通関数のロード
-check_ttyd_installed         # 4. ttyd インストール確認
-download_and_run_aios        # 5. aios スクリプトのダウンロード＆実行
+check_language_common        # 4. 言語キャッシュの確認と設定（共通関数利用）
+check_ttyd_installed         # 5. ttyd インストール確認
+download_and_run_aios        # 6. aios スクリプトのダウンロード＆実行

@@ -80,9 +80,23 @@ download_and_execute() {
 }
 
 #########################################################################
+# ttyd.sh の存在確認とインストール
+#########################################################################
+check_and_install_ttyd() {
+    if ! command -v ttyd >/dev/null 2>&1; then
+        echo -e "\033[1;33mttyd is not installed. Downloading and executing ttyd.sh...\033[0m"
+        download_script "ttyd.sh" "ttyd.sh"
+        sh "${BASE_DIR}/ttyd.sh" "$INPUT_LANG" || handle_error "Failed to execute ttyd.sh"
+    else
+        echo -e "\033[1;32mttyd is already installed.\033[0m"
+    fi
+}
+
+#########################################################################
 # メイン処理
 #########################################################################
 delete_aios
 make_directory
-check_version
+check_version_aios
+check_and_install_ttyd
 download_and_execute

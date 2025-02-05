@@ -1,7 +1,7 @@
 #!/bin/sh
 # License: CC0
 # OpenWrt >= 19.07, Compatible with 24.10.0
-# Last update: 202502041430-1
+echo Last update: 20250205-1
 
 # === 基本定数の設定 ===
 BASE_URL="${BASE_URL:-https://raw.githubusercontent.com/site-u2023/aios/main}"

@@ -143,17 +143,19 @@ fi
 #########################################################################
 # メイン処理
 #########################################################################
-initialize_environment
-download_file "common-functions.sh" "${BASE_DIR}/common-functions.sh"
-download_file "messages.db" "${BASE_DIR}/messages.db"
+mkdir -p "$BASE_DIR"
 
-# バージョンチェック（エラーでも続行）
+# 必要なファイルの確認とダウンロード
+ensure_file "common-functions.sh"
+ensure_file "messages.db"
+
+# 互換性チェック（警告レベルで続行可能）
 check_version_compatibility
 
-# 共通関数の読み込み（ファイルがない場合は致命的エラー）
-. "${BASE_DIR}/common-functions.sh" || handle_error "Failed to load common-functions.sh" "fatal"
+# 共通関数の読み込み
+. "${BASE_DIR}/common-functions.sh" || handle_error "Failed to load common-functions.sh"
 
+# 言語設定、バナー表示、OpenWrt設定スクリプトの実行
 setup_language
 print_banner
 execute_openwrt_config
-

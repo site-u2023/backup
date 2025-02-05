@@ -9,14 +9,50 @@ BASE_DIR="${BASE_DIR:-/tmp/aios}"
 SUPPORTED_VERSIONS="${SUPPORTED_VERSIONS:-19 21 22 23 24 24.10.0 SN}"
 SUPPORTED_LANGUAGES="${SUPPORTED_LANGUAGES:-en ja zh-cn zh-tw id ko de ru}"
 
-# === カラー表示関数 ===
+#########################################################################
+# color: ANSI エスケープシーケンスを使って色付きメッセージを出力する関数
+# 引数1: 色の名前 (例: red, green, blue_white など)
+# 引数2以降: 出力するメッセージ
+#########################################################################
+
 color() {
-    case "$1" in
-        red) echo "\033[31m$2\033[0m" ;;
-        green) echo "\033[32m$2\033[0m" ;;
-        yellow) echo "\033[33m$2\033[0m" ;;
-        cyan) echo "\033[36m$2\033[0m" ;;
-        *) echo "$2" ;;
+    local color_code
+    color_code=$(color_code_map "$1")
+    shift
+    echo -e "${color_code}$*$(color_code_map "reset")"
+}
+
+#########################################################################
+# color_code_map: カラー名から ANSI エスケープシーケンスを返す関数
+# 引数: 色の名前
+#########################################################################
+
+color_code_map() {
+    local color="$1"
+    case "$color" in
+        "red") echo "\033[1;31m" ;;
+        "green") echo "\033[1;32m" ;;
+        "yellow") echo "\033[1;33m" ;;
+        "blue") echo "\033[1;34m" ;;
+        "magenta") echo "\033[1;35m" ;;
+        "cyan") echo "\033[1;36m" ;;
+        "white") echo "\033[1;37m" ;;
+        "red_underline") echo "\033[4;31m" ;;
+        "green_underline") echo "\033[4;32m" ;;
+        "yellow_underline") echo "\033[4;33m" ;;
+        "blue_underline") echo "\033[4;34m" ;;
+        "magenta_underline") echo "\033[4;35m" ;;
+        "cyan_underline") echo "\033[4;36m" ;;
+        "white_underline") echo "\033[4;37m" ;;
+        "red_white") echo "\033[1;41m" ;;
+        "green_white") echo "\033[1;42m" ;;
+        "yellow_white") echo "\033[1;43m" ;;
+        "blue_white") echo "\033[1;44m" ;;
+        "magenta_white") echo "\033[1;45m" ;;
+        "cyan_white") echo "\033[1;46m" ;;
+        "white_black") echo "\033[7;40m" ;;
+        "reset") echo "\033[0;39m" ;;
+        *) echo "\033[0;39m" ;;  # デフォルトでリセット
     esac
 }
 

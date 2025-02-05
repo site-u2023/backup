@@ -257,6 +257,8 @@ _Last update: 20250205-7_
 
 ## 2. コモン関数一覧
 
+### 修正版関数一覧と説明
+
 ```
 | **関数名**                  | **説明**                                                                 | **呼び出し元スクリプト**         |
 |-----------------------------|--------------------------------------------------------------------------|----------------------------------|
@@ -270,6 +272,30 @@ _Last update: 20250205-7_
 | **print_banner**            | 多言語対応のバナー表示。                                                  | `aios`, `openwrt-config.sh`      |
 | **print_colored_message**   | カラーコードを利用したメッセージ表示。                                    | 全スクリプト                     |
 ```
+
+```
+| **関数名**                         | **説明**                                                              | **呼び出し元スクリプト**                    |
+|------------------------------------|-----------------------------------------------------------------------|---------------------------------------------|
+| **check_version_common**           | OpenWrtバージョンの確認。キャッシュされたバージョン情報を使用。       | `aios`, `ttyd.sh`, `system-config.sh`       |
+| **check_language_common**          | 言語キャッシュの確認および設定。                                      | `aios`, `ttyd.sh`, `internet-config.sh`     |
+| **download_common_functions**      | `common-functions.sh`のダウンロードと読み込み。                       | `aios.sh`, `ttyd.sh`, 他全て                |
+| **download_country_zone**          | `country-zone.sh`（国・タイムゾーンデータ）のダウンロード。            | `aios`, `system-config.sh`                  |
+| **download_supported_versions_db** | バージョンデータベース (`supported_versions.db`) のダウンロード。     | `ttyd.sh`, `aios`, 他全て                   |
+| **handle_error**                   | エラーメッセージの表示とスクリプトの終了。                            | 全スクリプト                                 |
+| **handle_exit**                    | 正常終了時の処理。                                                    | 全スクリプト                                 |
+| **configure_ttyd**                 | `ttyd` の設定と有効化。                                               | `ttyd.sh`                                    |
+| **print_banner**                   | 多言語対応のバナー表示。                                              | `aios`, `openwrt-config.sh`                 |
+| **print_colored_message**          | カラーコードを利用したメッセージ表示。                                | 全スクリプト                                 |
+```
+### キャッシュファイルの定義
+```
+| **キャッシュファイル名**   | **説明**                                            | **保存先**                   |
+|----------------------------|-----------------------------------------------------|------------------------------|
+| **check_version**          | OpenWrtバージョンキャッシュ。                        | `${BASE_DIR}/check_version`  |
+| **language_cache**         | 選択された言語のキャッシュ。                          | `${BASE_DIR}/language_cache` |
+| **downloader_cache**       | パッケージマネージャー（apk / opkg）の判定キャッシュ。 | `${BASE_DIR}/downloader_cache` |
+```
+
 
 ## 3. 更新方針
 - 関数名の変更は、要件定義のアップデートと全スクリプトへの反映を伴う。

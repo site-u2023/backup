@@ -1,7 +1,7 @@
 #!/bin/sh
 # License: CC0
 # OpenWrt >= 19.07, Compatible with 24.10.0
-echo common-functions.sh Last update: 20250205-2
+echo common-functions.sh Last update: 20250205-3
 
 # === 基本定数の設定 ===
 BASE_URL="${BASE_URL:-https://raw.githubusercontent.com/site-u2023/aios/main}"
@@ -21,17 +21,35 @@ color() {
 }
 
 #########################################################################
-# バージョンチェック関数
+# handle_error: エラー処理
+#########################################################################
+handle_error() {
+    echo -e "\033[31mERROR:\033[0m $1"
+    exit 1
+}
+
+#########################################################################
+# download_version_db: バージョンデータベースのダウンロード
+#########################################################################
+download_version_db() {
+    wget --quiet -O "${BASE_DIR}/versions-common.db" "${BASE_URL}/versions-common.db" || handle_error "Failed to download versions-common.db"
+}
+
+#########################################################################
+# check_version: バージョンの確認
 #########################################################################
 check_version() {
-    local current_version
-    current_version=$(awk -F"'" '/DISTRIB_RELEASE/ {print $2}' /etc/openwrt_release | cut -c 1-5)
+    if [ ! -f "${BASE_DIR}/versions-common.db" ]; then
+        download_version_db
+    fi
 
-    if echo "$SUPPORTED_VERSIONS" | grep -qw "$current_version"; then
-        echo -e "$(color green "OpenWrt version $current_version is supported.")"
+    current_version=$(awk -F"'" '/DISTRIB_RELEASE/ {print $2}' /etc/openwrt_release)
+
+    if grep -qw "$current_version" "${BASE_DIR}/versions-common.db"; then
+        echo -e "\033[32mOpenWrt version $current_version is supported.\033[0m"
     else
-        echo -e "$(color red "Unsupported OpenWrt version: $current_version. Exiting.")"
-        exit 1
+        handle_error "Unsupported OpenWrt version: $current_version. Supported versions are:"
+        cat "${BASE_DIR}/versions-common.db"
     fi
 }
 

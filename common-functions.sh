@@ -1,7 +1,7 @@
 #!/bin/sh
 # License: CC0
 # OpenWrt >= 19.07, Compatible with 24.10.0
-echo common-functions.sh Last update: 20250205-5
+echo common-functions.sh Last update: 20250205-6
 
 # === 基本定数の設定 ===
 BASE_URL="${BASE_URL:-https://raw.githubusercontent.com/site-u2023/aios/main}"
@@ -72,45 +72,36 @@ download_version_db() {
 }
 
 #########################################################################
-# check_version: バージョンの確認
+# check_version_common: common-functions.sh用の詳細なバージョンチェック関数
+# - ローカルの SUPPORTED_VERSIONS と supported_versions.db の両方を参照
 #########################################################################
-#########################################################################
-# check_version: OpenWrt バージョンを取得し、柔軟に対応バージョンを判定する関数
-#########################################################################
-check_version() {
+check_version_common() {
+    local version_file="${BASE_DIR}/supported_versions.db"
+    local current_version
+
+    # OpenWrtバージョン取得
     current_version=$(awk -F"'" '/DISTRIB_RELEASE/ {print $2}' /etc/openwrt_release)
 
-    # RCバージョンを許可
-    if echo "$current_version" | grep -Eq 'RC[0-9]+$'; then
-        echo -e "$(color green "Release Candidate version $current_version detected. Proceeding.")"
+    # データベースファイルが存在しない場合、エラー
+    if [ ! -f "$version_file" ]; then
+        echo -e "$(color red "ERROR: Supported versions database not found at $version_file.")"
+        exit 1
+    fi
+
+    # スナップショットやRCバージョンは柔軟に許可
+    if echo "$current_version" | grep -Eq 'RC[0-9]+$|SNAPSHOT$'; then
+        echo -e "$(color green "Pre-release version ($current_version) detected. Proceeding.")"
         return 0
     fi
 
-    # SNAPSHOTを許可
-    if [ "$current_version" = "SNAPSHOT" ]; then
-        echo -e "$(color green "SNAPSHOT version detected. Proceeding.")"
-        return 0
+    # ローカル SUPPORTED_VERSIONS または DB に一致するかチェック
+    if echo "$SUPPORTED_VERSIONS" | grep -qw "$current_version" || grep -qw "$current_version" "$version_file"; then
+        echo -e "$(color green "OpenWrt version $current_version is supported.")"
+    else
+        echo -e "$(color red "ERROR: Unsupported OpenWrt version: $current_version.")"
+        echo -e "$(color yellow "Refer to $version_file for supported versions.")"
+        exit 1
     fi
-
-    # 柔軟なバージョンチェック
-    for version in $SUPPORTED_VERSIONS; do
-        # 完全一致チェック
-        if [ "$current_version" = "$version" ]; then
-            echo -e "$(color green "OpenWrt version $current_version is supported.")"
-            return 0
-        fi
-
-        # プレフィックス一致（19.07 なら 19.07-9 も許可）
-        if echo "$current_version" | grep -q "^$version"; then
-            echo -e "$(color green "OpenWrt version $current_version is supported (prefix match with $version).")"
-            return 0
-        fi
-    done
-
-    # サポート外バージョンの場合
-    echo -e "$(color red "ERROR: Unsupported OpenWrt version: $current_version.")"
-    echo -e "$(color yellow "Supported versions are: $SUPPORTED_VERSIONS")"
-    exit 1
 }
 
 #########################################################################

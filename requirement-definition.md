@@ -255,23 +255,7 @@ _Last update: 20250205-7_
 - `print_`: 表示・出力系の関数（例: `print_banner`, `print_help`, `print_colored_message`）
 ```
 
-## 2. コモン関数一覧
-
-### 修正版関数一覧と説明
-
-```
-| **関数名**                  | **説明**                                                                 | **呼び出し元スクリプト**         |
-|-----------------------------|--------------------------------------------------------------------------|----------------------------------|
-| **check_version_common**    | OpenWrtバージョンの確認。キャッシュされたバージョン情報を使用。          | `aios`, `ttyd.sh`, `system-config.sh` |
-| **check_language_common**   | 言語キャッシュの確認および設定。                                          | `aios`, `ttyd.sh`, `internet-config.sh` |
-| **download_common_functions**| `common-functions.sh`のダウンロードと読み込み。                           | `aios.sh`, `ttyd.sh`, 他全て     |
-| **download_country_zone**   | `country-zone.sh`（国・タイムゾーンデータ）のダウンロード。                | `aios`, `system-config.sh`       |
-| **handle_error**            | エラーメッセージの表示とスクリプトの終了。                                | 全スクリプト                     |
-| **handle_exit**             | 正常終了時の処理。                                                       | 全スクリプト                     |
-| **configure_ttyd**          | `ttyd` の設定と有効化。                                                  | `ttyd.sh`                        |
-| **print_banner**            | 多言語対応のバナー表示。                                                  | `aios`, `openwrt-config.sh`      |
-| **print_colored_message**   | カラーコードを利用したメッセージ表示。                                    | 全スクリプト                     |
-```
+## 2. 関数一覧
 
 ```
 | **関数名**                         | **説明**                                                              | **呼び出し元スクリプト**                    |
@@ -287,7 +271,7 @@ _Last update: 20250205-7_
 | **print_banner**                   | 多言語対応のバナー表示。                                              | `aios`, `openwrt-config.sh`                 |
 | **print_colored_message**          | カラーコードを利用したメッセージ表示。                                | 全スクリプト                                 |
 ```
-### キャッシュファイルの定義
+## キャッシュファイルの定義
 ```
 | **キャッシュファイル名**   | **説明**                                            | **保存先**                   |
 |----------------------------|-----------------------------------------------------|------------------------------|

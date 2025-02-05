@@ -1,3 +1,7 @@
+# バナー用メッセージ
+ja|MSG_BANNER=オープンダブルアールティー専用設定ソフトウェア\nオールインワンスクリプト\n免責事項: 本スクリプトは自己責任でご使用下さい
+en|MSG_BANNER=Dedicated configuration software for OpenWrt\nAll-in-One Scripts\nDisclaimer: Use this script at your own risk
+
 # インストールメッセージ
 ja|MSG_INSTALL_PROMPT=インストールを実行しますか？ [Y/n]:
 en|MSG_INSTALL_PROMPT=Do you want to proceed with the installation? [Y/n]:
@@ -18,6 +22,13 @@ en|MSG_DOWNLOAD_SUCCESS=Download completed successfully.
 ja|MSG_DOWNLOAD_FAIL=ダウンロードに失敗しました。
 en|MSG_DOWNLOAD_FAIL=Download failed.
 
+# バージョン確認関連
+ja|MSG_VERSION_UNSUPPORTED=サポートされていない OpenWrt バージョンです。
+en|MSG_VERSION_UNSUPPORTED=Unsupported OpenWrt version.
+
+ja|MSG_VERSION_SUPPORTED=OpenWrtバージョンはサポートされています。
+en|MSG_VERSION_SUPPORTED=OpenWrt version is supported.
+
 # 設定確認メッセージ
 ja|MSG_CONFIRM_SETTINGS=これらの設定を適用しますか？ [Y/n]:
 en|MSG_CONFIRM_SETTINGS=Do you want to apply these settings? [Y/n]:
@@ -32,18 +43,15 @@ en|MSG_SETTINGS_CANCEL=Settings were not applied.
 ja|MSG_ERROR_OCCURRED=エラーが発生しました。
 en|MSG_ERROR_OCCURRED=An error has occurred.
 
-ja|MSG_ERROR_UNSUPPORTED_VERSION=サポートされていない OpenWrt バージョンです。
-en|MSG_ERROR_UNSUPPORTED_VERSION=Unsupported OpenWrt version.
-
-ja|MSG_ERROR_UNSUPPORTED_PACKAGE_MANAGER=サポートされていないパッケージマネージャーです。
-en|MSG_ERROR_UNSUPPORTED_PACKAGE_MANAGER=Unsupported package manager.
-
 # パッケージマネージャー関連
 ja|MSG_NO_PACKAGE_MANAGER_FOUND=対応するパッケージマネージャー（apk または opkg）が見つかりません。
 en|MSG_NO_PACKAGE_MANAGER_FOUND=No supported package manager (apk or opkg) found.
 
 ja|MSG_DETECTED_PACKAGE_MANAGER=検出されたパッケージマネージャー:
 en|MSG_DETECTED_PACKAGE_MANAGER=Detected package manager:
+
+ja|MSG_ERROR_UNSUPPORTED_PACKAGE_MANAGER=サポートされていないパッケージマネージャーです。
+en|MSG_ERROR_UNSUPPORTED_PACKAGE_MANAGER=Unsupported package manager.
 
 # バージョン確認関連
 ja|MSG_VERSION_UNSUPPORTED=サポートされていない OpenWrt バージョンです。

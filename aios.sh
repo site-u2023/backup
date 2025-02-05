@@ -2,17 +2,25 @@
 # License: CC0
 # OpenWrt >= 19.07
 # 初期設定用 all-in-one スクリプト (aios) のセットアップスクリプト
-echo aios.sh Last update: 20250205-1
+echo "aios.sh Last update: 20250205-2"
 
-# 定数の設定
+# === 定数の設定 ===
 BASE_URL="https://raw.githubusercontent.com/site-u2023/aios/main"
 BASE_DIR="/tmp/aios"
 SUPPORTED_VERSIONS="19 21 22 23 24 24.10.0 SN"
 INPUT_LANG="$1"
 
-# 共通関数の読み込み
+# === 共通関数の読み込み（存在しない場合は自動ダウンロード） ===
+if [ ! -f "${BASE_DIR}/common-functions.sh" ]; then
+    echo "common-functions.sh not found. Downloading..."
+    mkdir -p "$BASE_DIR"
+    wget --quiet -O "${BASE_DIR}/common-functions.sh" "${BASE_URL}/common-functions.sh" || {
+        echo "Failed to download common-functions.sh"
+        exit 1
+    }
+fi
 . "${BASE_DIR}/common-functions.sh" || {
-    echo "Failed to load common functions."
+    echo "Failed to load common-functions.sh"
     exit 1
 }
 
@@ -21,7 +29,7 @@ INPUT_LANG="$1"
 #########################################################################
 delete_aios() {
     rm -rf "${BASE_DIR}" /usr/bin/aios
-    echo "$(color green "Initialized aios")"
+    echo "$(color green "Initialized aios (clean slate)")"
 }
 
 #########################################################################
@@ -32,7 +40,7 @@ make_directory() {
 }
 
 #########################################################################
-# check_version: OpenWrt バージョンの確認 (common-functions.sh から呼び出し)
+# check_openwrt_version: OpenWrt バージョンの確認 (common-functions.sh から呼び出し)
 #########################################################################
 check_openwrt_version() {
     check_version || handle_error "OpenWrt version check failed."
@@ -42,10 +50,9 @@ check_openwrt_version() {
 # check_ttyd_installed: ttyd がインストールされているか確認し、未インストールならユーザーにインストール確認
 #########################################################################
 check_ttyd_installed() {
-    local choice
     if ! command -v ttyd >/dev/null 2>&1; then
         echo "$(color yellow "ttyd is not installed.")"
-        read -p "Do you want to install ttyd? (y/n, default: n): " choice
+        read -p "Do you want to install ttyd? [Y/n]: " choice
         choice=${choice:-n}
         if [ "$choice" = "y" ] || [ "$choice" = "Y" ]; then
             echo "$(color cyan "Installing ttyd...")"

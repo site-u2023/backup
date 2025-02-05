@@ -1,7 +1,7 @@
 # OpenWrt バージョンデータベース (supported_versions.db)
 # バージョン=パッケージマネージャー|ステータス
-SUPPORTED_DB_VERSIONS="2025.02.05-rc1"
-echo "supported_versions.db Last update: $SUPPORTED_DB_VERSIONS"
+SUPPORTED_DB_VERSION="2025.02.05-rc1"
+echo "supported_versions.db Last update: $SUPPORTED_DB_VERSION"
 
 # OpenWrt 18.x 系列 (サポート終了)
 18.06.0=opkg|eol

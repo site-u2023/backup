@@ -40,6 +40,10 @@ download_script() {
     wget --quiet -O "${BASE_DIR}/${filename}" "${BASE_URL}/${remote}" || handle_error "Failed to download ${remote}"
 }
 
+download_version_db() {
+    wget --quiet -O "${BASE_DIR}/supported_versions.db" "${BASE_URL}/supported_versions.db" || handle_error "Failed to download supported_versions.db"
+}
+
 #########################################################################
 # 言語設定の確認と選択
 #########################################################################

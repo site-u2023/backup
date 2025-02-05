@@ -190,23 +190,28 @@ check_language_common() {
         SELECTED_LANGUAGE=$(cat "${BASE_DIR}/language_cache")
     else
         echo -e "\033[1;32mSelect your language:\033[0m"
-        PS3="Please enter your choice: "
 
+        # サポート言語リストを表示
         i=1
         for lang in $SUPPORTED_LANGUAGES; do
             echo "$i) $lang"
             i=$((i+1))
         done
 
+        # 入力受付ループ
         while true; do
             read -p "Enter number or language (e.g., en, ja): " input
+
+            # 数字入力の場合
             if echo "$input" | grep -qE '^[0-9]+$'; then
                 lang=$(echo $SUPPORTED_LANGUAGES | cut -d' ' -f$input)
             else
-                input_normalized=$(echo "$input" | tr '[:upper:]' '[:lower:]' | iconv -f utf-8 -t utf-8 -c)
-                lang=$(echo $SUPPORTED_LANGUAGES | tr '[:upper:]' '[:lower:]' | grep -o "\b$input_normalized\b")
+                # iconv を使わずに大文字小文字変換のみ
+                input_normalized=$(echo "$input" | tr '[:upper:]' '[:lower:]')
+                lang=$(echo "$SUPPORTED_LANGUAGES" | tr '[:upper:]' '[:lower:]' | grep -wo "$input_normalized")
             fi
 
+            # 有効な言語かどうか確認
             if [ -n "$lang" ]; then
                 SELECTED_LANGUAGE="$lang"
                 echo "$SELECTED_LANGUAGE" > "${BASE_DIR}/language_cache"
@@ -216,6 +221,7 @@ check_language_common() {
             fi
         done
     fi
+
     echo -e "\033[1;32mLanguage supported: $SELECTED_LANGUAGE\033[0m"
 }
 

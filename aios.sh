@@ -24,17 +24,12 @@ color() {
 }
 
 #########################################################################
-# handle_error: 汎用エラーハンドリング関数（共通関数ロード前は直接メッセージ）
+# handle_error: 汎用エラーハンドリング関数
 #########################################################################
 handle_error() {
-    if [ -f "${BASE_DIR}/common-functions.sh" ]; then
-        color red "$(get_message 'MSG_ERROR_OCCURRED'): $1"
-    else
-        color red "ERROR: $1"
-    fi
+    color red "ERROR: $1"
     exit 1
 }
-
 
 #########################################################################
 # download_script: ファイルをダウンロードする汎用関数
@@ -42,9 +37,9 @@ handle_error() {
 download_script() {
     local destination="$1"
     local remote_file="$2"
-    color cyan "$(get_message 'MSG_DOWNLOAD_START'): $remote_file"
-    ${BASE_WGET} "$destination" "${BASE_URL}/${remote_file}" || handle_error "$(get_message 'MSG_DOWNLOAD_FAIL'): $remote_file"
-    color green "$(get_message 'MSG_DOWNLOAD_SUCCESS'): $remote_file"
+    color cyan "Downloading: $remote_file"
+    ${BASE_WGET} "$destination" "${BASE_URL}/${remote_file}" || handle_error "Failed to download: $remote_file"
+    color green "Downloaded successfully: $remote_file"
 }
 
 #########################################################################
@@ -55,15 +50,19 @@ get_message() {
     local lang="${SELECTED_LANGUAGE:-ja}"  # デフォルトは日本語
 
     # メッセージDBから対応メッセージを取得
-    local message=$(grep "^${lang}|${key}=" "${BASE_DIR}/messages.db" | cut -d'=' -f2-)
+    if [ -f "${BASE_DIR}/messages.db" ]; then
+        local message=$(grep "^${lang}|${key}=" "${BASE_DIR}/messages.db" | cut -d'=' -f2-)
 
-    # 見つからない場合、英語のデフォルトメッセージを使用
-    if [ -z "$message" ]; then
-        message=$(grep "^en|${key}=" "${BASE_DIR}/messages.db" | cut -d'=' -f2-)
+        # 見つからない場合、英語のデフォルトメッセージを使用
+        if [ -z "$message" ]; then
+            message=$(grep "^en|${key}=" "${BASE_DIR}/messages.db" | cut -d'=' -f2-)
+        fi
+
+        # 最後にキーそのものを返す（デフォルト）
+        [ -z "$message" ] && echo "$key" || echo "$message"
+    else
+        echo "$key"  # messages.db がない場合はキーを返す
     fi
-
-    # 最後にキーそのものを返す（デフォルト）
-    [ -z "$message" ] && echo "$key" || echo "$message"
 }
 
 #########################################################################
@@ -74,23 +73,26 @@ check_version_aios() {
     current_version=$(awk -F"'" '/DISTRIB_RELEASE/ {print $2}' /etc/openwrt_release)
 
     if echo "$SUPPORTED_VERSIONS" | grep -qw "$current_version"; then
-        color green "$(get_message 'MSG_VERSION_SUPPORTED'): $current_version"
+        color green "OpenWrt version is supported: $current_version"
     else
-        handle_error "$(get_message 'MSG_VERSION_UNSUPPORTED'): $current_version"
+        handle_error "Unsupported OpenWrt version: $current_version"
     fi
 }
 
 #########################################################################
-# 共通関数のダウンロードと読み込み
+# 共通関数とメッセージDBのダウンロードと読み込み
 #########################################################################
 load_common_functions() {
-    color cyan "Starting download of common functions..."  # 直接メッセージ
+    # messages.db のダウンロード
+    color cyan "Downloading message database..."
+    download_script "${BASE_DIR}/messages.db" "messages.db"
+
+    # 共通関数のダウンロード
+    color cyan "$(get_message 'MSG_DOWNLOAD_COMMON_START')"
     download_script "${BASE_DIR}/common-functions.sh" "common-functions.sh"
-    
+
     # 共通関数を読み込み
-    . "${BASE_DIR}/common-functions.sh" || handle_error "Failed to load common-functions.sh"
-    
-    # 共通関数が読み込まれた後に get_message を使用
+    . "${BASE_DIR}/common-functions.sh" || handle_error "$(get_message 'MSG_DOWNLOAD_COMMON_FAIL')"
     color green "$(get_message 'MSG_DOWNLOAD_COMMON_SUCCESS')"
 }
 
@@ -136,7 +138,6 @@ initialize_environment() {
 #########################################################################
 check_version_aios           # 1. バージョンチェック
 initialize_environment       # 2. 環境初期化
-load_common_functions        # 3. 共通関数のロード
-check_language_common        # 4. 言語キャッシュの確認と設定（共通関数利用）
-check_ttyd_installed         # 5. ttyd インストール確認
-download_and_run_aios        # 6. aios スクリプトのダウンロード＆実行
+load_common_functions        # 3. 共通関数とメッセージDBのロード
+check_ttyd_installed         # 4. ttyd インストール確認
+download_and_run_aios        # 5. aios スクリプトのダウンロード＆実行

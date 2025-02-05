@@ -21,3 +21,7 @@ MSG_unsupported_package_manager="Unsupported package manager detected."
 # get_package_manager_and_status
 no_package_manager_found="No supported package manager (apk or opkg) found."
 detected_package_manager="Detected package manager"
+
+check_version_common
+unsupported_version="Unsupported OpenWrt version"
+version_supported="OpenWrt version is supported"

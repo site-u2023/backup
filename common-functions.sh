@@ -108,8 +108,12 @@ ensure_file() {
 # check_version_compatibility: バージョン互換性チェック（警告対応）
 #########################################################################
 check_version_compatibility() {
-    local db_version=$(grep "^version=" "${BASE_DIR}/messages.db" | cut -d'=' -f2 | tr -d '"')
-    
+    local db_version
+-   db_version=$(grep "^version=" "${BASE_DIR}/messages.db" | cut -d'=' -f2 | tr -d '"')
++   db_version=$(grep "^version=" "${BASE_DIR}/messages.db" \
++       | cut -d'=' -f2 \
++       | tr -d '"\r')
+
     if [ "$db_version" != "$COMMON_FUNCTIONS_SH_VERSION" ]; then
         handle_error "$(get_message 'MSG_VERSION_MISMATCH_WARNING' "$SELECTED_LANGUAGE"): messages.db ($db_version). Required: $COMMON_FUNCTIONS_SH_VERSION" "warning"
     fi

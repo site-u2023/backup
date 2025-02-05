@@ -1,16 +1,16 @@
 #!/bin/sh
 # License: CC0
 # OpenWrt >= 19.07
-echo aios.sh Last update: 20250205-18
+echo aios.sh Last update: 20250205-13
 
-# === 定数の設定 ===
+# 定数の設定
 BASE_URL="https://raw.githubusercontent.com/site-u2023/aios/main"
 BASE_DIR="/tmp/aios"
 SUPPORTED_VERSIONS="19.07 21.02 22.03 23.05 24.10.0 SNAPSHOT"
 INPUT_LANG="$1"
 
 #########################################################################
-# 簡易カラー出力関数（エラー用）
+# color: 簡易カラー出力関数（エラーメッセージ表示用）
 #########################################################################
 color() {
     case "$1" in
@@ -23,80 +23,109 @@ color() {
 }
 
 #########################################################################
-# エラーハンドリング関数
+# handle_error: 汎用エラーハンドリング関数
 #########################################################################
 handle_error() {
-    color red "ERROR: $1"
+    color red "$(get_message 'MSG_ERROR_OCCURRED'): $1"
     exit 1
 }
 
 #########################################################################
-# 初期バージョンチェック（common-functions.sh を使用しない）
+# download_script: ファイルをダウンロードする汎用関数
+#########################################################################
+download_script() {
+    local destination="$1"
+    local remote_file="$2"
+    color cyan "$(get_message 'MSG_DOWNLOAD_START'): $remote_file"
+    wget --quiet -O "$destination" "${BASE_URL}/${remote_file}" || handle_error "$(get_message 'MSG_DOWNLOAD_FAIL'): $remote_file"
+    color green "$(get_message 'MSG_DOWNLOAD_SUCCESS'): $remote_file"
+}
+
+#########################################################################
+# get_message: 多言語対応メッセージ取得関数
+#########################################################################
+get_message() {
+    local key="$1"
+    local lang="${SELECTED_LANGUAGE:-ja}"  # デフォルトは日本語
+
+    # メッセージDBから対応メッセージを取得
+    local message=$(grep "^${lang}|${key}=" "${BASE_DIR}/messages.db" | cut -d'=' -f2-)
+
+    # 見つからない場合、英語のデフォルトメッセージを使用
+    if [ -z "$message" ]; then
+        message=$(grep "^en|${key}=" "${BASE_DIR}/messages.db" | cut -d'=' -f2-)
+    fi
+
+    # 最後にキーそのものを返す（デフォルト）
+    [ -z "$message" ] && echo "$key" || echo "$message"
+}
+
+#########################################################################
+# バージョン確認関数 (依存無し)
 #########################################################################
 check_version_aios() {
     local current_version
     current_version=$(awk -F"'" '/DISTRIB_RELEASE/ {print $2}' /etc/openwrt_release)
 
     if echo "$SUPPORTED_VERSIONS" | grep -qw "$current_version"; then
-        color green "OpenWrt version $current_version is supported."
+        color green "$(get_message 'MSG_VERSION_SUPPORTED'): $current_version"
     else
-        handle_error "Unsupported OpenWrt version: $current_version"
+        handle_error "$(get_message 'MSG_VERSION_UNSUPPORTED'): $current_version"
     fi
 }
 
 #########################################################################
-# 共通関数とメッセージDBのダウンロードと読み込み
+# 共通関数のダウンロードと読み込み
 #########################################################################
 load_common_functions() {
-    wget --quiet -O "${BASE_DIR}/common-functions.sh" "${BASE_URL}/common-functions.sh" \
-        || handle_error "Failed to download common-functions.sh"
-
-    . "${BASE_DIR}/common-functions.sh" || handle_error "Failed to source common-functions.sh"
+    color cyan "$(get_message 'MSG_DOWNLOAD_COMMON_START')"
+    download_script "${BASE_DIR}/common-functions.sh" "common-functions.sh"
+    . "${BASE_DIR}/common-functions.sh" || handle_error "$(get_message 'MSG_DOWNLOAD_COMMON_FAIL')"
+    color green "$(get_message 'MSG_DOWNLOAD_COMMON_SUCCESS')"
 }
 
 #########################################################################
-# 言語選択（キャッシュ確認 + メッセージDB利用）
+# ttyd のインストール確認
 #########################################################################
-initialize_language() {
-    check_language_common "$INPUT_LANG"      # 言語キャッシュ確認 (common function)
-    download_messages_db                      # メッセージDBのダウンロード (common function)
-}
-
-#########################################################################
-# ttyd のインストール確認とYN判定
-#########################################################################
-check_and_install_ttyd() {
+check_ttyd_installed() {
     if command -v ttyd >/dev/null 2>&1; then
-        color green "$(get_message 'MSG_INSTALL_SUCCESS' "$SELECTED_LANGUAGE"): ttyd"
+        color green "ttyd is already installed."
     else
-        color yellow "$(get_message 'MSG_INSTALL_PROMPT' "$SELECTED_LANGUAGE") ttyd"
-        
-        # === Y/N判定 (common function) ===
-        if confirm_settings; then
-            download_file "ttyd.sh" "${BASE_DIR}/ttyd.sh"   # ダウンロード関数 (common function)
-            sh "${BASE_DIR}/ttyd.sh" "$SELECTED_LANGUAGE" || handle_error "Failed to execute ttyd.sh"
-        else
-            color yellow "$(get_message 'MSG_INSTALL_CANCEL' "$SELECTED_LANGUAGE"): ttyd"
-        fi
+        color yellow "ttyd is not installed. Downloading and executing ttyd.sh..."
+        download_script "${BASE_DIR}/ttyd.sh" "ttyd.sh"
+        sh "${BASE_DIR}/ttyd.sh" || handle_error "Failed to execute ttyd.sh"
     fi
 }
 
 #########################################################################
-# aios のダウンロードと実行
+# aios スクリプトのダウンロードと実行
 #########################################################################
 download_and_run_aios() {
-    download_file "aios" "/usr/bin/aios"  # ダウンロード関数 (common function)
-    chmod +x /usr/bin/aios || handle_error "Failed to set execute permissions on /usr/bin/aios"
+    color cyan "$(get_message 'MSG_DOWNLOAD_AIOS_START')"
+    download_script "/usr/bin/aios" "aios"
+    chmod +x /usr/bin/aios || handle_error "$(get_message 'MSG_EXECUTE_AIOS_FAIL')"
 
-    color green "$(get_message 'MSG_INSTALL_SUCCESS' "$SELECTED_LANGUAGE"): aios"
-    /usr/bin/aios "$SELECTED_LANGUAGE" || handle_error "Failed to execute aios script."
+    color green "$(get_message 'MSG_DOWNLOAD_AIOS_SUCCESS')"
+    color cyan "$(get_message 'MSG_EXECUTE_AIOS_START')"
+    /usr/bin/aios "$INPUT_LANG" \
+        && color green "$(get_message 'MSG_EXECUTE_AIOS_SUCCESS')" \
+        || handle_error "$(get_message 'MSG_EXECUTE_AIOS_FAIL')"
+}
+
+#########################################################################
+# ディレクトリの初期化
+#########################################################################
+initialize_environment() {
+    rm -rf "${BASE_DIR}" /usr/bin/aios
+    mkdir -p "$BASE_DIR" || handle_error "Failed to create directory: $BASE_DIR"
+    color green "Initialized aios environment."
 }
 
 #########################################################################
 # メイン処理
 #########################################################################
+initialize_environment
 check_version_aios
 load_common_functions
-initialize_language
-check_and_install_ttyd
+check_ttyd_installed
 download_and_run_aios

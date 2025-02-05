@@ -9,16 +9,13 @@ echo "ttyd.sh Last update: $TTYD_SH_VERSION"
 # === 定数の設定 ===
 BASE_URL="https://raw.githubusercontent.com/site-u2023/aios/main"
 BASE_DIR="/tmp/aios"
-SUPPORTED_LANGUAGES="en ja zh-cn zh-tw"
 INPUT_LANG="$1"
 
 #########################################################################
-# 共通エラー処理関数
+# インストールするパッケージの定義
 #########################################################################
-handle_error() {
-    local msg=$(get_message "MSG_ERROR_OCCURRED" "$SELECTED_LANGUAGE")
-    echo -e "\033[1;31mERROR:\033[0m $msg: $1"
-    exit 1
+packages() {
+    echo "ttyd luci-app-ttyd"
 }
 
 #########################################################################
@@ -32,50 +29,10 @@ download_common() {
 }
 
 #########################################################################
-# ttyd のインストール確認
-#########################################################################
-check_ttyd_installed() {
-    if command -v ttyd >/dev/null 2>&1; then
-        echo -e "\033[1;32mttyd is already installed.\033[0m"
-    else
-        local install_prompt=$(get_message "MSG_INSTALL_PROMPT" "$SELECTED_LANGUAGE")
-        if confirm_action "$install_prompt"; then
-            install_ttyd
-        else
-            echo -e "$(color yellow "$(get_message 'MSG_INSTALL_CANCEL' "$SELECTED_LANGUAGE")")"
-        fi
-    fi
-}
-
-#########################################################################
-# ttyd のインストール
-#########################################################################
-#########################################################################
-# ttyd のインストール
-#########################################################################
-install_ttyd() {
-    get_package_manager_and_status  # パッケージマネージャー確認
-
-    # インストールするパッケージ一覧をここで管理
-    local PACKAGES="ttyd luci-app-ttyd"
-
-    # 言語が日本語なら日本語パッケージを追加
-    if [ "$SELECTED_LANGUAGE" = "ja" ]; then
-        PACKAGES="$PACKAGES luci-i18n-ttyd-ja"
-    fi
-
-    # 一括インストール
-    install_packages $PACKAGES
-
-    ttyd_setting  # ttyd 設定を適用
-}
-
-#########################################################################
 # ttyd の設定とサービスの有効化
 #########################################################################
 ttyd_setting() {
-    local config_prompt=$(get_message "MSG_CONFIRM_SETTINGS" "$SELECTED_LANGUAGE")
-    if confirm_action "$config_prompt"; then
+    if confirm_action "MSG_CONFIRM_SETTINGS"; then
         echo -e "\033[1;34mApplying ttyd settings...\033[0m"
 
         uci batch <<EOF
@@ -101,8 +58,12 @@ EOF
 # メイン処理
 #########################################################################
 download_common
-check_language_common         # 言語判定をここで呼び出す
+check_language_common          # 言語判定
 download_supported_versions_db
 check_version_common
-check_ttyd_installed
+
+# パッケージのインストール（言語パックも含めて自動処理）
+install_packages $(packages)
+
+# 設定適用
 ttyd_setting

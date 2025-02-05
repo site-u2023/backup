@@ -107,6 +107,26 @@ en|MSG_SETTINGS_CANCEL=Settings were not applied.
 ja|MSG_INSTALL_PROMPT=インストールを実行しますか？ [Y/n]:
 en|MSG_INSTALL_PROMPT=Do you want to proceed with the installation? [Y/n]:
 
+# 警告メッセージ (Warning Messages)
+ja|MSG_VERSION_MISMATCH_WARNING=バージョンの不一致が検出されました。継続しますが、問題が発生する可能性があります。
+en|MSG_VERSION_MISMATCH_WARNING=Version mismatch detected. Continuing, but issues may occur.
+
+ja|MSG_FILE_NOT_FOUND_WARNING=必要なファイルが見つかりません。ダウンロードを試みます...
+en|MSG_FILE_NOT_FOUND_WARNING=Required file not found. Attempting to download...
+
+ja|MSG_FILE_UPDATE_AVAILABLE=新しいバージョンのファイルが利用可能です。更新を推奨します。
+en|MSG_FILE_UPDATE_AVAILABLE=A newer version of the file is available. Update is recommended.
+
+ja|MSG_OPERATION_COMPLETED_WITH_WARNINGS=操作は完了しましたが、いくつかの警告が発生しました。
+en|MSG_OPERATION_COMPLETED_WITH_WARNINGS=Operation completed with some warnings.
+
+# 情報メッセージ (Info Messages)
+ja|MSG_NO_UPDATES_AVAILABLE=全てのファイルは最新です。
+en|MSG_NO_UPDATES_AVAILABLE=All files are up-to-date.
+
+ja|MSG_UPDATING_FILES=ファイルの更新を開始します...
+en|MSG_UPDATING_FILES=Starting file update...
+
 # 汎用インストールメッセージ
 ja|MSG_GENERIC_INSTALL_SUCCESS=インストールが正常に完了しました。
 en|MSG_GENERIC_INSTALL_SUCCESS=Installation completed successfully.

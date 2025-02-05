@@ -404,9 +404,8 @@ handle_exit() {
 }
 
 #########################################################################
-# install_packages: パッケージリストを一括インストール
-# 引数: インストールするパッケージ名のリスト（スペース区切り）
-# 使用例: install_packages "ttyd luci-app-ttyd luci-i18n-ttyd-ja"
+# install_packages: パッケージをインストールし、言語パックも適用
+# 引数: インストールするパッケージ名のリスト
 #########################################################################
 install_packages() {
     local packages="$*"
@@ -414,31 +413,54 @@ install_packages() {
 
     echo -e "\033[1;34mInstalling packages: $packages using $manager...\033[0m"
 
-    # パッケージマネージャーの update は一度だけ実行
+    # 最初の1回だけアップデートを実行
     if [ -z "$UPDATE_DONE" ]; then
         case "$manager" in
-            apk)
-                apk update || handle_error "Failed to update APK."
-                ;;
-            opkg)
-                opkg update || handle_error "Failed to update OPKG."
-                ;;
-            *)
-                handle_error "Unsupported package manager detected."
-                ;;
+            apk)  apk update || handle_error "Failed to update APK." ;;
+            opkg) opkg update || handle_error "Failed to update OPKG." ;;
+            *)    handle_error "Unsupported package manager detected." ;;
         esac
         UPDATE_DONE=1
     fi
 
-    # 各パッケージを個別にインストールして存在確認
+    # 各パッケージを個別にインストール
     for pkg in $packages; do
-        if $manager list | grep -q "^$pkg - "; then
-            $manager install $pkg && echo -e "$(color green "Successfully installed: $pkg")" || \
-            echo -e "$(color yellow "Failed to install: $pkg. Continuing...")"
-        else
-            echo -e "$(color yellow "Package not found: $pkg. Skipping...")"
-        fi
+        attempt_package_install "$pkg"
     done
+}
+
+#########################################################################
+# attempt_package_install: 個別パッケージのインストールおよび言語パック適用
+# 引数: インストールするパッケージ名
+#########################################################################
+attempt_package_install() {
+    local pkg="$1"
+
+    if $PACKAGE_MANAGER list | grep -q "^$pkg - "; then
+        $PACKAGE_MANAGER install $pkg && echo -e "$(color green "Successfully installed: $pkg")" || \
+        echo -e "$(color yellow "Failed to install: $pkg. Continuing...")"
+
+        # 言語パッケージの自動インストール
+        install_language_pack "$pkg"
+    else
+        echo -e "$(color yellow "Package not found: $pkg. Skipping...")"
+    fi
+}
+
+#########################################################################
+# install_language_pack: 言語パッケージの存在確認とインストール
+# 例: luci-app-ttyd → luci-app-ttyd-ja (存在すればインストール)
+#########################################################################
+install_language_pack() {
+    local base_pkg="$1"
+    local lang_pkg="${base_pkg}-i18n-${SELECTED_LANGUAGE}"
+
+    if $PACKAGE_MANAGER list | grep -q "^$lang_pkg - "; then
+        $PACKAGE_MANAGER install $lang_pkg && echo -e "$(color green "Language pack installed: $lang_pkg")" || \
+        echo -e "$(color yellow "Failed to install language pack: $lang_pkg. Continuing...")"
+    else
+        echo -e "$(color cyan "Language pack not found for: $base_pkg. Skipping language pack...")"
+    fi
 }
 
 #########################################################################

@@ -92,34 +92,34 @@ load_common_functions() {
 }
 
 #########################################################################
-# ファイル存在チェック
+# ensure_file: ファイルの存在確認と自動ダウンロード（警告対応）
 #########################################################################
 ensure_file() {
     local file_name="$1"
     local file_path="${BASE_DIR}/${file_name}"
 
     if [ ! -f "$file_path" ]; then
+        handle_error "$(get_message 'MSG_FILE_NOT_FOUND_WARNING'): $file_name" "warning"
         download_file "$file_name" "$file_path"
     fi
 }
 
 #########################################################################
-# 共通関数バージョン互換性チェック
-#########################################################################
-#########################################################################
-# バージョン互換性チェック（エラーでも続行可能）
+# check_version_compatibility: バージョン互換性チェック（警告対応）
 #########################################################################
 check_version_compatibility() {
     REQUIRED_VERSION="$AIOS_VERSION"
 
+    # common-functions.sh のバージョンチェック
     COMMON_FUNCTIONS_VERSION=$(grep "^COMMON_FUNCTIONS_SH_VERSION=" "${BASE_DIR}/common-functions.sh" | cut -d'=' -f2 | tr -d '"')
     if [ "$COMMON_FUNCTIONS_VERSION" != "$REQUIRED_VERSION" ]; then
-        handle_error "common-functions.sh version mismatch: $COMMON_FUNCTIONS_VERSION (required: $REQUIRED_VERSION)" "warning"
+        handle_error "common-functions.sh ($COMMON_FUNCTIONS_VERSION). Required: $REQUIRED_VERSION" "warning"
     fi
 
+    # messages.db のバージョンチェック
     MESSAGES_DB_VERSION=$(grep "^version=" "${BASE_DIR}/messages.db" | cut -d'=' -f2)
     if [ "$MESSAGES_DB_VERSION" != "$REQUIRED_VERSION" ]; then
-        handle_error "messages.db version mismatch: $MESSAGES_DB_VERSION (required: $REQUIRED_VERSION)" "warning"
+        handle_error "messages.db ($MESSAGES_DB_VERSION). Required: $REQUIRED_VERSION" "warning"
     fi
 }
 

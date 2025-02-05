@@ -115,20 +115,23 @@ check_language_common() {
     else
         echo -e "\033[1;32mSelect your language:\033[0m"
         PS3="Please enter your choice: "
-        
-        # 言語リストを表示
-        echo "Available languages:"
+
         i=1
         for lang in $SUPPORTED_LANGUAGES; do
             echo "$i) $lang"
             i=$((i+1))
         done
 
-        # 選択肢を取得
         while true; do
-            read -p "Enter number corresponding to your language: " choice
-            lang=$(echo $SUPPORTED_LANGUAGES | cut -d' ' -f$choice)
-            if echo "$SUPPORTED_LANGUAGES" | grep -qw "$lang"; then
+            read -p "Enter number or language (e.g., en, ja): " input
+            if echo "$input" | grep -qE '^[0-9]+$'; then
+                lang=$(echo $SUPPORTED_LANGUAGES | cut -d' ' -f$input)
+            else
+                input_normalized=$(echo "$input" | tr '[:upper:]' '[:lower:]' | iconv -f utf-8 -t utf-8 -c)
+                lang=$(echo $SUPPORTED_LANGUAGES | tr '[:upper:]' '[:lower:]' | grep -o "\b$input_normalized\b")
+            fi
+
+            if [ -n "$lang" ]; then
                 SELECTED_LANGUAGE="$lang"
                 echo "$SELECTED_LANGUAGE" > "${BASE_DIR}/language_cache"
                 break
@@ -163,14 +166,14 @@ download_supported_versions_db() {
 }
 
 #########################################################################
-# download_language_messages: 選択された言語のメッセージファイルをダウンロード
+# download_messages_db: 選択された言語のメッセージファイルをダウンロード
 #########################################################################
-download_language_messages() {
-    local lang="${SELECTED_LANGUAGE:-en}"
-    if [ ! -f "${BASE_DIR}/messages_${lang}.sh" ]; then
-        ${BASE_WGET} "${BASE_DIR}/messages_${lang}.sh" "${BASE_URL}/messages_${lang}.sh" || handle_error "Failed to download messages_${lang}.sh"
+download_messages_db() {
+    if [ ! -f "${BASE_DIR}/messages.db" ]; then
+        ${BASE_WGET} "${BASE_DIR}/messages.db" "${BASE_URL}/messages.db" || handle_error "Failed to download messages.db"
     fi
 }
+
 
 #########################################################################
 # Y/N 判定関数
@@ -319,5 +322,8 @@ get_message() {
 }
 
 # === 初期化処理 ===
+download_messages_db
 check_version_common
-check_language_support
+check_language_common
+
+

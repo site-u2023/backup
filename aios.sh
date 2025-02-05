@@ -4,6 +4,7 @@
 echo aios.sh Last update: 20250205-13
 
 # 定数の設定
+BASE_WGET="wget --quiet -O"
 BASE_URL="https://raw.githubusercontent.com/site-u2023/aios/main"
 BASE_DIR="/tmp/aios"
 SUPPORTED_VERSIONS="19.07 21.02 22.03 23.05 24.10.0 SNAPSHOT"
@@ -37,7 +38,7 @@ download_script() {
     local destination="$1"
     local remote_file="$2"
     color cyan "$(get_message 'MSG_DOWNLOAD_START'): $remote_file"
-    wget --quiet -O "$destination" "${BASE_URL}/${remote_file}" || handle_error "$(get_message 'MSG_DOWNLOAD_FAIL'): $remote_file"
+    $|BASE_WGET} "$destination" "${BASE_URL}/${remote_file}" || handle_error "$(get_message 'MSG_DOWNLOAD_FAIL'): $remote_file"
     color green "$(get_message 'MSG_DOWNLOAD_SUCCESS'): $remote_file"
 }
 
@@ -113,12 +114,12 @@ download_and_run_aios() {
 }
 
 #########################################################################
-# ディレクトリの初期化
+# ディレクトリの初期化と作成
 #########################################################################
 initialize_environment() {
-    echo -e "\033[1;32m$(get_message 'MSG_INITIALIZE_ENV' "$SELECTED_LANGUAGE")\033[0m"
+    echo "Initializing environment..."  # シンプルな出力でOK
     rm -rf "$BASE_DIR"
-    mkdir -p "$BASE_DIR" || handle_error "Failed to create directory: $BASE_DIR"
+    mkdir -p "$BASE_DIR" || { echo "Failed to create directory: $BASE_DIR"; exit 1; }
 }
 
 #########################################################################

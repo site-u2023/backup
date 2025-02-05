@@ -79,6 +79,34 @@ download_file() {
     fi
 }
 
+# 国とタイムゾーン選択
+select_country_and_timezone() {
+    local country_file="${BASE_DIR}/country-zone.sh"
+
+    if [ ! -f "$country_file" ]; then
+        download_file "${BASE_URL}/country-zone.sh" "$country_file"
+    fi
+
+    echo -e "$(color cyan "Select a country for language and timezone configuration.")"
+    sh "$country_file" | nl -w2 -s'. '
+
+    read -p "Enter the number or country name (partial matches allowed): " selection
+
+    matched_country=$(sh "$country_file" | grep -i "$selection")
+
+    if [ -z "$matched_country" ]; then
+        echo -e "$(color red "No matching country found.")"
+        return 1
+    fi
+
+    language_code=$(echo "$matched_country" | awk '{print $3}')
+    echo "$language_code" > "${BASE_DIR}/check_country"
+
+    echo -e "$(color green "Selected Language: $language_code")"
+    confirm_settings || select_country_and_timezone
+}
+
+
 # === 初期化処理 ===
 check_version
 check_language_support

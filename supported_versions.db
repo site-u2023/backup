@@ -48,18 +48,15 @@ version="2025.02.05-rc1"
 22.03-SNAPSHOT=apk|snapshot
 
 # OpenWrt 23.x 系列
-23.05.0=apk|stable
-23.05.1=apk|stable
-23.05.2=apk|stable
-23.05.3=apk|stable
-23.05.4=apk|stable
+23.05.0=opkg|stable
+23.05.1=opkg|stable
+23.05.2=opkg|stable
+23.05.3=opkg|stable
+23.05.4=opkg|stable
 23.05-SNAPSHOT=apk|snapshot
 
 # OpenWrt 24.x 系列
-24.10.0-rc1=apk|rc
-24.10.0-rc2=apk|rc
-24.10.0-rc3=apk|rc
-24.10.0=apk|stable
+24.10.0=opkg|stable
 24.10-SNAPSHOT=apk|snapshot
 
 # 常に最新の開発版

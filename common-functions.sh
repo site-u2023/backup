@@ -440,12 +440,24 @@ install_packages() {
 
     echo -e "\033[1;34mInstalling packages: $packages using $manager...\033[0m"
 
-    # 最初の1回だけアップデート
     if [ -z "$UPDATE_DONE" ]; then
         case "$manager" in
-            apk)  apk update || handle_error "Failed to update APK." ;;
-            opkg) opkg update || handle_error "Failed to update OPKG." ;;
-            *)    handle_error "Unsupported package manager detected." ;;
+            apk)
+                # apk コマンドが存在するかもう一度確認してもOK
+                if ! command -v apk >/dev/null 2>&1; then
+                    handle_error "apk is not available, but manager=apk. Check fallback logic."
+                fi
+                apk update || handle_error "Failed to update APK."
+                ;;
+            opkg)
+                if ! command -v opkg >/dev/null 2>&1; then
+                    handle_error "opkg is not available, but manager=opkg. Check fallback logic."
+                fi
+                opkg update || handle_error "Failed to update OPKG."
+                ;;
+            *)
+                handle_error "Unsupported package manager detected: $manager"
+                ;;
         esac
         UPDATE_DONE=1
     fi
@@ -455,7 +467,6 @@ install_packages() {
         attempt_package_install "$pkg"
     done
 }
-
 
 #########################################################################
 # attempt_package_install: 個別パッケージのインストールおよび言語パック適用

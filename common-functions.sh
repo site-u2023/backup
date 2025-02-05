@@ -67,19 +67,50 @@ handle_error() {
 }
 
 #########################################################################
+# エラーハンドリング強化
+#########################################################################
+load_common_functions() {
+    ensure_file "common-functions.sh"
+    
+    # 共通関数を読み込み、エラーがあれば明確なメッセージで終了
+    . "${BASE_DIR}/common-functions.sh" || handle_error "Failed to load common-functions.sh"
+
+    # バージョン互換性チェックをここで実施
+    check_version_compatibility
+}
+
+#########################################################################
+# ファイル存在チェック
+#########################################################################
+ensure_file() {
+    local file_name="$1"
+    local file_path="${BASE_DIR}/${file_name}"
+
+    if [ ! -f "$file_path" ]; then
+        download_file "$file_name" "$file_path"
+    fi
+}
+
+#########################################################################
 # 共通関数バージョン互換性チェック
 #########################################################################
 check_version_compatibility() {
     REQUIRED_VERSION="2025.02.0"
 
+    # common-functions.sh のバージョンチェック
+    COMMON_FUNCTIONS_VERSION=$(grep "^COMMON_FUNCTIONS_VERSION=" "${BASE_DIR}/common-functions.sh" | cut -d'=' -f2 | tr -d '"')
     if [ "$COMMON_FUNCTIONS_VERSION" != "$REQUIRED_VERSION" ]; then
-        handle_error "$(get_message 'MSG_VERSION_UNSUPPORTED' "$SELECTED_LANGUAGE"): common-functions.sh ($COMMON_FUNCTIONS_VERSION). Required: $REQUIRED_VERSION"
+        handle_error "$(get_message 'MSG_VERSION_UNSUPPORTED'): common-functions.sh ($COMMON_FUNCTIONS_VERSION). Required: $REQUIRED_VERSION"
     fi
 
     # messages.db のバージョンチェック
-    MESSAGES_DB_VERSION=$(grep "^version=" "${BASE_DIR}/messages.db" | cut -d'=' -f2)
-    if [ "$MESSAGES_DB_VERSION" != "$REQUIRED_VERSION" ]; then
-        handle_error "$(get_message 'MSG_VERSION_UNSUPPORTED' "$SELECTED_LANGUAGE"): messages.db ($MESSAGES_DB_VERSION). Required: $REQUIRED_VERSION"
+    if [ -f "${BASE_DIR}/messages.db" ]; then
+        MESSAGES_DB_VERSION=$(grep "^version=" "${BASE_DIR}/messages.db" | cut -d'=' -f2)
+        if [ "$MESSAGES_DB_VERSION" != "$REQUIRED_VERSION" ]; then
+            handle_error "$(get_message 'MSG_VERSION_UNSUPPORTED'): messages.db ($MESSAGES_DB_VERSION). Required: $REQUIRED_VERSION"
+        fi
+    else
+        handle_error "messages.db not found during version check."
     fi
 }
 

@@ -205,6 +205,31 @@ country_full_info() {
     fi
 }
 
+#########################################################################
+# バージョンに基づくパッケージマネージャーの決定
+#########################################################################
+get_package_manager_and_status() {
+    local openwrt_version
+    openwrt_version=$(awk -F"'" '/DISTRIB_RELEASE/{print $2}' /etc/openwrt_release)
+
+    # バージョン情報の取得
+    version_info=$(grep "^${openwrt_version}=" "${BASE_DIR}/supported_versions.db")
+
+    # バージョン情報が見つかった場合
+    if [ -n "$version_info" ]; then
+        PACKAGE_MANAGER=$(echo "$version_info" | cut -d'=' -f2 | cut -d'|' -f1)
+        VERSION_STATUS=$(echo "$version_info" | cut -d'|' -f2)
+    else
+        # スナップショットは常にapkを使用
+        if echo "$openwrt_version" | grep -q "SNAPSHOT"; then
+            PACKAGE_MANAGER="apk"
+            VERSION_STATUS="snapshot"
+        else
+            handle_error "Unsupported OpenWrt version: $openwrt_version"
+        fi
+    fi
+}
+
 # === 初期化処理 ===
 check_version
 check_language_support

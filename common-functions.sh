@@ -245,11 +245,37 @@ download_messages_db() {
     fi
 }
 
-
 #########################################################################
-# Y/N 判定関数
+# confirm_action: Y/N 判定関数
+# 引数1: 確認メッセージキー（多言語対応）
+# 使用例: confirm_action 'MSG_INSTALL_PROMPT'
 #########################################################################
+confirm_action() {
+    local prompt_message
+    prompt_message=$(get_message "$1" "$SELECTED_LANGUAGE")
 
+    # メッセージが取得できなければデフォルトメッセージを使用
+    [ -z "$prompt_message" ] && prompt_message="Do you want to proceed? [Y/n]:"
+
+    while true; do
+        read -p "$prompt_message " confirm
+        confirm=${confirm:-Y}  # デフォルトは "Y"
+
+        case "$confirm" in
+            [Yy]|[Yy][Ee][Ss]|はい|ハイ)
+                echo -e "$(color green "$(get_message 'MSG_SETTINGS_APPLIED' "$SELECTED_LANGUAGE")")"
+                return 0
+                ;;
+            [Nn]|[Nn][Oo]|いいえ|イイエ)
+                echo -e "$(color yellow "$(get_message 'MSG_SETTINGS_CANCEL' "$SELECTED_LANGUAGE")")"
+                return 1
+                ;;
+            *)
+                echo -e "$(color red "$(get_message 'MSG_INVALID_SELECTION' "$SELECTED_LANGUAGE")")"
+                ;;
+        esac
+    done
+}
 
 #########################################################################
 # 汎用ファイルダウンロード関数

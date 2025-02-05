@@ -295,24 +295,21 @@ get_package_manager_and_status() {
 #########################################################################
 get_message() {
     local key="$1"
-    local lang="${2:-en}"
-    
-    # 言語ファイルが存在する場合は読み込む
-    if [ -f "${BASE_DIR}/messages_${lang}.sh" ]; then
-        . "${BASE_DIR}/messages_${lang}.sh"
-    else
-        # 言語ファイルが存在しない場合は英語をデフォルトとする
-        . "${BASE_DIR}/messages_en.sh"
+    local lang="${SELECTED_LANGUAGE:-ja}"  # デフォルト言語は日本語
+
+    # 言語に対応するメッセージを取得
+    local message=$(grep "^${lang}|${key}=" "${BASE_DIR}/messages.db" | cut -d'=' -f2-)
+
+    # 言語が見つからない場合、英語のデフォルトメッセージを使用
+    if [ -z "$message" ]; then
+        message=$(grep "^en|${key}=" "${BASE_DIR}/messages.db" | cut -d'=' -f2-)
     fi
 
-    # メッセージキーに対応する変数を取得
-    local message_var="MSG_${key}"
-    
-    # メッセージが存在すれば表示、存在しなければデフォルトエラー
-    if [ -n "${!message_var}" ]; then
-        echo "${!message_var}"
+    # それでも見つからない場合はキーをそのまま表示
+    if [ -z "$message" ]; then
+        echo "$key"
     else
-        echo "Unknown message key: $key"
+        echo "$message"
     fi
 }
 

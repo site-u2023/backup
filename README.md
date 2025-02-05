@@ -81,7 +81,11 @@ Add-WindowsCapability -Online -Name OpenSSH.Server~~~~0.0.1.0
 
 </details>
 
-## オールインワンスクリプト初期設定
+# 要件定義
+
+[プロジェクト名:All in One Script (AIOS)](https://github.com/site-u2023/aios/blob/main/requirement-definition.md)
+
+# オールインワンスクリプト初期設定
 
 $1は曖昧な入力も受け付けます。
 

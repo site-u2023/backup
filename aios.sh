@@ -104,9 +104,14 @@ check_ttyd_installed() {
     if command -v ttyd >/dev/null 2>&1; then
         color green "ttyd is already installed."
     else
-        color yellow "ttyd is not installed. Downloading and executing ttyd.sh..."
-        download_script "${BASE_DIR}/ttyd.sh" "ttyd.sh"
-        sh "${BASE_DIR}/ttyd.sh" || handle_error "Failed to execute ttyd.sh"
++       # ---- 追加: インストール前に Y/N で確認 ----
++       if confirm_action "MSG_INSTALL_PROMPT"; then
+            color yellow "ttyd is not installed. Downloading and executing ttyd.sh..."
+            download_script "${BASE_DIR}/ttyd.sh" "ttyd.sh"
+            sh "${BASE_DIR}/ttyd.sh" || handle_error "Failed to execute ttyd.sh"
++       else
++           color yellow "Skipping ttyd installation."
++       fi
     fi
 }
 

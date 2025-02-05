@@ -1,65 +1,66 @@
 # OpenWrt バージョンデータベース (supported_versions.db)
-# 最終更新: 2025-02-05
+# バージョン=パッケージマネージャー|ステータス
+echo supported_versions.db Last update: 20250205-2
 
 # OpenWrt 18.x 系列 (サポート終了)
-18.06.0
-18.06.1
-18.06.2
-18.06.3
-18.06.4
-18.06.5
-18.06.6
-18.06.7
-18.06.8
-18.06.9
+18.06.0=opkg|eol
+18.06.1=opkg|eol
+18.06.2=opkg|eol
+18.06.3=opkg|eol
+18.06.4=opkg|eol
+18.06.5=opkg|eol
+18.06.6=opkg|eol
+18.06.7=opkg|eol
+18.06.8=opkg|eol
+18.06.9=opkg|eol
 
 # OpenWrt 19.x 系列
-19.07.0
-19.07.1
-19.07.2
-19.07.3
-19.07.4
-19.07.5
-19.07.6
-19.07.7
-19.07.8
-19.07.9
-19.07-SNAPSHOT
+19.07.0=opkg|stable
+19.07.1=opkg|stable
+19.07.2=opkg|stable
+19.07.3=opkg|stable
+19.07.4=opkg|stable
+19.07.5=opkg|stable
+19.07.6=opkg|stable
+19.07.7=opkg|stable
+19.07.8=opkg|stable
+19.07.9=opkg|stable
+19.07-SNAPSHOT=apk|snapshot
 
 # OpenWrt 21.x 系列
-21.02.0
-21.02.1
-21.02.2
-21.02.3
-21.02.4
-21.02.5
-21.02.6
-21.02-SNAPSHOT
+21.02.0=opkg|stable
+21.02.1=opkg|stable
+21.02.2=opkg|stable
+21.02.3=opkg|stable
+21.02.4=opkg|stable
+21.02.5=opkg|stable
+21.02.6=opkg|stable
+21.02-SNAPSHOT=apk|snapshot
 
 # OpenWrt 22.x 系列
-22.03.0
-22.03.1
-22.03.2
-22.03.3
-22.03.4
-22.03.5
-22.03.6
-22.03-SNAPSHOT
+22.03.0=opkg|stable
+22.03.1=opkg|stable
+22.03.2=opkg|stable
+22.03.3=opkg|stable
+22.03.4=opkg|stable
+22.03.5=opkg|stable
+22.03.6=opkg|stable
+22.03-SNAPSHOT=apk|snapshot
 
 # OpenWrt 23.x 系列
-23.05.0
-23.05.1
-23.05.2
-23.05.3
-23.05.4
-23.05-SNAPSHOT
+23.05.0=apk|stable
+23.05.1=apk|stable
+23.05.2=apk|stable
+23.05.3=apk|stable
+23.05.4=apk|stable
+23.05-SNAPSHOT=apk|snapshot
 
 # OpenWrt 24.x 系列
-24.10.0-rc1
-24.10.0-rc2
-24.10.0-rc3
-24.10.0
-24.10-SNAPSHOT
+24.10.0-rc1=apk|rc
+24.10.0-rc2=apk|rc
+24.10.0-rc3=apk|rc
+24.10.0=apk|stable
+24.10-SNAPSHOT=apk|snapshot
 
 # 常に最新の開発版
-SNAPSHOT
+SNAPSHOT=apk|snapshot

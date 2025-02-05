@@ -38,27 +38,10 @@ initialize_language_support() {
 }
 
 #########################################################################
-# ttyd のインストール確認
-#########################################################################
-check_ttyd_installed() {
-    if command -v ttyd >/dev/null 2>&1; then
-        echo -e "\033[1;32mttyd is already installed.\033[0m"
-    else
-        local install_prompt=$(get_message "MSG_INSTALL_PROMPT" "$SELECTED_LANGUAGE")
-        if confirm_action "MSG_INSTALL_PROMPT"; then
-            install_ttyd
-        else
-            echo "$(get_message 'MSG_INSTALL_CANCEL' "$SELECTED_LANGUAGE")"
-            exit 0
-        fi
-    fi
-}
-
-#########################################################################
 # ttyd のインストール
 #########################################################################
 install_ttyd() {
-    get_package_manager_and_status  # ダウンローダーの確認
+    get_package_manager_and_status  # パッケージマネージャー確認
 
     echo -e "\033[1;34mInstalling ttyd using $PACKAGE_MANAGER...\033[0m"
     case "$PACKAGE_MANAGER" in
@@ -74,7 +57,6 @@ install_ttyd() {
             handle_error "Unsupported package manager detected."
             ;;
     esac
-    ttyd_setting
 }
 
 #########################################################################
@@ -107,4 +89,5 @@ download_common
 initialize_language_support
 download_supported_versions_db
 check_version_common
-check_ttyd_installed
+install_ttyd
+ttyd_setting

@@ -4,7 +4,7 @@
 #
 # aios メインスクリプト
 #
-echo aios Last update: 20250205-3
+echo aios Last update: 20250205-4
 
 # 定数の設定
 BASE_URL="https://raw.githubusercontent.com/site-u2023/aios/main"
@@ -46,22 +46,30 @@ download_version_db() {
 }
 
 #########################################################################
-# 言語設定の確認と選択
+# 言語設定の確認と選択 (ash 対応版)
 #########################################################################
 check_language() {
     if [ -f "${BASE_DIR}/language_cache" ]; then
         SELECTED_LANGUAGE=$(cat "${BASE_DIR}/language_cache")
     else
         echo -e "\033[1;32mSelect your language:\033[0m"
-        select lang in $SUPPORTED_LANGUAGES; do
-            if echo "$SUPPORTED_LANGUAGES" | grep -qw "$lang"; then
-                SELECTED_LANGUAGE="$lang"
-                echo "$SELECTED_LANGUAGE" > "${BASE_DIR}/language_cache"
-                break
-            else
-                echo -e "\033[1;31mInvalid selection. Try again.\033[0m"
-            fi
+        index=1
+        for lang in $SUPPORTED_LANGUAGES; do
+            echo "$index) $lang"
+            index=$((index + 1))
         done
+
+        read -p "Enter the number corresponding to your language: " lang_choice
+        lang_selected=$(echo $SUPPORTED_LANGUAGES | awk -v num="$lang_choice" '{print $num}')
+
+        if echo "$SUPPORTED_LANGUAGES" | grep -qw "$lang_selected"; then
+            SELECTED_LANGUAGE="$lang_selected"
+            echo "$SELECTED_LANGUAGE" > "${BASE_DIR}/language_cache"
+        else
+            echo -e "\033[1;31mInvalid selection. Defaulting to English (en).\033[0m"
+            SELECTED_LANGUAGE="en"
+            echo "$SELECTED_LANGUAGE" > "${BASE_DIR}/language_cache"
+        fi
     fi
 }
 

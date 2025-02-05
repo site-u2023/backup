@@ -245,14 +245,17 @@ _Last update: 20250205-7_
 ## 1. 命名規則
 関数名は機能ごとにプレフィックスを付け、役割を明確にします。
 
+```
 - `check_`: 状態確認系の関数（例: `check_version_common`, `check_language_common`）
 - `download_`: ファイルダウンロード系の関数（例: `download_common_functions`, `download_country_zone`）
 - `handle_`: エラー処理および制御系の関数（例: `handle_error`, `handle_exit`）
 - `configure_`: 設定変更系の関数（例: `configure_ttyd`, `configure_network`）
 - `print_`: 表示・出力系の関数（例: `print_banner`, `print_help`, `print_colored_message`）
+```
 
 ## 2. コモン関数一覧
 
+```
 | **関数名**                  | **説明**                                                                 | **呼び出し元スクリプト**         |
 |-----------------------------|--------------------------------------------------------------------------|----------------------------------|
 | **check_version_common**    | OpenWrtバージョンの確認。キャッシュされたバージョン情報を使用。          | `aios`, `ttyd.sh`, `system-config.sh` |
@@ -264,12 +267,58 @@ _Last update: 20250205-7_
 | **configure_ttyd**          | `ttyd` の設定と有効化。                                                  | `ttyd.sh`                        |
 | **print_banner**            | 多言語対応のバナー表示。                                                  | `aios`, `openwrt-config.sh`      |
 | **print_colored_message**   | カラーコードを利用したメッセージ表示。                                    | 全スクリプト                     |
-
----
+```
 
 ## 3. 更新方針
 - 関数名の変更は、要件定義のアップデートと全スクリプトへの反映を伴う。
 - 新規関数追加時も要件定義への追加が必須。
 
----
 
+# 要件定義 (Package Manager Detection & Version Database)
+Last update: 2025-02-05-8
+
+## 1. バージョンデータベース構成
+ファイル名: supported_versions.db
+概要:
+このファイルは OpenWrt のバージョンに対応するパッケージマネージャー (apk または opkg) と、そのバージョンのステータス (stable, snapshot, deprecated) を管理します。
+
+フォーマット:
+php-template
+コピーする
+編集する
+
+```
+<OpenWrtバージョン>=<パッケージマネージャー>|<ステータス>
+```
+
+サンプルデータ:
+
+```
+# OpenWrt 18.x 系列 (サポート終了)
+18.06.0=opkg|deprecated
+18.06.1=opkg|deprecated
+18.06.2=opkg|deprecated
+18.06.3=opkg|deprecated
+18.06.4=opkg|deprecated
+18.06.5=opkg|deprecated
+18.06.6=opkg|deprecated
+18.06.7=opkg|deprecated
+18.06.8=opkg|deprecated
+18.06.9=opkg|deprecated
+
+# OpenWrt 19.x 系列
+19.07.0=opkg|stable
+19.07.1=opkg|stable
+19.07.2=opkg|stable
+19.07.3=opkg|stable
+19.07.4=opkg|stable
+19.07.5=opkg|stable
+19.07.6=opkg|stable
+19.07.7=opkg|stable
+19.07.8=opkg|stable
+19.07.9=opkg|stable
+19.07-SNAPSHOT=apk|snapshot
+
+# OpenWrt 21.x 系列
+21.02.0=op
+```

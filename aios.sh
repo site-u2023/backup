@@ -11,7 +11,8 @@ SUPPORTED_VERSIONS="19.07 21.02 22.03 23.05 24.10.0 SNAPSHOT"
 
 check_version_aios() {
     local current_version
-    current_version="$(awk -F"'" '/DISTRIB_RELEASE/ {print $2}' /etc/openwrt_release)"
+    current_version=$(awk -F"'" '/DISTRIB_RELEASE/ {print $2}' /etc/openwrt_release | cut -d'-' -f1)
+
     if echo "$SUPPORTED_VERSIONS" | grep -qw "$current_version"; then
         echo "OpenWrt version is supported: $current_version"
     else

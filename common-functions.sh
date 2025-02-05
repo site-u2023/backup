@@ -197,7 +197,7 @@ check_version_common() {
         # --- ハイフン '-' 以降を削除し、19.07-rc1 → 19.07, 23.05-2 → 23.05 にする ---
         CURRENT_VERSION=$(echo "$CURRENT_VERSION" | cut -d'-' -f1)
 
-        echo "$CURRENT_VERSION" > "$check_version"
+        echo "$CURRENT_VERSION" > ${BASE_DIR}/check_version
     fi
 
     # supported_versions.db にエントリがあるか

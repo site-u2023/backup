@@ -113,19 +113,19 @@ download_country_zone() {
 }
 
 #########################################################################
-# download_and_execute_common: common-functions.sh をダウンロードし、読み込む
+# download_common_functions: common-functions.sh をダウンロードし、読み込む
 #########################################################################
-download_and_execute_common() {
-    wget --quiet -O "${BASE_DIR%/}/common-functions.sh" "${BASE_URL}/common-functions.sh" || {
+# 共通関数のダウンロード
+download_common_functions() {
+    wget --quiet -O "${BASE_DIR}/common-functions.sh" "${BASE_URL}/common-functions.sh" || {
         echo "Failed to download common-functions.sh"
         exit 1
     }
-    # common-functions.sh 内のエラー関数等を利用可能になる
-    source "${BASE_DIR%/}/common-functions.sh" || {
-        echo "Failed to source common-functions.sh"
-        exit 1
-    }
 }
+
+# 呼び出し
+download_common_functions
+
 
 #########################################################################
 # download_openwrt_config: openwrt-config.sh をダウンロードする
@@ -162,7 +162,7 @@ execute_openwrt_config() {
 # delete_language  は必要に応じて使用（現状コメントアウト）
 make_directory
 download_country_zone
-download_and_execute_common
+download_common_functions
 check_common "$INPUT_LANG"
 banner
 download_openwrt_config

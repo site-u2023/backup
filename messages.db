@@ -9,7 +9,6 @@ en|MSG_BANNER=Dedicated configuration software for OpenWrt\nAll-in-One Scripts\n
 ja|MSG_INITIALIZE_ENV=aios 環境を初期化しました。
 en|MSG_INITIALIZE_ENV=Initialized aios environment.
 
-
 # インストールメッセージ
 ja|MSG_INSTALL_PROMPT=インストールを実行しますか？ [Y/n]:
 en|MSG_INSTALL_PROMPT=Do you want to proceed with the installation? [Y/n]:
@@ -61,13 +60,6 @@ en|MSG_DETECTED_PACKAGE_MANAGER=Detected package manager:
 ja|MSG_ERROR_UNSUPPORTED_PACKAGE_MANAGER=サポートされていないパッケージマネージャーです。
 en|MSG_ERROR_UNSUPPORTED_PACKAGE_MANAGER=Unsupported package manager.
 
-# バージョン確認関連
-ja|MSG_VERSION_UNSUPPORTED=サポートされていない OpenWrt バージョンです。
-en|MSG_VERSION_UNSUPPORTED=Unsupported OpenWrt version.
-
-ja|MSG_VERSION_SUPPORTED=OpenWrtバージョンはサポートされています。
-en|MSG_VERSION_SUPPORTED=OpenWrt version is supported.
-
 # 共通関数関連
 ja|MSG_DOWNLOAD_COMMON_START=共通関数ファイルのダウンロードを開始します...
 en|MSG_DOWNLOAD_COMMON_START=Starting download of common functions...
@@ -97,15 +89,6 @@ en|MSG_EXECUTE_AIOS_FAIL=Failed to execute aios script.
 # Y/N 判定関連メッセージ
 ja|MSG_INVALID_SELECTION=無効な選択です。もう一度入力してください。
 en|MSG_INVALID_SELECTION=Invalid selection. Please try again.
-
-ja|MSG_SETTINGS_APPLIED=設定が正常に適用されました。
-en|MSG_SETTINGS_APPLIED=Settings applied successfully.
-
-ja|MSG_SETTINGS_CANCEL=設定は適用されませんでした。
-en|MSG_SETTINGS_CANCEL=Settings were not applied.
-
-ja|MSG_INSTALL_PROMPT=インストールを実行しますか？ [Y/n]:
-en|MSG_INSTALL_PROMPT=Do you want to proceed with the installation? [Y/n]:
 
 # 警告メッセージ (Warning Messages)
 ja|MSG_VERSION_MISMATCH_WARNING=バージョンの不一致が検出されました。継続しますが、問題が発生する可能性があります。

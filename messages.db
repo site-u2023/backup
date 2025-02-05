@@ -52,6 +52,17 @@ en|MSG_VERSION_UNSUPPORTED=Unsupported OpenWrt version.
 ja|MSG_VERSION_SUPPORTED=OpenWrtバージョンはサポートされています。
 en|MSG_VERSION_SUPPORTED=OpenWrt version is supported.
 
+# 共通関数関連
+ja|MSG_DOWNLOAD_COMMON_START=共通関数ファイルのダウンロードを開始します...
+en|MSG_DOWNLOAD_COMMON_START=Starting download of common functions...
+
+ja|MSG_DOWNLOAD_COMMON_SUCCESS=共通関数ファイルのダウンロードが完了しました。
+en|MSG_DOWNLOAD_COMMON_SUCCESS=Common functions downloaded successfully.
+
+ja|MSG_DOWNLOAD_COMMON_FAIL=共通関数ファイルのダウンロードに失敗しました。
+en|MSG_DOWNLOAD_COMMON_FAIL=Failed to download common functions.
+
+
 # 汎用インストールメッセージ
 ja|MSG_GENERIC_INSTALL_SUCCESS=インストールが正常に完了しました。
 en|MSG_GENERIC_INSTALL_SUCCESS=Installation completed successfully.

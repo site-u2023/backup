@@ -26,11 +26,9 @@ color() {
 # check_version_aios: aios.sh専用のシンプルなバージョンチェック関数
 #########################################################################
 check_version_aios() {
-    # OpenWrtバージョン取得
     local current_version
     current_version=$(awk -F"'" '/DISTRIB_RELEASE/ {print $2}' /etc/openwrt_release)
 
-    # サポートされているバージョンと比較
     if echo "$SUPPORTED_VERSIONS" | grep -qw "$current_version"; then
         echo -e "\033[1;32mOpenWrt version $current_version is supported.\033[0m"
     else

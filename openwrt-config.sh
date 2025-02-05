@@ -48,3 +48,12 @@ show_main_menu() {
         *) echo -e "$(color red "Invalid selection. Please try again.")"; sleep 2; show_main_menu ;;
     esac
 }
+
+# === 初期化処理 ===
+check_version
+check_language_support
+
+# === メイン実行 ===
+while true; do
+    show_main_menu
+done

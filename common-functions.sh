@@ -397,24 +397,30 @@ handle_exit() {
 }
 
 #########################################################################
-# install_language_pack: 言語パッケージの存在確認とインストール
-# messages.db に定義された言語パックを使用
+# install_packages
 #########################################################################
-install_language_pack() {
-    local base_pkg="$1"
-    local lang_pkg=$(get_message "PKG_${base_pkg^^}" "$SELECTED_LANGUAGE")  # messages.db からパッケージ名取得
+install_packages() {
+    local packages="$*"
+    local manager="$PACKAGE_MANAGER"
 
-    if [ -n "$lang_pkg" ]; then
-        if $PACKAGE_MANAGER list | grep -q "^$lang_pkg - "; then
-            $PACKAGE_MANAGER install $lang_pkg && echo -e "$(color green "Language pack installed: $lang_pkg")" || \
-            echo -e "$(color yellow "Failed to install language pack: $lang_pkg. Continuing...")"
-        else
-            echo -e "$(color cyan "Language pack not found in repo for: $lang_pkg. Skipping language pack...")"
-        fi
-    else
-        echo -e "$(color cyan "No language package defined for: $base_pkg in messages.db. Skipping...")"
+    echo -e "\033[1;34mInstalling packages: $packages using $manager...\033[0m"
+
+    # 最初の1回だけアップデート
+    if [ -z "$UPDATE_DONE" ]; then
+        case "$manager" in
+            apk)  apk update || handle_error "Failed to update APK." ;;
+            opkg) opkg update || handle_error "Failed to update OPKG." ;;
+            *)    handle_error "Unsupported package manager detected." ;;
+        esac
+        UPDATE_DONE=1
     fi
+
+    # 各パッケージを個別にインストール
+    for pkg in $packages; do
+        attempt_package_install "$pkg"
+    done
 }
+
 
 #########################################################################
 # attempt_package_install: 個別パッケージのインストールおよび言語パック適用

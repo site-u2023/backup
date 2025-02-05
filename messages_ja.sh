@@ -17,3 +17,7 @@ MSG_settings_cancel="設定は適用されませんでした。"
 MSG_error_occurred="エラーが発生しました。"
 MSG_unsupported_version="サポートされていない OpenWrt バージョンです。"
 MSG_unsupported_package_manager="サポートされていないパッケージマネージャーです。"
+
+# get_package_manager_and_status
+no_package_manager_found="対応するパッケージマネージャー（apk または opkg）が見つかりません。"
+detected_package_manager="検出されたパッケージマネージャー"

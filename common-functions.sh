@@ -79,7 +79,9 @@ download_file() {
     fi
 }
 
-# 国とタイムゾーン選択
+#########################################################################
+# select_country_and_timezone: 国とタイムゾーンの選択処理
+#########################################################################
 select_country_and_timezone() {
     local country_file="${BASE_DIR}/country-zone.sh"
 

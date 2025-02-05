@@ -6,7 +6,8 @@
 # 本スクリプトは、aios のインストール後に ttyd をインストールおよび設定するスクリプトです。
 # ・common-functions.sh を読み込んで共通関数を使用。
 # ・ttyd のインストールと設定を行い、サービスを有効化。
-echo ttyd.sh Last update 20250205-10
+
+echo ttyd.sh Last update 20250205-11
 
 # === 定数の設定 ===
 BASE_URL="https://raw.githubusercontent.com/site-u2023/aios/main"
@@ -18,7 +19,8 @@ INPUT_LANG="$1"
 # 共通エラー処理関数
 #########################################################################
 handle_error() {
-    echo -e "\033[1;31mERROR:\033[0m $1"
+    local msg=$(get_message "error_occurred" "$SELECTED_LANGUAGE")
+    echo -e "\033[1;31mERROR:\033[0m $msg: $1"
     exit 1
 }
 
@@ -33,27 +35,26 @@ download_common() {
 }
 
 #########################################################################
-# ttyd のインストール状況を確認し、未インストールの場合はインストール確認を実施
+# 言語サポートの初期化
+#########################################################################
+initialize_language_support() {
+    download_language_files  # 言語ファイルをダウンロード
+    check_language_common "$INPUT_LANG"  # 言語を確認・選択
+}
+
+#########################################################################
+# ttyd のインストール確認
 #########################################################################
 check_ttyd_installed() {
     if command -v ttyd >/dev/null 2>&1; then
         echo -e "\033[1;32mttyd is already installed.\033[0m"
     else
-        echo -e "\033[1;33mttyd is not installed.\033[0m"
-        confirm_installation
-    fi
-}
-
-#########################################################################
-# インストール確認プロンプト
-#########################################################################
-confirm_installation() {
-    echo -e "\033[1;34mDo you want to install ttyd?\033[0m"
-    if confirm_settings; then
-        install_ttyd
-    else
-        echo -e "\033[1;33mttyd installation was canceled.\033[0m"
-        exit 0
+        local install_prompt=$(get_message "install_prompt" "$SELECTED_LANGUAGE")
+        if confirm_settings "$install_prompt"; then
+            install_ttyd
+        else
+            handle_exit "$(get_message 'install_cancel' "$SELECTED_LANGUAGE")"
+        fi
     fi
 }
 
@@ -61,17 +62,16 @@ confirm_installation() {
 # ttyd のインストール
 #########################################################################
 install_ttyd() {
-    # バージョンデータベースを参照し、パッケージマネージャーとステータスを取得
-    get_package_manager_and_status
+    get_package_manager_and_status  # ダウンローダーの確認
 
     echo -e "\033[1;34mInstalling ttyd using $PACKAGE_MANAGER...\033[0m"
     case "$PACKAGE_MANAGER" in
         apk)
-            apk update
+            apk update || handle_error "Failed to update APK."
             apk add ttyd || handle_error "Failed to install ttyd using APK."
             ;;
         opkg)
-            opkg update
+            opkg update || handle_error "Failed to update OPKG."
             opkg install ttyd || handle_error "Failed to install ttyd using OPKG."
             ;;
         *)
@@ -85,10 +85,11 @@ install_ttyd() {
 # ttyd の設定とサービスの有効化
 #########################################################################
 ttyd_setting() {
-    echo -e "\033[1;34mConfiguring ttyd settings...\033[0m"
+    local config_prompt=$(get_message "apply_settings_prompt" "$SELECTED_LANGUAGE")
+    if confirm_settings "$config_prompt"; then
+        echo -e "\033[1;34mApplying ttyd settings...\033[0m"
 
-    # ttyd の基本設定
-    uci batch <<EOF
+        uci batch <<EOF
 set ttyd.@ttyd[0]=ttyd
 set ttyd.@ttyd[0].interface='@lan'
 set ttyd.@ttyd[0].command='/bin/login -f root'
@@ -97,28 +98,19 @@ add_list ttyd.@ttyd[0].client_option='theme={"background": "black"}'
 add_list ttyd.@ttyd[0].client_option='titleFixed=ttyd'
 EOF
 
-    # ttyd の追加インスタンス設定
-    uci batch <<EOF
-set ttyd.ttyd=ttyd
-set ttyd.ttyd.port='8888'
-set ttyd.ttyd.interface='@lan'
-set ttyd.ttyd.ipv6='1'
-set ttyd.ttyd.command='/bin/login -f root'
-add_list ttyd.ttyd.client_option='theme={"background": "blue"}'
-add_list ttyd.ttyd.client_option='titleFixed=aios'
-EOF
+        uci commit ttyd || handle_error "Failed to commit ttyd settings."
+        /etc/init.d/ttyd enable || handle_error "Failed to enable ttyd service."
+        /etc/init.d/ttyd restart || handle_error "Failed to restart ttyd service."
 
-    # 設定の反映とサービスの有効化
-    uci commit ttyd || handle_error "Failed to commit ttyd settings."
-    /etc/init.d/ttyd enable || handle_error "Failed to enable ttyd service."
-    /etc/init.d/ttyd restart || handle_error "Failed to restart ttyd service."
-
-    echo -e "\033[1;32mttyd has been configured and started successfully.\033[0m"
+        echo -e "\033[1;32m$(get_message 'settings_applied' "$SELECTED_LANGUAGE")\033[0m"
+    else
+        handle_exit "$(get_message 'settings_cancel' "$SELECTED_LANGUAGE")"
+    fi
 }
 
 #########################################################################
 # メイン処理
 #########################################################################
 download_common
-check_common "$INPUT_LANG"
+initialize_language_support
 check_ttyd_installed

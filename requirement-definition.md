@@ -270,6 +270,7 @@ _Last update: 20250205-7_
 | **configure_ttyd**                 | `ttyd` の設定と有効化。                                               | `ttyd.sh`                                    |
 | **print_banner**                   | 多言語対応のバナー表示。                                              | `aios`, `openwrt-config.sh`                 |
 | **print_colored_message**          | カラーコードを利用したメッセージ表示。                                | 全スクリプト                                 |
+| **confirm_settings**               |
 ```
 ## キャッシュファイルの定義
 ```

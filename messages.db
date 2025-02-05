@@ -1,5 +1,5 @@
-MESSAGE_DB_VERSIONS="2025.02.05-rc1"
-echo "messages.db Last update: $MESSAGE_DB_VERSIONS"
+MESSAGE_DB_VERSION="2025.02.05-rc1"
+echo "messages.db Last update: $MESSAGE_DB_VERSION"
 
 # バナー用メッセージ
 ja|MSG_BANNER=オープンダブルアールティー専用設定ソフトウェア\nオールインワンスクリプト\n免責事項: 本スクリプトは自己責任でご使用下さい

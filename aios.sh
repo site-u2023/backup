@@ -2,7 +2,7 @@
 # License: CC0
 # OpenWrt >= 19.07
 AIOS_SH_VERSION="2025.02.05-rc1"
-echo "aios.sh Last update: $AIOS_VERSION"
+echo "aios.sh Last update: $AIOS_SH_VERSION"
 
 # 定数の設定
 BASE_WGET="wget --quiet -O"

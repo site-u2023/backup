@@ -22,6 +22,15 @@ handle_error() {
 }
 
 #########################################################################
+# 正常終了処理関数
+#########################################################################
+handle_exit() {
+    local msg="$1"
+    echo -e "\033[1;33m$msg\033[0m"
+    exit 0
+}
+
+#########################################################################
 # 共通関数のダウンロードおよび読み込み
 #########################################################################
 download_common() {
@@ -35,7 +44,7 @@ download_common() {
 # 言語サポートの初期化
 #########################################################################
 initialize_language_support() {
-    download_language_messages  # 言語ファイルをダウンロード
+    download_language_files  # 言語ファイルをダウンロード
     check_language_common "$INPUT_LANG"  # 言語を確認・選択
 }
 
@@ -47,7 +56,7 @@ check_ttyd_installed() {
         echo -e "\033[1;32mttyd is already installed.\033[0m"
     else
         local install_prompt=$(get_message "MSG_INSTALL_PROMPT" "$SELECTED_LANGUAGE")
-        if confirm_settings "$install_prompt"; then
+        if confirm_action "MSG_INSTALL_PROMPT"; then
             install_ttyd
         else
             handle_exit "$(get_message 'MSG_INSTALL_CANCEL' "$SELECTED_LANGUAGE")"
@@ -83,7 +92,7 @@ install_ttyd() {
 #########################################################################
 ttyd_setting() {
     local config_prompt=$(get_message "MSG_CONFIRM_SETTINGS" "$SELECTED_LANGUAGE")
-    if confirm_settings "$config_prompt"; then
+    if confirm_action "MSG_CONFIRM_SETTINGS"; then
         echo -e "\033[1;34mApplying ttyd settings...\033[0m"
 
         uci batch <<EOF

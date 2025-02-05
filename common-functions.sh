@@ -149,9 +149,10 @@ check_version_common() {
     local version_file="${BASE_DIR}/check_version"
     local supported_versions_db="${BASE_DIR}/supported_versions.db"
 
-    # バージョンデータベースをダウンロード（ない場合）
+    # バージョンデータベースが無い場合はダウンロード
     if [ ! -f "$supported_versions_db" ]; then
-        download_supported_versions_db || handle_error "$(get_message 'download_fail' "$SELECTED_LANGUAGE"): supported_versions.db"
+        download_supported_versions_db || handle_error \
+            "$(get_message 'download_fail' "$SELECTED_LANGUAGE"): supported_versions.db"
     fi
 
     # バージョンをキャッシュファイル or /etc/openwrt_release から取得
@@ -162,48 +163,47 @@ check_version_common() {
         echo "$CURRENT_VERSION" > "$version_file"
     fi
 
-    # supported_versions.db に該当バージョンがあるかチェック
+    # supported_versions.db にエントリがあるか
     if grep -q "^$CURRENT_VERSION=" "$supported_versions_db"; then
-        # 例: “24.10.0=apk|stable” → db_entry="apk|stable"
         local db_entry db_manager db_status
+        # 例: "24.10.0=apk|stable" → db_entry="apk|stable"
         db_entry=$(grep "^$CURRENT_VERSION=" "$supported_versions_db" | cut -d'=' -f2)
-        db_manager=$(echo "$db_entry" | cut -d'|' -f1)
-        db_status=$(echo "$db_entry" | cut -d'|' -f2)
+        db_manager=$(echo "$db_entry" | cut -d'|' -f1)   # "apk" など
+        db_status=$(echo "$db_entry" | cut -d'|' -f2)    # "stable" など
 
+        # 初期値を設定
         PACKAGE_MANAGER="$db_manager"
         VERSION_STATUS="$db_status"
 
-        ################################################################
-        # ここからがポイント: 実際に apk / opkg が存在するかチェックして
-        # なければフォールバックする。
-        ################################################################
-        if [ "$PACKAGE_MANAGER" = "apk" ]; then
-            if ! command -v apk >/dev/null 2>&1; then
-                # apk が見つからないので opkg を試す
-                if command -v opkg >/dev/null 2>&1; then
-                    PACKAGE_MANAGER="opkg"
-                else
-                    handle_error "No valid package manager found. 'apk' not found, and 'opkg' not found."
+        # === ここからフォールバックロジック ===
+        case "$PACKAGE_MANAGER" in
+            apk)
+                if ! command -v apk >/dev/null 2>&1; then
+                    if command -v opkg >/dev/null 2>&1; then
+                        PACKAGE_MANAGER="opkg"
+                    else
+                        handle_error "No valid package manager found. 'apk' not found, 'opkg' not found."
+                    fi
                 fi
-            fi
-        elif [ "$PACKAGE_MANAGER" = "opkg" ]; then
-            if ! command -v opkg >/dev/null 2>&1; then
-                # opkg が見つからないので apk を試す
-                if command -v apk >/dev/null 2>&1; then
-                    PACKAGE_MANAGER="apk"
-                else
-                    handle_error "No valid package manager found. 'opkg' not found, and 'apk' not found."
+                ;;
+            opkg)
+                if ! command -v opkg >/dev/null 2>&1; then
+                    if command -v apk >/dev/null 2>&1; then
+                        PACKAGE_MANAGER="apk"
+                    else
+                        handle_error "No valid package manager found. 'opkg' not found, 'apk' not found."
+                    fi
                 fi
-            fi
-        else
-            # それ以外が書かれていた場合の処理
-            handle_error "Unsupported package manager: $PACKAGE_MANAGER in $supported_versions_db for version $CURRENT_VERSION"
-        fi
-        ################################################################
+                ;;
+            *)
+                handle_error "Unsupported package manager: $PACKAGE_MANAGER (from $supported_versions_db)"
+                ;;
+        esac
+        # === フォールバックロジックここまで ===
 
-        # バージョンサポートメッセージを出力
         echo -e "\033[1;32m$(get_message 'version_supported' "$SELECTED_LANGUAGE"): $CURRENT_VERSION ($VERSION_STATUS)\033[0m"
     else
+        # supported_versions.db に該当バージョンが無い場合
         handle_error "$(get_message 'unsupported_version' "$SELECTED_LANGUAGE"): $CURRENT_VERSION"
     fi
 }
@@ -440,19 +440,13 @@ install_packages() {
 
     echo -e "\033[1;34mInstalling packages: $packages using $manager...\033[0m"
 
+    # 最初の1回だけ update
     if [ -z "$UPDATE_DONE" ]; then
         case "$manager" in
             apk)
-                # apk コマンドが存在するかもう一度確認してもOK
-                if ! command -v apk >/dev/null 2>&1; then
-                    handle_error "apk is not available, but manager=apk. Check fallback logic."
-                fi
                 apk update || handle_error "Failed to update APK."
                 ;;
             opkg)
-                if ! command -v opkg >/dev/null 2>&1; then
-                    handle_error "opkg is not available, but manager=opkg. Check fallback logic."
-                fi
                 opkg update || handle_error "Failed to update OPKG."
                 ;;
             *)
@@ -462,7 +456,7 @@ install_packages() {
         UPDATE_DONE=1
     fi
 
-    # 各パッケージを個別にインストール
+    # 各パッケージをインストール
     for pkg in $packages; do
         attempt_package_install "$pkg"
     done

@@ -2,10 +2,7 @@
 # License: CC0
 # OpenWrt >= 19.07
 # ttyd.sh
-#
-# 本スクリプトは、aios のインストール後に ttyd をインストールおよび設定するスクリプトです。
-# ・common-functions.sh を読み込んで共通関数を使用。
-# ・ttyd のインストールと設定を行い、サービスを有効化。
+
 TTYD_SH_VERSION="2025.02.05-rc1"
 echo "ttyd.sh Last update: $TTYD_SH_VERSION"
 
@@ -19,7 +16,7 @@ INPUT_LANG="$1"
 # 共通エラー処理関数
 #########################################################################
 handle_error() {
-    local msg=$(get_message "error_occurred" "$SELECTED_LANGUAGE")
+    local msg=$(get_message "MSG_ERROR_OCCURRED" "$SELECTED_LANGUAGE")
     echo -e "\033[1;31mERROR:\033[0m $msg: $1"
     exit 1
 }
@@ -38,7 +35,7 @@ download_common() {
 # 言語サポートの初期化
 #########################################################################
 initialize_language_support() {
-    download_language_files  # 言語ファイルをダウンロード
+    download_language_messages  # 言語ファイルをダウンロード
     check_language_common "$INPUT_LANG"  # 言語を確認・選択
 }
 
@@ -49,11 +46,11 @@ check_ttyd_installed() {
     if command -v ttyd >/dev/null 2>&1; then
         echo -e "\033[1;32mttyd is already installed.\033[0m"
     else
-        local install_prompt=$(get_message "install_prompt" "$SELECTED_LANGUAGE")
+        local install_prompt=$(get_message "MSG_INSTALL_PROMPT" "$SELECTED_LANGUAGE")
         if confirm_settings "$install_prompt"; then
             install_ttyd
         else
-            handle_exit "$(get_message 'install_cancel' "$SELECTED_LANGUAGE")"
+            handle_exit "$(get_message 'MSG_INSTALL_CANCEL' "$SELECTED_LANGUAGE")"
         fi
     fi
 }
@@ -85,7 +82,7 @@ install_ttyd() {
 # ttyd の設定とサービスの有効化
 #########################################################################
 ttyd_setting() {
-    local config_prompt=$(get_message "apply_settings_prompt" "$SELECTED_LANGUAGE")
+    local config_prompt=$(get_message "MSG_CONFIRM_SETTINGS" "$SELECTED_LANGUAGE")
     if confirm_settings "$config_prompt"; then
         echo -e "\033[1;34mApplying ttyd settings...\033[0m"
 
@@ -102,9 +99,9 @@ EOF
         /etc/init.d/ttyd enable || handle_error "Failed to enable ttyd service."
         /etc/init.d/ttyd restart || handle_error "Failed to restart ttyd service."
 
-        echo -e "\033[1;32m$(get_message 'settings_applied' "$SELECTED_LANGUAGE")\033[0m"
+        echo -e "\033[1;32m$(get_message 'MSG_SETTINGS_APPLIED' "$SELECTED_LANGUAGE")\033[0m"
     else
-        handle_exit "$(get_message 'settings_cancel' "$SELECTED_LANGUAGE")"
+        handle_exit "$(get_message 'MSG_SETTINGS_CANCEL' "$SELECTED_LANGUAGE")"
     fi
 }
 
@@ -112,9 +109,7 @@ EOF
 # メイン処理
 #########################################################################
 download_common
-download_supported_versions_db
-check_language_common
-download_language_messages
 initialize_language_support
+download_supported_versions_db
 check_version_common
 check_ttyd_installed

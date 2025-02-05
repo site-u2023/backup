@@ -355,10 +355,11 @@ get_package_manager_and_status() {
     if [ -f "${BASE_DIR}/downloader_cache" ]; then
         PACKAGE_MANAGER=$(cat "${BASE_DIR}/downloader_cache")
     else
-        if command -v apk >/dev/null 2>&1; then
-            PACKAGE_MANAGER="apk"
-        elif command -v opkg >/dev/null 2>&1; then
+        # パッケージマネージャーの存在確認
+        if command -v opkg >/dev/null 2>&1 && opkg list | grep -q "^ttyd - "; then
             PACKAGE_MANAGER="opkg"
+        elif command -v apk >/dev/null 2>&1 && apk search ttyd >/dev/null 2>&1; then
+            PACKAGE_MANAGER="apk"
         else
             handle_error "$(get_message 'no_package_manager_found' "$SELECTED_LANGUAGE")"
         fi

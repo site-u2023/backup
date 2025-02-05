@@ -21,3 +21,7 @@ MSG_unsupported_package_manager="サポートされていないパッケージ�
 # get_package_manager_and_status
 no_package_manager_found="対応するパッケージマネージャー（apk または opkg）が見つかりません。"
 detected_package_manager="検出されたパッケージマネージャー"
+
+# check_version_common
+unsupported_version="サポートされていないOpenWrtバージョン"
+version_supported="OpenWrtバージョンはサポートされています"

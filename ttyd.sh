@@ -22,21 +22,11 @@ handle_error() {
 }
 
 #########################################################################
-# 正常終了処理関数
-#########################################################################
-handle_exit() {
-    local msg="$1"
-    echo -e "\033[1;33m$msg\033[0m"
-    exit 0
-}
-
-#########################################################################
 # 共通関数のダウンロードおよび読み込み
 #########################################################################
 download_common() {
-    if [ ! -f "${BASE_DIR}/common-functions.sh" ]; then
-        wget --quiet -O "${BASE_DIR}/common-functions.sh" "${BASE_URL}/common-functions.sh" || handle_error "Failed to download common-functions.sh"
-    fi
+    ensure_file "common-functions.sh"
+    ensure_file "messages.db"
     . "${BASE_DIR}/common-functions.sh" || handle_error "Failed to source common-functions.sh"
 }
 
@@ -44,7 +34,6 @@ download_common() {
 # 言語サポートの初期化
 #########################################################################
 initialize_language_support() {
-    download_language_files  # 言語ファイルをダウンロード
     check_language_common "$INPUT_LANG"  # 言語を確認・選択
 }
 
@@ -59,7 +48,8 @@ check_ttyd_installed() {
         if confirm_action "MSG_INSTALL_PROMPT"; then
             install_ttyd
         else
-            handle_exit "$(get_message 'MSG_INSTALL_CANCEL' "$SELECTED_LANGUAGE")"
+            echo "$(get_message 'MSG_INSTALL_CANCEL' "$SELECTED_LANGUAGE")"
+            exit 0
         fi
     fi
 }
@@ -91,11 +81,9 @@ install_ttyd() {
 # ttyd の設定とサービスの有効化
 #########################################################################
 ttyd_setting() {
-    local config_prompt=$(get_message "MSG_CONFIRM_SETTINGS" "$SELECTED_LANGUAGE")
-    if confirm_action "MSG_CONFIRM_SETTINGS"; then
-        echo -e "\033[1;34mApplying ttyd settings...\033[0m"
+    echo -e "\033[1;34mApplying ttyd settings...\033[0m"
 
-        uci batch <<EOF
+    uci batch <<EOF
 set ttyd.@ttyd[0]=ttyd
 set ttyd.@ttyd[0].interface='@lan'
 set ttyd.@ttyd[0].command='/bin/login -f root'
@@ -104,19 +92,17 @@ add_list ttyd.@ttyd[0].client_option='theme={"background": "black"}'
 add_list ttyd.@ttyd[0].client_option='titleFixed=ttyd'
 EOF
 
-        uci commit ttyd || handle_error "Failed to commit ttyd settings."
-        /etc/init.d/ttyd enable || handle_error "Failed to enable ttyd service."
-        /etc/init.d/ttyd restart || handle_error "Failed to restart ttyd service."
+    uci commit ttyd || handle_error "Failed to commit ttyd settings."
+    /etc/init.d/ttyd enable || handle_error "Failed to enable ttyd service."
+    /etc/init.d/ttyd restart || handle_error "Failed to restart ttyd service."
 
-        echo -e "\033[1;32m$(get_message 'MSG_SETTINGS_APPLIED' "$SELECTED_LANGUAGE")\033[0m"
-    else
-        handle_exit "$(get_message 'MSG_SETTINGS_CANCEL' "$SELECTED_LANGUAGE")"
-    fi
+    echo -e "\033[1;32m$(get_message 'MSG_SETTINGS_APPLIED' "$SELECTED_LANGUAGE")\033[0m"
 }
 
 #########################################################################
 # メイン処理
 #########################################################################
+mkdir -p "$BASE_DIR"
 download_common
 initialize_language_support
 download_supported_versions_db

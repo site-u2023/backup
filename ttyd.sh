@@ -112,6 +112,7 @@ EOF
 # メイン処理
 #########################################################################
 download_common
+download_supported_versions_db
 initialize_language_support
 check_version_common
 check_ttyd_installed

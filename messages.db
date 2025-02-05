@@ -1,3 +1,6 @@
+MESSAGE_DB="2025.02.05-rc1"
+echo "messages.db Last update: $MESSAGE_DB"
+
 # バナー用メッセージ
 ja|MSG_BANNER=オープンダブルアールティー専用設定ソフトウェア\nオールインワンスクリプト\n免責事項: 本スクリプトは自己責任でご使用下さい
 zh-cn|MSG_BANNER=欧鹏达布里阿尔提封装配置软件\n全面集成脚本\n声明: 使用本脚本风险自承

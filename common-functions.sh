@@ -72,20 +72,29 @@ download_version_db() {
 }
 
 #########################################################################
-# check_version_common: OpenWrt バージョンの確認とキャッシュ
+# バージョン確認とパッケージマネージャーの取得関数
 #########################################################################
 check_version_common() {
-    if [ -f "${BASE_DIR}/check_version" ]; then
-        current_version=$(cat "${BASE_DIR}/check_version")
+    local version_file="${BASE_DIR}/check_version"
+    local supported_versions_db="${BASE_DIR}/supported_versions.db"
+
+    # キャッシュされたバージョンが存在するか確認
+    if [ -f "$version_file" ]; then
+        CURRENT_VERSION=$(cat "$version_file")
     else
-        current_version=$(awk -F"'" '/DISTRIB_RELEASE/ {print $2}' /etc/openwrt_release)
-        echo "$current_version" > "${BASE_DIR}/check_version"
+        # バージョン情報を /etc/openwrt_release から取得
+        CURRENT_VERSION=$(awk -F"'" '/DISTRIB_RELEASE/ {print $2}' /etc/openwrt_release)
+        echo "$CURRENT_VERSION" > "$version_file"
     fi
 
-    if grep -q "^${current_version}$" "${BASE_DIR}/supported_versions.db"; then
-        echo -e "\033[1;32mOpenWrt version ${current_version} is supported.\033[0m"
+    # バージョンがサポートされているか確認
+    if grep -q "^$CURRENT_VERSION=" "$supported_versions_db"; then
+        PACKAGE_MANAGER=$(grep "^$CURRENT_VERSION=" "$supported_versions_db" | cut -d'=' -f2 | cut -d'|' -f1)
+        VERSION_STATUS=$(grep "^$CURRENT_VERSION=" "$supported_versions_db" | cut -d'=' -f2 | cut -d'|' -f2)
+
+        echo -e "\033[1;32m$(get_message 'version_supported' "$SELECTED_LANGUAGE"): $CURRENT_VERSION ($VERSION_STATUS)\033[0m"
     else
-        handle_error "Unsupported OpenWrt version: ${current_version}"
+        handle_error "$(get_message 'unsupported_version' "$SELECTED_LANGUAGE"): $CURRENT_VERSION"
     fi
 }
 
@@ -108,6 +117,19 @@ check_language_common() {
         done
     fi
     echo -e "\033[1;32mLanguage supported: $SELECTED_LANGUAGE\033[0m"
+}
+
+#########################################################################
+# download_language_files: 必要な言語ファイルをダウンロード
+#########################################################################
+download_language_files() {
+    for lang in $SUPPORTED_LANGUAGES; do
+        if [ ! -f "${BASE_DIR}/messages_${lang}.sh" ]; then
+            wget --quiet -O "${BASE_DIR}/messages_${lang}.sh" "${BASE_URL}/messages_${lang}.sh" || {
+                echo "Failed to download language file: messages_${lang}.sh"
+            }
+        fi
+    done
 }
 
 #########################################################################
@@ -196,7 +218,7 @@ country_full_info() {
 }
 
 #########################################################################
-# get_package_manager_and_status: パッケージマネージャーの確認とキャッシュ
+# パッケージマネージャー判定関数（apk / opkg 対応）
 #########################################################################
 get_package_manager_and_status() {
     if [ -f "${BASE_DIR}/downloader_cache" ]; then
@@ -207,10 +229,11 @@ get_package_manager_and_status() {
         elif command -v opkg >/dev/null 2>&1; then
             PACKAGE_MANAGER="opkg"
         else
-            handle_error "No supported package manager (apk or opkg) found."
+            handle_error "$(get_message 'no_package_manager_found' "$SELECTED_LANGUAGE")"
         fi
         echo "$PACKAGE_MANAGER" > "${BASE_DIR}/downloader_cache"
     fi
+    echo -e "\033[1;32m$(get_message 'detected_package_manager' "$SELECTED_LANGUAGE"): $PACKAGE_MANAGER\033[0m"
 }
 
 #########################################################################

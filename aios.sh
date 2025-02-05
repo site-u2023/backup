@@ -1,7 +1,7 @@
 #!/bin/sh
 # License: CC0
 # OpenWrt >= 19.07
-echo aios.sh Last update: 20250205-14
+echo aios.sh Last update: 20250205-15
 
 # 定数の設定
 BASE_WGET="wget --quiet -O"
@@ -79,9 +79,13 @@ check_version_aios() {
 # 共通関数のダウンロードと読み込み
 #########################################################################
 load_common_functions() {
-    color cyan "$(get_message 'MSG_DOWNLOAD_COMMON_START')"
+    color cyan "Starting download of common functions..."  # 直接メッセージ
     download_script "${BASE_DIR}/common-functions.sh" "common-functions.sh"
-    . "${BASE_DIR}/common-functions.sh" || handle_error "$(get_message 'MSG_DOWNLOAD_COMMON_FAIL')"
+    
+    # 共通関数を読み込み
+    . "${BASE_DIR}/common-functions.sh" || handle_error "Failed to load common-functions.sh"
+    
+    # 共通関数が読み込まれた後に get_message を使用
     color green "$(get_message 'MSG_DOWNLOAD_COMMON_SUCCESS')"
 }
 

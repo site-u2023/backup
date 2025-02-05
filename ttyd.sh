@@ -33,35 +33,6 @@ download_common() {
 }
 
 #########################################################################
-# バージョンに基づくパッケージマネージャーの決定
-#########################################################################
-determine_package_manager() {
-    local openwrt_version
-    openwrt_version=$(awk -F"'" '/DISTRIB_RELEASE/{print $2}' /etc/openwrt_release)
-
-    # バージョンデータベースをダウンロード
-    if [ ! -f "${BASE_DIR}/versions-common.db" ]; then
-        wget --quiet -O "${BASE_DIR}/versions-common.db" "${BASE_URL}/versions-common.db" || handle_error "Failed to download versions-common.db"
-    fi
-
-    # データベースに基づいてパッケージマネージャーを決定
-    PACKAGE_MANAGER=$(grep "^${openwrt_version}=" "${BASE_DIR}/versions-common.db" | cut -d'=' -f2)
-
-    # データベースに情報がない場合は自動検出
-    if [ -z "$PACKAGE_MANAGER" ]; then
-        if echo "$openwrt_version" | grep -q "SNAPSHOT"; then
-            PACKAGE_MANAGER="apk"
-        elif command -v apk >/dev/null 2>&1; then
-            PACKAGE_MANAGER="apk"
-        elif command -v opkg >/dev/null 2>&1; then
-            PACKAGE_MANAGER="opkg"
-        else
-            handle_error "No supported package manager (apk or opkg) found."
-        fi
-    fi
-}
-
-#########################################################################
 # ttyd のインストール状況を確認し、未インストールの場合はインストール
 #########################################################################
 check_ttyd_installed() {
@@ -77,7 +48,8 @@ check_ttyd_installed() {
 # ttyd のインストール
 #########################################################################
 install_ttyd() {
-    determine_package_manager
+    # バージョンデータベースを参照し、パッケージマネージャーとステータスを取得
+    get_package_manager_and_status
 
     echo -e "\033[1;34mInstalling ttyd using $PACKAGE_MANAGER...\033[0m"
     case "$PACKAGE_MANAGER" in
@@ -90,7 +62,7 @@ install_ttyd() {
             opkg install ttyd || handle_error "Failed to install ttyd using OPKG."
             ;;
         *)
-            handle_error "Unsupported package manager specified: $PACKAGE_MANAGER"
+            handle_error "Unsupported package manager detected."
             ;;
     esac
     ttyd_setting
@@ -112,7 +84,7 @@ add_list ttyd.@ttyd[0].client_option='theme={"background": "black"}'
 add_list ttyd.@ttyd[0].client_option='titleFixed=ttyd'
 EOF
 
-    # ttyd の追加インスタンス設定（必要に応じて変更）
+    # ttyd の追加インスタンス設定
     uci batch <<EOF
 set ttyd.ttyd=ttyd
 set ttyd.ttyd.port='8888'

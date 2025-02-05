@@ -180,7 +180,7 @@ download_version_db() {
 # バージョン確認とパッケージマネージャーの取得関数
 #########################################################################
 check_version_common() {
-    local check_version="${BASE_DIR}/check_version"
+    local version_file="${BASE_DIR}/check_version"
     local supported_versions_db="${BASE_DIR}/supported_versions.db"
 
     # バージョンデータベースが無い場合はダウンロード
@@ -190,14 +190,14 @@ check_version_common() {
     fi
 
     # バージョンをキャッシュファイル or /etc/openwrt_release から取得
-    if [ -f "$check_version" ]; then
-        CURRENT_VERSION=$(cat "$check_version")
+    if [ -f "$version_file" ]; then
+        CURRENT_VERSION=$(cat "version_file")
     else
         CURRENT_VERSION=$(awk -F"'" '/DISTRIB_RELEASE/ {print $2}' /etc/openwrt_release)
         # --- ハイフン '-' 以降を削除し、19.07-rc1 → 19.07, 23.05-2 → 23.05 にする ---
         CURRENT_VERSION=$(echo "$CURRENT_VERSION" | cut -d'-' -f1)
 
-        echo "$CURRENT_VERSION" > ${BASE_DIR}/check_version
+        echo "$CURRENT_VERSION" > "version_file"
     fi
 
     # supported_versions.db にエントリがあるか

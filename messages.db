@@ -62,6 +62,21 @@ en|MSG_DOWNLOAD_COMMON_SUCCESS=Common functions downloaded successfully.
 ja|MSG_DOWNLOAD_COMMON_FAIL=共通関数ファイルのダウンロードに失敗しました。
 en|MSG_DOWNLOAD_COMMON_FAIL=Failed to download common functions.
 
+# スクリプト関連
+ja|MSG_DOWNLOAD_AIOS_START=aios スクリプトのダウンロードを開始します...
+en|MSG_DOWNLOAD_AIOS_START=Starting download of aios script...
+
+ja|MSG_DOWNLOAD_AIOS_SUCCESS=aios スクリプトのダウンロードが完了しました。
+en|MSG_DOWNLOAD_AIOS_SUCCESS=aios script downloaded successfully.
+
+ja|MSG_EXECUTE_AIOS_START=aios スクリプトを実行します...
+en|MSG_EXECUTE_AIOS_START=Executing aios script...
+
+ja|MSG_EXECUTE_AIOS_SUCCESS=aios スクリプトの実行が完了しました。
+en|MSG_EXECUTE_AIOS_SUCCESS=aios script executed successfully.
+
+ja|MSG_EXECUTE_AIOS_FAIL=aios スクリプトの実行に失敗しました。
+en|MSG_EXECUTE_AIOS_FAIL=Failed to execute aios script.
 
 # 汎用インストールメッセージ
 ja|MSG_GENERIC_INSTALL_SUCCESS=インストールが正常に完了しました。

@@ -414,21 +414,31 @@ install_packages() {
 
     echo -e "\033[1;34mInstalling packages: $packages using $manager...\033[0m"
 
-    case "$manager" in
-        apk)
-            apk update || handle_error "Failed to update APK."
-            apk add $packages || handle_error "Failed to install packages using APK."
-            ;;
-        opkg)
-            opkg update || handle_error "Failed to update OPKG."
-            opkg install $packages || handle_error "Failed to install packages using OPKG."
-            ;;
-        *)
-            handle_error "Unsupported package manager detected."
-            ;;
-    esac
+    # パッケージマネージャーの update は一度だけ実行
+    if [ -z "$UPDATE_DONE" ]; then
+        case "$manager" in
+            apk)
+                apk update || handle_error "Failed to update APK."
+                ;;
+            opkg)
+                opkg update || handle_error "Failed to update OPKG."
+                ;;
+            *)
+                handle_error "Unsupported package manager detected."
+                ;;
+        esac
+        UPDATE_DONE=1
+    fi
 
-    echo -e "$(color green "Installed packages: $packages")"
+    # 各パッケージを個別にインストールして存在確認
+    for pkg in $packages; do
+        if $manager list | grep -q "^$pkg - "; then
+            $manager install $pkg && echo -e "$(color green "Successfully installed: $pkg")" || \
+            echo -e "$(color yellow "Failed to install: $pkg. Continuing...")"
+        else
+            echo -e "$(color yellow "Package not found: $pkg. Skipping...")"
+        fi
+    done
 }
 
 #########################################################################

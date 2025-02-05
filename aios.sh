@@ -98,5 +98,7 @@ color cyan "Downloading aios script..."
 download_script "/usr/bin/aios" "aios"
 chmod +x /usr/bin/aios || handle_error "Failed to chmod /usr/bin/aios"
 
-# (G) 終了メッセージ
-color green "All steps completed. You can now run 'aios' command."
+color cyan "Launching aios main script..."
+/usr/bin/aios "$INPUT_LANG"
+ 
+color green "All steps completed after running 'aios'."

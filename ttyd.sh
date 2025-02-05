@@ -7,7 +7,7 @@
 # ・common-functions.sh を読み込んで共通関数を使用。
 # ・ttyd のインストールと設定を行い、サービスを有効化。
 TTYD_VERSION="2025.02.05-rc1"
-echo "aios Last update: $TTYD_VERSION"
+echo "ttyd Last update: $TTYD_VERSION"
 
 # === 定数の設定 ===
 BASE_URL="https://raw.githubusercontent.com/site-u2023/aios/main"

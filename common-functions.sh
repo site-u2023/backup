@@ -206,7 +206,7 @@ country_full_info() {
 }
 
 #########################################################################
-# バージョンに基づくパッケージマネージャーの決定
+# get_package_manager_and_status: バージョンDBを参照し、適切なパッケージマネージャーとステータスを取得
 #########################################################################
 get_package_manager_and_status() {
     local openwrt_version
@@ -220,7 +220,7 @@ get_package_manager_and_status() {
         PACKAGE_MANAGER=$(echo "$version_info" | cut -d'=' -f2 | cut -d'|' -f1)
         VERSION_STATUS=$(echo "$version_info" | cut -d'|' -f2)
     else
-        # スナップショットは常にapkを使用
+        # SNAPSHOT バージョンは常に apk を使用
         if echo "$openwrt_version" | grep -q "SNAPSHOT"; then
             PACKAGE_MANAGER="apk"
             VERSION_STATUS="snapshot"
@@ -229,6 +229,7 @@ get_package_manager_and_status() {
         fi
     fi
 }
+
 
 # === 初期化処理 ===
 check_version

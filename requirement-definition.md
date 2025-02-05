@@ -271,6 +271,8 @@ _Last update: 20250205-7_
 | **print_banner**                   | 多言語対応のバナー表示。                                              | `aios`, `openwrt-config.sh`                 |
 | **print_colored_message**          | カラーコードを利用したメッセージ表示。                                | 全スクリプト                                 |
 | **confirm_settings**               |
+| **get_message**                    | 多言語対応
+| **download_language_file**         | 言語ファイルの自動ダウンロード
 ```
 ## キャッシュファイルの定義
 ```
@@ -281,6 +283,13 @@ _Last update: 20250205-7_
 | **downloader_cache**       | パッケージマネージャー（apk / opkg）の判定キャッシュ。 | `${BASE_DIR}/downloader_cache` |
 ```
 
+## 言語別メッセージファイル
+```
+|
+|----------------------
+| **messages_en.sh**  | 英語メッセージ
+| **messages_ja.sh**  | 日本語メッセージ
+```
 
 ## 3. 更新方針
 - 関数名の変更は、要件定義のアップデートと全スクリプトへの反映を伴う。

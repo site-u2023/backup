@@ -70,12 +70,15 @@ handle_error() {
 # エラーハンドリング強化
 #########################################################################
 load_common_functions() {
-    ensure_file "common-functions.sh"
-    
-    # 共通関数を読み込み、エラーがあれば明確なメッセージで終了
-    . "${BASE_DIR}/common-functions.sh" || handle_error "Failed to load common-functions.sh"
+    if [ ! -f "${BASE_DIR}/common-functions.sh" ]; then
+        ensure_file "common-functions.sh"
+    fi
 
-    # バージョン互換性チェックをここで実施
+    if ! grep -q "COMMON_FUNCTIONS_SH_VERSION" "${BASE_DIR}/common-functions.sh"; then
+        handle_error "Invalid common-functions.sh file structure."
+    fi
+
+    . "${BASE_DIR}/common-functions.sh" || handle_error "Failed to load common-functions.sh"
     check_version_compatibility
 }
 
@@ -95,13 +98,14 @@ ensure_file() {
 # 共通関数バージョン互換性チェック
 #########################################################################
 check_version_compatibility() {
-    COMMON_FUNCTIONS_SH_VERSION="2025.02.0"
+    
 
     # common-functions.sh のバージョンチェック
-    COMMON_FUNCTIONS_VERSION=$(grep "^COMMON_FUNCTIONS_VERSION=" "${BASE_DIR}/common-functions.sh" | cut -d'=' -f2 | tr -d '"')
-    if [ "$COMMON_FUNCTIONS_VERSION" != "$COMMON_FUNCTIONS_SH_VERSION" ]; then
-        handle_error "$(get_message 'MSG_VERSION_UNSUPPORTED'): common-functions.sh ($COMMON_FUNCTIONS_VERSION). Required: $COMMON_FUNCTIONS_SH_VERSION"
+    COMMON_FUNCTIONS_VERSION=$(grep "^COMMON_FUNCTIONS_SH_VERSION=" "${BASE_DIR}/common-functions.sh" | cut -d'=' -f2 | tr -d '"')
+    if ! echo "$COMMON_FUNCTIONS_VERSION" | grep -Eq "^(${REQUIRED_VERSION}|${REQUIRED_VERSION}-rc[0-9]+|SNAPSHOT)$"; then
+        handle_error "$(get_message 'MSG_VERSION_UNSUPPORTED'): common-functions.sh ($COMMON_FUNCTIONS_VERSION). Required: $REQUIRED_VERSION"
     fi
+}
 
     # messages.db のバージョンチェック
     if [ -f "${BASE_DIR}/messages.db" ]; then
@@ -245,45 +249,7 @@ download_messages_db() {
 #########################################################################
 # Y/N 判定関数
 #########################################################################
-check_language_common() {
-    if [ -f "${BASE_DIR}/language_cache" ]; then
-        SELECTED_LANGUAGE=$(cat "${BASE_DIR}/language_cache")
-    else
-        echo -e "\033[1;32mSelect your language:\033[0m"
-        i=1
 
-        # サポート言語リストの表示
-        for lang in $SUPPORTED_LANGUAGES; do
-            echo "$i) $lang"
-            i=$((i+1))
-        done
-
-        # 入力受付ループ
-        while true; do
-            read -p "Enter number or language (e.g., en, ja): " input
-
-            # 数字が入力された場合
-            if echo "$input" | grep -qE '^[0-9]+$'; then
-                lang=$(echo $SUPPORTED_LANGUAGES | cut -d' ' -f$input)
-            else
-                # 大文字小文字の区別なし & 2バイト文字も処理
-                input_normalized=$(echo "$input" | tr '[:upper:]' '[:lower:]' | iconv -f utf-8 -t utf-8 -c)
-                lang=$(echo $SUPPORTED_LANGUAGES | tr '[:upper:]' '[:lower:]' | grep -o "\b$input_normalized\b")
-            fi
-
-            # 有効な言語かチェック
-            if [ -n "$lang" ]; then
-                SELECTED_LANGUAGE="$lang"
-                echo "$SELECTED_LANGUAGE" > "${BASE_DIR}/language_cache"
-                break
-            else
-                echo -e "\033[1;31mInvalid selection. Try again.\033[0m"
-            fi
-        done
-    fi
-
-    echo -e "\033[1;32mLanguage supported: $SELECTED_LANGUAGE\033[0m"
-}
 
 #########################################################################
 # 汎用ファイルダウンロード関数

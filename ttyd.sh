@@ -6,7 +6,7 @@
 # 本スクリプトは、aios のインストール後に ttyd をインストールおよび設定するスクリプトです。
 # ・common-functions.sh を読み込んで共通関数を使用。
 # ・ttyd のインストールと設定を行い、サービスを有効化。
-echo ttyd.sh Last update 20250205-9
+echo ttyd.sh Last update 20250205-10
 
 # === 定数の設定 ===
 BASE_URL="https://raw.githubusercontent.com/site-u2023/aios/main"
@@ -33,23 +33,27 @@ download_common() {
 }
 
 #########################################################################
-# サポートバージョンDBのダウンロード
-#########################################################################
-download_supported_versions_db() {
-    if [ ! -f "${BASE_DIR}/supported_versions.db" ]; then
-        wget --quiet -O "${BASE_DIR}/supported_versions.db" "${BASE_URL}/supported_versions.db" || handle_error "Failed to download supported_versions.db"
-    fi
-}
-
-#########################################################################
-# ttyd のインストール状況を確認し、未インストールの場合はインストール
+# ttyd のインストール状況を確認し、未インストールの場合はインストール確認を実施
 #########################################################################
 check_ttyd_installed() {
     if command -v ttyd >/dev/null 2>&1; then
         echo -e "\033[1;32mttyd is already installed.\033[0m"
     else
-        echo -e "\033[1;33mttyd is not installed. Proceeding with installation...\033[0m"
+        echo -e "\033[1;33mttyd is not installed.\033[0m"
+        confirm_installation
+    fi
+}
+
+#########################################################################
+# インストール確認プロンプト
+#########################################################################
+confirm_installation() {
+    echo -e "\033[1;34mDo you want to install ttyd?\033[0m"
+    if confirm_settings; then
         install_ttyd
+    else
+        echo -e "\033[1;33mttyd installation was canceled.\033[0m"
+        exit 0
     fi
 }
 
@@ -57,8 +61,7 @@ check_ttyd_installed() {
 # ttyd のインストール
 #########################################################################
 install_ttyd() {
-    # バージョンとパッケージマネージャーを確認
-    check_version_common
+    # バージョンデータベースを参照し、パッケージマネージャーとステータスを取得
     get_package_manager_and_status
 
     echo -e "\033[1;34mInstalling ttyd using $PACKAGE_MANAGER...\033[0m"
@@ -117,6 +120,5 @@ EOF
 # メイン処理
 #########################################################################
 download_common
-download_supported_versions_db
-check_language_common "$INPUT_LANG"
+check_common "$INPUT_LANG"
 check_ttyd_installed

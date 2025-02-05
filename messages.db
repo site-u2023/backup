@@ -3,6 +3,11 @@ ja|MSG_BANNER=オープンダブルアールティー専用設定ソフトウェ
 zh-cn|MSG_BANNER=欧鹏达布里阿尔提封装配置软件\n全面集成脚本\n声明: 使用本脚本风险自承
 en|MSG_BANNER=Dedicated configuration software for OpenWrt\nAll-in-One Scripts\nDisclaimer: Use this script at your own risk
 
+# 環境初期化
+ja|MSG_INITIALIZE_ENV=aios 環境を初期化しました。
+en|MSG_INITIALIZE_ENV=Initialized aios environment.
+
+
 # インストールメッセージ
 ja|MSG_INSTALL_PROMPT=インストールを実行しますか？ [Y/n]:
 en|MSG_INSTALL_PROMPT=Do you want to proceed with the installation? [Y/n]:

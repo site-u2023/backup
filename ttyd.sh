@@ -70,9 +70,12 @@ install_ttyd() {
 # ttyd の設定とサービスの有効化
 #########################################################################
 ttyd_setting() {
-    echo -e "\033[1;34mApplying ttyd settings...\033[0m"
+    local config_prompt=$(get_message "MSG_CONFIRM_SETTINGS" "$SELECTED_LANGUAGE")
+    
+    if confirm_settings "$config_prompt"; then
+        echo -e "\033[1;34mApplying ttyd settings...\033[0m"
 
-    uci batch <<EOF
+        uci batch <<EOF
 set ttyd.@ttyd[0]=ttyd
 set ttyd.@ttyd[0].interface='@lan'
 set ttyd.@ttyd[0].command='/bin/login -f root'
@@ -81,11 +84,15 @@ add_list ttyd.@ttyd[0].client_option='theme={"background": "black"}'
 add_list ttyd.@ttyd[0].client_option='titleFixed=ttyd'
 EOF
 
-    uci commit ttyd || handle_error "Failed to commit ttyd settings."
-    /etc/init.d/ttyd enable || handle_error "Failed to enable ttyd service."
-    /etc/init.d/ttyd restart || handle_error "Failed to restart ttyd service."
+        uci commit ttyd || handle_error "Failed to commit ttyd settings."
+        /etc/init.d/ttyd enable || handle_error "Failed to enable ttyd service."
+        /etc/init.d/ttyd restart || handle_error "Failed to restart ttyd service."
 
-    echo -e "\033[1;32m$(get_message 'MSG_SETTINGS_APPLIED' "$SELECTED_LANGUAGE")\033[0m"
+        # この部分を削除
+        # echo -e "\033[1;32m$(get_message 'MSG_SETTINGS_APPLIED' "$SELECTED_LANGUAGE")\033[0m"
+    else
+        handle_exit "$(get_message 'MSG_SETTINGS_CANCEL' "$SELECTED_LANGUAGE")"
+    fi
 }
 
 #########################################################################

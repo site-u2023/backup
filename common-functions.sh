@@ -67,6 +67,23 @@ handle_error() {
 }
 
 #########################################################################
+# 共通関数バージョン互換性チェック
+#########################################################################
+check_version_compatibility() {
+    REQUIRED_VERSION="2025.02.0"
+
+    if [ "$COMMON_FUNCTIONS_VERSION" != "$REQUIRED_VERSION" ]; then
+        handle_error "$(get_message 'MSG_VERSION_UNSUPPORTED' "$SELECTED_LANGUAGE"): common-functions.sh ($COMMON_FUNCTIONS_VERSION). Required: $REQUIRED_VERSION"
+    fi
+
+    # messages.db のバージョンチェック
+    MESSAGES_DB_VERSION=$(grep "^version=" "${BASE_DIR}/messages.db" | cut -d'=' -f2)
+    if [ "$MESSAGES_DB_VERSION" != "$REQUIRED_VERSION" ]; then
+        handle_error "$(get_message 'MSG_VERSION_UNSUPPORTED' "$SELECTED_LANGUAGE"): messages.db ($MESSAGES_DB_VERSION). Required: $REQUIRED_VERSION"
+    fi
+}
+
+#########################################################################
 # print_banner: 言語に応じたバナー表示 (messages.db からメッセージ取得)
 #########################################################################
 print_banner() {

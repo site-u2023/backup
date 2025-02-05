@@ -2,7 +2,7 @@
 # License: CC0
 # OpenWrt >= 19.07
 # 初期設定用 all-in-one スクリプト (aios) のセットアップスクリプト
-echo aios.sh Last update: 20250205-4
+echo aios.sh Last update: 20250205-5
 
 # === 定数の設定 ===
 BASE_URL="https://raw.githubusercontent.com/site-u2023/aios/main"

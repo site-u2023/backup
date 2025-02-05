@@ -158,7 +158,7 @@ download_language_files() {
 #########################################################################
 download_supported_versions_db() {
     if [ ! -f "${BASE_DIR}/supported_versions.db" ]; then
-        wget --quiet -O "${BASE_DIR}/supported_versions.db" "${BASE_URL}/supported_versions.db" || handle_error "Failed to download supported_versions.db"
+        ${BASE_WGET} "${BASE_DIR}/supported_versions.db" "${BASE_URL}/supported_versions.db" || handle_error "Failed to download supported_versions.db"
     fi
 }
 

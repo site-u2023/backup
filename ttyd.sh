@@ -6,8 +6,8 @@
 # 本スクリプトは、aios のインストール後に ttyd をインストールおよび設定するスクリプトです。
 # ・common-functions.sh を読み込んで共通関数を使用。
 # ・ttyd のインストールと設定を行い、サービスを有効化。
-TTYD_VERSION="2025.02.05-rc1"
-echo "ttyd.sh Last update: $TTYD_VERSION"
+TTYD_SH_VERSION="2025.02.05-rc1"
+echo "ttyd.sh Last update: $TTYD_SH_VERSION"
 
 # === 定数の設定 ===
 BASE_URL="https://raw.githubusercontent.com/site-u2023/aios/main"

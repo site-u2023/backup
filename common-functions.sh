@@ -98,20 +98,26 @@ load_common_functions() {
 # check_common
 #########################################################################
 check_common() {
-    # 1) 言語キャッシュやバージョンキャッシュがあれば使うし、なければ生成
-    #    例: /tmp/aios/language_cache, /tmp/aios/check_version など
-    #    すでに check_language_common, check_version_common 関数があるなら、それらを呼ぶだけでもOK
-    check_language_common
-    check_version_common
-
-    # 2) 必要なファイルがあるか確認＆ダウンロード
-    #    例: supported_versions.db, messages.db など
-    #    なければ ensure_file などの関数でダウンロード
-    ensure_file "supported_versions.db"
-    ensure_file "messages.db"
-
-    # 3) バージョン互換性チェック
-    check_version_compatibility
+    local mode="$1"
+    # mode により処理を変える (例: "full" と "light" など)
+    case "$mode" in
+        full)
+            check_language_common
+            check_version_common
+            ensure_file "supported_versions.db"
+            ensure_file "messages.db"
+            check_version_compatibility
+            ;;
+        light)
+            check_language_common
+            # これだけ
+            ;;
+        *)
+            # デフォルト動作
+            check_language_common
+            check_version_common
+            ;;
+    esac
 }
 
 #########################################################################

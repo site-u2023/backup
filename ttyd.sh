@@ -113,4 +113,5 @@ EOF
 #########################################################################
 download_common
 initialize_language_support
+check_version_common
 check_ttyd_installed

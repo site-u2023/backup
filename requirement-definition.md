@@ -224,3 +224,17 @@ INPUT_LANG="$1"
 
 
 ---
+
+### バージョンチェックの詳細ルール（2025-02-05 追加）
+
+1. **バージョンチェック関数の2重構成:**
+   - **aios.sh**: `check_version_aios` を使用。最小限のローカル変数 `SUPPORTED_VERSIONS` で判定。
+   - **common-functions.sh**: `check_version_common` を使用。`supported_versions.db` とローカルの `SUPPORTED_VERSIONS` を参照。
+
+2. **柔軟なバージョン管理:**
+   - `SUPPORTED_VERSIONS="19.07 21.02 22.03 23.05 24.10.0 SNAPSHOT"` の場合、
+     - **19.07** 系のバージョン（例: 19.07-1, 19.07.9）もサポート。
+     - **SNAPSHOT** と **RC**（例: 24.10.0-rc1）も自動的に許可。
+
+3. **バージョンデータベースの活用:**
+   - `supported_versions.db` にすべての公式バージョンを記録し、スクリプト全体で一元管理。

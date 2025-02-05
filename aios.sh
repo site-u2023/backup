@@ -1,7 +1,7 @@
 #!/bin/sh
 # License: CC0
 # OpenWrt >= 19.07
-echo aios.sh Last update: 20250205-15
+echo aios.sh Last update: 20250205-16
 
 # 定数の設定
 BASE_WGET="wget --quiet -O"

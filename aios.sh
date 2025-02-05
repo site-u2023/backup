@@ -1,7 +1,7 @@
 #!/bin/sh
 # License: CC0
 # OpenWrt >= 19.07
-echo aios.sh Last update: 20250205-13
+echo aios.sh Last update: 20250205-14
 
 # 定数の設定
 BASE_WGET="wget --quiet -O"
@@ -38,7 +38,7 @@ download_script() {
     local destination="$1"
     local remote_file="$2"
     color cyan "$(get_message 'MSG_DOWNLOAD_START'): $remote_file"
-    $|BASE_WGET} "$destination" "${BASE_URL}/${remote_file}" || handle_error "$(get_message 'MSG_DOWNLOAD_FAIL'): $remote_file"
+    ${BASE_WGET} "$destination" "${BASE_URL}/${remote_file}" || handle_error "$(get_message 'MSG_DOWNLOAD_FAIL'): $remote_file"
     color green "$(get_message 'MSG_DOWNLOAD_SUCCESS'): $remote_file"
 }
 
@@ -117,7 +117,7 @@ download_and_run_aios() {
 # ディレクトリの初期化と作成
 #########################################################################
 initialize_environment() {
-    echo "Initializing environment..."  # シンプルな出力でOK
+    echo "Initializing environment..."
     rm -rf "$BASE_DIR"
     mkdir -p "$BASE_DIR" || { echo "Failed to create directory: $BASE_DIR"; exit 1; }
 }

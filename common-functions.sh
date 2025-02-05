@@ -161,9 +161,9 @@ download_supported_versions_db() {
 # download_language_messages: 選択された言語のメッセージファイルをダウンロード
 #########################################################################
 download_language_messages() {
-    if [ ! -f "${BASE_DIR}/messages_${SELECTED_LANGUAGE}.sh" ]; then
-        ${BASE_WGET} "${BASE_DIR}/messages_${SELECTED_LANGUAGE}.sh" \
-        "${BASE_URL}/messages_${SELECTED_LANGUAGE}.sh" || handle_error "Failed to download messages_${SELECTED_LANGUAGE}.sh"
+    local lang="${SELECTED_LANGUAGE:-en}"
+    if [ ! -f "${BASE_DIR}/messages_${lang}.sh" ]; then
+        wget --quiet -O "${BASE_DIR}/messages_${lang}.sh" "${BASE_URL}/messages_${lang}.sh" || handle_error "Failed to download messages_${lang}.sh"
     fi
 }
 

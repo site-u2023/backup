@@ -1,7 +1,7 @@
 #!/bin/sh
 # License: CC0
 # OpenWrt >= 19.07, Compatible with 24.10.0
-echo common-functions.sh Last update: 20250205-6
+echo common-functions.sh Last update: 20250205-7
 
 # === 基本定数の設定 ===
 BASE_URL="${BASE_URL:-https://raw.githubusercontent.com/site-u2023/aios/main}"

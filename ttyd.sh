@@ -6,7 +6,7 @@
 # 本スクリプトは、aios のインストール後に ttyd をインストールおよび設定するスクリプトです。
 # ・common-functions.sh を読み込んで共通関数を使用。
 # ・ttyd のインストールと設定を行い、サービスを有効化。
-echo ttyd.sh Last update 20250205-5
+echo ttyd.sh Last update 20250205-8
 
 # === 定数の設定 ===
 BASE_URL="https://raw.githubusercontent.com/site-u2023/aios/main"
@@ -33,15 +33,31 @@ download_common() {
 }
 
 #########################################################################
-# パッケージマネージャーの確認
+# バージョンに基づくパッケージマネージャーの決定
 #########################################################################
-detect_package_manager() {
-    if command -v apk >/dev/null 2>&1; then
-        PACKAGE_MANAGER="apk"
-    elif command -v opkg >/dev/null 2>&1; then
-        PACKAGE_MANAGER="opkg"
-    else
-        handle_error "No supported package manager (apk or opkg) found."
+determine_package_manager() {
+    local openwrt_version
+    openwrt_version=$(awk -F"'" '/DISTRIB_RELEASE/{print $2}' /etc/openwrt_release)
+
+    # バージョンデータベースをダウンロード
+    if [ ! -f "${BASE_DIR}/versions-common.db" ]; then
+        wget --quiet -O "${BASE_DIR}/versions-common.db" "${BASE_URL}/versions-common.db" || handle_error "Failed to download versions-common.db"
+    fi
+
+    # データベースに基づいてパッケージマネージャーを決定
+    PACKAGE_MANAGER=$(grep "^${openwrt_version}=" "${BASE_DIR}/versions-common.db" | cut -d'=' -f2)
+
+    # データベースに情報がない場合は自動検出
+    if [ -z "$PACKAGE_MANAGER" ]; then
+        if echo "$openwrt_version" | grep -q "SNAPSHOT"; then
+            PACKAGE_MANAGER="apk"
+        elif command -v apk >/dev/null 2>&1; then
+            PACKAGE_MANAGER="apk"
+        elif command -v opkg >/dev/null 2>&1; then
+            PACKAGE_MANAGER="opkg"
+        else
+            handle_error "No supported package manager (apk or opkg) found."
+        fi
     fi
 }
 
@@ -61,7 +77,7 @@ check_ttyd_installed() {
 # ttyd のインストール
 #########################################################################
 install_ttyd() {
-    detect_package_manager
+    determine_package_manager
 
     echo -e "\033[1;34mInstalling ttyd using $PACKAGE_MANAGER...\033[0m"
     case "$PACKAGE_MANAGER" in
@@ -72,6 +88,9 @@ install_ttyd() {
         opkg)
             opkg update
             opkg install ttyd || handle_error "Failed to install ttyd using OPKG."
+            ;;
+        *)
+            handle_error "Unsupported package manager specified: $PACKAGE_MANAGER"
             ;;
     esac
     ttyd_setting

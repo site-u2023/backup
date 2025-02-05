@@ -273,6 +273,7 @@ _Last update: 20250205-7_
 | **confirm_settings**               |
 | **get_message**                    | 多言語対応
 | **download_language_file**         | 言語ファイルの自動ダウンロード
+| **download_language_messages**     | 選択された言語のメッセージファイルをダウンロード
 ```
 ## キャッシュファイルの定義
 ```

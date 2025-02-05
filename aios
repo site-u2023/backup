@@ -14,10 +14,15 @@ INPUT_LANG="$1"
 #########################################################################
 # handle_error: 汎用エラーハンドリング関数
 #########################################################################
-handle_error() {
-    echo -e "\033[1;31mERROR:\033[0m $1"
-    exit 1
+# スクリプト内専用エラー処理
+handle_local_error() {
+    echo -e "\033[1;31mLOCAL ERROR:\033[0m $1"
+    # exit 1
 }
+
+# コモン読み込み後は共通関数の handle_error を使用
+. "${BASE_DIR}/common-functions.sh" || handle_local_error "Failed to load common-functions.sh"
+
 
 #########################################################################
 # get_message: 多言語対応メッセージ取得関数

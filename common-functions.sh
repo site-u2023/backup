@@ -154,6 +154,15 @@ download_supported_versions_db() {
     fi
 }
 
+#########################################################################
+# download_language_messages: 選択された言語のメッセージファイルをダウンロード
+#########################################################################
+download_language_messages() {
+    if [ ! -f "${BASE_DIR}/messages_${SELECTED_LANGUAGE}.sh" ]; then
+        wget --quiet -O "${BASE_DIR}/messages_${SELECTED_LANGUAGE}.sh" \
+        "${BASE_URL}/messages_${SELECTED_LANGUAGE}.sh" || handle_error "Failed to download messages_${SELECTED_LANGUAGE}.sh"
+    fi
+}
 
 #########################################################################
 # Y/N 判定関数

@@ -106,7 +106,20 @@ check_language_common() {
         SELECTED_LANGUAGE=$(cat "${BASE_DIR}/language_cache")
     else
         echo -e "\033[1;32mSelect your language:\033[0m"
-        select lang in $SUPPORTED_LANGUAGES; do
+        PS3="Please enter your choice: "
+        
+        # 言語リストを表示
+        echo "Available languages:"
+        i=1
+        for lang in $SUPPORTED_LANGUAGES; do
+            echo "$i) $lang"
+            i=$((i+1))
+        done
+
+        # 選択肢を取得
+        while true; do
+            read -p "Enter number corresponding to your language: " choice
+            lang=$(echo $SUPPORTED_LANGUAGES | cut -d' ' -f$choice)
             if echo "$SUPPORTED_LANGUAGES" | grep -qw "$lang"; then
                 SELECTED_LANGUAGE="$lang"
                 echo "$SELECTED_LANGUAGE" > "${BASE_DIR}/language_cache"

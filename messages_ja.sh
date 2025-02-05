@@ -25,3 +25,7 @@ detected_package_manager="検出されたパッケージマネージャー"
 # check_version_common
 unsupported_version="サポートされていないOpenWrtバージョン"
 version_supported="OpenWrtバージョンはサポートされています"
+
+# download_language_messages
+MESSAGE_INSTALL_SUCCESS="インストールが正常に完了しました。"
+MESSAGE_INSTALL_FAILED="インストールに失敗しました。"

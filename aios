@@ -12,6 +12,13 @@ BASE_DIR="/tmp/aios"
 SUPPORTED_LANGUAGES="en ja zh-cn zh-tw id ko de ru"
 INPUT_LANG="$1"
 
+# aios スクリプト内に追加
+if [ "$1" = "--version" ]; then
+    echo "AIOS Version: $AIOS_VERSION"
+    echo "Common Functions Version: $COMMON_FUNCTIONS_VERSION"
+    exit 0
+fi
+
 #########################################################################
 # 共通エラー処理
 #########################################################################

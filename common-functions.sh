@@ -404,6 +404,34 @@ handle_exit() {
 }
 
 #########################################################################
+# install_packages: パッケージリストを一括インストール
+# 引数: インストールするパッケージ名のリスト（スペース区切り）
+# 使用例: install_packages "ttyd luci-app-ttyd luci-i18n-ttyd-ja"
+#########################################################################
+install_packages() {
+    local packages="$*"
+    local manager="$PACKAGE_MANAGER"
+
+    echo -e "\033[1;34mInstalling packages: $packages using $manager...\033[0m"
+
+    case "$manager" in
+        apk)
+            apk update || handle_error "Failed to update APK."
+            apk add $packages || handle_error "Failed to install packages using APK."
+            ;;
+        opkg)
+            opkg update || handle_error "Failed to update OPKG."
+            opkg install $packages || handle_error "Failed to install packages using OPKG."
+            ;;
+        *)
+            handle_error "Unsupported package manager detected."
+            ;;
+    esac
+
+    echo -e "$(color green "Installed packages: $packages")"
+}
+
+#########################################################################
 # 初期化処理: バージョン確認、言語設定、メッセージDBのダウンロード
 #########################################################################
 download_supported_versions_db

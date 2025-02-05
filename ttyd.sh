@@ -113,6 +113,8 @@ EOF
 #########################################################################
 download_common
 download_supported_versions_db
+check_language_common
+download_language_messages
 initialize_language_support
 check_version_common
 check_ttyd_installed

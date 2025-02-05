@@ -1,7 +1,7 @@
 #!/bin/sh
 # License: CC0
 # OpenWrt >= 19.07, Compatible with 24.10.0
-echo common-functions.sh Last update: 20250205-4
+echo common-functions.sh Last update: 20250205-5
 
 # === 基本定数の設定 ===
 BASE_URL="${BASE_URL:-https://raw.githubusercontent.com/site-u2023/aios/main}"
@@ -74,24 +74,44 @@ download_version_db() {
 #########################################################################
 # check_version: バージョンの確認
 #########################################################################
+#########################################################################
+# check_version: OpenWrt バージョンを取得し、柔軟に対応バージョンを判定する関数
+#########################################################################
 check_version() {
     current_version=$(awk -F"'" '/DISTRIB_RELEASE/ {print $2}' /etc/openwrt_release)
 
-    # RCバージョンを許容
+    # RCバージョンを許可
     if echo "$current_version" | grep -Eq 'RC[0-9]+$'; then
         echo -e "$(color green "Release Candidate version $current_version detected. Proceeding.")"
         return 0
     fi
 
-    # SNAPSHOT および安定版のチェック
-    if echo "$SUPPORTED_VERSIONS" | grep -qw "$current_version"; then
-        echo -e "$(color green "OpenWrt version $current_version is supported.")"
-    else
-        echo -e "$(color red "Unsupported OpenWrt version: $current_version. Exiting.")"
-        exit 1
+    # SNAPSHOTを許可
+    if [ "$current_version" = "SNAPSHOT" ]; then
+        echo -e "$(color green "SNAPSHOT version detected. Proceeding.")"
+        return 0
     fi
-}
 
+    # 柔軟なバージョンチェック
+    for version in $SUPPORTED_VERSIONS; do
+        # 完全一致チェック
+        if [ "$current_version" = "$version" ]; then
+            echo -e "$(color green "OpenWrt version $current_version is supported.")"
+            return 0
+        fi
+
+        # プレフィックス一致（19.07 なら 19.07-9 も許可）
+        if echo "$current_version" | grep -q "^$version"; then
+            echo -e "$(color green "OpenWrt version $current_version is supported (prefix match with $version).")"
+            return 0
+        fi
+    done
+
+    # サポート外バージョンの場合
+    echo -e "$(color red "ERROR: Unsupported OpenWrt version: $current_version.")"
+    echo -e "$(color yellow "Supported versions are: $SUPPORTED_VERSIONS")"
+    exit 1
+}
 
 #########################################################################
 # 言語サポートチェック

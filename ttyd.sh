@@ -24,10 +24,17 @@ handle_error() {
 #########################################################################
 # 共通関数のダウンロードおよび読み込み
 #########################################################################
-download_common() {
-    ensure_file "common-functions.sh"
-    ensure_file "messages.db"
+download_and_load_common() {
+    # まず共通関数をダウンロード
+    if [ ! -f "${BASE_DIR}/common-functions.sh" ]; then
+        wget --quiet -O "${BASE_DIR}/common-functions.sh" "${BASE_URL}/common-functions.sh" || handle_error "Failed to download common-functions.sh"
+    fi
+
+    # 共通関数の読み込み
     . "${BASE_DIR}/common-functions.sh" || handle_error "Failed to source common-functions.sh"
+    
+    # 必要なファイルの確認（common-functions.sh 読み込み後）
+    ensure_file "messages.db"
 }
 
 #########################################################################
@@ -85,7 +92,7 @@ EOF
 # メイン処理
 #########################################################################
 mkdir -p "$BASE_DIR"
-download_common
+download_and_load_common
 initialize_language_support
 download_supported_versions_db
 check_version_common

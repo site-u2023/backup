@@ -108,6 +108,20 @@ select_country_and_timezone() {
     confirm_settings || select_country_and_timezone
 }
 
+#########################################################################
+# country_full_info: 選択された国・言語の詳細情報を表示
+#########################################################################
+country_full_info() {
+    local country_info_file="${BASE_DIR}/country-zone.sh"
+    local selected_country_code=$(cat "${BASE_DIR}/check_country")
+
+    # 選択された国の情報を取得
+    if [ -f "$country_info_file" ]; then
+        grep -w "$selected_country_code" "$country_info_file"
+    else
+        echo "Country information not found."
+    fi
+}
 
 # === 初期化処理 ===
 check_version

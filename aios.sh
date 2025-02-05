@@ -116,9 +116,9 @@ download_and_run_aios() {
 # ディレクトリの初期化
 #########################################################################
 initialize_environment() {
-    rm -rf "${BASE_DIR}" /usr/bin/aios
+    echo -e "\033[1;32m$(get_message 'MSG_INITIALIZE_ENV' "$SELECTED_LANGUAGE")\033[0m"
+    rm -rf "$BASE_DIR"
     mkdir -p "$BASE_DIR" || handle_error "Failed to create directory: $BASE_DIR"
-    color green "Initialized aios environment."
 }
 
 #########################################################################

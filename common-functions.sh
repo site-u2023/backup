@@ -114,6 +114,7 @@ check_version_compatibility() {
 +       | cut -d'=' -f2 \
 +       | tr -d '"\r')
 
+    echo "DEBUG: db_version=[$db_version], COMMON_FUNCTIONS_SH_VERSION=[$COMMON_FUNCTIONS_SH_VERSION]"
     if [ "$db_version" != "$COMMON_FUNCTIONS_SH_VERSION" ]; then
         handle_error "$(get_message 'MSG_VERSION_MISMATCH_WARNING' "$SELECTED_LANGUAGE"): messages.db ($db_version). Required: $COMMON_FUNCTIONS_SH_VERSION" "warning"
     fi

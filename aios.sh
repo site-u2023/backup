@@ -124,8 +124,8 @@ initialize_environment() {
 #########################################################################
 # メイン処理
 #########################################################################
-initialize_environment
-check_version_aios
-load_common_functions
-check_ttyd_installed
-download_and_run_aios
+check_version_aios           # 1. バージョンチェック
+initialize_environment       # 2. 環境初期化
+load_common_functions        # 3. 共通関数のロード
+check_ttyd_installed         # 4. ttyd インストール確認
+download_and_run_aios        # 5. aios スクリプトのダウンロード＆実行

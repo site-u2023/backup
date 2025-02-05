@@ -273,7 +273,7 @@ _Last update: 20250205-7_
 | **confirm_settings**               |
 | **get_message**                    | 多言語対応
 | **download_language_file**         | 言語ファイルの自動ダウンロード
-| **download_language_messages**     | 選択された言語のメッセージファイルをダウンロード
+| **download_messages_db**     | 選択された言語のメッセージファイルをダウンロード
 ```
 ## キャッシュファイルの定義
 ```
@@ -288,8 +288,7 @@ _Last update: 20250205-7_
 ```
 |
 |----------------------
-| **messages_en.sh**  | 英語メッセージ
-| **messages_ja.sh**  | 日本語メッセージ
+| **messages.db**  | メッセージ
 ```
 
 ## 3. 更新方針

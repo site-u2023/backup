@@ -158,16 +158,44 @@ download_supported_versions_db() {
 #########################################################################
 # Y/N 判定関数
 #########################################################################
-confirm_settings() {
-    read -p "Apply these settings? [Y/n]: " confirm
-    confirm=${confirm:-Y}
+check_language_common() {
+    if [ -f "${BASE_DIR}/language_cache" ]; then
+        SELECTED_LANGUAGE=$(cat "${BASE_DIR}/language_cache")
+    else
+        echo -e "\033[1;32mSelect your language:\033[0m"
+        i=1
 
-    if [ "$confirm" != "Y" ] && [ "$confirm" != "y" ]; then
-        echo -e "$(color yellow "Settings were not applied. Returning to selection.")"
-        return 1
+        # サポート言語リストの表示
+        for lang in $SUPPORTED_LANGUAGES; do
+            echo "$i) $lang"
+            i=$((i+1))
+        done
+
+        # 入力受付ループ
+        while true; do
+            read -p "Enter number or language (e.g., en, ja): " input
+
+            # 数字が入力された場合
+            if echo "$input" | grep -qE '^[0-9]+$'; then
+                lang=$(echo $SUPPORTED_LANGUAGES | cut -d' ' -f$input)
+            else
+                # 大文字小文字の区別なし & 2バイト文字も処理
+                input_normalized=$(echo "$input" | tr '[:upper:]' '[:lower:]' | iconv -f utf-8 -t utf-8 -c)
+                lang=$(echo $SUPPORTED_LANGUAGES | tr '[:upper:]' '[:lower:]' | grep -o "\b$input_normalized\b")
+            fi
+
+            # 有効な言語かチェック
+            if [ -n "$lang" ]; then
+                SELECTED_LANGUAGE="$lang"
+                echo "$SELECTED_LANGUAGE" > "${BASE_DIR}/language_cache"
+                break
+            else
+                echo -e "\033[1;31mInvalid selection. Try again.\033[0m"
+            fi
+        done
     fi
-    echo -e "$(color green "Settings applied successfully.")"
-    return 0
+
+    echo -e "\033[1;32mLanguage supported: $SELECTED_LANGUAGE\033[0m"
 }
 
 #########################################################################

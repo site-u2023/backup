@@ -72,63 +72,53 @@ download_version_db() {
 }
 
 #########################################################################
-# check_version_common: common-functions.sh用の詳細なバージョンチェック関数
-# - ローカルの SUPPORTED_VERSIONS と supported_versions.db の両方を参照
+# check_version_common: OpenWrt バージョンの確認とキャッシュ
 #########################################################################
 check_version_common() {
-    local version_file="${BASE_DIR}/supported_versions.db"
-    local current_version
-
-    # OpenWrtバージョン取得
-    current_version=$(awk -F"'" '/DISTRIB_RELEASE/ {print $2}' /etc/openwrt_release)
-
-    # データベースファイルが存在しない場合、エラー
-    if [ ! -f "$version_file" ]; then
-        echo -e "$(color red "ERROR: Supported versions database not found at $version_file.")"
-        exit 1
-    fi
-
-    # スナップショットやRCバージョンは柔軟に許可
-    if echo "$current_version" | grep -Eq 'RC[0-9]+$|SNAPSHOT$'; then
-        echo -e "$(color green "Pre-release version ($current_version) detected. Proceeding.")"
-        return 0
-    fi
-
-    # ローカル SUPPORTED_VERSIONS または DB に一致するかチェック
-    if echo "$SUPPORTED_VERSIONS" | grep -qw "$current_version" || grep -qw "$current_version" "$version_file"; then
-        echo -e "$(color green "OpenWrt version $current_version is supported.")"
+    if [ -f "${BASE_DIR}/check_version" ]; then
+        current_version=$(cat "${BASE_DIR}/check_version")
     else
-        echo -e "$(color red "ERROR: Unsupported OpenWrt version: $current_version.")"
-        echo -e "$(color yellow "Refer to $version_file for supported versions.")"
-        exit 1
+        current_version=$(awk -F"'" '/DISTRIB_RELEASE/ {print $2}' /etc/openwrt_release)
+        echo "$current_version" > "${BASE_DIR}/check_version"
+    fi
+
+    if grep -q "^${current_version}$" "${BASE_DIR}/supported_versions.db"; then
+        echo -e "\033[1;32mOpenWrt version ${current_version} is supported.\033[0m"
+    else
+        handle_error "Unsupported OpenWrt version: ${current_version}"
     fi
 }
 
 #########################################################################
-# 言語サポートチェック
+# check_language_common: 言語キャッシュの確認および設定
 #########################################################################
-check_language_support() {
-    local language_file="${BASE_DIR}/check_language"
-
-    # 言語キャッシュがない場合、デフォルト言語を設定
-    if [ ! -f "$language_file" ]; then
-        echo "en" > "$language_file"
-        echo -e "$(color yellow "Language cache not found. Defaulting to English (en).")"
-    fi
-
-    local selected_language
-    selected_language=$(cat "$language_file")
-
-    # サポートされている言語か確認
-    if echo "$SUPPORTED_LANGUAGES" | grep -qw "$selected_language"; then
-        echo -e "$(color green "Language supported: $selected_language")"
+check_language_common() {
+    if [ -f "${BASE_DIR}/language_cache" ]; then
+        SELECTED_LANGUAGE=$(cat "${BASE_DIR}/language_cache")
     else
-        echo -e "$(color yellow "Unsupported language detected. Defaulting to English (en).")"
-        selected_language="en"
+        echo -e "\033[1;32mSelect your language:\033[0m"
+        select lang in $SUPPORTED_LANGUAGES; do
+            if echo "$SUPPORTED_LANGUAGES" | grep -qw "$lang"; then
+                SELECTED_LANGUAGE="$lang"
+                echo "$SELECTED_LANGUAGE" > "${BASE_DIR}/language_cache"
+                break
+            else
+                echo -e "\033[1;31mInvalid selection. Try again.\033[0m"
+            fi
+        done
     fi
-
-    export LANG="$selected_language"
+    echo -e "\033[1;32mLanguage supported: $SELECTED_LANGUAGE\033[0m"
 }
+
+#########################################################################
+# download_supported_versions_db: バージョンデータベースのダウンロード
+#########################################################################
+download_supported_versions_db() {
+    if [ ! -f "${BASE_DIR}/supported_versions.db" ]; then
+        wget --quiet -O "${BASE_DIR}/supported_versions.db" "${BASE_URL}/supported_versions.db" || handle_error "Failed to download supported_versions.db"
+    fi
+}
+
 
 #########################################################################
 # Y/N 判定関数
@@ -206,30 +196,49 @@ country_full_info() {
 }
 
 #########################################################################
-# get_package_manager_and_status: バージョンDBを参照し、適切なパッケージマネージャーとステータスを取得
+# get_package_manager_and_status: パッケージマネージャーの確認とキャッシュ
 #########################################################################
 get_package_manager_and_status() {
-    local openwrt_version
-    openwrt_version=$(awk -F"'" '/DISTRIB_RELEASE/{print $2}' /etc/openwrt_release)
-
-    # バージョン情報の取得
-    version_info=$(grep "^${openwrt_version}=" "${BASE_DIR}/supported_versions.db")
-
-    # バージョン情報が見つかった場合
-    if [ -n "$version_info" ]; then
-        PACKAGE_MANAGER=$(echo "$version_info" | cut -d'=' -f2 | cut -d'|' -f1)
-        VERSION_STATUS=$(echo "$version_info" | cut -d'|' -f2)
+    if [ -f "${BASE_DIR}/downloader_cache" ]; then
+        PACKAGE_MANAGER=$(cat "${BASE_DIR}/downloader_cache")
     else
-        # SNAPSHOT バージョンは常に apk を使用
-        if echo "$openwrt_version" | grep -q "SNAPSHOT"; then
+        if command -v apk >/dev/null 2>&1; then
             PACKAGE_MANAGER="apk"
-            VERSION_STATUS="snapshot"
+        elif command -v opkg >/dev/null 2>&1; then
+            PACKAGE_MANAGER="opkg"
         else
-            handle_error "Unsupported OpenWrt version: $openwrt_version"
+            handle_error "No supported package manager (apk or opkg) found."
         fi
+        echo "$PACKAGE_MANAGER" > "${BASE_DIR}/downloader_cache"
     fi
 }
 
+#########################################################################
+# get_message: 多言語対応メッセージ取得関数
+# 引数: $1 = メッセージキー, $2 = 言語コード (オプション, デフォルトは 'en')
+#########################################################################
+get_message() {
+    local key="$1"
+    local lang="${2:-en}"
+    
+    # 言語ファイルが存在する場合は読み込む
+    if [ -f "${BASE_DIR}/messages_${lang}.sh" ]; then
+        . "${BASE_DIR}/messages_${lang}.sh"
+    else
+        # 言語ファイルが存在しない場合は英語をデフォルトとする
+        . "${BASE_DIR}/messages_en.sh"
+    fi
+
+    # メッセージキーに対応する変数を取得
+    local message_var="MSG_${key}"
+    
+    # メッセージが存在すれば表示、存在しなければデフォルトエラー
+    if [ -n "${!message_var}" ]; then
+        echo "${!message_var}"
+    else
+        echo "Unknown message key: $key"
+    fi
+}
 
 # === 初期化処理 ===
 check_version_common

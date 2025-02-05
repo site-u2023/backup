@@ -97,24 +97,22 @@ ensure_file() {
 #########################################################################
 # 共通関数バージョン互換性チェック
 #########################################################################
+#########################################################################
+# バージョン互換性チェック（エラーでも続行可能）
+#########################################################################
 check_version_compatibility() {
-    
+    REQUIRED_VERSION="$AIOS_VERSION"
 
     # common-functions.sh のバージョンチェック
     COMMON_FUNCTIONS_VERSION=$(grep "^COMMON_FUNCTIONS_SH_VERSION=" "${BASE_DIR}/common-functions.sh" | cut -d'=' -f2 | tr -d '"')
-    if ! echo "$COMMON_FUNCTIONS_VERSION" | grep -Eq "^(${REQUIRED_VERSION}|${REQUIRED_VERSION}-rc[0-9]+|SNAPSHOT)$"; then
-        handle_error "$(get_message 'MSG_VERSION_UNSUPPORTED'): common-functions.sh ($COMMON_FUNCTIONS_VERSION). Required: $REQUIRED_VERSION"
+    if [ "$COMMON_FUNCTIONS_VERSION" != "$REQUIRED_VERSION" ]; then
+        handle_error "common-functions.sh version mismatch: $COMMON_FUNCTIONS_VERSION (required: $REQUIRED_VERSION)" "warning"
     fi
-}
 
     # messages.db のバージョンチェック
-    if [ -f "${BASE_DIR}/messages.db" ]; then
-        MESSAGES_DB_VERSION=$(grep "^version=" "${BASE_DIR}/messages.db" | cut -d'=' -f2)
-        if [ "$MESSAGES_DB_VERSION" != "$COMMON_FUNCTIONS_SH_VERSION" ]; then
-            handle_error "$(get_message 'MSG_VERSION_UNSUPPORTED'): messages.db ($MESSAGES_DB_VERSION). Required: $COMMON_FUNCTIONS_SH_VERSION"
-        fi
-    else
-        handle_error "messages.db not found during version check."
+    MESSAGES_DB_VERSION=$(grep "^version=" "${BASE_DIR}/messages.db" | cut -d'=' -f2)
+    if [ "$MESSAGES_DB_VERSION" != "$REQUIRED_VERSION" ]; then
+        handle_error "messages.db version mismatch: $MESSAGES_DB_VERSION (required: $REQUIRED_VERSION)" "warning"
     fi
 }
 

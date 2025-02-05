@@ -1,9 +1,10 @@
 #!/bin/sh
 # License: CC0
 # OpenWrt >= 19.07, Compatible with 24.10.0
-echo common-functions.sh Last update: 20250205-7
+echo common-functions.sh Last update: 20250205-8
 
 # === 基本定数の設定 ===
+BASE_WGET="wget --quiet -O"
 BASE_URL="${BASE_URL:-https://raw.githubusercontent.com/site-u2023/aios/main}"
 BASE_DIR="${BASE_DIR:-/tmp/aios}"
 SUPPORTED_VERSIONS="${SUPPORTED_VERSIONS:-19.07 21.02 22.03 23.05 24.10.0 SNAPSHOT}"
@@ -68,7 +69,9 @@ handle_error() {
 # download_version_db: バージョンデータベースのダウンロード
 #########################################################################
 download_version_db() {
-    wget --quiet -O "${BASE_DIR}/versions-common.db" "${BASE_URL}/versions-common.db" || handle_error "Failed to download versions-common.db"
+    ${BASE_WGET} "${BASE_DIR}/versions-common.db" "${BASE_URL}/versions-common.db" \
+    || handle_error "Failed to download versions-common.db"
+
 }
 
 #########################################################################
@@ -138,7 +141,7 @@ check_language_common() {
 download_language_files() {
     for lang in $SUPPORTED_LANGUAGES; do
         if [ ! -f "${BASE_DIR}/messages_${lang}.sh" ]; then
-            wget --quiet -O "${BASE_DIR}/messages_${lang}.sh" "${BASE_URL}/messages_${lang}.sh" || {
+            ${BASE_WGET} "${BASE_DIR}/messages_${lang}.sh" "${BASE_URL}/messages_${lang}.sh" || {
                 echo "Failed to download language file: messages_${lang}.sh"
             }
         fi
@@ -150,7 +153,7 @@ download_language_files() {
 #########################################################################
 download_supported_versions_db() {
     if [ ! -f "${BASE_DIR}/supported_versions.db" ]; then
-        wget --quiet -O "${BASE_DIR}/supported_versions.db" "${BASE_URL}/supported_versions.db" || handle_error "Failed to download supported_versions.db"
+        ${BASE_WGET} "${BASE_DIR}/supported_versions.db" "${BASE_URL}/supported_versions.db" || handle_error "Failed to download supported_versions.db"
     fi
 }
 
@@ -159,7 +162,7 @@ download_supported_versions_db() {
 #########################################################################
 download_language_messages() {
     if [ ! -f "${BASE_DIR}/messages_${SELECTED_LANGUAGE}.sh" ]; then
-        wget --quiet -O "${BASE_DIR}/messages_${SELECTED_LANGUAGE}.sh" \
+        ${BASE_WGET} "${BASE_DIR}/messages_${SELECTED_LANGUAGE}.sh" \
         "${BASE_URL}/messages_${SELECTED_LANGUAGE}.sh" || handle_error "Failed to download messages_${SELECTED_LANGUAGE}.sh"
     fi
 }
@@ -214,7 +217,7 @@ download_file() {
     local file_url="$1"
     local destination="$2"
     
-    wget --quiet -O "$destination" "${file_url}?cache_bust=$(date +%s)"
+    ${BASE_WGET} "$destination" "${file_url}?cache_bust=$(date +%s)"
     if [ $? -eq 0 ]; then
         echo -e "$(color green "Downloaded: $file_url")"
     else

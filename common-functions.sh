@@ -108,18 +108,10 @@ ensure_file() {
 # check_version_compatibility: バージョン互換性チェック（警告対応）
 #########################################################################
 check_version_compatibility() {
-    REQUIRED_VERSION="$AIOS_VERSION"
-
-    # common-functions.sh のバージョンチェック
-    COMMON_FUNCTIONS_VERSION=$(grep "^COMMON_FUNCTIONS_SH_VERSION=" "${BASE_DIR}/common-functions.sh" | cut -d'=' -f2 | tr -d '"')
-    if [ "$COMMON_FUNCTIONS_VERSION" != "$REQUIRED_VERSION" ]; then
-        handle_error "common-functions.sh version mismatch: $COMMON_FUNCTIONS_VERSION (Required: $REQUIRED_VERSION)" "warning"
-    fi
-
-    # messages.db のバージョンチェック（ダブルクオートを削除）
-    MESSAGES_DB_VERSION=$(grep "^version=" "${BASE_DIR}/messages.db" | cut -d'=' -f2 | tr -d '"')
-    if [ "$MESSAGES_DB_VERSION" != "$REQUIRED_VERSION" ]; then
-        handle_error "messages.db version mismatch: $MESSAGES_DB_VERSION (Required: $REQUIRED_VERSION)" "warning"
+    local db_version=$(grep "^version=" "${BASE_DIR}/messages.db" | cut -d'=' -f2 | tr -d '"')
+    
+    if [ "$db_version" != "$COMMON_FUNCTIONS_SH_VERSION" ]; then
+        handle_error "$(get_message 'MSG_VERSION_MISMATCH_WARNING' "$SELECTED_LANGUAGE"): messages.db ($db_version). Required: $COMMON_FUNCTIONS_SH_VERSION" "warning"
     fi
 }
 
@@ -405,29 +397,23 @@ handle_exit() {
 }
 
 #########################################################################
-# install_packages: パッケージをインストールし、言語パックも適用
-# 引数: インストールするパッケージ名のリスト
+# install_language_pack: 言語パッケージの存在確認とインストール
+# messages.db に定義された言語パックを使用
 #########################################################################
-install_packages() {
-    local packages="$*"
-    local manager="$PACKAGE_MANAGER"
+install_language_pack() {
+    local base_pkg="$1"
+    local lang_pkg=$(get_message "PKG_${base_pkg^^}" "$SELECTED_LANGUAGE")  # messages.db からパッケージ名取得
 
-    echo -e "\033[1;34mInstalling packages: $packages using $manager...\033[0m"
-
-    # 最初の1回だけアップデートを実行
-    if [ -z "$UPDATE_DONE" ]; then
-        case "$manager" in
-            apk)  apk update || handle_error "Failed to update APK." ;;
-            opkg) opkg update || handle_error "Failed to update OPKG." ;;
-            *)    handle_error "Unsupported package manager detected." ;;
-        esac
-        UPDATE_DONE=1
+    if [ -n "$lang_pkg" ]; then
+        if $PACKAGE_MANAGER list | grep -q "^$lang_pkg - "; then
+            $PACKAGE_MANAGER install $lang_pkg && echo -e "$(color green "Language pack installed: $lang_pkg")" || \
+            echo -e "$(color yellow "Failed to install language pack: $lang_pkg. Continuing...")"
+        else
+            echo -e "$(color cyan "Language pack not found in repo for: $lang_pkg. Skipping language pack...")"
+        fi
+    else
+        echo -e "$(color cyan "No language package defined for: $base_pkg in messages.db. Skipping...")"
     fi
-
-    # 各パッケージを個別にインストール
-    for pkg in $packages; do
-        attempt_package_install "$pkg"
-    done
 }
 
 #########################################################################
@@ -436,6 +422,12 @@ install_packages() {
 #########################################################################
 attempt_package_install() {
     local pkg="$1"
+
+    # 既にインストール済みならスキップ
+    if $PACKAGE_MANAGER list-installed | grep -q "^$pkg "; then
+        echo -e "$(color cyan "$pkg is already installed. Skipping...")"
+        return
+    fi
 
     if $PACKAGE_MANAGER list | grep -q "^$pkg - "; then
         $PACKAGE_MANAGER install $pkg && echo -e "$(color green "Successfully installed: $pkg")" || \
@@ -450,17 +442,22 @@ attempt_package_install() {
 
 #########################################################################
 # install_language_pack: 言語パッケージの存在確認とインストール
-# 例: luci-app-ttyd → luci-app-ttyd-ja (存在すればインストール)
+# 例: luci-app-ttyd → luci-i18n-ttyd-ja (存在すればインストール)
 #########################################################################
 install_language_pack() {
     local base_pkg="$1"
-    local lang_pkg="${base_pkg}-i18n-${SELECTED_LANGUAGE}"
+    local lang_pkg="luci-i18n-${base_pkg#luci-app-}-${SELECTED_LANGUAGE}"  # luci-app- の部分を削除してパッケージ名作成
 
-    if $PACKAGE_MANAGER list | grep -q "^$lang_pkg - "; then
-        $PACKAGE_MANAGER install $lang_pkg && echo -e "$(color green "Language pack installed: $lang_pkg")" || \
-        echo -e "$(color yellow "Failed to install language pack: $lang_pkg. Continuing...")"
+    # 言語DBやキャッシュをチェック
+    if grep -q "^$lang_pkg" "${BASE_DIR}/messages.db"; then
+        if $PACKAGE_MANAGER list | grep -q "^$lang_pkg - "; then
+            $PACKAGE_MANAGER install $lang_pkg && echo -e "$(color green "Language pack installed: $lang_pkg")" || \
+            echo -e "$(color yellow "Failed to install language pack: $lang_pkg. Continuing...")"
+        else
+            echo -e "$(color cyan "Language pack not found in repo for: $base_pkg. Skipping language pack...")"
+        fi
     else
-        echo -e "$(color cyan "Language pack not found for: $base_pkg. Skipping language pack...")"
+        echo -e "$(color cyan "Language pack $lang_pkg not listed in messages.db. Skipping...")"
     fi
 }
 

@@ -113,13 +113,13 @@ check_version_compatibility() {
     # common-functions.sh のバージョンチェック
     COMMON_FUNCTIONS_VERSION=$(grep "^COMMON_FUNCTIONS_SH_VERSION=" "${BASE_DIR}/common-functions.sh" | cut -d'=' -f2 | tr -d '"')
     if [ "$COMMON_FUNCTIONS_VERSION" != "$REQUIRED_VERSION" ]; then
-        handle_error "common-functions.sh ($COMMON_FUNCTIONS_VERSION). Required: $REQUIRED_VERSION" "warning"
+        handle_error "common-functions.sh version mismatch: $COMMON_FUNCTIONS_VERSION (Required: $REQUIRED_VERSION)" "warning"
     fi
 
-    # messages.db のバージョンチェック
-    MESSAGES_DB_VERSION=$(grep "^version=" "${BASE_DIR}/messages.db" | cut -d'=' -f2)
+    # messages.db のバージョンチェック（ダブルクオートを削除）
+    MESSAGES_DB_VERSION=$(grep "^version=" "${BASE_DIR}/messages.db" | cut -d'=' -f2 | tr -d '"')
     if [ "$MESSAGES_DB_VERSION" != "$REQUIRED_VERSION" ]; then
-        handle_error "messages.db ($MESSAGES_DB_VERSION). Required: $REQUIRED_VERSION" "warning"
+        handle_error "messages.db version mismatch: $MESSAGES_DB_VERSION (Required: $REQUIRED_VERSION)" "warning"
     fi
 }
 

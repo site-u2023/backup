@@ -15,6 +15,7 @@ version="2025.02.05-rc1"
 18.06.9=opkg|eol
 
 # OpenWrt 19.x 系列
+19.07=opkg|stable
 19.07.0=opkg|stable
 19.07.1=opkg|stable
 19.07.2=opkg|stable

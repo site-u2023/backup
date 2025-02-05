@@ -2,7 +2,7 @@
 # License: CC0
 # OpenWrt >= 19.07
 # 初期設定用 all-in-one スクリプト (aios) のセットアップスクリプト
-echo aios.sh Last update: 20250205-3
+echo aios.sh Last update: 20250205-4
 
 # === 定数の設定 ===
 BASE_URL="https://raw.githubusercontent.com/site-u2023/aios/main"
@@ -23,23 +23,19 @@ color() {
 }
 
 #########################################################################
-# check_version: OpenWrt バージョンを取得し、RC版やSNAPSHOTも許容する関数
+# check_version_aios: aios.sh専用のシンプルなバージョンチェック関数
 #########################################################################
-check_version() {
+check_version_aios() {
+    # OpenWrtバージョン取得
+    local current_version
     current_version=$(awk -F"'" '/DISTRIB_RELEASE/ {print $2}' /etc/openwrt_release)
 
-    # RCバージョンを許可
-    if echo "$current_version" | grep -Eq 'RC[0-9]+$'; then
-        echo -e "$(color green "Release Candidate version $current_version detected. Proceeding.")"
-        return 0
-    fi
-
-    # SNAPSHOT およびサポートバージョンのチェック
+    # サポートされているバージョンと比較
     if echo "$SUPPORTED_VERSIONS" | grep -qw "$current_version"; then
-        echo -e "$(color green "OpenWrt version $current_version is supported.")"
+        echo -e "\033[1;32mOpenWrt version $current_version is supported.\033[0m"
     else
-        echo -e "$(color red "ERROR: Unsupported OpenWrt version: $current_version.")"
-        echo -e "$(color yellow "Supported versions are: $SUPPORTED_VERSIONS")"
+        echo -e "\033[1;31mERROR: Unsupported OpenWrt version: $current_version.\033[0m"
+        echo -e "\033[1;33mSupported versions are: $SUPPORTED_VERSIONS\033[0m"
         exit 1
     fi
 }

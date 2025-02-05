@@ -339,7 +339,7 @@ get_package_manager_and_status() {
 #########################################################################
 get_message() {
     local key="$1"
-    local lang="${SELECTED_LANGUAGE:-jn}"  # デフォルトは英語
+    local lang="${SELECTED_LANGUAGE:-jn}"  # デフォルトは英語（RCは日本語）
 
     # メッセージDBが存在しない場合のエラーハンドリング
     if [ ! -f "${BASE_DIR}/messages.db" ]; then

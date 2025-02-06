@@ -364,7 +364,16 @@ confirm_action() {
 download_file() {
     local file_url="$1"
     local destination="$2"
-    
+    local confirm_key="$3"  # 追加: ダウンロード前に確認したいならキーを渡す
+
+    # もし confirm_key がセットされていればダウンロード前に Y/N をとる
+    if [ -n "$confirm_key" ]; then
+        # ユーザーが NO の場合はスキップ
+        if ! confirm_action "$confirm_key" "$file_url"; then
+            color yellow "Skipping download of $file_url"
+            return 0
+        fi
+    fi    
     ${BASE_WGET} "$destination" "${file_url}?cache_bust=$(date +%s)"
     if [ $? -eq 0 ]; then
         echo -e "$(color green "Downloaded: $file_url")"

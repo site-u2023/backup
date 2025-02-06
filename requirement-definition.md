@@ -181,73 +181,19 @@ INPUT_LANG="$1"
 | **openwrt.db**             | 24.10.0=opkg|stable                                 | ${BASE_DIR}/message.db`      |
 ```
 
-## 9.キャッシュファイルの定義
+## 10.キャッシュファイルの定義
 ```
 | **キャッシュファイル名**   | **説明**                                            | **保存先**                   |
 |----------------------------|-----------------------------------------------------|------------------------------|
-| **openwrt-version.ch**     | OpenWrtバージョンキャッシュ。                        | `${BASE_DIR}/country.cache`  |
-| **country.cache**          | 選択されたカントリーのキャッシュ。                    | `${BASE_DIR}/openwrt-version.ch` |
+| **openwrt.ch**     | OpenWrtバージョンキャッシュ。                        | `${BASE_DIR}/country.ch`  |
+| **country.ch**          | 選択されたカントリーのキャッシュ。                    | `${BASE_DIR}/openwrt.ch` |
 | **downloader.ch**          | パッケージマネージャー（apk / opkg）の判定キャッシュ。 | `${BASE_DIR}/downloader.ch` |
-| **script-version.ch**      | スクリプトファイルバージョンのキャッシュ               | `${BASE_DIR}/script-version.ch` |
+| **script.ch**      | スクリプトファイルバージョンのキャッシュ               | `${BASE_DIR}/script.ch` |
 ```
 
-## 言語別メッセージファイル
-```
-|
-|----------------------
-| **messages.db**  | メッセージ
-```
-
-## 3. 更新方針
+## 11. 更新方針
+- 関数はむやみに増やさず、コモン関数は可能な限り汎用的とし、役割に応じ階層的関数を別途用意する。
 - 関数名の変更は、要件定義のアップデートと全スクリプトへの反映を伴う。
 - 新規関数追加時も要件定義への追加が必須。
 
 
-# 要件定義 (Package Manager Detection & Version Database)
-Last update: 2025-02-05-8
-
-## 1. バージョンデータベース構成
-ファイル名: supported_versions.db
-概要:
-このファイルは OpenWrt のバージョンに対応するパッケージマネージャー (apk または opkg) と、そのバージョンのステータス (stable, snapshot, deprecated) を管理します。
-
-フォーマット:
-php-template
-コピーする
-編集する
-
-```
-<OpenWrtバージョン>=<パッケージマネージャー>|<ステータス>
-```
-
-サンプルデータ:
-
-```
-# OpenWrt 18.x 系列 (サポート終了)
-18.06.0=opkg|deprecated
-18.06.1=opkg|deprecated
-18.06.2=opkg|deprecated
-18.06.3=opkg|deprecated
-18.06.4=opkg|deprecated
-18.06.5=opkg|deprecated
-18.06.6=opkg|deprecated
-18.06.7=opkg|deprecated
-18.06.8=opkg|deprecated
-18.06.9=opkg|deprecated
-
-# OpenWrt 19.x 系列
-19.07.0=opkg|stable
-19.07.1=opkg|stable
-19.07.2=opkg|stable
-19.07.3=opkg|stable
-19.07.4=opkg|stable
-19.07.5=opkg|stable
-19.07.6=opkg|stable
-19.07.7=opkg|stable
-19.07.8=opkg|stable
-19.07.9=opkg|stable
-19.07-SNAPSHOT=apk|snapshot
-
-# OpenWrt 21.x 系列
-21.02.0=op
-```

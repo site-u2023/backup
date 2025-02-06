@@ -9,7 +9,7 @@
 **All in One Script (AIOS)**
 
 **概要:**  
-OpenWrt 環境向けの統合管理スクリプト群。初期設定からデバイス管理、ネットワーク設定、DNSフィルタリングまでを一元管理。各スクリプトは個別でも利用可能で、共通関数による多言語対応を実装。軽量かつ柔軟な構成を特徴とし、保守性と拡張性を両立。
+OpenWrt 環境向けの統合管理スクリプト群。初期設定からデバイス管理、ネットワーク設定、推奨パッケージインストール、DNSフィルタリングまでを一元管理。各スクリプトは個別でも利用可能で、共通関数による多言語対応を実装。軽量かつ柔軟な構成を特徴とし、保守性と拡張性を両立。
 
 ---
 
@@ -31,15 +31,19 @@ OpenWrt 環境向けの統合管理スクリプト群。初期設定からデバ
 ## 3. スクリプト構成
 
 ```
-aios.sh                  ← 初期設定とメインエントリーポイント
-  ├── ttyd.sh            ← オプション的コンソールUI
-  ├── common-functions.sh← 共通関数と多言語対応のecho管理
-  ├── country-zone.sh    ← 国と言語・タイムゾーンデータベース
-  ├── openwrt-config.sh  ← メインメニュー（各種設定スクリプトへのリンク）
-       ├── system-config.sh     ← デバイス、WiFi初期設定
-       ├── internet-config.sh   ← インターネット回線設定
-       ├── dns-adblocker.sh     ← DNS＆広告ブロッカー設定
-       └── 他スクリプト...
+aios.sh                             ← aiosダウンロードとインストール
+  ├── aios(/usr/bin)                ← メインエントリーポイント
+  └── ttyd.sh                       ← コンソールUI(オプション)
+    ├── common.sh                   ← 共通関数と多言語対応のecho管理
+    ├── country.db                  ← 国と言語・タイムゾーンデータベース
+    └── message.db                  ← echo用多言語データベース
+      ├── openwrt-config.sh         ← メインメニュー（各種設定スクリプトへのリンク）
+      ├── internet-config.sh        ← インターネット回線設定
+      ├── system-config.sh          ← デバイス、WiFi初期設定
+      ├── package-config.sh         ← パッケージインストール
+      ├── access-point-config.sh    ← パッケージインストール
+      ├── dns-adblocker.sh          ← DNS＆広告ブロッカー設定
+      └── etc-config.sh             ← その他・・・
 ```
 
 ---

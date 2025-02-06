@@ -325,9 +325,16 @@ download_messages_db() {
 # 使用例: confirm_action 'MSG_INSTALL_PROMPT'
 #########################################################################
 confirm_action() {
+    local key="$1"
+    local replace_param="$2"
     local prompt_message
-    prompt_message=$(get_message "$1" "$SELECTED_LANGUAGE")
+    prompt_message=$(get_message "$key" "$SELECTED_LANGUAGE")
 
+    if [ -n "$replace_param" ]; then
+        # {pkg} → $replace_param へ単純置換
+        prompt_message="${prompt_message//\{pkg\}/$replace_param}"
+    fi
+    
     # メッセージが取得できなければデフォルトメッセージを使用
     [ -z "$prompt_message" ] && prompt_message="Do you want to proceed? [Y/n]:"
 

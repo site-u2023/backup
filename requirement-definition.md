@@ -1,5 +1,5 @@
 # 要件定義 (AIOS - All in One Script)
-**Last update:** 2025-02-05-3
+**Last update:** 2025-02-06-1
 
 ---
 
@@ -31,19 +31,32 @@ OpenWrt 環境向けの統合管理スクリプト群。初期設定からデバ
 ## 3. スクリプト構成
 
 ```
-aios.sh                             ← aiosダウンロードとインストール
-  ├── aios(/usr/bin)                ← メインエントリーポイント
-  └── ttyd.sh                       ← コンソールUI(オプション)
-    ├── common.sh                   ← 共通関数と多言語対応のecho管理
-    ├── country.db                  ← 国と言語・タイムゾーンデータベース
-    └── message.db                  ← echo用多言語データベース
-      ├── openwrt-config.sh         ← メインメニュー（各種設定スクリプトへのリンク）
-      ├── internet-config.sh        ← インターネット回線設定
-      ├── system-config.sh          ← デバイス、WiFi初期設定
-      ├── package-config.sh         ← パッケージインストール
-      ├── access-point-config.sh    ← パッケージインストール
-      ├── dns-adblocker.sh          ← DNS＆広告ブロッカー設定
+aios.sh                           ← 初回エントリーポイント
+  |── ttyd.sh                     ← コンソールUI(オプション)
+  └── aios(/usr/bin)              ← メインエントリーポイント
+    ├── common.sh                 ← 共通関数
+    ├── country.db                ← 国名、言語、短縮国名、ゾーンネーム、タイムゾーンデータベース
+    ├── message.db                ← 多言語データベース
+    ├── country.cache             ← カントリーコードキャッシュ
+    ├── language.cache            ← ランゲージコードキャッシュ
+    ├── version.cache             ← バージョンコードキャッシュ
+    └── openwrt-config.sh         ← メインメニュー（各種設定スクリプトへのリンク）
+      ├── internet-config.sh      ← インターネット回線設定
+      |  |── map-e.sh
+      |  |── map-e-nuro.sh
+      |  |── ds-lite.sh
+      |  └── pppoe.sh
+      ├── access-point-config.sh  ← アクセスポイント設定
+      ├── system-config.sh        ← デバイス、WiFi設定
+      ├── package-config.sh       ← パッケージインストール
+      ├── dns-adblocker.sh        ← DNS＆広告ブロッカーインストール設定
+      |  |── adguard-config.sh
+      |  |── adblock-config.sh
       └── etc-config.sh             ← その他・・・
+      |  |── ・・・
+      |  |── ・・・
+      |── exit
+      └─── delete & exit
 ```
 
 ---

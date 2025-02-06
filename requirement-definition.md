@@ -174,7 +174,7 @@ INPUT_LANG="$1"
 ## 9. データベースの定義
 
 ```
-| **データベース名**          | **説明**                                            | **保存先**                   |
+| **データベース名**          | **形式**                                            | **保存先**                   |
 |----------------------------|-----------------------------------------------------|------------------------------|
 | **country.db **            | Russia Русский ru RU Europe/Moscow,Asia/Krasnoyarsk,Asia/Yekaterinburg,Asia/Irkutsk,Asia/Vladivostok;MSK-3,SAMT-4,YEKT-5,OMST-6,KRAT-7,IRKT-8,YAKT-9,VLAT-10,MAGT-11 |  `${BASE_DIR}/country.db`  |
 | **message.db**             | ja|MSG_INSTALL_PROMPT_PKG={pkg}                     | ${BASE_DIR}/message.db`      |
